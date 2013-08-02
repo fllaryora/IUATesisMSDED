@@ -1,0 +1,38 @@
+{
+	"tgs": {
+		"nombre": "Sistema de prueba",
+		"sistema":"Discreto"
+	},
+	"sistemico": {
+		"rij": [
+			0, 1, 1, 0, 1, 0,
+			1, 0, 1, 0, 1, 0, 
+			1, 0, 1, 0, 1, 0,
+			0, 1, 0, 0, 1, 1,
+			0, 1, 0, 1, 1, 0,
+			1, 0, 1, 0, 1, 0 
+		],
+		"ekj": [ 
+			0, 1, 1, 0, 1, 0,
+			1, 0, 0, 1, 1, 0
+		]
+	},
+	"transformacion": {
+		"nodes": [
+			{
+				"idnodo": 1,
+				"followers": [2,3]
+			},
+			{
+				"idnodo": 2,
+				
+				"followers": [2],
+				"proceders":[1]
+			},
+			{
+				"idnodo": 3,
+				"proceders":[1,2]
+			}
+		]
+	}
+}
