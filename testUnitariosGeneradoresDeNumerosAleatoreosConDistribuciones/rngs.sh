@@ -32,3 +32,6 @@ gcc RNGs.o -lm -o BTA betatest.c
 
 #valida que la media sea 9.5 y que la variacion estandar sea 33.25.
 gcc RNGs.o  scheduler.o -lm -o RAF raffletest.c 
+
+#elimino el objetos
+rm *.o
