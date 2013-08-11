@@ -1,0 +1,765 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><!--#include virtual="/includes/header.html"-->
+</head><body><center>
+<h1>Derived Data Types with MPI</h1>
+</center>
+
+<p>
+</p><p>
+</p><hr>
+<a name="goals">
+<h3>1. Introduction 
+</h3>
+</a>
+<p>
+
+The basic MPI communication mechanisms can be used to send or receive a 
+sequence of identical elements that are contiguous in memory. It is 
+often desirable to send data that is not homogeneous or that is not 
+contiguous in memory. This would amortize the fixed overhead of sending 
+and receiving a message over the transmittal of many elements. MPI 
+provides two mechanisms to achieve this:
+</p>
+<p>
+</p><ul>
+<li>The user can define derived datatype that specify more general data layouts
+</li><li>A sending process can explicitly pack noncontiguous data into a
+ contiguous buffer and then send it; a reveiving process can explicitly 
+unpack data received in a contiguous buffer and store in  noncontiguous 
+locations<p></p>
+</li></ul>
+
+This tutorial focuses on the construction and use of derived datatypes, why, how, and when to use them.
+<p>
+</p><hr>
+<a name="why">
+</a><h3><a name="why">2.  Why Use Derived Datatypes?
+</a><p>
+</p></h3>
+
+
+<a name="basic">
+<h3>2.1 Basic MPI Datatypes
+</h3>
+</a>
+<p>
+</p>
+
+<center>
+<h3>MPI Basic predefined Datatypes for C</h3>
+
+<table width="80%" border="1"><tbody><tr>
+    <td align="center"><b>MPI datatype</b></td>
+    <td align="center"><b>C datatype</b></td>
+</tr>
+<tr>
+    <td>MPI_CHAR</td>
+    <td>signed char</td>
+</tr>
+<tr>
+    <td>MPI_SHORT</td>
+    <td>signed short int</td>
+</tr>
+<tr>
+    <td>MPI_INT</td>
+    <td>signed int</td>
+</tr>
+<tr>
+    <td>MPI_LONG</td>
+    <td>signed long int</td>
+</tr>
+<tr>
+    <td>MPI_UNSIGNED_CHAR</td>
+    <td>unsigned char</td>
+</tr>
+<tr>
+    <td>MPI_UNSIGNED_SHORT</td>
+    <td>unsigned short int</td>
+</tr>
+<tr>
+    <td>MPI_UNSIGNED_LONG</td>
+    <td>unsigned long_int</td>
+</tr>
+<tr>
+    <td>MPI_UNSIGNED</td>
+    <td>unsigned int</td>
+</tr>
+<tr>
+    <td>MPI_FLOAT</td>
+    <td>float</td>
+</tr>
+<tr>
+    <td>MPI_DOUBLE</td>
+    <td>double</td>
+</tr>
+<tr>
+    <td>MPI_LONG_DOUBLE</td>
+    <td>long double</td>
+</tr>
+<tr>
+    <td>MPI_BYTE</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td>MPI_PACKED</td>
+    <td>&nbsp;</td>
+</tr>
+</tbody></table>
+</center>
+
+
+
+<p>
+</p><p>
+</p><center>
+<h3>MPI Basic predefined Datatypes for FORTRAN</h3>
+
+
+<table width="80%" border="1"><tbody><tr>
+    <td align="center"><b>MPI datatype</b></td>
+    <td align="center"><b>FORTRAN datatype</b></td>
+</tr>
+<tr>
+    <td>MPI_INTEGER</td>
+    <td>INTEGER</td>
+</tr>
+<tr>
+    <td>MPI_REAL</td>
+    <td>REAL</td>
+</tr>
+<tr>
+    <td>MPI_REAL8</td>
+    <td>REAL*8</td>
+</tr>
+<tr>
+    <td>MPI_DOUBLE_PRECISION</td>
+    <td>DOUBLE PRECISION</td>
+</tr>
+<tr>
+    <td>MPI_COMPLEX</td>
+    <td>COMPLEX</td>
+</tr>
+<tr>
+    <td>MPI_LOGICAL</td>
+    <td>LOGICAL</td>
+</tr>
+<tr>
+    <td>MPI_CHARACTER</td>
+    <td>CHARACTER</td>
+</tr>
+<tr>
+    <td>MPI_BYTE</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td>MPI_PACKED</td>
+    <td>&nbsp;</td>
+</tr>
+</tbody></table>
+</center>
+
+
+
+<p>
+Given these datatypes and a count, you can handle messages of contiguous
+data of the same type. 
+</p>
+
+<p>
+<a name="motivation">
+<h3>2.2  Motivation
+</h3>
+</a>
+What if you want to specify:
+</p><ul>
+<li>non-contiguous data of a single type?
+</li><li>contiguous data of mixed types?
+</li><li>non-contiguous data of mixed types?
+</li></ul>
+<p></p>
+<p>
+A few possible solutions are that you could: 
+</p><ul>
+
+<li>make multiple MPI calls to send and receive each data
+element 
+
+<p></p>
+</li><li>use MPI_PACKED to send data that has been explicitly packed 
+and/or MPI_UNPACKED to receive data that has been explicitly unpacked.
+
+<p></p>
+</li><li> use MPI_BYTE to get around the datatype-matching rules.
+Like MPI_PACKED, MPI_BYTE  can be used to match any byte of storage (on a
+ byte-addressable machine), irrespective of the datatype of the variable
+ that
+contains this byte.
+
+</li></ul>
+<p>
+Generally, however, these solutions are slow, clumsy, and wasteful of memory.
+Using MPI_BYTE or MPI_PACKED might also result in a program that isn't
+portable to a heterogeneous system of machines.
+</p>
+
+<p>
+The idea of MPI derived datatypes is to provide a portable and
+efficient way of communicating non-contiguous or mixed types in a
+message.
+MPI derived datatypes provide a simpler, cleaner, more elegant and efficient way to 
+handle this type of data.
+</p>
+<p>
+<em>
+<!---
+
+[
+Caution: some implementations of MPI derived datatypes are not as
+efficient as they should be, particularly in terms of I/O wait times.
+Once you have your code running correctly, you may want to convert a few
+of the derived datatypes in your code's hotspots to MPI_BYTE or MPI_PACKED.
+Compare the timings of your converted code to that of your code
+using all MPI derived datatypes, and choose the one that gives you optimal
+performance.
+]
+
+--->
+</em>
+</p>
+
+<p></p><hr>
+<a name="what">
+<h3>3.  What are Derived Datatypes?
+</h3>
+</a>
+<p>
+Derived datatypes are datatypes that are built from the basic MPI datatypes.
+To better understand what is needed to construct such a datatype, you need 
+to understand the general concept of an MPI datatype and something
+called a <em>typemap</em>.
+</p>
+
+<!--
+<A NAME="typemaps">
+<H3>3.1  General Datatypes and Typemaps
+</H3>
+</A>
+-->
+<p>
+Formally, the MPI Standard defines a general datatype as an object 
+that specifies two things:
+</p><ul>
+<li>a sequence of basic datatypes
+</li><li>a sequence of integer (byte) displacements
+</li></ul>
+An easy way to represent such an object is as a 
+sequence of pairs of basic datatypes and displacements.
+MPI calls this sequence a <em>typemap</em>.
+<p></p>
+
+<p>
+<!---------------------------
+<P><A NAME="extent">
+<H3>3.2  Extent of a Datatype
+</H3>
+</A>
+<P>
+
+<CENTER>
+
+<P>
+extent(Typemap) = ub(Typemap) - lb(Typemap) + pad
+</P>
+</CENTER>
+where <i> ub </i> is the upper bound (location of the last byte), <i> lb </i> is the lower bound (the location of the first byte) and <i>pad</i>, a concept used by MPI to require the address of a
+variable (in bytes) to be a multiple of its length (in bytes).
+
+<P>
+Here is the syntax for the extent routine:
+<UL>
+<LI>C
+<PRE>
+int MPI_Type_extent(MPI_Datatype datatype, MPI_Aint *extent)
+</PRE>
+<LI>FORTRAN
+<PRE>
+MPI_TYPE_EXTENT(DATATYPE, EXTENT, MPIERROR)
+    INTEGER DATATYPE, EXTENT, MPIERROR
+</PRE>
+</UL>
+</P>
+where 
+<UL>
+<LI><EM>datatype</EM> is an input datatype handle
+<LI><EM>extent</EM> is an output integer for FORTRAN, or for C, a special integer type
+<EM>MPI_Aint</EM>, that can hold an arbitrary address
+</UL>
+
+--------------------->
+</p><p>
+</p><hr>
+<p>
+<a name="how"><h3>4. When and How Do I Use Derived Datatypes?</h3></a>
+<a name="whento">
+<h3>4.1  When to Use
+</h3>
+</a>
+</p><p>
+When you want to create a datatype in C or FORTRAN, you do so by 
+declaring the datatype before executing any statements.
+Your declarations are read by the compiler that sets up storage
+for your datatype.
+In contrast, MPI derived datatypes are created at run-time through
+calls to MPI library routines.
+Since MPI derived datatypes are often used to send or receive 
+C or FORTRAN datatypes, in the typical scenario, you first declare
+your C or FORTRAN datatypes.  Later, in the execution part of
+your program between calls to MPI_INIT and MPI_FINALIZE, you
+create and use your MPI derived datatypes.
+</p>
+
+<p>
+
+<a name="howto">
+<h3>4.2  How to Use
+</h3>
+</a>
+</p><p>
+Before you can use a derived datatype, you must create it.
+Here are the steps you take:
+</p><ol>
+<li>Construct the datatype.
+</li><li>Allocate the datatype.
+</li><li>Use the datatype.
+</li><li>Deallocate the datatype.
+</li></ol>
+You must construct and allocate a datatype before using it.
+On the other hand, once you have it constructed and allocated, you
+are not required to use or deallocate it.
+<p></p>
+
+<p>
+</p><p>
+<a name="const">
+</a></p><h3><a name="const">4.2.1 Construct the datatype </a></h3>
+<p>
+
+</p><dd><a name="const"><b>MPI_Type_contiguous </b> <br>
+</a></dd><dd><a name="const">The simplest constructor. Produces a new datatype by making count copies
+of an existing data type.
+<br>
+<br>
+</a></dd><dd><a name="const"><b> MPI_Type_vector <br>
+</b></a></dd><dd><a name="const"><b>MPI_Type_hvector </b><br>
+</a></dd><dd><a name="const">Similar to contiguous, but allows for regular gaps (stride) in the displacements.
+<br> </a></dd><dd><a name="const"> MPI_Type_hvector is identical to MPI _Type_vector except that stride is specified in bytes.
+<br>
+<br>
+</a></dd><dd><a name="const"><b> MPI_Type_indexed <br>
+</b></a></dd><dd><a name="const"><b>MPI_Type_hindexed </b> <br>
+</a></dd><dd><a name="const">An array of displacements of the input data type is provided as the map for
+the new data type.<br>
+</a></dd><dd><a name="const"> MPI_Type_hindexed is identical to MPI_Type_indexed
+except that offsets are specified in bytes.
+<br>
+<br>
+</a></dd><dd><a name="const"><b>MPI_Type_struct </b> <br>
+</a></dd><dd><a name="const">The most general of all derived datatypes. The new data type is formed according to<br></a></dd><dd><a name="const"> completely defined map of the component data types.
+<br>
+
+</a><p>
+<a name="alloc">
+</a></p><h3><a name="alloc">4.2.2  Allocate the datatype </a></h3>
+<p>
+<a name="alloc">A constructed datatype must be committed to the system before it can be 
+used in a communication.
+The constructed datatype is committed with a call to 
+MPI_TYPE_COMMIT.  (There is no need to commit basic datatypes; they
+are pre-committed.)
+It can then be used in any number of communications.
+The syntax of MPI_TYPE_COMMIT is:
+</a></p><ul>
+<li><a name="alloc">C
+</a><pre><a name="alloc">int MPI_Type_commit (MPI_datatype *datatype)
+</a></pre>
+</li><li><a name="alloc">FORTRAN
+</a><pre><a name="alloc">MPI_TYPE_COMMIT (DATATYPE, MPIERROR)
+  INTEGER DATATYPE, MPIERROR
+</a></pre>
+</li></ul>
+<p></p>
+<a name="use">
+</a><h3><a name="use">4.2.3  Use the datatype
+</a></h3>
+<p>
+<a name="use">Derived datatypes can be used in all send and receive operations.
+You simply use the handle to the derived datatype as an argument in a 
+send or receive operation instead of a basic datatype argument.
+Here is a sample C code segment:
+</a></p><pre><dd><a name="use">MPI_Type_vector(count, blocklength, stride, oldtype, &amp;newtype);
+</a></dd><dd><a name="use">MPI_Type_commit (&amp;newtype);
+</a></dd><dd><a name="use">MPI_Send(buffer, 1, newtype, dest, tag, comm);
+</a></dd></pre>
+<p></p>
+
+<!--
+<P>
+What happens if you are using a derived datatype and the <EM>count</EM>
+in MPI_SEND is greater than one?
+Happily, it's just as you would expect: MPI_SEND acts as if it
+were passed a new datatype that is <EM>count</EM> concatenations of 
+<EM>datatype</EM>.
+</P>
+--->
+
+<p>
+<a name="dealloc">
+</a></p><h3><a name="dealloc">4.2.4  Deallocate the datatype
+</a></h3>
+<p>
+<a name="dealloc">Finally, there is a complementary routine to MPI_TYPE_COMMIT, namely,
+MPI_TYPE_FREE, which marks a datatype for deallocation.
+The syntax of MPI_TYPE_FREE is:
+</a></p><ul>
+<li><a name="dealloc">C
+</a><pre><a name="dealloc">int MPI_Type_free (MPI_datatype *datatype)
+</a></pre>
+</li><li><a name="dealloc">FORTRAN
+</a><pre><a name="dealloc">MPI_TYPE_FREE (DATATYPE, MPIERROR)
+  INTEGER DATATYPE, MPIERROR
+</a></pre>
+</li></ul>
+<p></p>
+
+<!----
+<P>
+Any datatypes derived from a freed datatype are unaffected when it is freed, as are any
+communications that are using the freed datatype at the time of the freeing.
+<EM>datatype</EM> is both an input and output argument.
+It is returned as MPI_DATATYPE_NULL.
+</P>
+
+-->
+<!-- ----------------------------------------------------------------- -->
+<hr>
+<a name="deriveddata">
+<h3>5. DERIVED DATATYPES </h3> </a>
+
+<p>
+This section presents the MPI functions for constructing derived datatypes.
+<br>
+</p><p>
+
+<a name="contiguous"> <h3>5.1 CONTIGUOUS </h3> </a>
+
+</p><ul>
+<pre>  <b>  C       : MPI_Type_contiguous </b>(count, oldtype, *newtype)
+  <b>  Fortran : MPI_TYPE_CONTIGUOUS </b>(count, oldtype, newtype,ierr)
+</pre>
+</ul>
+
+<ul>IN <b>count</b> Number of blocks to be added<br>
+IN <b>oldtype</b> Datatype of each element<br>
+OUT <b>newtype</b> Handle (pointer) for new derived type<br>
+OUT <b>ierr</b> reporting the success or failure<br><br>
+
+MPI_TYPE_CONTIGOUS constructs a typemap consisting of the replication of a datatype into contiguous locations. <i> newtype </i> is the datatype obtained by concatenating <i> count </i>copies of <i> oldtype</i>.
+
+</ul>
+
+<b>Example </b> <br>
+<p>
+
+<img src="content6_archivos/mpi_type_contiguous.gif"><br>
+
+</p><ul>
+  <li><a href="http://static.msi.umn.edu/tutorial/scicomp/general/MPI/deriveddata/contiguous_c.html"> C example </a>
+  </li><li><a href="http://static.msi.umn.edu/tutorial/scicomp/general/MPI/deriveddata/contiguous_fortran.html"> Fortran example </a>
+  </li><li>Sample program output:<br>
+<pre><dd>rank= 0  b= 1.0 2.0 3.0 4.0
+</dd><dd>rank= 1  b= 5.0 6.0 7.0 8.0
+</dd><dd>rank= 2  b= 9.0 10.0 11.0 12.0
+</dd><dd>rank= 3  b= 13.0 14.0 15.0 16.0
+</dd></pre>
+</li></ul>
+<br>
+
+<a name="vector"><h3>5.2 VECTOR &amp; HVECTOR </h3></a>
+
+<ul>
+<pre>  <b>  C       : MPI_Type_vector </b>(count,blocklength,stride,oldtype,*newtype)
+              <b>MPI_Type_hvector </b>(count,blocklength,stride,oldtype,*newtype)
+  <b>  Fortran : MPI_TYPE_VECTOR </b>(count, blocklength, stride, oldtype, newtype, ierr)
+              <b>MPI_TYPE_HECTOR </b>(count, blocklength, stride, oldtype, newtype, ierr)
+</pre>
+</ul>
+
+<ul>IN <b>count</b> Number of blocks to be added<br>
+IN <b>blocklen</b> Number of elements in block<br>
+IN <b>stride</b> Number of elements (NOT bytes) between start of each
+block<br>
+IN <b>oldtype</b> Datatype of each element<br>
+OUT <b>newtype</b> Handle (pointer) for new derived type<br>
+</ul>
+<br>
+The <b> Vector </b> constructor is similar to contiguous, but allows for regular gaps or overlaps (stride) in the displacements.
+<p>
+<b>Hvector</b>: MPI_Type_hvector (in C)  and MPI_TYPE_HVECTOR (in 
+Fortran), respectively, are the same as those for MPI_TYPE_VECTOR given 
+above, except that displacement
+<i>stride</i> is specified in <b>bytes</b> rather than by length.
+</p><p>
+
+<b>Example </b> <br>
+</p><p>
+<img src="content6_archivos/mpi_type_vector.gif">
+<br>
+</p><ul>
+  <li><a href="http://static.msi.umn.edu/tutorial/scicomp/general/MPI/deriveddata/vector_c.html"> C example </a>
+  </li><li><a href="http://static.msi.umn.edu/tutorial/scicomp/general/MPI/deriveddata/vector_fortran.html"> Fortran example </a>
+   </li><li>Sample program output:
+<pre><dd>rank= 0  b= 1.0 5.0 9.0 13.0
+</dd><dd>rank= 1  b= 2.0 6.0 10.0 14.0
+</dd><dd>rank= 2  b= 3.0 7.0 11.0 15.0
+</dd><dd>rank= 3  b= 4.0 8.0 12.0 16.0
+</dd></pre>
+</li></ul>
+
+<br>
+
+<a name="indexed"><h3>5.3 INDEXED &amp; HINDEXED </h3></a>
+
+<ul>
+<pre>  <b>  C       : MPI_Type_indexed </b>(count, blocklens[], offsets[], old_type,*newtype)
+              <b>MPI_Type_hindexed </b>(count, blocklens[], offsets[], old_type, *newtype)
+  <b>  Fortran : MPI_TYPE_INDEXED </b> (count, blocklens(), offsets(), old_type(),newtype, ierr)
+              <b>MPI_TYPE_HINDEXED </b> (count, blocklens(), offsets(), old_type(),newtype, ierr)
+</pre>
+</ul>
+
+
+<ul>IN <b>count</b> Number of blocks to be added<br>
+IN <b>blocklens</b> Number of elements in block -- an array of length count<br>
+IN <b>offsets</b> Displacements (an array of length count) for each block<br>
+IN <b>oldtype</b> Datatype of each element<br>
+OUT <b>newtype</b> Handle (pointer) for new derived type<br>
+</ul>
+
+This constructor replicates a datatype, taking blocks at different 
+offsets. It allows one to specify a noncontiguous data layout where 
+displacements between successive blocks need not be equal.
+<p>
+<b> Hindexed:</b> MPI_Type_hindexed (in c) and MPI_TYPE_HINDEXED (in 
+FORTRAN), respectively, are the same as those for MPI_TYPE_INDEXED given
+ above, except that offsets
+    array is specified in <b>bytes.
+</b></p><p>
+
+<b><b>Example </b> <br>
+</b></p><p>
+<b><img src="content6_archivos/mpi_type_indexed.gif"><br>
+
+
+</b></p><ul>
+<b>  </b><li><b><a href="http://static.msi.umn.edu/tutorial/scicomp/general/MPI/deriveddata/indexed_c.html"> C example </a>
+  </b></li><li><b><a href="http://static.msi.umn.edu/tutorial/scicomp/general/MPI/deriveddata/indexed_fortran.html"> Fortran example </a>
+  </b></li><li><b>Sample program output:<br>
+</b><pre><dd><b>rank= 0  b= 6.0 7.0 8.0 9.0 13.0 14.0
+</b></dd><dd><b>rank= 1  b= 6.0 7.0 8.0 9.0 13.0 14.0
+</b></dd><dd><b>rank= 2  b= 6.0 7.0 8.0 9.0 13.0 14.0
+</b></dd><dd><b>rank= 3  b= 6.0 7.0 8.0 9.0 13.0 14.0
+</b></dd></pre>
+</li></ul>
+<b><br>
+
+<a name="struct"><h3>5.4 STRUCT </h3></a>
+
+</b><ul>
+<pre><b>  <b>  C       : MPI_Type_struct </b>(count, blocklens[], offsets[], old_types[], *newtype)
+    Fortran : MPI_TYPE_STRUCT </b>(count,  blocklens(),  offsets(),  old_type(),  newtype,  ierr)
+ </pre>
+</ul>
+
+<ul>IN <b>count</b> Number of blocks to be added<br>
+IN <b>blocklens</b> Number of elements in block -- an array of length count<br>
+IN <b>offsets</b> Displacements (an array of length count) for each block<br>
+IN <b>oldtype</b> Datatype of each element<br>
+OUT <b>newtype</b> Handle(pointer) for new derived type<br>
+</ul>
+To gather a mix of different datatypes scattered at many locations in
+space into one datatype that can be used for the communication.
+<p>
+<b>Example </b> <br>
+</p><p>
+<img src="content6_archivos/mpi_type_struct.gif"><br>
+
+</p><ul>
+  <li><a href="http://static.msi.umn.edu/tutorial/scicomp/general/MPI/deriveddata/struct_c.html"> C example </a>
+  </li><li><a href="http://static.msi.umn.edu/tutorial/scicomp/general/MPI/deriveddata/struct_fortran.html"> Fortran example </a>
+  </li><li>Sample program output:<br>
+<pre><dd>rank= 0   3.00 -3.00 3.00 0.25 3 1
+</dd><dd>rank= 2   3.00 -3.00 3.00 0.25 3 1
+</dd><dd>rank= 1   3.00 -3.00 3.00 0.25 3 1
+</dd><dd>rank= 3   3.00 -3.00 3.00 0.25 3 1
+</dd></pre>
+</li></ul>
+
+
+<!-- ----------------------------------------------------------------- -->
+<hr>
+
+<p>
+<a name="conclusions">
+<h3>6.  Conclusions
+</h3>
+</a>
+</p><ul>
+<p></p>
+<li>Derived datatypes provide a portable and elegant way of communicating
+non-contiguous or mixed types in a message.
+<p></p>
+</li><li>Derived datatypes should provide an efficient method of sending data
+since the data can be moved from its location from one processor memory to a location
+on a different processor memory without any intermediate buffering. 
+<p></p>
+</li><li>Derived datatypes are datatypes that are built from the basic MPI datatypes.
+<p></p>
+</li><li>Derived datatypes provide a template of the data that is to be sent.  All the 
+data in the datatype is identified by its offset from the base address.  The 
+base address is the address passed to the MPI routine using the
+derived datatype.
+This allows the same MPI datatype to be used for any number of variables of the
+same form.
+<p></p>
+</li><li>MPI provides a number of different routines for creating derived datatypes, each
+aimed at certain types of data, i.e., contiguous data, non-contiguous data, and 
+non-contiguous mixed data.
+<p></p>
+</li><li>Every derived datatype must be committed before it can be used.
+<p></p>
+</li><li>The MPI routine MPI_TYPE_EXTENT is useful for calculating displacements
+as it takes into account any alignment issues.
+
+<center>
+
+<p>
+extent(Typemap) = ub(Typemap) - lb(Typemap) + pad
+</p>
+</center>
+where <i> ub </i> is the upper bound (location of the last byte), <i> lb </i> is the lower bound (the location of the first byte) and <i>pad</i>, a concept used by MPI to require the address of a variable (in bytes) to be a multiple of its length (in bytes).
+
+<p>
+Here is the syntax for the extent routine:
+</p><ul>
+<li>C
+<pre>int MPI_Type_extent(MPI_Datatype datatype, MPI_Aint *extent)
+</pre>
+</li><li>FORTRAN
+<pre>MPI_TYPE_EXTENT(DATATYPE, EXTENT, MPIERROR)
+    INTEGER DATATYPE, EXTENT, MPIERROR
+</pre>
+</li></ul>
+<p></p>
+where
+<ul>
+<li><em>datatype</em> is an input datatype handle
+</li><li><em>extent</em> is an output integer for FORTRAN, or for C, a special integer type
+<em>MPI_Aint</em>, that can hold an arbitrary address
+</li></ul>
+<p>
+</p><p>
+
+
+
+</p></li><li>A received message does not need to fill the entire receive buffer.
+MPI defines two routines to help you handle this situation.
+The MPI_GET_COUNT routine
+returns the number of received elements of the datatype specified in the
+receive call.
+If you want to find out how many basic elements within this datatype were
+received, use the MPI_GET_ELEMENTS routine.
+<p></p>
+
+<ul>
+<li>C
+<pre>int MPI_Get_count(MPI_Status *status,
+                  MPI_Datatype datatype, int *count)
+int MPI_Get_elements(MPI_Status *status,
+                  MPI_Datatype datatype, int *count)
+</pre>
+</li><li>FORTRAN
+<pre>MPI_GET_COUNT(STATUS, DATATYPE, COUNT, MPIERROR)
+MPI_GET_ELEMENTS(STATUS, DATATYPE, COUNT, MPIERROR)
+   INTEGER STATUS(MPI_STATUS_SIZE), DATATYPE, COUNT, MPIERROR
+</pre>
+</li></ul>
+where <em>MPI_Status</em> is an input variable specifying the status of the
+receive operation.
+</li></ul>
+<p>
+
+
+<!----------------------->
+</p><hr>
+<a name="ack"><h3>7. References</h3></a>
+<p>
+</p><p>
+</p><p>
+</p><ul>
+    <li>World Wide Web
+    <ul>
+        <li><a href="http://www.erc.msstate.edu/mpi/">www.erc.msstate.edu/mpi/</a>
+        </li><li><a href="http://www.mcs.anl.gov/mpi/">www.mcs.anl.gov/mpi/</a></li>
+        <li><a href="http://www.mpi-forum.org/">www.mpi-forum.org/</a></li>
+        <li> Message Passing Interface Forum (1995) <br>  <cite>MPI: A Message Passing
+             Interface Standard.  June 12, 1995</cite>. 
+<!----
+
+ Available
+             <a href="http://www.mcs.anl.gov/mpi/mpi-report-1.1/mpi-report.html"
+             target="top"> online</a> or in <a href="http://www.epm.ornl.gov/~walker/mpi/" target="top"> postscript</a>.
+
+-->
+
+
+    </li></ul>
+    </li>
+    <li>Freely Available Implementations
+    <ul>
+        <li><a href="http://www.erc.msstate.edu/mpi/implementations.html">www.erc.mss
+tate.edu/mpi/implementations.html</a>
+        </li>
+    </ul>
+    </li>
+    <li>Tutorials
+    <ul>
+        <li><a href="http://www.msi.umn.edu/sp/tutorials/">www.msi.umn.edu/sp/tutorials/</a>
+        </li>
+        <li><a href="http://www.erc.msstate.edu/mpi/presentations.html">www.erc.mssta
+te.edu/mpi/presentations.html</a>
+        </li>
+    </ul>
+    </li>
+    <li>Books
+    <ul>
+        <li><i>Using MPI</i>, by William Gropp, Ewing Lusk, and Anthony
+        Skjellum</li>
+        <li><i>MPI Annotated Reference Manual</i>, by Marc Snir, <i>et al</i></li>
+        <li><i>Designing and Building Parallel Programs</i>, by Ian Foster</li>
+        <li><i>Parallel Programming with MPI</i>, by Peter Pacheco</li>
+        <li><a href="http://www.redbooks.ibm.com/abstracts/sg245380.html" target="top"> RS/600 0 SP: Practical MPI Programming by Yukiya Aoyama
+           and Jun Nakano. </a>
+    </li></ul>
+    </li>
+    <li>Newsgroup
+    <ul>
+        <li>comp.parallel.mpi</li>
+    </ul>
+    </li>
+</ul>
+
+
+<p>
+
+<!--#include virtual="/includes/footer.html"-->
+</p></dd></body></html>
