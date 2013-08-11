@@ -4,6 +4,18 @@
 		"sistema":"Discreto"
 	},
 	"sistemico": {
+		"sistemas externos": [
+			"publico entrante",
+			"clientes atendidos"
+		],
+		"sistemas internos" : [ 
+			"clientes en estado 1",
+			"clientes en estado 2",
+			"clientes en estado 3",
+			"Sala medica 1",
+			"Sala medica 2",
+			"Sala medica 3"
+		],
 		"rij": [
 			0, 1, 1, 0, 1, 0,
 			1, 0, 1, 0, 1, 0, 
