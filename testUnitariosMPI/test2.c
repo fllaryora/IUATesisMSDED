@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include <stdio.h>
 
+#define MASTER_ID	0
 #define WATCHDOG_DOESNT_BITE_ME(X) (X >= 0)
 
 //TAG is a label of MPI comunication
@@ -9,6 +10,8 @@ typedef enum{
 	SHUTDOWN,               /*when is reached the live-lock condition or
 							the objective of fulfilling certain number 
 							of cycles*/
+	GENERATION_PHASE,		/* the resources only can in*/
+	ADVANCE_PAHSE,			/* the resources only can out*/
 	PING_REPORT,            /*when dT end, all nodes must report your 
 							status*/
 	PONG_REPORT,            /*before send status struct*/
@@ -45,6 +48,8 @@ typedef enum{
 void scheduler(void);
 void genericNode(int myIdNodo);
 
+int localWatchDog(void);
+
 int main(int argc, char **argv){
   int idNodo;
 
@@ -53,7 +58,7 @@ int main(int argc, char **argv){
 
   /* Find out my identity in the default communicator */
   MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
-  if (idNodo == 0) {
+  if (idNodo == MASTER_ID) {
     scheduler();
   } else {
     genericNode(idNodo);
@@ -64,20 +69,26 @@ int main(int argc, char **argv){
 }
 
 void scheduler(void){
-	int myIdNodo = 0;
+	int myIdNodo = MASTER_ID;
 	int nodesAmount, rank;
 	MPI_Status status;
 	int watchdog; /*countdown to the live-lock*/
 	int dT = 0;
-  /* Find out how many processes there are in the default
-     communicator */
-
-  MPI_Comm_size(MPI_COMM_WORLD, &nodesAmount);
-  printf("I've %d nodes in the job\n", nodesAmount);
- }
+	/* Find out how many processes there are in the default communicator */
+	MPI_Comm_size(MPI_COMM_WORLD, &nodesAmount);
+	printf("I've %d nodes in the job\n", nodesAmount);
+	
+}
 
 void genericNode(int myIdNodo)
 {
   printf("Hello from slave\n");
 }
 
+
+int localWatchDog(void){
+	/*Although the root process and receiver processes do different
+	*  jobs, they all call the same MPI_Bcast function.*/
+	
+	MPI_Bcast(buffer,1,MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+}
