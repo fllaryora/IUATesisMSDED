@@ -18,24 +18,145 @@ typedef enum{
 	PONG_REPORT,            /*before send status struct*/
 	RESOURCE_SEND,          /*warns when one node has sent a resource to
 							another*/
-
-	RESOURCE REQUEST,       /*when a combi want to know about the amount
+	RESOURCE_REQUEST,       /*when a combi want to know about the amount
 							of resources containing at a queue.*/
-	RESOURCE RESPONSE,      /*when a queue reply about the amount of 
+	RESOURCE_RESPONSE,      /*when a queue reply about the amount of 
 							your resources.*/
-	RESOURCE DEMAND,        /*when a combi demand queue's resource.*/
-
-	TRANSACTION BEGIN,      /*warns when a queue has sent a resource to 
+	RESOURCE_DEMAND,        /*when a combi demand queue's resource.*/
+	RESOURCE_NO_DEMAND,     /*when a combi tell to queue's i'm do not demand the resource.*/
+	TRANSACTION_BEGIN,      /*warns when a queue has sent a resource to 
 							a combi*/
-	TRANSACTIONCOMMIT,      /*when a combi accept queue's resource.*/
-	TRANSACTION ROLLBACK   /*when a combi refuses queue's resource.*/
+	TRANSACTION_COMMIT,      /*when a combi accept queue's resource.*/
+	TRANSACTION_ROLLBACK   /*when a combi refuses queue's resource.*/
 }TAG;
 
-//struct for queue initialization
-//struct for combi initialization
-//struct for function initialization
-//struct for counter initialization
-//struct for normal initialization
+//nodo generico
+typedef struct{
+	int tipo; //-->enum
+	int idnodo;
+	int recursos;
+	int antecesores[nodesInModel];
+	int sucesor[nodesInModel];
+	float costoFijo;
+	float costoVariable;
+	int multiplicador;
+	int entrada;
+	int salida;
+	int salidaProbabilistica;
+	float probabilidadPorSalida[nodesInModel];
+	int distribucion; //--->enum
+	int constante;
+	int semilla;
+	float minimo;
+	float maximo;
+	float lambda;
+	float moda;
+	float alfa;
+	float beta;
+	float media;
+	float varianza;
+	float desviacionEstandar;
+}Generic;
+
+//initilization structs
+typedef struct{
+	int idnodo;
+	int recursos;
+	int antecesoresCount;
+	int* antecesores; //arreglo
+	int sucesoresCount;
+	int* sucesores;
+	float costoFijo;
+	float costoVariable;
+}Queue;
+			
+typedef struct{
+	int idnodo;
+	int multiplicador;
+	int antecesoresCount;
+	int* antecesores; //arreglo
+	int sucesoresCount;
+	int* sucesores;
+}Counter;
+
+typedef struct{
+	int idnodo;
+	int entrada;
+	int salida;
+	int salidaProbabilistica; //boleano
+	int probabilidadPorSalidasConter;
+	float* probabilidadPorSalidas;
+	int antecesoresCount;
+	int* antecesores; //arreglo
+	int sucesoresCount;
+	int* sucesores;
+}Function;
+
+typedef struct{
+	int idnodo;
+	int salidaProbabilistica;
+	int probabilidadPorSalidasConter;
+	float* probabilidadPorSalidas;
+	int antecesoresCount;
+	int* antecesores; //arreglo
+	int sucesoresCount;
+	int* sucesores;
+}Normal;
+
+typedef struct{
+	int idnodo;
+	int salidaProbabilistica;
+	int probabilidadPorSalidasConter;
+	float* probabilidadPorSalidas;
+	int antecesoresCount;
+	int* antecesores; //arreglo
+	int sucesoresCount;
+	int* sucesores;
+}Combi;
+
+typedef struct{
+	int constante;
+}Deterministica;
+
+typedef struct{
+	int semilla;
+	float minimo;
+	float maximo;
+}Uniforme;
+
+typedef struct{
+	int semilla;
+	float media;
+	float varianza;
+}Gaussiana;
+
+typedef struct{
+	int semilla;
+	float lambda;
+}Exponencial;
+
+typedef struct{
+	int semilla;
+	float minimo;
+	float maximo;
+	float moda;
+}Triangular;
+
+typedef struct{
+	int semilla;
+	float minimo;
+	float maximo;
+	float alfa;
+	float beta;
+}Beta;
+
+typedef struct{
+	int semilla;
+	float minimo;
+	float media;
+	float desviacionEstandar;
+}Lognormal;
+
 
 //struct for queue repot
 //struct for combi repot
@@ -71,9 +192,4 @@ void Raffle(int* drawnNumbers, int stakeholderAccount){
 	drawnNumbers[stakeholderAccount]  = temp;	
 }
 
-int localWatchDog(void){
-	/*Although the root process and receiver processes do different
-	*  jobs, they all call the same MPI_Bcast function.*/
-	
-	MPI_Bcast(buffer,1,MPI_INT, MASTER_ID, MPI_COMM_WORLD);
-}
+
