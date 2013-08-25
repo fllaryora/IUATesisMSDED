@@ -157,12 +157,22 @@ typedef struct{
 	float desviacionEstandar;
 }Lognormal;
 
+typedef struct{
+	Total enTotal;
+	EnDt enElDt;
+}Report;
 
-//struct for queue repot
-//struct for combi repot
-//struct for function repot
-//struct for counter repot
-//struct for normal repot
+typedef union{
+	int productividad;
+	int recursos;
+	int workTasks;
+}Total;
+
+typedef union{
+	int productividad;
+	int recursos;
+	int workTasks;
+}EnDt;
 
 
 //--MAIN---
