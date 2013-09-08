@@ -1,50 +1,55 @@
 {
 	"tgs": {
-		"nombre": "Sistema de prueba",
-		"sistema":"Discreto"
+		"nombreProyecto": "Sistema de prueba",
+		"realidad": "Sistema que hace x cosa de prueba",
+		"tModelo":"Tipo de modelo: Sistema Discreto",
+		"pli": "Plano de analisis: Operacional, conjunto de practicas simples para lograr un objetivo",
+		"ORi": "Objetivo de la realiad sobre el plano de analisis",
+		"OSi": "Objetivo del sistema sobre el plano de analisis",
+		"Od": "Objetivo del diseñador",
+		"Me": "Medio del sistema",
+		"Et": "entropia del sistema",
+		"prpEmer": "Propiedades emergentes",
+		"mot": "Motivación",
+		"prpEmer": "Propiedades emergentes",
+		"recDis": "Recursos del diseñador",
+		"sinYRe": "Sinergía y recursividad",
+		"dT": "delta t, Tiempo y escala",
+		"retro": "Retroalimentación",
+		"IO": "Inputs y Outputs",
+		"din": "Dinamica",
+		"equi": "Equilibrío"
 	},
 	"sistemico": {
 		"sistemas externos": [
-			"publico entrante",
-			"clientes atendidos"
+			"Publico a Atender",
+			"Publico Atendido"
 		],
 		"sistemas internos" : [ 
-			"clientes en estado 1",
-			"clientes en estado 2",
-			"clientes en estado 3",
-			"Sala medica 1",
-			"Sala medica 2",
-			"Sala medica 3"
+			"Puesto Practica A",
+			"Paciente Practica A",
+			"Puesto Practica B",
+			"Paciente Practica B",
+			"Puesto Practica C",
+			"Paciente Practica C",
+			"Puesto Alta D",
+			"Paciente área de Alta D",
+			"Paciente Atendido"
 		],
 		"rij": [
-			0, 1, 1, 0, 1, 0,
-			1, 0, 1, 0, 1, 0, 
-			1, 0, 1, 0, 1, 0,
-			0, 1, 0, 0, 1, 1,
-			0, 1, 0, 1, 1, 0,
-			1, 0, 1, 0, 1, 0 
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0
 		],
 		"ekj": [ 
-			0, 1, 1, 0, 1, 0,
-			1, 0, 0, 1, 1, 0
-		]
-	},
-	"transformacion": {
-		"nodes": [
-			{
-				"idnodo": 1,
-				"followers": [2,3]
-			},
-			{
-				"idnodo": 2,
-				
-				"followers": [2],
-				"proceders":[1]
-			},
-			{
-				"idnodo": 3,
-				"proceders":[1,2]
-			}
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0
 		]
 	}
 }
