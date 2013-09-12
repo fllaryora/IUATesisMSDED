@@ -1,0 +1,55 @@
+{
+	"tgs": {
+		"nombreProyecto": "Sistema de prueba",
+		"realidad": "Sistema que hace x cosa de prueba",
+		"tModelo":"Tipo de modelo: Sistema Discreto",
+		"pli": "Plano de analisis: Operacional, conjunto de practicas simples para lograr un objetivo",
+		"ORi": "Objetivo de la realiad sobre el plano de analisis",
+		"OSi": "Objetivo del sistema sobre el plano de analisis",
+		"Od": "Objetivo del diseñador",
+		"Me": "Medio del sistema",
+		"Et": "entropia del sistema",
+		"prpEmer": "Propiedades emergentes",
+		"mot": "Motivación",
+		"prpEmer": "Propiedades emergentes",
+		"recDis": "Recursos del diseñador",
+		"sinYRe": "Sinergía y recursividad",
+		"dT": "delta t, Tiempo y escala",
+		"retro": "Retroalimentación",
+		"IO": "Inputs y Outputs",
+		"din": "Dinamica",
+		"equi": "Equilibrío"
+	},
+	"sistemico": {
+		"sistemas externos": [
+			"Publico a Atender",
+			"Publico Atendido"
+		],
+		"sistemas internos" : [ 
+			"Puesto Practica A",
+			"Paciente Practica A",
+			"Puesto Practica B",
+			"Paciente Practica B",
+			"Puesto Practica C",
+			"Paciente Practica C",
+			"Puesto Alta D",
+			"Paciente área de Alta D",
+			"Paciente Atendido"
+		],
+		"rij": [
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0
+		],
+		"ekj": [ 
+			0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0
+		]
+	}
+}
