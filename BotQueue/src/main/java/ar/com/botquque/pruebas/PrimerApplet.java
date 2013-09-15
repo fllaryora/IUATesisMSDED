@@ -14,6 +14,7 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	
 	private static final long serialVersionUID = 2L;
 	private List<Nodo> nodos;
+	Flecha ff = new Flecha();
 	
 	private double zoom ;
 	
@@ -28,15 +29,13 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
 		nodos = new ArrayList<Nodo>();
-		//Normal norm = new Normal(35,35, "Soy Normal");
-		//Combi norm2 = new Combi(35+80,35, "Soy Combi");
-		//Funcion foo = new Funcion(35, 90, "Soy funcion");
-		//Cola foo = new Cola(35, 90, "Soy Queue");
-		//Contador foo = new Contador(60,60,"Aah");
 		
-		//nodos.add(norm);
-		//nodos.add(norm2);
-		nodos.add(NodoBuilder.createNodo(NodoBuilder.CONTADOR, 60, 60, "Muy fumado"));
+		Nodo a = NodoBuilder.createNodo(NodoBuilder.CONTADOR, 60, 60, "Muy fumado");
+		Nodo b = NodoBuilder.createNodo(NodoBuilder.FUNCION, 120, 60, "Muy fooo");
+		ff.empieza = a;
+		ff.termina = b;
+		nodos.add(a);
+		nodos.add(b);
 		
 		this.zoom = 1.5;
 		this.mouseApretado = false;
@@ -76,6 +75,8 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 		for(Nodo nodo: nodos){
 			nodo.pintar(g,this.zoom);
 		}
+		ff.pintar(g, zoom);
+		
 	}
 	/** 
 	 * el mouse se clickio
