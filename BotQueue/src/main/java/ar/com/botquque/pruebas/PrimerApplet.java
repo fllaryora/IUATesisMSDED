@@ -7,12 +7,16 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.List;
+import java.util.ArrayList;
 
 public class PrimerApplet extends Applet implements MouseListener, MouseMotionListener, KeyListener {
 	
-	private static final long serialVersionUID = 1L;
-	private Normal norm ;
+	private static final long serialVersionUID = 2L;
+	private List<Nodo> nodos;
+	
 	private double zoom ;
+	
 	private boolean mouseApretado;
 	private boolean controlApretado;
 	private long ultimoClick;
@@ -23,8 +27,12 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
+		nodos = new ArrayList<Nodo>();
+		Normal norm = new Normal(35,35, "Soy Normal");
+		Normal norm2 = new Normal(35+80,35, "Soy Otro");
+		nodos.add(norm);
+		nodos.add(norm2);
 		
-		this.norm = new Normal(35,35, "Soy Normal");
 		this.zoom = 1.5;
 		this.mouseApretado = false;
 		this.controlApretado = false;
@@ -60,26 +68,59 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	 * Se llama para repintar o despues del metodo start
 	 */
 	public void paint(Graphics g){
-		this.norm.pintar(g,this.zoom);
-		
+		for(Nodo nodo: nodos){
+			nodo.pintar(g,this.zoom);
+		}
 	}
 	/** 
 	 * el mouse se clickio
 	 */
 	public void mouseClicked(MouseEvent e) {
 		long clickDeAhora =  e.getWhen();
-		long tolerancia = 600; // latencia maxima para el  dobleClick en milisegundos	
-		if ( clickDeAhora -this.ultimoClick  < tolerancia){//dobleclick
+		long tolerancia = 600; // latencia maxima para el  dobleClick en milisegundos
+		boolean clickIzquierdo = (e.getButton() == MouseEvent.BUTTON1);
+		boolean dobleClick = (clickDeAhora -this.ultimoClick  < tolerancia);
+		
+		if ( dobleClick){
+			//TODO que si coliciona en 2 nodos solo tome el primero
+			if(clickIzquierdo){
+				for(Nodo nodo: nodos){
+					if( nodo.siColiciona( e.getX(), e.getY(), zoom) ){
+						nodo.dobleClick();
+					}
+				}
+			} else {
+				//TODO dobleclick derecho!
+			}
 			
 		} else{ //click simple
-			if(norm.isHit(e, this.zoom)){
-				norm.setColorNormal(Color.RED);
-				//añado a la lista de los señalados
+			if(clickIzquierdo){
+				//TODO que si coliciona en 2 nodos solo tome el primero
+				for(Nodo nodo: nodos){
+					boolean coliciona =  nodo.siColiciona( e.getX(), e.getY(), zoom) ;
+					
+					//seleccion individual
+					if(coliciona && !this.controlApretado){
+						nodo.seleccionar();
+					}
+					
+					//seleccion colectiva
+					if(coliciona && this.controlApretado){
+						if( nodo.estaSeleccionado() ){
+							nodo.deseleccionar();
+						} else {
+							nodo.seleccionar();
+						}
+					}
+					
+					//libero grupal
+					if(!coliciona && !this.controlApretado){
+							nodo.deseleccionar();
+					}
+				}
+			} else {
+				//TODO click derecho!
 			}
-			else{
-				norm.setColorNormal(Color.BLACK);
-			}
-			
 		}
 		this.repaint();	
 		e.consume();
@@ -90,13 +131,26 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	 */
 	public void mousePressed(MouseEvent e) {
 		this.mouseApretado = true;
-		if(norm.isHit(e, this.zoom)){
-			norm.setColorNormal(Color.RED);
-			//añado a la lista de los aggarrados
-			norm.agarrar(e);
+		boolean porMoverSeguro = false;
+		
+		//algun nodo debe moverse?
+		for(Nodo nodo: nodos){
+			if( nodo.siColiciona( e.getX(), e.getY(), zoom) ){
+				nodo.seleccionar();
+				porMoverSeguro = true;
+			} else {
+				if(!this.controlApretado){
+					nodo.deseleccionar();
+				}
+			}
+			
 		}
-		else{
-			norm.setColorNormal(Color.BLACK);
+		if(porMoverSeguro){
+			for(Nodo nodo: nodos){
+				if( nodo.estaSeleccionado() ){
+					nodo.arrastrarPorMouse( e.getX(), e.getY());
+				}
+			}
 		}
 		this.repaint();
 		e.consume();
@@ -108,9 +162,11 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	 */
 	public void mouseReleased(MouseEvent e) {
 		this.mouseApretado = false;
-		//recorro la lista de los aggarrados y los libero
-		norm.setColorNormal(Color.BLACK);
-		norm.soltado();
+		for(Nodo nodo: nodos){
+			if(nodo.estaArrastrado() ){
+				nodo.liberadoPorMouse();
+			}
+		}
 		this.repaint();
 		e.consume();
 	}
@@ -120,8 +176,25 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	 */
 	public void mouseDragged(MouseEvent e) {
 		this.repaint();
-		//recorro la lista de los agarrados y los samarreo
-		norm.arrastrar(e,this.zoom, 0, this.getWidth(), 0 , this.getHeight());
+		boolean porMoverSeguro = true;	
+		
+		//algun nodo choca contra la pared
+		for(Nodo nodo: nodos){
+			if( nodo.estaArrastrado() ){
+				if ( nodo.siColicionaAlMover(e.getX(), e.getY(), zoom , nodos , 0, this.getWidth() , 0, this.getHeight() ) ){
+					porMoverSeguro = false;
+					break;
+				}	
+			}
+		}
+	
+		if(porMoverSeguro){	
+			for(Nodo nodo: nodos){
+				if( nodo.estaArrastrado() || nodo.estaSeleccionado() ){
+					nodo.arrastrarPorMouse( e.getX(), e.getY() );
+				}
+			}
+		}
 		this.repaint();
 		e.consume();
 	}
