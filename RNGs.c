@@ -247,6 +247,23 @@ double RandomBetaInteger(int shapeAlpha ,int shapeBeta){
 }
 
 /*
+ * Generador de Distribucion beta. con minimo y maximo
+ * para alfa y beta entre 0 y uno
+ * */
+double RandomBetaWithMinimunAndMaximun(double shapeAlpha ,double shapeBeta, double minimun ,double maximun  ){
+		return((maximun - minimun) * RandomBeta( shapeAlpha , shapeBeta) + minimun);
+}
+
+/*
+ * Generador de Distribucion beta. con minimo y maximo
+ * para shapeAlpha y shapeBeta entros mayores a uno y menores a 50
+ * */
+double RandomBetaIntegerWithMinimunAndMaximun(int shapeAlpha ,int shapeBeta, double minimun ,double maximun ){
+	return((maximun - minimun) * RandomBetaInteger( shapeAlpha , shapeBeta) + minimun);
+}
+
+
+/*
  * ED : rama ,Simulacion: metodos y aplicaciones
  * Generador de Distribucion beta.
  * para alfa entro mayor a uno y menor a 50
@@ -267,12 +284,19 @@ double RandomGammaInteger(int alpha ,double beta){
 /*
  * http://en.wikipedia.org/wiki/Log-normal_distribution
  * scale = mu = media
- * shape = stddev = sigma cuadrado
+ * shape = stddev = sigma = desviacion estandar
+ * sigma cuadrado es la varianza
  * */
 double RandomLogNormal(double scale, double shape){
 	double Z = RandomGaussian(0.0 , 1.0);
-	double sigma = sqrt(shape);
-	return exp(scale + sigma * Z);
+	return exp(scale + shape * Z);
+}
+
+/*
+ * Generador de Distribucion lognormal. con minimo
+ * */
+double RandomLogNormalWithMinimun(double scale, double shape,double minumun){
+	return RandomLogNormal( scale,  shape) + minumun;
 }
 
 /*

@@ -13,9 +13,12 @@ extern double RandomUniform(void);
 extern double RandomTriangular(double,double,double );
 extern double RandomGaussian(double,double);
 extern double RandomLogNormal(double,double);
+extern double RandomLogNormalWithMinimun(double,double,double);
 extern double RandomExponential(double );
 extern double RandomBeta(double  ,double );
 extern double RandomBetaInteger(int  ,int );
+extern double RandomBetaWithMinimunAndMaximun(double  ,double ,double  ,double );
+extern double RandomBetaIntegerWithMinimunAndMaximun(int  ,int,double  ,double  );
 //extern double RandomGamma(double  ,double );
 extern double RandomGammaInteger(int  ,double );
 
