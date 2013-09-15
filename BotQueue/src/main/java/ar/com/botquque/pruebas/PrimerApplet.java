@@ -28,10 +28,15 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
 		nodos = new ArrayList<Nodo>();
-		Normal norm = new Normal(35,35, "Soy Normal");
-		Normal norm2 = new Normal(35+80,35, "Soy Otro");
-		nodos.add(norm);
-		nodos.add(norm2);
+		//Normal norm = new Normal(35,35, "Soy Normal");
+		//Combi norm2 = new Combi(35+80,35, "Soy Combi");
+		//Funcion foo = new Funcion(35, 90, "Soy funcion");
+		//Cola foo = new Cola(35, 90, "Soy Queue");
+		//Contador foo = new Contador(60,60,"Aah");
+		
+		//nodos.add(norm);
+		//nodos.add(norm2);
+		nodos.add(NodoBuilder.createNodo(NodoBuilder.CONTADOR, 60, 60, "Muy fumado"));
 		
 		this.zoom = 1.5;
 		this.mouseApretado = false;
