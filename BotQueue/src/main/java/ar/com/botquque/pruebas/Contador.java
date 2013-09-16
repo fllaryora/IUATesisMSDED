@@ -2,11 +2,14 @@ package ar.com.botquque.pruebas;
 import java.awt.Font;
 import java.awt.Graphics;
 
-public class Contador extends NodoGenerico{
+public class Contador extends NodoCircularGenerico{
 
-public Contador(int posX, int posY, String mensaje) {
-		
-		super(posX, posY, mensaje, 45, 45);
+	public Contador(int posX, int posY, String mensaje, int orden) {
+		super(posX, posY, mensaje, 45, orden);
+	}
+	
+	public Contador(int posX, int posY, String mensaje) {
+		super(posX, posY, mensaje, 45, 0);
 	}
 
 	@Override
@@ -33,16 +36,5 @@ public Contador(int posX, int posY, String mensaje) {
 		Font fuente;
 		fuente = new Font("Arial", Font.PLAIN, (int)(this.tamanioFuente * zoom) );
 		Mensaje.putLabel(this.mensaje, fuente, this.colorActual , g, this.posX, this.posY + (int)(this.alto * zoom), (int)(this.ancho * zoom));
-	}
-	
-	@Override
-	public boolean siColiciona(int x, int y, double zoom) {
-		int x1 = this.posX +(int)(this.ancho * zoom)/2;
-		int y2 = this.posY +(int)(this.alto * zoom)/2;
-		int r = (int)(this.alto * zoom)/2;
-		int rmouse = (x-x1)*(x-x1)+(y-y2)*(y-y2)-r*r;
-		//eq pinto adentro circulo=  R'ala'2 < (x-x1)ala2 + (y-y2)ala2
-		if(rmouse > 0) return false;
-		return true;
 	}
 }

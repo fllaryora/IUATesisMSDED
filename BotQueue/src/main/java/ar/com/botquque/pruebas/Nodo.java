@@ -1,7 +1,6 @@
 package ar.com.botquque.pruebas;
 
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 public interface Nodo{
@@ -25,9 +24,8 @@ public interface Nodo{
 	public void movidoPorFlechitas(int movX, int movY);
 	public void dobleClick();
 	public void pintar(Graphics g, double zoom);
-	public int getXCentral(double zoom);
-	public int getYCentral(double zoom);
-	//public PuntoDeEnganche getPuntoDeEngancheLibre();
 	
-	
+	public int getXptoEnganche(double zoom, SuperficieDeEnganche pto);
+	public int getYptoEnganche(double zoom, SuperficieDeEnganche pto);
+	public int getOrden(); 
 }

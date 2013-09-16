@@ -4,9 +4,12 @@ import java.awt.Graphics;
 
 public class Normal extends NodoGenerico{
 
+	public Normal(int posX, int posY, String mensaje, int orden) {
+		super(posX, posY, mensaje, 70, 45, orden);
+	}
+	
 	public Normal(int posX, int posY, String mensaje) {
-		
-		super(posX, posY, mensaje, 70, 45);
+		super(posX, posY, mensaje, 70, 45, 0);
 	}
 	
 	@Override

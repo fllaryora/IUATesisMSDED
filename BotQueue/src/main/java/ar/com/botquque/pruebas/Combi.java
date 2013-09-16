@@ -4,11 +4,15 @@ import java.awt.Graphics;
 
 public class Combi extends NodoGenerico{
 
-	public Combi(int posX, int posY, String mensaje) {
+	public Combi(int posX, int posY, String mensaje, int orden) {
 		
-		super(posX, posY, mensaje, 70, 45);
+		super(posX, posY, mensaje, 70, 45, orden);
 	}
 	
+	public Combi(int posX, int posY, String mensaje) {
+		
+		super(posX, posY, mensaje, 70, 45, 0);
+	}
 	@Override
 	public void pintar(Graphics g, double zoom){
 		g.setColor(this.colorActual);

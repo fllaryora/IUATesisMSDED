@@ -1,14 +1,22 @@
 package ar.com.botquque.pruebas;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Flecha {
+	public List<Nodo> nodosFlecha = new ArrayList<Nodo>();
+	
 	public Nodo empieza; //despues tiene que ser el ultimo punto
 	public Nodo termina;
- 
-	public double phi = Math.toRadians(20) ; //un codo
-	public int anchoFlecha = 20;
+	
+	private SuperficieDeEnganche empiezaPto = SuperficieDeEnganche.ESTE;
+	private SuperficieDeEnganche terminaPto = SuperficieDeEnganche.OESTE;
+	
+	private final double phi = Math.toRadians(20) ; //un codo
+	private final int anchoFlecha = 10;
 	
 	public void invertirFlecha(){
 		Nodo aux = this.empieza;
@@ -16,11 +24,17 @@ public class Flecha {
 		this.termina = aux;
 	}
  
+	
 	public void pintar(Graphics g, double zoom){
-		int x1 = this.empieza.getXCentral(zoom);
-		int y1 = this.empieza.getYCentral(zoom);
-		int x2 = this.termina.getXCentral(zoom);
-		int y2 = this.termina.getYCentral(zoom);
+		int x1, x2, y1, y2; 
+		
+			x1 = this.empieza.getXptoEnganche(zoom, empiezaPto);
+			y1 = this.empieza.getYptoEnganche(zoom, empiezaPto);
+		
+			x2 = this.termina.getXptoEnganche(zoom, terminaPto);
+			y2 = this.termina.getYptoEnganche(zoom, terminaPto);
+		
+		g.setColor(Color.BLUE);
 		g.drawLine(x1, y1, x2, y2);
 		pintarCabezaFlecha(g, zoom, x1, y1, x2, y2);
 	}

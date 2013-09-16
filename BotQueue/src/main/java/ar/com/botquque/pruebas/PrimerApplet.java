@@ -10,6 +10,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.List;
 import java.util.ArrayList;
 
+
 public class PrimerApplet extends Applet implements MouseListener, MouseMotionListener, KeyListener {
 	
 	private static final long serialVersionUID = 2L;
@@ -17,10 +18,15 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	Flecha ff = new Flecha();
 	
 	private double zoom ;
-	
-	private boolean mouseApretado;
 	private boolean controlApretado;
 	private long ultimoClick;
+	
+	//dimensiones del podio de los nodos
+	private int xPodioMin = 0;
+	private int xPodioMax = this.getWidth();
+	private int yPodioMin = 0;
+	private int yPodioMax = this.getHeight();
+	
 	/**
 	 * Se llama despues de que se procesa el tag html
 	 */
@@ -28,17 +34,23 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.addKeyListener(this);
+		//no se puede escribir sobre algo que no tiene foco.
+		this.setFocusable(true);
+		this.requestFocusInWindow();
+		
 		nodos = new ArrayList<Nodo>();
 		
-		Nodo a = NodoBuilder.createNodo(NodoBuilder.CONTADOR, 60, 60, "Muy fumado");
-		Nodo b = NodoBuilder.createNodo(NodoBuilder.FUNCION, 120, 60, "Muy fooo");
+		Nodo a = NodoBuilder.createNodo(NodoBuilder.CONTADOR, 60, 60, "Contador");
+		Nodo b = NodoBuilder.createNodo(NodoBuilder.NORMAL, 180, 60, "Normal");
 		ff.empieza = a;
 		ff.termina = b;
 		nodos.add(a);
 		nodos.add(b);
 		
-		this.zoom = 1.5;
-		this.mouseApretado = false;
+		nodos.add( NodoBuilder.createNodo(NodoBuilder.COLA, 60, 180, "Cola") );
+		nodos.add( NodoBuilder.createNodo(NodoBuilder.FUNCION, 60, 180+60, "Funcion") );
+		nodos.add( NodoBuilder.createNodo(NodoBuilder.COMBI, 180, 180, "Combi") );
+		this.zoom = 1.0;
 		this.controlApretado = false;
 		this.ultimoClick= 0; 
 	}
@@ -69,142 +81,239 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	}
 	
 	/**
-	 * Se llama para repintar o despues del metodo start
+	 * Se llama para repintar o despues del metodo start, o la mierda del resizear que me hacia bosta!!!!
 	 */
 	public void paint(Graphics g){
+		this.xPodioMin = 0;
+		this.xPodioMax = this.getWidth();
+		this.yPodioMin = 0;
+		this.yPodioMax = this.getHeight();
+		
+		
 		for(Nodo nodo: nodos){
 			nodo.pintar(g,this.zoom);
 		}
 		ff.pintar(g, zoom);
 		
 	}
-	/** 
-	 * el mouse se clickio
-	 */
-	public void mouseClicked(MouseEvent e) {
-		long clickDeAhora =  e.getWhen();
-		long tolerancia = 600; // latencia maxima para el  dobleClick en milisegundos
-		boolean clickIzquierdo = (e.getButton() == MouseEvent.BUTTON1);
-		boolean dobleClick = (clickDeAhora -this.ultimoClick  < tolerancia);
-		
-		if ( dobleClick){
-			//TODO que si coliciona en 2 nodos solo tome el primero
-			if(clickIzquierdo){
+	
+//************************************ movimientos************************
+	/**
+	 * Comportamiento de seleccionador común de iconos:
+	 * -Cuando el usuario hace click afuera (sin colicionar con ningun icono), sin el ctrl apretado:
+	 * se deseleccionan todos los iconos de haber alguno seleccionado.
+	 * -Cuando el usuario hace click afuera (sin colicionar con ningun icono), con el ctrl apretado:
+	 * se hace como si nada hubiera pasado.
+	 * -Cuando el usuario hace click sobre unicono, con el ctrl apretado:
+	 * Se agrega o se quita de la lista de iconos seleccionados.
+	 * -Cuando el usuario hace click sobre unicono, sin el ctrl apretado:
+	 * Se quita de la lista todos los iconos y solo se pone este.
+	 * El problema es que si el usuario mueve el mouse antes de soltar el click significa que
+	 *  lo que en realidad queria, hera mover los iconos seleccionados en masa.
+	 *  Para eso esta el resolvedorDeConflicto
+	 * **/
+	private final int APAGADO = 0;
+	private final int PRENDIDO = 1;
+	private final int CALIENTE = 2;
+	private int resolvedorDeConflicto = APAGADO;
+	private void click(MouseEvent e){
+
+		boolean clickEnLaNada = true;
+		for(Nodo nodo: nodos){
+			boolean coliciona =  nodo.siColiciona( e.getX(), e.getY(), zoom) ;
+			clickEnLaNada &= !coliciona;
+			if(coliciona) break;
+		}
+		if(clickEnLaNada){ 
+			if(!this.controlApretado){
 				for(Nodo nodo: nodos){
-					if( nodo.siColiciona( e.getX(), e.getY(), zoom) ){
-						nodo.dobleClick();
-					}
+					nodo.deseleccionar();
 				}
-			} else {
-				//TODO dobleclick derecho!
 			}
-			
-		} else{ //click simple
-			if(clickIzquierdo){
-				//TODO que si coliciona en 2 nodos solo tome el primero
-				for(Nodo nodo: nodos){
-					boolean coliciona =  nodo.siColiciona( e.getX(), e.getY(), zoom) ;
-					
-					//seleccion individual
-					if(coliciona && !this.controlApretado){
+			return;
+		}
+		if(this.controlApretado){
+			for(Nodo nodo: nodos){
+				if( nodo.siColiciona( e.getX(), e.getY(), zoom) ){
+					if( nodo.estaSeleccionado() ){
+						nodo.deseleccionar();
+					} else {
 						nodo.seleccionar();
 					}
-					
-					//seleccion colectiva
-					if(coliciona && this.controlApretado){
-						if( nodo.estaSeleccionado() ){
-							nodo.deseleccionar();
-						} else {
-							nodo.seleccionar();
-						}
-					}
-					
-					//libero grupal
-					if(!coliciona && !this.controlApretado){
-							nodo.deseleccionar();
-					}
+					break;
 				}
-			} else {
-				//TODO click derecho!
+			}
+		} else {
+			// se pone heavy
+			resolvedorDeConflicto = PRENDIDO;
+			for(Nodo nodo: nodos){
+				if( nodo.siColiciona( e.getX(), e.getY(), zoom) ){
+					nodo.seleccionar();
+					break;
+				}
 			}
 		}
-		this.repaint();	
-		e.consume();
 	}
 
+	private void dobleClick(MouseEvent e){
+		//TODO que si coliciona en 2 nodos solo tome el primero
+		for(Nodo nodo: nodos){
+			if( nodo.siColiciona( e.getX(), e.getY(), zoom) ){
+				nodo.dobleClick();
+				break;
+			}
+		}
+	}
+	
+	private void clickDerecho(MouseEvent e){
+		//TODO click derecho!
+		return;
+	}
+	
 	/** 
 	 * el mouse se apreto sin soltar
 	 */
 	public void mousePressed(MouseEvent e) {
-		this.mouseApretado = true;
-		boolean porMoverSeguro = false;
-		
-		//algun nodo debe moverse?
-		for(Nodo nodo: nodos){
-			if( nodo.siColiciona( e.getX(), e.getY(), zoom) ){
-				nodo.seleccionar();
-				porMoverSeguro = true;
+		long clickDeAhora =  e.getWhen();
+		long tolerancia = 600; // latencia maxima para el  dobleClick en milisegundos
+		boolean clickIzquierdo = (e.getButton() == MouseEvent.BUTTON1);
+		boolean dobleClick = (clickDeAhora -this.ultimoClick  < tolerancia);
+		if ( dobleClick ){
+			
+			if(clickIzquierdo){
+				this.dobleClick(e);
 			} else {
-				if(!this.controlApretado){
-					nodo.deseleccionar();
-				}
+				//TODO dobleclick derecho!
 			}
 			
-		}
-		if(porMoverSeguro){
-			for(Nodo nodo: nodos){
-				if( nodo.estaSeleccionado() ){
-					nodo.arrastrarPorMouse( e.getX(), e.getY());
-				}
+		} else { //click simple
+			if(clickIzquierdo){
+				this.click(e);
+			} else {
+				this.clickDerecho(e);
 			}
 		}
 		this.repaint();
 		e.consume();
-		
 	}
 
-	/** 
-	 * el mouse se acaba de soltar
-	 */
-	public void mouseReleased(MouseEvent e) {
-		this.mouseApretado = false;
-		for(Nodo nodo: nodos){
-			if(nodo.estaArrastrado() ){
-				nodo.liberadoPorMouse();
-			}
-		}
-		this.repaint();
-		e.consume();
-	}
-	
 	/**
 	 *  el mouse se mueve apretando
 	 */
 	public void mouseDragged(MouseEvent e) {
-		this.repaint();
-		boolean porMoverSeguro = true;	
-		
+		// parte nueva
+		if(resolvedorDeConflicto == PRENDIDO){
+			resolvedorDeConflicto = CALIENTE;
+		}
+		//fin parte nueva
+		boolean clickIzquierdo = (e.getModifiersEx() == (MouseEvent.BUTTON1_DOWN_MASK & ~MouseEvent.BUTTON2_DOWN_MASK));
+		if(clickIzquierdo){
+			boolean noChocaConAlgo = true;	
+			
+			for(Nodo nodo: nodos){
+				if( nodo.estaSeleccionado() ){
+					if( nodo.siColicionaAlMover(e.getX(), e.getY(), this.zoom,
+								nodos, this.xPodioMin, this.xPodioMax, this.yPodioMin, this.yPodioMax ) ){
+						
+						noChocaConAlgo = false;
+					}
+				}
+			}
+			
+			if(noChocaConAlgo){	
+				for(Nodo nodo: nodos){
+					if( nodo.estaSeleccionado() ){
+						nodo.arrastrarPorMouse( e.getX(), e.getY() );
+					}
+				}
+			}
+			this.repaint();
+			e.consume();
+		}
+	}
+	
+	
+	/** 
+	 * el mouse se acaba de soltar
+	 */
+	public void mouseReleased(MouseEvent e) {
+		boolean clickIzquierdo = (e.getButton() == MouseEvent.BUTTON1);
+		if(clickIzquierdo){
+			for(Nodo nodo: nodos){
+				if(nodo.estaArrastrado() ){
+					nodo.liberadoPorMouse();
+				}
+			}
+			
+			if(resolvedorDeConflicto == PRENDIDO){
+				for(Nodo nodo: nodos){
+					nodo.deseleccionar();
+				}
+				for(Nodo nodo: nodos){
+					if( nodo.siColiciona( e.getX(), e.getY(), zoom) ){
+						nodo.seleccionar();
+						break;
+					}
+				}
+			}
+			resolvedorDeConflicto = APAGADO;
+			this.repaint();
+			e.consume();
+		}
+	}
+	
+	public void keyTyped(KeyEvent e) {
+		this.controlApretado = e.isControlDown();
+		e.consume();
+	}
+	
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_DOWN){
+			mouevoFlechas( 0, 1);
+		} 
+		if(e.getKeyCode() == KeyEvent.VK_UP){
+			mouevoFlechas( 0, -1);
+		}
+		if(e.getKeyCode() == KeyEvent.VK_LEFT){
+			mouevoFlechas( -1, 0);
+		}
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			mouevoFlechas( 1, 0);
+		}
+		//System.out.println("Presed "+ e.paramString());
+		this.controlApretado = e.isControlDown();
+		e.consume();
+	}
+	
+	private void mouevoFlechas(int horizontal, int vertical){
+		boolean noChocaConAlgo = true;	
 		//algun nodo choca contra la pared
 		for(Nodo nodo: nodos){
-			if( nodo.estaArrastrado() ){
-				if ( nodo.siColicionaAlMover(e.getX(), e.getY(), zoom , nodos , 0, this.getWidth() , 0, this.getHeight() ) ){
-					porMoverSeguro = false;
-					break;
-				}	
+			if( nodo.estaSeleccionado() ){
+				if( nodo.siColicionaPorFlechitas(horizontal, vertical, this.zoom,
+							nodos, this.xPodioMin, this.xPodioMax, this.yPodioMin, this.yPodioMax) ){
+					noChocaConAlgo = false;
+				}
 			}
 		}
-	
-		if(porMoverSeguro){	
+		System.out.println(" no Choca "+ (noChocaConAlgo?"yes":"no" ));
+		if(noChocaConAlgo){	
 			for(Nodo nodo: nodos){
-				if( nodo.estaArrastrado() || nodo.estaSeleccionado() ){
-					nodo.arrastrarPorMouse( e.getX(), e.getY() );
+				if( nodo.estaSeleccionado() ){
+					nodo.movidoPorFlechitas(horizontal, vertical);
 				}
 			}
 		}
 		this.repaint();
-		e.consume();
 	}
 	
+	public void keyReleased(KeyEvent e) {
+		this.controlApretado = e.isControlDown();
+		e.consume();
+		
+	}
+	
+	//*******************Eventos que no uso pero quer debo implementar+++++++++++
 	/**
 	 * El mouse entro en el area del applet
 	 */
@@ -227,23 +336,10 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	public void mouseMoved(MouseEvent e) {
 		e.consume();
 	}
-
-	
-	public void keyTyped(KeyEvent e) {
-		System.out.println("bbbbbbbbbbbb");
+	/** 
+	 * el mouse se pulso y solto en el lugar "rapido".
+	 */
+	public void mouseClicked(MouseEvent e) {
 		e.consume();
-		
-	}
-	
-	public void keyPressed(KeyEvent e) {
-		System.out.println("AAAAAAAAAAAAAa");
-		e.consume();
-		
-	}
-	
-	public void keyReleased(KeyEvent e) {
-		System.out.println("ccccccccccc");
-		e.consume();
-		
-	}
+	}	
 }

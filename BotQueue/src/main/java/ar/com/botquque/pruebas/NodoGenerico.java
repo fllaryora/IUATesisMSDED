@@ -2,7 +2,6 @@ package ar.com.botquque.pruebas;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
 import java.util.List;
 /**
  * Define un Un cubo donde habra un simbolo y debajo tendra un mensaje
@@ -11,7 +10,7 @@ import java.util.List;
  * @author redes3
  *
  */
-public class NodoGenerico implements Nodo{
+public class NodoGenerico implements Nodo, Comparable<Nodo>{
 	//van a ser usadas por subclases
 	protected int posX;
 	protected int posY;
@@ -21,6 +20,7 @@ public class NodoGenerico implements Nodo{
 	protected final int tamanioFuente;
 	protected Color colorActual;
 	
+	protected final int orden;
 	//auxiliares para eventos
 	private boolean esSeleccionado;
 	//diferencia entre el puntero y la selección
@@ -36,12 +36,13 @@ public class NodoGenerico implements Nodo{
 	 * @param ancho del cubo
 	 * @param alto del cubo
 	 */
-	public NodoGenerico(int posX, int posY, String mensaje, int ancho, int alto) {
+	public NodoGenerico(int posX, int posY, String mensaje, int ancho, int alto, int orden) {
 		this.posX = posX;
 		this.posY = posY;
 		this.mensaje = mensaje;
 		this.ancho = ancho;
 		this.alto = alto;
+		this.orden = orden;
 		this.colorActual = Color.BLACK;
 		this.esArrastrado = false;
 		this.tamanioFuente = 12;
@@ -77,12 +78,19 @@ public class NodoGenerico implements Nodo{
 		} else{
 			int nuevoX = x - this.diferenciaX; 
 			int nuevoY = y - this.diferenciaY;
+			if( nuevoX < desdeX){
+				return true;
+				}
+			if( nuevoY < desdeY){
+				return true;
+			}
 			
-			if( nuevoX < desdeX) return true;
-			if( nuevoY < desdeY) return true;
-			
-			if( nuevoX + (int)(this.ancho * zoom) > hastaX) return true;
-			if( nuevoY +(int)(this.alto * zoom) > hastaY) return true;
+			if( nuevoX + (int)(this.ancho * zoom) > hastaX){
+				return true;
+			}
+			if( nuevoY + (int)(this.alto * zoom) > hastaY){
+				return true;	
+			}
 			///TODO
 			//recibe lista de nodos que no se mueve
 			//si toco algo no muevo?
@@ -106,8 +114,8 @@ public class NodoGenerico implements Nodo{
 	}
 
 	public void movidoPorFlechitas(int movX, int movY) {
-			this.posX = movX + this.diferenciaX;
-			this.posY = movY + this.diferenciaY;
+			this.posX += movX;
+			this.posY += movY;
 			return;	
 	}
 	
@@ -147,16 +155,44 @@ public class NodoGenerico implements Nodo{
 	public boolean estaArrastrado() {
 		return this.esArrastrado;
 	}
-
-	public int getXCentral(double zoom) {
-		return this.posX + (int)(this.ancho * zoom)/2;
-
-	}
-
-	public int getYCentral(double zoom) {
-		return this.posY + (int)(this.alto * zoom)/2;
+	
+	public int getXptoEnganche(double zoom, SuperficieDeEnganche pto){
+		switch(pto){
+			case NOR_OESTE: return this.posX;
+			case NORTE: return this.posX + (int)(this.ancho * zoom)/2;
+			case NOR_ESTE: return this.posX + (int)(this.ancho * zoom);
+			case ESTE : return this.posX + (int)(this.ancho * zoom);
+			case SUD_ESTE: return this.posX + (int)(this.ancho * zoom);
+			case SUR: return this.posX + (int)(this.ancho * zoom)/2;
+			case SUD_OESTE: return this.posX;
+			case OESTE: return this.posX;
+			case CENTRO:
+			default: return this.posX + (int)(this.ancho * zoom)/2;
+		}
 	}
 	
-	
+	public int getYptoEnganche(double zoom, SuperficieDeEnganche pto){
+		switch(pto){
+			case NOR_OESTE: return this.posY;
+			case NORTE: return this.posY;
+			case NOR_ESTE: return this.posY;
+			case ESTE : return this.posY + (int)(this.alto * zoom)/2;
+			case SUD_ESTE: return this.posY + (int)(this.alto * zoom);
+			case SUR: return this.posY + (int)(this.alto * zoom);
+			case SUD_OESTE: return this.posY + (int)(this.alto * zoom);
+			case OESTE: return this.posY + (int)(this.alto * zoom)/2;
+			case CENTRO:
+			default: return this.posY + (int)(this.alto * zoom)/2;
+		}
+	}
+
+	public int compareTo(Nodo laOtraInstancia) {
+		// TODO Auto-generated method stub
+		return this.orden - laOtraInstancia.getOrden();
+	}
+
+	public int getOrden(){
+		return this.orden;
+	}
 	
 }

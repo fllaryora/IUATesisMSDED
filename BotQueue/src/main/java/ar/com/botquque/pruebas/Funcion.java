@@ -1,11 +1,14 @@
 package ar.com.botquque.pruebas;
 import java.awt.Font;
 import java.awt.Graphics;
-public class Funcion extends NodoGenerico{
+public class Funcion extends NodoCircularGenerico{
 
-public Funcion(int posX, int posY, String mensaje) {
-		
-		super(posX, posY, mensaje, 45, 45);
+	public Funcion(int posX, int posY, String mensaje, int orden) {
+		super(posX, posY, mensaje, 45, orden);
+	}
+
+	public Funcion(int posX, int posY, String mensaje) {
+		super(posX, posY, mensaje, 45, 0);
 	}
 
 	@Override
@@ -17,14 +20,4 @@ public Funcion(int posX, int posY, String mensaje) {
 		Mensaje.putLabel(this.mensaje, fuente, this.colorActual , g, this.posX, this.posY + (int)(this.alto * zoom), (int)(this.ancho * zoom));
 	}
 	
-	@Override
-	public boolean siColiciona(int x, int y, double zoom) {
-		int x1 = this.posX +(int)(this.ancho * zoom)/2;
-		int y2 = this.posY +(int)(this.alto * zoom)/2;
-		int r = (int)(this.alto * zoom)/2;
-		int rmouse = (x-x1)*(x-x1)+(y-y2)*(y-y2)-r*r;
-		//eq pinto adentro circulo=  R'ala'2 < (x-x1)ala2 + (y-y2)ala2
-		if(rmouse > 0) return false;
-		return true;
-	}
 }
