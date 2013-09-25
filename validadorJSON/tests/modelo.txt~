@@ -93,7 +93,7 @@
 				}
 			},
 			{
-				"idnodo": 11,
+				"idnodo": 10,
 				"Antecesor":[3,2],
 				"Sucesor": [12,13],
 				"salidaProbabilistica" : true,
