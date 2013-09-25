@@ -14,7 +14,7 @@
 			{
 				"idnodo": 2,
 				"recursos": 0,
-				"Antecesor":[11,3],
+				"Antecesor":[11,4],
 				"Sucesor": [12],
 				"costoFijo": 12.0,
 				"costoVariable": 2.0
@@ -33,14 +33,14 @@
 			{
 				"idnodo": 4,
 				"multiplicador": 5,
-				"Antecesor":[],
+				"Antecesor":[6],
 				"Sucesor": [12,13]
 			},
 			{
 				"idnodo": 5,
 				"multiplicador": 1,
 				"Antecesor":[11],
-				"Sucesor": [12]
+				"Sucesor": [3]
 				
 			}
 		],
@@ -49,7 +49,7 @@
 				"idnodo": 6,
 				"entrada": 3,
 				"salida": 2,
-				"Antecesor":[],
+				"Antecesor":[10],
 				"Sucesor": [12,13],
 				"salidaProbabilistica" : false,
 				"probabilidadPorSalida" : []
@@ -58,7 +58,7 @@
 				"idnodo": 7,
 				"entrada": 3,
 				"salida": 2,
-				"Antecesor":[],
+				"Antecesor":[9,6],
 				"Sucesor": [12,13],
 				"salidaProbabilistica" : true,
 				"probabilidadPorSalida" : [0.5 , 0.5]
@@ -67,14 +67,14 @@
 		"normales": [
 			{
 				"idnodo": 8,
-				"Antecesor":[],
+				"Antecesor":[6,7],
 				"Sucesor": [12,13],
 				"salidaProbabilistica" : false,
 				"probabilidadPorSalida" : []
 			},
 			{
 				"idnodo": 9,
-				"Antecesor":[],
+				"Antecesor":[10,6],
 				"Sucesor": [12,13],
 				"salidaProbabilistica" : true,
 				"probabilidadPorSalida" : [0.5 , 0.5]
@@ -94,7 +94,7 @@
 			},
 			{
 				"idnodo": 11,
-				"Antecesor":[9],
+				"Antecesor":[3,2],
 				"Sucesor": [12,13],
 				"salidaProbabilistica" : true,
 				"probabilidadPorSalida" : [0.5 , 0.5],
