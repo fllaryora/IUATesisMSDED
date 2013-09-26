@@ -41,7 +41,7 @@ int main(int argc, char **argv){
 				putNodesInMem();
 				//broadcast TAG JSON BUENO
 				jsonResult = GOOD_JSON;
-                MPI_Bcast_JSON(&jsonResult);
+				MPI_Bcast_JSON(&jsonResult);
 				scheduler();
 				/* Shut down MPI */
 				MPI_Finalize();

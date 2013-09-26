@@ -29,7 +29,7 @@ typedef enum{
 	GOOD_JSON,
 	
 	BOOTSTRAP,              /*before send initialization struct*/
-	SHUTDOWN,               /*when is reached the live-lock condition or
+	LIVE_LOCK,               /*when is reached the live-lock condition or
 							the objective of fulfilling certain number 
 							of cycles*/
 							
