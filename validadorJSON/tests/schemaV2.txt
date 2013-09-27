@@ -1,0 +1,146 @@
+{
+    "type":"object",
+    "$schema": "http://json-schema.org/draft-03/schema",
+    "required":true,
+    "properties":{
+        "cycle": {
+            "type":"number",
+            "required":true
+        },
+        "length": {
+            "type":"number",
+            "required":true
+        },
+        "transformation": {
+            "type":"object",
+            "required":true,
+            "properties":{
+                "counters": {
+                    "type":"array",
+                    "required":true,
+                    "items": {
+                        "type":"object",
+                        "required":true,
+                        "properties":{
+                            "idNode": {
+                                "type":"number",
+                                "required":true
+                            },
+                            "quantity": {
+                                "type":"number",
+                                "required":true
+                            },
+                            "preceders": {
+                                "type":"array",
+                                "required":true,
+                                "items": {
+                                    "type":"number",
+                                    "required":true
+                                }
+                            },
+                            "followers": {
+                                "type":"array",
+                                "required":true,
+                                "items": {
+                                    "type":"number",
+                                    "required":false
+                                }
+                            }
+                        }
+                    }
+                },
+                "combis": {
+                    "type":"array",
+                    "required":true,
+					"items": {
+						"type":"object",
+						"required":true,
+						"properties":{
+							"idNode": {
+								  "type":"number",
+								  "required":true
+							 },
+							"preceders": {
+								 "type":"array",
+								 "required":true,
+								 "items": {
+									  "type":"number",
+									  "required":true
+								 }
+							},
+							"followers": {
+								  "type":"array",
+								  "required":true,
+								  "items": {
+										"type":"number",
+										"required":true
+								  }
+							},
+							 "enableProbabilisticBranch": {
+								  "type":"boolean",
+								  "required":true
+							},
+                            "probabilisticBranch": {
+                                "type":"array",
+                                "required":true,
+                                "items": {
+                                    "type":"number",
+                                    "required":false
+                                }
+                            }
+							"delay": {
+								"type": [
+											{
+												"type": "object"
+												"properties": {
+													"distribucion": {"enum": ["uniform"]},
+													"least": {
+														"type":"number",
+														"required":true
+													},
+													"highest": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												}
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribucion": {"enum": ["deterministic"]},
+													"constant": {
+														"type":"number",
+														"required":true
+													}
+												}
+											},
+										],
+								"required":true,
+								"properties":{
+									"distribucion": {
+										"type":"string"
+									},
+									"least": {
+										"type":"number"
+									},
+									"highest": {
+										"type":"number"
+									},
+									"seed": {
+										"type":"number"
+									},
+									"constant": {
+										"type":"number"
+									}
+								}
+							}
+						}
+                }
+            }
+        }
+    }
+}
