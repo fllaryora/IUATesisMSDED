@@ -1,5 +1,24 @@
 Modelador de eventos discretos
 ==============================
+BotQueue is a powerful tool for process manager who is responsable to
+the desing and tracking process.
+The user would  experiment with possible solutions (, i.e. few process's
+blueprint, ) for process design of construction/production and then
+choose the solution that best suits in cost, production and time
+required. Different design solutions may involve different working
+sequences and mixtures of resources, which materialize in responses
+different system in time, cost and production.
+
+
+BotQueue es una poderosa herramienta para el gerente de procesos quien es
+el responsable del diseño de los procesos de construcción/producción.
+El usuario experimentaría con sus posibles soluciónes de diseño del 
+proceso de la operación de construcción/producción y escogería la 
+solución que mejor se en adapte a costo, producción y tiempo requerido. 
+Diferentes soluciones de diseño pueden implicar diferentes secuencias de
+trabajo y  mezclas de recursos, que se materializan en respuestas del
+sistema diferentes en tiempo, costo y producción.
+
 
 Se describen los códigos
 

@@ -23,7 +23,8 @@ typedef struct {
 //EJECUTADOS POR EL MASTER
 #define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
 #define SendCombisToRaffler(X,Y)	(void)0
-
+#define SendLiveLockToRaffler()	(void)0
+#define SendLiveLockToRaffler()	(void)0
 
 //EJECUTADOS POR EL RAFFLER
 #define ProbeCombiForRaffler(X)	(void)0
@@ -133,7 +134,8 @@ typedef struct {
 
 // FUNCIONES del MASTER
 #define SendCombisToRaffler(X,Y)	MPI_Send( X , Y , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD)
-
+#define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD)
+#define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
 #endif
 
 #endif /* our mpi*/

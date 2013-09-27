@@ -28,6 +28,9 @@ void raffler(){
 	combiIdsAmount--;
 	combiIds++;
 	
+	for(int i = 0; i < combiIdsAmount ; i++){ printf("%d ",i);}
+	printf("\n");
+	
 	do {
 		
 		//http://mpitutorial.com/dynamic-receiving-with-mpi-probe-and-mpi-status/
