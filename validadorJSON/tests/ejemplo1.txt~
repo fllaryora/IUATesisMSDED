@@ -36,10 +36,11 @@
 				"enableProbabilisticBranch" : true,
 				"probabilisticBranch" : [0.5 , 0.5],
 				"delay" : {
-					"distribucion": "uniform",
+					"distribution": "uniform",
 					"least" : 2,
 					"highest" : 8,
-					"seed": 666
+					"seed": 666,
+					"constant" : 6
 				}
 			}
 		]

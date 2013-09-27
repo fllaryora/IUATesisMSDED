@@ -30,6 +30,12 @@
 #define STREQ(A, B) (A && B ? strcmp(A, B) == 0 : 0)
 
 int validateJsonImput(const char *filename, char *error);
+int getArrayId(const JSON_Array* array, int** idPickUpteds, int* amount,char* subKey);
+
+/*int* idQueueNodes;
+int* idQueueFollowsNodes;
+int idQueueNodesAmount = rockNrollNENE2( array, &idQueueNodes , "idnodo");
+int idQueueNodesFollowsAmount = rockNrollNENE2( array, &idQueueFollowsNodes , "Sucesor");*/
 
 int main() {
 
@@ -93,7 +99,9 @@ int validateJsonImput(const char *filename, char *error) {
 	    {
 		object2 = json_array_get_object(array, k);
 		if (idComparar == json_object_dotget_number(object2,"idnodo")){
-		     sprintf(error,"ERROR: La COLA %.0f está repetida en la lista de COLAS",json_object_dotget_number(objectInArray,"idnodo"));
+		     sprintf(error,"ERROR: La COLA %.0f está repetida en la lista de COLAS"
+,
+			json_object_dotget_number(objectInArray,"idnodo"));
 		     return 0;
 		}
 	    }
@@ -826,4 +834,6 @@ int validateJsonImput(const char *filename, char *error) {
     json_value_free(root_value);
     return 1;
 }
+
+
 

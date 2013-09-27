@@ -87,13 +87,15 @@
                                     "type":"number",
                                     "required":false
                                 }
-                            }
+                            },
 							"delay": {
 								"type": [
 											{
-												"type": "object"
+												"type": "object",
 												"properties": {
-													"distribucion": {"enum": ["uniform"]},
+													"distribution": {
+														"enum": [ "uniform","u" ]
+													},
 													"least": {
 														"type":"number",
 														"required":true
@@ -106,23 +108,27 @@
 														"type":"number",
 														"required":true
 													}
-												}
+												},
+												"additionalProperties": false
 											},
 											{
 												"type": "object",
 												"properties": {
-													"distribucion": {"enum": ["deterministic"]},
+													"distribution": {
+														"enum": [ "deterministic","d" ]
+													},
 													"constant": {
 														"type":"number",
 														"required":true
 													}
-												}
-											},
+												},
+												"additionalProperties": false
+											}
 										],
 								"required":true,
 								"properties":{
-									"distribucion": {
-										"type":"string"
+									"distribution": {
+										"enum": [ "uniform","deterministic" ] 
 									},
 									"least": {
 										"type":"number"
@@ -139,6 +145,7 @@
 								}
 							}
 						}
+					}
                 }
             }
         }
