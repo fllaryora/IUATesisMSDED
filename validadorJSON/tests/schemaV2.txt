@@ -94,7 +94,7 @@
 												"type": "object",
 												"properties": {
 													"distribution": {
-														"enum": [ "uniform","u" ]
+														"enum": [ "uniform" ]
 													},
 													"least": {
 														"type":"number",
@@ -115,7 +115,7 @@
 												"type": "object",
 												"properties": {
 													"distribution": {
-														"enum": [ "deterministic","d" ]
+														"enum": [ "deterministic" ]
 													},
 													"constant": {
 														"type":"number",
@@ -123,26 +123,130 @@
 													}
 												},
 												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "normal" ]
+													},
+													"mean": {
+														"type":"number",
+														"required":true
+													},
+													"variance": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "exponential" ]
+													},
+													"lambda": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "triangular" ]
+													},
+													"least": {
+														"type":"number",
+														"required":true
+													},
+													"highest": {
+														"type":"number",
+														"required":true
+													},
+													"mode": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "beta" ]
+													},
+													"minimun": {
+														"type":"number",
+														"required":true
+													},
+													"maximun": {
+														"type":"number",
+														"required":true
+													},
+													"shapeAlpha": {
+														"type":"number",
+														"required":true
+													},
+													"shapeBeta": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "log-normal" ]
+													},
+													"mean": {
+														"type":"number",
+														"required":true
+													},
+													"escale": {
+														"type":"number",
+														"required":true
+													},
+													"shape": {
+														"type":"number",
+														"required":true
+													},
+													"minimun": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
 											}
 										],
-								"required":true,
-								"properties":{
-									"distribution": {
-										"enum": [ "uniform","deterministic" ] 
-									},
-									"least": {
-										"type":"number"
-									},
-									"highest": {
-										"type":"number"
-									},
-									"seed": {
-										"type":"number"
-									},
-									"constant": {
-										"type":"number"
-									}
-								}
+								"required":true
 							}
 						}
 					}

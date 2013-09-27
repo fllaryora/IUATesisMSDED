@@ -108,10 +108,10 @@ int main(int argc, char **argv) {
 		printf("validation: FAIL\n");
 	}
 
-	/*WJECloseDocument(json);
+	WJECloseDocument(json);
 	WJECloseDocument(schema);
 	WJRCloseDocument(readjson);
-	WJRCloseDocument(readschema);*/
+	WJRCloseDocument(readschema);
 	fclose(jsonfile);
 	fclose(schemafile);
 
