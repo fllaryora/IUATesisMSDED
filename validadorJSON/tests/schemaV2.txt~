@@ -304,7 +304,7 @@
 											{
 												"type": "object",
 												"properties": {
-													"triangular": {
+													"distribution": {
 														"enum": [ "triangular" ]
 													},
 													"least": {
@@ -329,7 +329,7 @@
 											{
 												"type": "object",
 												"properties": {
-													"triangular": {
+													"distribution": {
 														"enum": [ "beta" ]
 													},
 													"minimun": {
@@ -358,7 +358,7 @@
 											{
 												"type": "object",
 												"properties": {
-													"triangular": {
+													"distribution": {
 														"enum": [ "log-normal" ]
 													},
 													"mean": {
@@ -507,7 +507,7 @@
 											{
 												"type": "object",
 												"properties": {
-													"triangular": {
+													"distribution": {
 														"enum": [ "triangular" ]
 													},
 													"least": {
@@ -532,7 +532,7 @@
 											{
 												"type": "object",
 												"properties": {
-													"triangular": {
+													"distribution": {
 														"enum": [ "beta" ]
 													},
 													"minimun": {
@@ -561,7 +561,7 @@
 											{
 												"type": "object",
 												"properties": {
-													"triangular": {
+													"distribution": {
 														"enum": [ "log-normal" ]
 													},
 													"mean": {
@@ -594,7 +594,8 @@
 						"additionalProperties": false
 					}
                 }
-            }
+            },
+			"additionalProperties": false
         }
     },
 	"additionalProperties": false

@@ -23,18 +23,18 @@
                         "required":true,
                         "properties":{
                             "idNode": {
-                                "type":"number",
+                                "type":"integer",
                                 "required":true
                             },
                             "resource": {
-                                "type":"number",
+                                "type":"integer",
                                 "required":true
                             },
                             "preceders": {
                                 "type":"array",
                                 "required":true,
                                 "items": {
-                                    "type":"number",
+                                    "type":"integer",
                                     "required":true
                                 }
                             },
@@ -42,7 +42,7 @@
                                 "type":"array",
                                 "required":true,
                                 "items": {
-                                    "type":"number",
+                                    "type":"integer",
                                     "required":false
                                 }
                             },
@@ -594,7 +594,8 @@
 						"additionalProperties": false
 					}
                 }
-            }
+            },
+			"additionalProperties": false
         }
     },
 	"additionalProperties": false
