@@ -3,12 +3,31 @@ COMPILER=" "
 GCCARGS=" "
 RUNFORESTRUN=" "
 
+
+if [ -e "Engine" ]
+then
+	if [ -f "Engine" ]
+	then
+		echo "rm Engine"
+		rm Engine
+	else
+		echo "no hay Engine"
+	fi
+else
+	echo "no hay Engine"
+fi
+
+
 if [ $# -lt "$MINPARAMS" ]
 then
 	echo
 	echo "This script needs at least $MINPARAMS command-line arguments!"
 	echo "first argument TEST or PRODUCTION"
 	echo "second argument node type or all"
+	echo "./compile.sh TEST SCHEDULER"
+	echo "./compile.sh TEST RAFFLER"
+	echo "./compile.sh TEST PRINTER"
+	echo "./compile.sh TEST GENERIC"
 	echo
 	exit 0
 fi
@@ -37,31 +56,31 @@ then
 	RUNFORESTRUN=" "
 	if [ $2 == "SCHEDULER" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _MOCK_SCHADULER_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _MOCK_SCHADULER_"
 	elif [ $2 == "PRINTER" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _MOCK_PRINTER_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _MOCK_PRINTER_"
 	elif [ $2 == "RAFFLER" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _MOCK_RAFFLER_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _MOCK_RAFFLER_"
 	elif [ $2 == "GENERIC" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _MOCK_NODE_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _MOCK_NODE_"
 	elif [ $2 == "QUEUE" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _QUEUE_NODE_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _QUEUE_NODE_"
 	elif [ $2 == "COMBI" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _COMBI_NODE_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _COMBI_NODE_"
 	elif [ $2 == "NORMAL" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _NORMAL_NODE_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _NORMAL_NODE_"
 	elif [ $2 == "FUNCTION" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _FUNCTION_NODE_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _FUNCTION_NODE_"
 	elif [ $2 == "COUNTER" ]
 	then
-		GCCARGS="-D _MOCK_MPI_ -D _COUNTER_NODE_"
+		GCCARGS="-std=c99 -D _MOCK_MPI_ -D _COUNTER_NODE_"
 	else
 		echo "invalid second param"
 		echo
