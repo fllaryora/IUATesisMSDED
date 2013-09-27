@@ -18,6 +18,7 @@
  
 #include "ourMPI.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include "main.h"
 #include "scheduler.h"
 #include "raffler.h"

@@ -6,7 +6,7 @@
 #include "main.h"
 
 void raffler(){
-	int* combiIds, *currentCombiIds;
+	int* combiIds = NULL, *currentCombiIds = NULL;
 	int combiIdsAmount, currentCombiIdsAmount;
 	MPI_Status infoComm;
 	int currentSource, currentTag;
@@ -27,9 +27,9 @@ void raffler(){
 	}
 	combiIdsAmount--;
 	combiIds++;
+	printf("Orden de los ids original\n");
+	for(int i = 0; i < combiIdsAmount ; i++){ printf("%d ",combiIds[i]);}
 	
-	for(int i = 0; i < combiIdsAmount ; i++){ printf("%d ",i);}
-	printf("\n");
 	
 	do {
 		
@@ -40,24 +40,42 @@ void raffler(){
 		currentTag = infoComm.MPI_TAG;
 		currentSource = infoComm.MPI_SOURCE;
 		GetRafflerOrderCount(&infoComm, &receiverCount);
+		
 		if(receiverCount){bufferReceiver = (int*)malloc(sizeof(int) * receiverCount);}
+		
 		ReciveRafflerOrder( bufferReceiver, receiverCount );
+		
 	
 		if (currentTag == NEW_RAFFLE ) {
+			
 			Raffle( combiIds ,combiIdsAmount );
+			printf("Orden de los ids mesclados\n");
+			for(int i = 0; i < combiIdsAmount ; i++){ printf("%d ",combiIds[i]);}
+			printf("\n");
 			SendRaffleDoneToMaster();
-		} else {
-			if (currentTag == GET_RAFFLE){
-				
-				//cambio nomenclatura
-				currentCombiIds = bufferReceiver;
-				currentCombiIdsAmount = receiverCount;
-				//envio a la cola las prioridades del turno
-				bufferSender = pickUpOnlySelectedIds(currentCombiIdsAmount, currentCombiIds, combiIdsAmount , combiIds);
-				SendRafflePeiorityToQueue(bufferSender, currentCombiIds, currentSource);
-				if(bufferSender)free(bufferSender);
-			}
+		} 
+		
+		if (currentTag == GET_RAFFLE){
+			//cambio nomenclatura
+			
+			currentCombiIds = bufferReceiver;
+			currentCombiIdsAmount = receiverCount;
+			printf("Los id de combis de la cola\n");
+			for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",currentCombiIds[i]);}
+			printf("\n");
+			
+			//envio a la cola las prioridades del turno
+			bufferSender = pickUpOnlySelectedIds(currentCombiIdsAmount, currentCombiIds, combiIdsAmount , combiIds);
+			printf("Lo que se va ha enviar\n");
+			for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",bufferSender[i]);}
+			printf("\n");
+			
+			SendRafflePeiorityToQueue(bufferSender, currentCombiIds, currentSource);	
+			if(bufferSender)free(bufferSender);
+			
+			
 		}
+		
 		if(bufferReceiver)free(bufferReceiver);
 		bufferReceiver = NULL;
 		bufferSender = NULL;
@@ -70,10 +88,11 @@ void raffler(){
 /* toma los id seleccionados de la lista por orden de sorteados, que esten en la lista de combis en la cola que lo demando*/
 int* pickUpOnlySelectedIds(int amountSelected, int* selectedId, int amountDrawnNumbers , int* drawnNumbers){
 	int currentPosition = 0;
-	int currentSelectedId, currentDrawnNumber;
+	int currentSelectedId, currentDrawnNumber;	
+	
 	int* idPickUpted = (int*)malloc(sizeof(int) * amountSelected);
-	for(currentDrawnNumber ; currentDrawnNumber < amountDrawnNumbers;currentDrawnNumber++ ){
-		for ( currentSelectedId; currentSelectedId < amountSelected ; currentSelectedId++){
+	for(currentDrawnNumber = 0; currentDrawnNumber < amountDrawnNumbers;currentDrawnNumber++ ){
+		for ( currentSelectedId = 0; currentSelectedId < amountSelected ; currentSelectedId++){
 			if(selectedId[currentSelectedId] == drawnNumbers[currentDrawnNumber]){
 				idPickUpted[currentPosition++] = drawnNumbers[currentDrawnNumber];
 				break;
@@ -88,8 +107,9 @@ int* pickUpOnlySelectedIds(int amountSelected, int* selectedId, int amountDrawnN
 */
 void Raffle(int* drawnNumbers, int stakeholderAccount){
 	int temp;
+	stakeholderAccount--;
 	while(stakeholderAccount){
-		int newPos = stakeholderAccount > 0? RandomInt(0, stakeholderAccount):0;
+		int newPos =  RandomInt(0, stakeholderAccount);
 		//swap drawnNumbers[stakeholderAccount] with drawnNumbers[newPos]
 		temp =  drawnNumbers[newPos];
 		drawnNumbers[newPos]  =  drawnNumbers[stakeholderAccount];
