@@ -15,6 +15,49 @@
             "type":"object",
             "required":true,
             "properties":{
+                "queues": {
+                    "type":"array",
+                    "required":true,
+                    "items": {
+                        "type":"object",
+                        "required":true,
+                        "properties":{
+                            "idNode": {
+                                "type":"number",
+                                "required":true
+                            },
+                            "resource": {
+                                "type":"number",
+                                "required":true
+                            },
+                            "preceders": {
+                                "type":"array",
+                                "required":true,
+                                "items": {
+                                    "type":"number",
+                                    "required":true
+                                }
+                            },
+                            "followers": {
+                                "type":"array",
+                                "required":true,
+                                "items": {
+                                    "type":"number",
+                                    "required":false
+                                }
+                            },
+                            "fixedCost": {
+                                "type":"number",
+                                "required":true
+                            },
+                            "variableCost": {
+                                "type":"number",
+                                "required":true
+                            }
+                        },
+						"additionalProperties": false
+                    }
+                },
                 "counters": {
                     "type":"array",
                     "required":true,
@@ -46,7 +89,306 @@
                                     "required":false
                                 }
                             }
-                        }
+                        },
+						"additionalProperties": false
+                    }
+                },
+				"functions": {
+                    "type":"array",
+                    "required":true,
+                    "items": {
+                        "type":[
+									{
+										"type": "object",
+										"properties": {
+											"idNode": {
+										        "type":"number",
+										        "required":true
+										    },
+										    "input": {
+										        "type":"number",
+										        "required":true
+										    },
+											"output": {
+										        "type":"number",
+										        "required":true
+										    },
+										    "preceders": {
+										        "type":"array",
+										        "required":true,
+										        "items": {
+										            "type":"number",
+										            "required":true
+										        }
+										    },
+										    "followers": {
+										        "type":"array",
+										        "required":true,
+										        "items": {
+										            "type":"number",
+										            "required":false
+										        }
+										    },
+											"enableProbabilisticBranch": {
+										        "enum": [ true ],
+										        "required":true
+										    },
+										    "probabilisticBranch": {
+										        "type":"array",
+										        "required":true,
+										        "items": {
+										            "type":"number",
+										            "required":true
+										        },
+								            	"minItems": 2
+										    }
+										},
+										"additionalProperties": false
+									},
+									{
+										"type": "object",
+										"properties": {
+											"idNode": {
+										        "type":"number",
+										        "required":true
+										    },
+										    "input": {
+										        "type":"number",
+										        "required":true
+										    },
+											"output": {
+										        "type":"number",
+										        "required":true
+										    },
+										    "preceders": {
+										        "type":"array",
+										        "required":true,
+										        "items": {
+										            "type":"number",
+										            "required":true
+										        }
+										    },
+										    "followers": {
+										        "type":"array",
+										        "required":true,
+										        "items": {
+										            "type":"number",
+										            "required":false
+										        }
+										    },
+											"enableProbabilisticBranch": {
+										        "enum": [ false ],
+										        "required":true
+										    }
+										},
+										"additionalProperties": false
+									}
+								],
+                        "required":true,
+						"additionalProperties": false
+                    }
+                },
+                "normals": {
+                    "type":"array",
+                    "required":true,
+                    "items": {
+                        "type":"object",
+                        "required":true,
+                        "properties":{
+                            "idNode": {
+								  "type":"number",
+								  "required":true
+							 },
+							"preceders": {
+								 "type":"array",
+								 "required":true,
+								 "items": {
+									  "type":"number",
+									  "required":true
+								 }
+							},
+							"followers": {
+								  "type":"array",
+								  "required":true,
+								  "items": {
+										"type":"number",
+										"required":true
+								  }
+							},
+							 "enableProbabilisticBranch": {
+								  "type":"boolean",
+								  "required":true
+							},
+                            "probabilisticBranch": {
+                                "type":"array",
+                                "required":true,
+                                "items": {
+                                    "type":"number",
+                                    "required":false
+                                }
+                            },
+							"delay": {
+								"type": [
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "uniform" ]
+													},
+													"least": {
+														"type":"number",
+														"required":true
+													},
+													"highest": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "deterministic" ]
+													},
+													"constant": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "normal" ]
+													},
+													"mean": {
+														"type":"number",
+														"required":true
+													},
+													"variance": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "exponential" ]
+													},
+													"lambda": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "triangular" ]
+													},
+													"least": {
+														"type":"number",
+														"required":true
+													},
+													"highest": {
+														"type":"number",
+														"required":true
+													},
+													"mode": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "beta" ]
+													},
+													"minimun": {
+														"type":"number",
+														"required":true
+													},
+													"maximun": {
+														"type":"number",
+														"required":true
+													},
+													"shapeAlpha": {
+														"type":"number",
+														"required":true
+													},
+													"shapeBeta": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "log-normal" ]
+													},
+													"mean": {
+														"type":"number",
+														"required":true
+													},
+													"escale": {
+														"type":"number",
+														"required":true
+													},
+													"shape": {
+														"type":"number",
+														"required":true
+													},
+													"minimun": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											}
+										],
+								"required":true
+							}
+                        },
+						"additionalProperties": false
                     }
                 },
                 "combis": {
@@ -94,7 +436,7 @@
 												"type": "object",
 												"properties": {
 													"distribution": {
-														"enum": [ "uniform","u" ]
+														"enum": [ "uniform" ]
 													},
 													"least": {
 														"type":"number",
@@ -115,9 +457,130 @@
 												"type": "object",
 												"properties": {
 													"distribution": {
-														"enum": [ "deterministic","d" ]
+														"enum": [ "deterministic" ]
 													},
 													"constant": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "normal" ]
+													},
+													"mean": {
+														"type":"number",
+														"required":true
+													},
+													"variance": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "exponential" ]
+													},
+													"lambda": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "triangular" ]
+													},
+													"least": {
+														"type":"number",
+														"required":true
+													},
+													"highest": {
+														"type":"number",
+														"required":true
+													},
+													"mode": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "beta" ]
+													},
+													"minimun": {
+														"type":"number",
+														"required":true
+													},
+													"maximun": {
+														"type":"number",
+														"required":true
+													},
+													"shapeAlpha": {
+														"type":"number",
+														"required":true
+													},
+													"shapeBeta": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"triangular": {
+														"enum": [ "log-normal" ]
+													},
+													"mean": {
+														"type":"number",
+														"required":true
+													},
+													"escale": {
+														"type":"number",
+														"required":true
+													},
+													"shape": {
+														"type":"number",
+														"required":true
+													},
+													"minimun": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
 														"type":"number",
 														"required":true
 													}
@@ -127,10 +590,12 @@
 										],
 								"required":true
 							}
-						}
+						},
+						"additionalProperties": false
 					}
                 }
             }
         }
-    }
+    },
+	"additionalProperties": false
 }

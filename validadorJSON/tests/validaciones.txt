@@ -1,0 +1,4 @@
+Validaciones contempladas en SCHEMA
+
+"enableProbabilisticBranch" true, hace que "probabilisticBranch" sea requerido
+"probabilisticBranch" debe tener al menos 2 items
