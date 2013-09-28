@@ -1,0 +1,11 @@
+#ifndef _MAIN_H_
+#define _MAIN_H_
+
+typedef enum{
+	VALID,
+	INVALID_SCHEMA,
+	INVALID_JSON,
+	INVALID_SCHEMA	
+}VALIDATE;
+
+#endif /* #ifndef _MAIN_H_*/

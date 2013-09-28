@@ -1,38 +1,59 @@
 Validaciones contempladas en SCHEMA
 
-tener solamente "cycle", "length", "transformation" en raiz
-tener solamente "queues", "counters", "normals", "functions", "combis" en "transformation"
+RAIZ: tener solamente "cycle", "length", "transformation" en raiz
+TRANSFORMATION: tener solamente "queues", "counters", "normals", "functions", "combis" en "transformation"
+QUEUES: tipos correctos integer, array de integer y numbers
+QUEUES: preceders con elementos no repetidos
+QUEUES: followers con elementos no repetidos
+CONTADOR: tipos correctos integer, array de integer y numbers
+CONTADOR: cantidad de preceders > 0
+CONTADOR: preceders con elementos no repetidos
+CONTADOR: followers con elementos no repetidos
+FUNCION: tipos correctos integer, array de integer y numbers
+FUNCION: cantidad de preceders > 0
+FUNCION: cantidad de followers > 0
+FUNCION: preceders con elementos no repetidos
+FUNCION: followers con elementos no repetidos
+FUNCION:"probabilisticBranch" debe tener al menos 2 items, o no debe estar
 
-queues tengan integer, array de integer y numbers
+NORMAL: tipos correctos integer, array de integer y numbers
+NORMAL: cantidad de preceders > 0
+NORMAL: cantidad de followers > 0
+NORMAL: preceders con elementos no repetidos
+NORMAL: followers con elementos no repetidos
+NORMAL:"probabilisticBranch" debe tener al menos 2 items, o no debe estar
+NORMAL: DELAY: tipos correctos integer, array de integer y numbers
 
-"enableProbabilisticBranch" true, hace que "probabilisticBranch" sea requerido
-"probabilisticBranch" debe tener al menos 2 items
+COMBI: tipos correctos integer, array de integer y numbers
+COMBI: cantidad de preceders > 0
+COMBI: cantidad de followers > 0
+COMBI: preceders con elementos no repetidos
+COMBI: followers con elementos no repetidos
+COMBI:"probabilisticBranch" debe tener al menos 2 items, o no debe estar
+COMBI: DELAY: tipos correctos integer, array de integer y numbers
+
+
+NOTA: tanto para array de "preceders" y "followers" debe indicarce de manera explísita que no tienen elementos
+NOTA: solo el array de "probabilisticBranch" ninguno o al menos dos elementos
 
 
 
 
-    /*Validaciones COLA*/
-    /*ANTESESOR: No pueden ser Colas.*/
+    /*COLA: ANTESESOR: No pueden ser Colas.*/
     /*COLA: SUCESOR: Solo pueden ser combis.*/
-    /*Validaciones COMBI*/
-    /*ANTESESOR: Solo pueden ser nodos Cola.*/
-    /*ANTESESOR: Se admite cualquier número de entradas, excepto 0 (cero).*/
-    /*SUCESOR: No pueden ser Combis.*/
-    /*COMBI: SUCESOR: Se admite cualquier número de salidas, excepto 0.*/
-    /*Validaciones Normal*/
-    /*NORMAL: ANTESESOR: Se admite cualquier número de entradas, excepto 0.*/
+    /*COMBI: ANTESESOR: Solo pueden ser nodos Cola.*/
+    /*COMBI: SUCESOR: No pueden ser Combis.*/
     /*NORMAL: ANTESESOR: No pueden ser colas*/
-    /*NORMAL: SUCESOR: Se admite cualquier número de salidas, excepto 0.*/
     /*NORMAL: SUCESOR: No pueden ser COMBIS.*/
-    /*Validaciones FUNCION*/
-    /*FUNCION: ANTESESOR: Se admite cualquier número de entradas, excepto 0.*/
     /*FUNCION: ANTESESOR: No pueden ser colas.*/
-    /*FUNCION: SUCESOR: Se admite cualquier número de salidas, excepto 0.*/
     /*FUNCION: SUCESOR: No pueden ser Combis*/
-    /*Validaciones CONTADOR*/
-    /*CONTADOR: ANTESESOR: Se admite cualquier número de entradas, excepto 0.*/
     /*CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
     /*CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
+
+los excepto cero se pueden validar con SCHEMA,
+lo de sucesores y antecesores no repetidos tambien se puede validar,
+no se puede validar diferentes id en cola combi etc con SCHEMA (hacer con parson)
+verificar en en sucesores y antecesores se referencia a los que se puede no se puede hacer con SCHEMA
 
 
 Las Colas:

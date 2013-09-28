@@ -128,7 +128,7 @@
 			},
 			{
 				"idNode": 11,
-				"preceders":[3,2],
+				"preceders":[1,2],
 				"followers": [12,13],
 				"probabilisticBranch" : [0.5 , 0.5],
 				"delay" : {

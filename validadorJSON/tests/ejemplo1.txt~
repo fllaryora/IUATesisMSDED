@@ -8,7 +8,7 @@
 				"resource": 5,
 				"preceders": [4],
 				"followers": [11,10],
-				"fixedCost": [11,10],
+				"fixedCost": 12.0,
 				"variableCost": 2.0
 			},
 			{
@@ -31,7 +31,7 @@
 				"idNode": 5,
 				"quantity": 1,
 				"preceders":[11],
-				"followers": [3]
+				"followers": []
 				
 			}
 		],
@@ -40,8 +40,6 @@
 				"idNode": 8,
 				"preceders":[6],
 				"followers": [12,13],
-				"enableProbabilisticBranch": false,
-				"probabilisticBranch": [],
 				"delay": {
 					"distribution": "normal",
 					"mean": 2,
@@ -53,7 +51,6 @@
 				"idNode": 9,
 				"preceders":[10,6],
 				"followers": [12,2],
-				"enableProbabilisticBranch": true,
 				"probabilisticBranch": [0.5 , 0.5],
 				"delay": {
 					"distribution": "exponential",
@@ -65,7 +62,6 @@
 				"idNode": 9,
 				"preceders":[10,6],
 				"followers": [12,2],
-				"enableProbabilisticBranch": true,
 				"probabilisticBranch": [0.5 , 0.5],
 				"delay" : {
 					"distribution": "triangular",
@@ -79,7 +75,6 @@
 				"idNode": 9,
 				"preceders":[10,6],
 				"followers": [12,2],
-				"enableProbabilisticBranch": true,
 				"probabilisticBranch": [0.5 , 0.5],
 				"delay": {
 					"distribution": "beta",
@@ -94,11 +89,9 @@
 				"idNode": 9,
 				"preceders": [10,6],
 				"followers": [12,2],
-				"enableProbabilisticBranch": true,
 				"probabilisticBranch": [0.5 , 0.5],
 				"delay" : {
 					"distribution": "log-normal",
-					"mean": 2,
 					"escale": 2,
 					"shape": 3,
 					"minimun": 0,
@@ -112,8 +105,7 @@
 				"input": 3,
 				"output": 2,
 				"preceders":[10],
-				"followers": [12,13],
-				"enableProbabilisticBranch" : false
+				"followers": [12,13]
 			},
 			{
 				"idNode": 7,
@@ -121,8 +113,7 @@
 				"output": 2,
 				"preceders":[9,6],
 				"followers": [13],
-				"enableProbabilisticBranch" : true,
-				"probabilisticBranch" : [0.5 , 0.5]
+				"probabilisticBranch" : [5 , 0.5]
 			}
 		],
 		"combis": [
@@ -130,8 +121,6 @@
 				"idNode": 10,
 				"preceders":[1],
 				"followers": [12,13],
-				"enableProbabilisticBranch" : false,
-				"probabilisticBranch" : [],
 				"delay" : {
 					"distribution": "deterministic",
 					"constant" : 6
@@ -141,7 +130,6 @@
 				"idNode": 11,
 				"preceders":[3,2],
 				"followers": [12,13],
-				"enableProbabilisticBranch" : true,
 				"probabilisticBranch" : [0.5 , 0.5],
 				"delay" : {
 					"distribution": "uniform",
