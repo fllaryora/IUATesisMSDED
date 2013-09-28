@@ -1,0 +1,37 @@
+
+    Un group es un conjunto ordenado de procesos. Cada proceso en el grupo esta asociado con su rank ( id de 0 a N-1 de procesos en ese grupo).  En MPI, un grupo es representado mediante un objeto y accesible por handles. Un grupo esta asociado al comunicador que es otro objeto.
+    Un comunicador engloba a un grupo de procesos para que se puedan comunicar uno con el otro. 
+    Desde la perspectiva del programador el grupo son la misma cosa. 
+    Los grupos y los comunicadores se crean y destruyen en tiempo de ejecución. Los procesos pueden estar en mas de un grupo/comunicador
+
+    Uso tipico:
+        Extract handle of global group from MPI_COMM_WORLD using MPI_Comm_group
+        Form new group as a subset of global group using MPI_Group_incl
+        Create new communicator for new group using MPI_Comm_create
+        Determine new rank in new communicator using MPI_Comm_rank
+        Conduct communications using any MPI message passing routine
+        When finished, free up new communicator and group (optional) using MPI_Comm_free and MPI_Group_free 
+
+
+------------------------
+
+
+//Assume that there are p processes under MPI_COMM_WORLD, where q/ala\2 = p.
+//Create new communicator with a group of processes with ranks 0, 1, ..., q − 1.
+
+MPI_Group group_world;
+MPI_Group first_row_group;
+MPI_Comm first_row_comm;
+int *process_rank;
+
+
+// make a list of processes in the new communicator
+process_rank = (int*) malloc(q*sizeof(int));
+for(int I = 0; I < q; I++)
+process_rank[I] = I;
+//get the group under MPI_COMM_WORLD
+MPI_Comm_group(MPI_COMM_WORLD, group_world);
+// create the new group
+MPI_Group_incl(group_world, q, process_ranks, &first_row_group);
+// create the new communicator
+MPI_Comm_create(MPI_COMM_WORLD, first_row_group, &first_row_comm);

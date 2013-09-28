@@ -32,19 +32,22 @@ void raffler(){
 	
 	
 	do {
-		
+		printf("AAAAAAAAAAAAAAAAAAAAAA\n");
 		//http://mpitutorial.com/dynamic-receiving-with-mpi-probe-and-mpi-status/
 		//Para Probe y MPI_Recv para saber a priori el buffer y fluyar
 		//obtengo la orden en currentTag y mi destinatario de respuesta en currentSource 
+		
 		ProbeOrderForRaffler(&infoComm);
 		currentTag = infoComm.MPI_TAG;
+		printf("TAG = %d\n", currentTag);
 		currentSource = infoComm.MPI_SOURCE;
 		GetRafflerOrderCount(&infoComm, &receiverCount);
-		
+		if( receiverCount == 0 ) receiverCount = 1;
+		printf("receiverCount = %d\n", receiverCount);
 		if(receiverCount){bufferReceiver = (int*)malloc(sizeof(int) * receiverCount);}
 		
 		ReciveRafflerOrder( bufferReceiver, receiverCount );
-		
+		printf("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n");
 	
 		if (currentTag == NEW_RAFFLE ) {
 			
@@ -70,7 +73,7 @@ void raffler(){
 			for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",bufferSender[i]);}
 			printf("\n");
 			
-			SendRafflePeiorityToQueue(bufferSender, currentCombiIds, currentSource);	
+			SendRafflePeiorityToQueue(bufferSender, currentCombiIdsAmount, currentSource);	
 			if(bufferSender)free(bufferSender);
 			
 			
@@ -80,6 +83,7 @@ void raffler(){
 		bufferReceiver = NULL;
 		bufferSender = NULL;
 		receiverCount = 0;
+	
 	} while (currentTag != LIVE_LOCK);
 	free(--combiIds);
 }

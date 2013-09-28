@@ -308,6 +308,8 @@ int RandomInt(int lower,int upper)
 }
 
 /*
+ * uniforme en modelo precursor
+ * "least" "highest"
    Return random float within a range, lower -> upper
 */
 double RandomDouble(double lower,double upper)

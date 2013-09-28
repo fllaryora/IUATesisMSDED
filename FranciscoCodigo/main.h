@@ -21,6 +21,8 @@
 #define MASTER_ID	0
 #define RAFFLER_ID	1
 #define PRINTER_ID	2
+#define FIST_NODE_ID	3
+#define	RAFFLER_PRINTER	2
 #define MASTER_RAFFLER_PRINTER	3
 
 //TAG is a label of MPI comunication

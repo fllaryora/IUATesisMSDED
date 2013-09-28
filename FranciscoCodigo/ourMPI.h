@@ -13,16 +13,36 @@ typedef struct {
     int MPI_ERROR;
 } MPI_Status;
 
-#include "main.h"
+#define MPI_Group	int
+#define MPI_Comm	int
 
+#define MPI_SUCCESS	0
+#define MPI_MAX_ERROR_STRING	20
+#include "main.h"
+#include <stdlib.h>
 
 #define MPI_Init(X, Y) (void)0
 #define MPI_Finalize() (void)0
 #define MPI_Comm_size(X, Y) *(Y)=4
 
+#define GetCommWorldHandle(X)	*(X)=0
+#define CreateGroupByIds(X, Y, Z, W)	*(W)=0
+#define CreateCommByGroup(X, Y)	*(Y)=0
+//Seteo que quiero leer los errores
+#define setLoger()	(void)0
+//Seteo que no voy leer los errores
+#define unsetLoger()	(void)0
+//retorna la clase de error en un string
+#define getErrorCalss(X, Y)	*(Y)=4
+//retorna el error en un string
+#define getErrorString(X, Y, Z)	Y[0]='E';Y[1]='R';Y[2]='R';Y[3]='O';Y[4]='R';Y[5]='\0'
+//aborta MPI
+#define abortAllProcess(X)	exit(X)
+
 //EJECUTADOS POR EL MASTER
-#define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
+#define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON
 #define SendCombisToRaffler(X,Y)	(void)0
+#define NewRaffle()	(void)0
 #define SendLiveLockToRaffler()	(void)0
 #define SendLiveLockToPrinter()	(void)0
 
@@ -46,10 +66,16 @@ typedef struct {
 #define SendRafflePeiorityToQueue(X,Y,Z)	currentTag = LIVE_LOCK
 
 
+
+// EJECUTADOS POR EL PRINTER
+#define ProbeOrderForPrinter(X)	(void)0
+#define GetPrinterOrderCount( X, Y)	(void)0
+#define RecivePrinterOrder(X,Y)	(void)0
+
+
 #ifdef _MOCK_SCHADULER_
 #define MPI_Comm_rank(X, Y) *(Y)=0
 #endif
-
 
 
 
@@ -61,7 +87,6 @@ typedef struct {
 
 #ifdef _MOCK_RAFFLER_
 #define MPI_Comm_rank(X, Y) *(Y)=1
-
 #endif
 
 
@@ -112,8 +137,27 @@ typedef struct {
 
 #include <mpi.h>
 
+//Seteo que quiero leer los errores
+#define setLoger()	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN)
+//Seteo que no voy leer los errores
+#define unsetLoger()	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_ARE_FATAL)
+//retorna la clase de error en un string
+#define getErrorCalss(X, Y)	MPI_Error_class(X, Y)
+//retorna el error en un string
+#define getErrorString(X, Y, Z)	MPI_Error_string(X, Y, Z)
+//aborta MPI
+#define abortAllProcess(X)	MPI_Abort(MPI_COMM_WORLD, X)
+
+
 //broadcastea el resultado de la validacion del json al principio de la arquitectura
 #define MPI_Bcast_JSON( A )	MPI_Bcast( A, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD)
+//busco el handle del comm world y se lo paso a un grupo
+#define GetCommWorldHandle(X)	MPI_Comm_group(MPI_COMM_WORLD, X)
+//creo grupo by process
+#define CreateGroupByIds(X, Y, Z, W)	MPI_Group_incl(X, Y, Z, W)
+// creo comunicador by group
+#define CreateCommByGroup(X, Y)	MPI_Comm_create(MPI_COMM_WORLD, X, Y)
+
 
 // FUNCIONES del RAFFLER
 //prueba si recibio semilla mas lista de combis
@@ -129,16 +173,25 @@ typedef struct {
 //lee la orden
 #define ReciveRafflerOrder(X,Y)	MPI_Recv(X, Y, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE)
 //dice al master que ya sorteo
-#define SendRaffleDoneToMaster()	MPI_Send( NULL, 0, MPI_INT, MASTER_ID, RAFFLE_DONE, MPI_COMM_WORLD, MPI_STATUS_IGNORE)
+#define SendRaffleDoneToMaster()	(void)0
 //dice a una cola cuales la prioridad del actual sorteo
-#define SendRafflePeiorityToQueue(X,Y,Z)	MPI_Send(X,Y, MPI_INT, Z, RAFFLE_DONE, MPI_COMM_WORLD, MPI_STATUS_IGNORE)
+#define SendRafflePeiorityToQueue(X,Y,Z)	MPI_Send(X,Y, MPI_INT, Z, RAFFLE_DONE, MPI_COMM_WORLD)
 
 
 
 // FUNCIONES del MASTER
 #define SendCombisToRaffler(X,Y)	MPI_Send( X , Y , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD)
+#define NewRaffle()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD)
 #define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD)
-#define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
+#define SendLiveLockToPrinter()	MPI_Send( NULL , 0 , MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
 #endif
+
+
+
+// FUNCIONES del PRINTER
+#define ProbeOrderForPrinter(X)	MPI_Probe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, X)
+#define GetPrinterOrderCount( X, Y)	MPI_Get_count(X, MPI_BYTE, Y)
+#define RecivePrinterOrder(X,Y)	MPI_Recv(X, Y, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE)
+
 
 #endif /* our mpi*/
