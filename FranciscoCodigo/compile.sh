@@ -27,7 +27,7 @@ then
 		echo "invalid second param: Not is a number"
 		exit 0
 	fi
-	RUNFORESTRUN="mpirun -np$2"
+	RUNFORESTRUN="mpirun -np $2"
 	
 elif [ $1 == "TEST" ]
 then
@@ -74,16 +74,22 @@ else
 	exit 0
 fi
 
+echo "$COMPILER -Wall $GCCARGS -c genericNode.c"
 $COMPILER -Wall $GCCARGS -c genericNode.c
 
+echo "$COMPILER -Wall $GCCARGS -c printer.c"
 $COMPILER -Wall $GCCARGS -c printer.c
 
+echo "$COMPILER -Wall $GCCARGS -c raffler.c"
 $COMPILER -Wall $GCCARGS -c raffler.c
 
+echo "$COMPILER -Wall $GCCARGS -c scheduler.c"
 $COMPILER -Wall $GCCARGS -c scheduler.c
 
+echo "$COMPILER -Wall $GCCARGS raffler.o printer.o genericNode.o scheduler.o -lm -o Engine main.c"
 $COMPILER -Wall $GCCARGS raffler.o printer.o genericNode.o scheduler.o -lm -o Engine main.c
 
 rm *.o
 
+echo "$RUNFORESTRUN ./Engine"
 $RUNFORESTRUN ./Engine
