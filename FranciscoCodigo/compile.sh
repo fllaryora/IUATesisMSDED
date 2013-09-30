@@ -37,7 +37,7 @@ then
 	echo
 	echo "compiling environment PRODUCTION"
 	COMPILER="mpicc"
-	GCCARGS="-O3"
+	GCCARGS="-O3 -std=c99"
 	export PATH=$PATH:/usr/lib64/mpich2/bin
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/mpich2/lib
 	re='^[0-9]+$'
