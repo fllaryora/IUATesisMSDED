@@ -34,6 +34,11 @@ int main(int argc, char **argv){
 	/* Inicio de zona MPI */
 	MPI_Init(&argc, &argv);
 	
+	printf("NEW RAFFLE = %d\n", NEW_RAFFLE);
+	printf("LIST COMB = %d\n", SEED_AND_COMBI_LIST);
+	printf("GET_RAFFLE = %d\n", GET_RAFFLE);
+	printf("LIVELOCK = %d\n", LIVE_LOCK);
+	
 	/* Busco mi nodo Id */
 	MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
 	
@@ -54,6 +59,7 @@ int main(int argc, char **argv){
 				scheduler();
 				
 				SendLiveLockToRaffler();
+				printf("CCCCCCCCCCCCCCCCCCCCC\n");
 				//SendLiveLockToPrinter();
 				/* Shut down MPI */
 				MPI_Finalize();

@@ -137,7 +137,7 @@ typedef struct {
 //lee la orden
 #define ReciveRafflerOrder(X,Y)	MPI_Recv(X, Y, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE)
 //dice al master que ya sorteo
-#define SendRaffleDoneToMaster()	MPI_Send( NULL, 0, MPI_INT, MASTER_ID, RAFFLE_DONE, MPI_COMM_WORLD)
+#define SendRaffleDoneToMaster()	(void)0
 //dice a una cola cuales la prioridad del actual sorteo
 #define SendRafflePeiorityToQueue(X,Y,Z)	MPI_Send(X,Y, MPI_INT, Z, RAFFLE_DONE, MPI_COMM_WORLD)
 
@@ -147,7 +147,7 @@ typedef struct {
 #define SendCombisToRaffler(X,Y)	MPI_Send( X , Y , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD)
 #define NewRaffle()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD)
 #define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD)
-#define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
+#define SendLiveLockToPrinter()	MPI_Send( NULL , 0 , MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
 #endif
 
 
