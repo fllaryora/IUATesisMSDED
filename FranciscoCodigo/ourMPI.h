@@ -13,12 +13,21 @@ typedef struct {
     int MPI_ERROR;
 } MPI_Status;
 
+#define MPI_Group	int
+#define MPI_Comm	int
+
 #include "main.h"
 
 
 #define MPI_Init(X, Y) (void)0
 #define MPI_Finalize() (void)0
 #define MPI_Comm_size(X, Y) *(Y)=4
+#define MPI_Comm_group(X, Y)	(void)0
+#define MPI_Group_incl(X, Y, Z, W)	(void)0
+#define MPI_Comm_create(X, Y, Z)	(void)0
+#define MPI_Comm_free(X)	(void)0
+#define MPI_Group_free(X)	(void)0
+#define MPI_Barrier( X )	(void)0
 
 //EJECUTADOS POR EL MASTER
 #define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
