@@ -84,4 +84,6 @@ $COMPILER -Wall $GCCARGS -c scheduler.c
 
 $COMPILER -Wall $GCCARGS raffler.o printer.o genericNode.o scheduler.o -lm -o Engine main.c
 
+rm *.o
+
 $RUNFORESTRUN ./Engine
