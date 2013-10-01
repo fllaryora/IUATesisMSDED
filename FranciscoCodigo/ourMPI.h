@@ -4,10 +4,13 @@
 #define _OUR_MPI_H_
 
 #ifdef _MOCK_MPI_
-
+#include "main.h"
 #define MPI_Init(X, Y) (void)0
 #define MPI_Finalize() (void)0
 #define MPI_Comm_size(X, Y) *(Y)=4
+
+#define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
+
 
 #ifdef _MOCK_SCHADULER_
 #define MPI_Comm_rank(X, Y) *(Y)=0
@@ -47,7 +50,10 @@
 
 #else 
 
+
 #include <mpi.h>
+
+#define MPI_Bcast_JSON( A )	MPI_Bcast( A, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD)
 
 #endif
 

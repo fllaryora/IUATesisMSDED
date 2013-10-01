@@ -21,9 +21,13 @@
 #define MASTER_ID	0
 #define RAFFLER_ID	1
 #define PRINTER_ID	2
+#define MASTER_RAFFLER_PRINTER	3
 
 //TAG is a label of MPI comunication
 typedef enum{
+	BAD_JSON,
+	GOOD_JSON,
+	
 	BOOTSTRAP,              /*before send initialization struct*/
 	SHUTDOWN,               /*when is reached the live-lock condition or
 							the objective of fulfilling certain number 
@@ -71,6 +75,10 @@ typedef enum{
 	RESOURCE_SEND          /*warns when one node has sent a resource to
 							another*/	
 }TAG;
+
+typedef enum{
+	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI
+}TYPENODE;
 
 
 //initilization structs
@@ -131,24 +139,24 @@ typedef struct{
 
 typedef struct{
 	int constante;
-}Deterministica;
+}Deterministic;
 
 typedef struct{
 	int semilla;
 	float minimo;
 	float maximo;
-}Uniforme;
+}Uniform;
 
 typedef struct{
 	int semilla;
 	float media;
 	float varianza;
-}Gaussiana;
+}Gaussian;
 
 typedef struct{
 	int semilla;
 	float lambda;
-}Exponencial;
+}Exponential;
 
 typedef struct{
 	int semilla;
@@ -171,6 +179,11 @@ typedef struct{
 	float media;
 	float desviacionEstandar;
 }Lognormal;
+
+
+typedef enum{
+	DETERMINISTIC, UNIFORM, GAUSSIAN, EXPONENTIAL, TRIANGULAR, BETA, LOGNORMAL
+}DELAY_TYPE;
 
 typedef union{
 	int productividad;

@@ -74,6 +74,9 @@ else
 	exit 0
 fi
 
+echo "$COMPILER -Wall $GCCARGS -c jsonHelper.c"
+$COMPILER -Wall $GCCARGS -c jsonHelper.c
+
 echo "$COMPILER -Wall $GCCARGS -c genericNode.c"
 $COMPILER -Wall $GCCARGS -c genericNode.c
 
@@ -87,7 +90,7 @@ echo "$COMPILER -Wall $GCCARGS -c scheduler.c"
 $COMPILER -Wall $GCCARGS -c scheduler.c
 
 echo "$COMPILER -Wall $GCCARGS raffler.o printer.o genericNode.o scheduler.o -lm -o Engine main.c"
-$COMPILER -Wall $GCCARGS raffler.o printer.o genericNode.o scheduler.o -lm -o Engine main.c
+$COMPILER -Wall $GCCARGS jsonHelper.o raffler.o printer.o genericNode.o scheduler.o -lm -o Engine main.c
 
 rm *.o
 

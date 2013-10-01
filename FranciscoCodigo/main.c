@@ -16,41 +16,59 @@
  * 
  */
  
-
-
 #include "ourMPI.h"
-
 #include <stdio.h>
 #include "main.h"
 #include "scheduler.h"
 #include "raffler.h"
 #include "printer.h"
 #include "genericNode.h"
-//#include "jsonHelper.h"
+#include "jsonHelper.h"
 
 int main(int argc, char **argv){
 	int idNodo;
-
+	int mpiProcesses;
+	int jsonResult;
 	/* Initialize MPI */
 	MPI_Init(&argc, &argv);
-
+	
 	/* Find out my identity in the default communicator */
 	MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
-	if (idNodo == MASTER_ID) {
-		scheduler();
-	} else {
-		if (idNodo == RAFFLER_ID) {
-		   raffler();
-		} else {
-			if (idNodo == PRINTER_ID) {
-				printer();
-			} else {
-				genericNode(idNodo);
+	if ( idNodo == MASTER_ID ) {
+		if ( validateJsonInput() == JSON_APPROVED ) {
+			MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
+			if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
+				putNodesInMem();
+				//broadcast TAG JSON BUENO
+				jsonResult = GOOD_JSON;
+                MPI_Bcast_JSON(&jsonResult);
+				scheduler();
+				/* Shut down MPI */
+				MPI_Finalize();
+				return 0;
 			}
+		} 
+		//Broadcast Json malo
+		jsonResult = BAD_JSON;
+		MPI_Bcast_JSON( &jsonResult );
+	} else {
+		MPI_Bcast_JSON( &jsonResult );
+		if ( jsonResult == GOOD_JSON ) {
+			if ( idNodo == RAFFLER_ID ) {
+				raffler();
+			} else {
+				if (idNodo == PRINTER_ID) {
+					printer();
+				} else {
+					genericNode(idNodo);
+				}
+			}
+		} else {
+			printf("Master node has sent BAD_JSON by broadcast\n");
 		}
+				
 	}
 	/* Shut down MPI */
 	MPI_Finalize();
-
 	return 0;
 }
