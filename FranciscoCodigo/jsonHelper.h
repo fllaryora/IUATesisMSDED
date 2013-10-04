@@ -5,4 +5,5 @@ extern int getNodesAmount( void );
 extern int validateJsonInput( void );
 extern void putNodesInMem( void );
 extern void* getNodeById( int );
+extern int* getCombiIds( void );
 #endif /* #ifndef _JSON_HELPER_H_*/

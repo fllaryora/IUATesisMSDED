@@ -15,3 +15,7 @@ void putNodesInMem( void ){
 void* getNodeById( int id){
 	return NULL;
 }
+
+int* getCombiIds( void ){
+	
+}
