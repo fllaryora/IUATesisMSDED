@@ -38,7 +38,13 @@ void raffler(){
 	free(combiIds);
 }
 
-
+int* pickUpOnlySelectedIds(int amount, int* selectedId, int* drawnNumbers){
+	int* idPickUpted = (int*)malloc(sizeof(int) * amount);
+	while (amount>0) {
+	}
+	
+	return idPickUpted;
+}
 
 /* 
    Return the jackpot in drawnNumbers[stakeholderAccount -1]

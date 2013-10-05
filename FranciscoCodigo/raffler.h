@@ -3,4 +3,5 @@
 //#include "RNGs.h"
 extern void raffler(void);
 extern void Raffle(int* , int );
+extern int* pickUpOnlySelectedIds(int , int* , int*);
 #endif /* #ifndef _RAFFLER_H_*/
