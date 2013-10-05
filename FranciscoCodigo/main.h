@@ -50,6 +50,7 @@ typedef enum{
 	CONSUME_DT,            /*when dT end, all nodes consume one dT*/
 	NEW_RAFFLE,			   /*when dT end, and the jackpot of combi's Id 
 						   must change*/
+	NEW_RAFFLE_DONE,
 	GET_RAFFLE,			   /*when dT end, i need the jackpot of combi's
 						   Id*/					   
 	PRINT_SIGNAL, 		   /*when dT end, printer must write another 

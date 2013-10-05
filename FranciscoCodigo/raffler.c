@@ -27,10 +27,12 @@ void raffler(){
 		MPI_Recv(bufferReceiver, numberAmount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		if (currentTag == NEW_RAFFLE ) {
 			Raffle( &combiIds[1] ,combiIds[0] );
-			alalalla
+			MPI_Send(&combiIds[0], 0, MPI_INT, currentSource, NEW_RAFFLE_DONE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		} else {
 			if (currentTag != SHUTDOWN){
-				lalala
+				bufferSender = pickUpOnlySelectedIds(numberAmount, bufferReceiver, combiIds[0] , &combiIds[1]);
+				MPI_Send(bufferSender, numberAmount, MPI_INT, currentSource, NEW_RAFFLE_DONE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				free(bufferSender);
 			}
 		}
 		free(bufferReceiver);
@@ -38,11 +40,18 @@ void raffler(){
 	free(combiIds);
 }
 
-int* pickUpOnlySelectedIds(int amount, int* selectedId, int* drawnNumbers){
-	int* idPickUpted = (int*)malloc(sizeof(int) * amount);
-	while (amount>0) {
+int* pickUpOnlySelectedIds(int amountSelected, int* selectedId, int amountDrawnNumbers , int* drawnNumbers){
+	int currentPosition = 0;
+	int currentSelectedId, currentDrawnNumber;
+	int* idPickUpted = (int*)malloc(sizeof(int) * amountSelected);
+	for ( currentSelectedId; currentSelectedId < amount ; currentSelectedId++){
+		for(currentDrawnNumber ; currentDrawnNumber < amountDrawnNumbers;currentDrawnNumber++ ){
+			if(selectedId[currentSelectedId] == drawnNumbers[currentDrawnNumber]){
+				idPickUpted[currentPosition++] = drawnNumbers[currentDrawnNumber];
+				break;
+			}
+		}
 	}
-	
 	return idPickUpted;
 }
 
