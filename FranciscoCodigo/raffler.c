@@ -29,14 +29,14 @@ void raffler(){
 			Raffle( &combiIds[1] ,combiIds[0] );
 			MPI_Send(&combiIds[0], 0, MPI_INT, currentSource, NEW_RAFFLE_DONE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		} else {
-			if (currentTag != SHUTDOWN){
+			if (currentTag != LIVE_LOCK){
 				bufferSender = pickUpOnlySelectedIds(numberAmount, bufferReceiver, combiIds[0] , &combiIds[1]);
 				MPI_Send(bufferSender, numberAmount, MPI_INT, currentSource, NEW_RAFFLE_DONE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 				free(bufferSender);
 			}
 		}
 		free(bufferReceiver);
-	} while (currentTag != SHUTDOWN);
+	} while (currentTag != LIVE_LOCK);
 	free(combiIds);
 }
 
@@ -44,8 +44,8 @@ int* pickUpOnlySelectedIds(int amountSelected, int* selectedId, int amountDrawnN
 	int currentPosition = 0;
 	int currentSelectedId, currentDrawnNumber;
 	int* idPickUpted = (int*)malloc(sizeof(int) * amountSelected);
-	for ( currentSelectedId; currentSelectedId < amount ; currentSelectedId++){
-		for(currentDrawnNumber ; currentDrawnNumber < amountDrawnNumbers;currentDrawnNumber++ ){
+	for(currentDrawnNumber ; currentDrawnNumber < amountDrawnNumbers;currentDrawnNumber++ ){
+		for ( currentSelectedId; currentSelectedId < amount ; currentSelectedId++){
 			if(selectedId[currentSelectedId] == drawnNumbers[currentDrawnNumber]){
 				idPickUpted[currentPosition++] = drawnNumbers[currentDrawnNumber];
 				break;
