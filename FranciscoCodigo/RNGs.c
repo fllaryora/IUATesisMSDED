@@ -295,8 +295,8 @@ double RandomLogNormal(double scale, double shape){
 /*
  * Generador de Distribucion lognormal. con minimo
  * */
-double RandomLogNormalWithMinimun(double scale, double shape,double minumun){
-	return RandomLogNormal( scale,  shape) + minumun;
+double RandomLogNormalWithMinimun(double scale, double shape,double minimun){
+	return RandomLogNormal( scale,  shape) + minimun;
 }
 
 /*

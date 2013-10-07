@@ -29,6 +29,7 @@ int main(int argc, char **argv){
 	int idNodo;
 	int mpiProcesses;
 	int jsonResult;
+	
 	/* Initialize MPI */
 	MPI_Init(&argc, &argv);
 	
@@ -42,6 +43,12 @@ int main(int argc, char **argv){
 				//broadcast TAG JSON BUENO
 				jsonResult = GOOD_JSON;
 				MPI_Bcast_JSON(&jsonResult);
+				
+				//enviar lo combisIds al raffler
+				int* seedAndCombis = getCombiIds( );
+				SendCombisToRaffler( &seedAndCombis[1] ,  seedAndCombis[0] );
+				free(seedAndCombis);
+				
 				scheduler();
 				/* Shut down MPI */
 				MPI_Finalize();

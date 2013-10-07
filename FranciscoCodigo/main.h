@@ -25,6 +25,7 @@
 
 //TAG is a label of MPI comunication
 typedef enum{
+	
 	BAD_JSON,
 	GOOD_JSON,
 	
@@ -50,7 +51,8 @@ typedef enum{
 	CONSUME_DT,            /*when dT end, all nodes consume one dT*/
 	NEW_RAFFLE,			   /*when dT end, and the jackpot of combi's Id 
 						   must change*/
-	NEW_RAFFLE_DONE,
+	RAFFLE_DONE,
+	SEED_AND_COMBI_LIST,   /* cuando el scheduler le manda la lista de combis al raffer*/
 	GET_RAFFLE,			   /*when dT end, i need the jackpot of combi's
 						   Id*/					   
 	PRINT_SIGNAL, 		   /*when dT end, printer must write another 
