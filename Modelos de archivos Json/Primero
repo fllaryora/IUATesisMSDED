@@ -1,0 +1,72 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"id": "http://jsonschema.net",
+	"required":true,
+	"properties":{
+		"cycle": {
+			"type":"number",
+			"id": "http://jsonschema.net/cycle",
+			"required":true
+		},
+		"length": {
+			"type":"number",
+			"id": "http://jsonschema.net/length",
+			"required":true
+		},
+		"transformation": {
+			"type":"object",
+			"id": "http://jsonschema.net/transformation",
+			"required":true,
+			"properties":{
+				"combis": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/combis",
+					"required":true
+				},
+				"counters": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/counters",
+					"required":true
+				},
+				"functions": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/functions",
+					"required":true
+				},
+				"normals": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/normals",
+					"required":true
+				},
+				"queues": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/queues",
+					"required":true
+				}
+			}
+		}
+	}
+}
+
+
+
+
+{
+	"length": 1000,
+	"cycle": 50,
+	"transformation": {
+		"queues": [
+			],
+			"counters": [
+			],
+			"functions": [
+			],
+			"normals": [
+			],
+			"combis": [
+			]
+	}
+}
+
+

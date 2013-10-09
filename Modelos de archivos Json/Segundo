@@ -1,0 +1,137 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"id": "http://jsonschema.net",
+	"required":true,
+	"properties":{
+		"cycle": {
+			"type":"number",
+			"id": "http://jsonschema.net/cycle",
+			"required":true
+		},
+		"length": {
+			"type":"number",
+			"id": "http://jsonschema.net/length",
+			"required":true
+		},
+		"transformation": {
+			"type":"object",
+			"id": "http://jsonschema.net/transformation",
+			"required":true,
+			"properties":{
+				"combis": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/combis",
+					"required":true
+				},
+				"counters": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/counters",
+					"required":true
+				},
+				"functions": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/functions",
+					"required":true
+				},
+				"normals": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/normals",
+					"required":true
+				},
+				"queues": {
+					"type":"array",
+					"id": "http://jsonschema.net/transformation/queues",
+					"required":true,
+                      "items": {
+                          "type":"object",
+                          "id": "http://jsonschema.net/transformation/queues/0",
+                          "required":true,
+                          "properties":{
+                              "fixedCost": {
+                                  "type":"number",
+                                  "id": "http://jsonschema.net/transformation/queues/0/fixedCost",
+                                  "required":true
+                              },
+                              "followers": {
+                                  "type":"array",
+                                  "id": "http://jsonschema.net/transformation/queues/0/followers",
+                                  "required":true,
+                                  "items":
+                                      {
+                                          "type":"number",
+                                          "id": "http://jsonschema.net/transformation/queues/0/followers/0",
+                                          "required":true
+                                      }
+                              },
+                              "idNode": {
+                                  "type":"number",
+                                  "id": "http://jsonschema.net/transformation/queues/0/idNode",
+                                  "required":true
+                              },
+                              "preceders": {
+                                  "type":"array",
+                                  "id": "http://jsonschema.net/transformation/queues/0/preceders",
+                                  "required":true,
+                                  "items":
+                                      {
+                                          "type":"number",
+                                          "id": "http://jsonschema.net/transformation/queues/0/preceders/0",
+                                          "required":true
+                                      }
+                              },
+                              "resource": {
+                                  "type":"number",
+                                  "id": "http://jsonschema.net/transformation/queues/0/resource",
+                                  "required":true
+                              },
+                              "variableCost": {
+                                  "type":"number",
+                                  "id": "http://jsonschema.net/transformation/queues/0/variableCost",
+                                  "required":true
+                              }
+                          }
+                      }
+				}
+			}
+		}
+	}
+}
+
+
+
+
+{
+	"length": 1000,
+	"cycle": 50,
+	"transformation": {
+		"queues": [
+          {
+				"idNode": 1,
+				"resource": 5,
+				"preceders": [4],
+				"followers": [11,10],
+				"fixedCost": 12.0,
+            	"variableCost": 2.0
+			},
+			{
+				"idNode": 2,
+				"resource": 0,
+				"preceders":[11,4],
+				"followers": [10],
+				"fixedCost": 12.0,
+				"variableCost": 2.0
+			}
+			],
+			"counters": [
+			],
+			"functions": [
+			],
+			"normals": [
+			],
+			"combis": [
+			]
+	}
+}
+
+

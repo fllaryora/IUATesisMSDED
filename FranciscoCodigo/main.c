@@ -30,11 +30,12 @@ int main(int argc, char **argv){
 	int mpiProcesses;
 	int jsonResult;
 	
-	/* Initialize MPI */
+	/* Inicio de zona MPI */
 	MPI_Init(&argc, &argv);
 	
-	/* Find out my identity in the default communicator */
+	/* Busco mi nodo Id */
 	MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
+	
 	if ( idNodo == MASTER_ID ) {
 		if ( validateJsonInput() == JSON_APPROVED ) {
 			MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
@@ -50,6 +51,9 @@ int main(int argc, char **argv){
 				free(seedAndCombis);
 				
 				scheduler();
+				
+				SendLiveLockToRaffler();
+				SendLiveLockToPrinter();
 				/* Shut down MPI */
 				MPI_Finalize();
 				return 0;
@@ -75,7 +79,7 @@ int main(int argc, char **argv){
 		}
 				
 	}
-	/* Shut down MPI */
+	/* FIN de zona de MPI */
 	MPI_Finalize();
 	return 0;
 }
