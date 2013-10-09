@@ -1,0 +1,47 @@
+{
+ "length": 1000,
+ "cycle": 30,
+ "transformation": {
+		"counters": [
+			{
+				"idNode": 4,
+				"quantity": 5,
+				"preceders":[6],
+				"followers": [12,13]
+			},
+			{
+				"idNode": 5,
+				"quantity": 1,
+				"preceders":[11],
+				"followers": [3]
+				
+			}
+		],
+		"combis": [
+			{
+				"idNode": 10,
+				"preceders":[1],
+				"followers": [12,13],
+				"enableProbabilisticBranch" : false,
+				"probabilisticBranch" : [],
+				"delay" : {
+					"distribution": "deterministic",
+					"constant" : 6
+				}
+			},
+			{
+				"idNode": 11,
+				"preceders":[3,2],
+				"followers": [12,13],
+				"enableProbabilisticBranch" : true,
+				"probabilisticBranch" : [0.5 , 0.5],
+				"delay" : {
+					"distribucion": "uniform",
+					"least" : 2,
+					"highest" : 8,
+					"seed": 666
+				}
+			}
+		]
+	}
+}

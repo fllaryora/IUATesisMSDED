@@ -1,0 +1,160 @@
+{
+ "length": 1000,
+ "cycles": 30,
+ "transformation": {
+		"queues": [
+			{
+				"idNode": 1,
+				"resource": 5,
+				"preceders": [4],
+				"followers": [11,10],
+				"fixedCost": 12.0,
+				"variableCost": 2.0
+			},
+			{
+				"idNode": 2,
+				"resource": 0,
+				"preceders":[11,4],
+				"followers": [10],
+				"fixedCost": 12.0,
+				"variableCost": 2.0
+			}
+		],
+		"counters": [
+			{
+				"idNode": 4,
+				"quantity": 5,
+				"preceders":[6],
+				"followers": [12,13]
+			},
+			{
+				"idNode": 5,
+				"quantity": 1,
+				"preceders":[11],
+				"followers": [3]
+				
+			}
+		],
+		"functions": [
+			{
+				"idNode": 6,
+				"input": 3,
+				"output": 2,
+				"preceders":[10],
+				"followers": [12,13],
+				"enableProbabilisticBranch" : false
+			},
+			{
+				"idNode": 7,
+				"input": 3,
+				"output": 2,
+				"preceders":[9,6],
+				"followers": [13],
+				"enableProbabilisticBranch" : true,
+				"probabilisticBranch" : [0.5 , 0.5]
+			}
+		],
+		"normals": [
+			{
+				"idNode": 8,
+				"preceders":[6],
+				"followers": [12,13],
+				"enableProbabilisticBranch": false,
+				"tiempoDeDemora": {
+					"distribucion": "normal",
+					"media" : 2,
+					"varianza" : 9, //desviacion al cuadrado
+					"desviacionEstandar" : 3,
+					"semilla": 666
+				}
+			},
+			{
+				"idNode": 9,
+				"preceders":[10,6],
+				"followers": [12,2],
+				"enableProbabilisticBranch": true,
+				"probabilisticBranch": [0.5 , 0.5],
+				"tiempoDeDemora": {
+					"distribucion": "exponencial",
+					"media" : 2,
+					"lambda" : 0.5, //inverso de la media
+					"semilla": 666
+				}
+			},
+			{
+				"idNode": 9,
+				"preceders":[10,6],
+				"followers": [12,2],
+				"enableProbabilisticBranch": true,
+				"probabilisticBranch": [0.5 , 0.5],
+				"tiempoDeDemora" : {
+					"distribucion": "triangular",
+					"minimo" : 2,
+					"maximo" : 8,
+					"moda" : 5,
+					"semilla": 666
+				}
+			},
+			{
+				"idNode": 9,
+				"preceders":[10,6],
+				"followers": [12,2],
+				"enableProbabilisticBranch": true,
+				"probabilisticBranch": [0.5 , 0.5],
+				"tiempoDeDemora" : {
+					"distribucion": "beta",
+					"minimo" : 2,
+					"maximo" : 8,
+					"alfa" : 5, 
+					"formaA" : 5, //igual a alfa 
+					"beta" : 0.5,
+					"formaB" : 0.5, //igual a beta
+					"semilla": 666
+				}
+			},
+			{
+				"idNode": 9,
+				"preceders":[10,6],
+				"followers": [12,2],
+				"enableProbabilisticBranch": true,
+				"probabilisticBranch": [0.5 , 0.5],
+				"tiempoDeDemora" : {
+					"distribucion": "log-normal",
+					"media" : 2,
+					"escala" :2,
+					"varianza" : 9, //desviacion al cuadrado
+					"desviacionEstandar" : 3,
+					"forma" : 3,
+					"minimo" : 0,
+					"semilla": 666
+				}
+			}
+		],
+		"combis": [
+			{
+				"idNode": 10,
+				"Antecesor":[1],
+				"Sucesor": [12,13],
+				"salidaProbabilistica" : false,
+				"probabilidadPorSalida" : [],
+				"tiempoDeDemora" : {
+					"distribucion": "deterministica",
+					"constante" : 6
+				}
+			},
+			{
+				"idnodo": 11,
+				"Antecesor":[3,2],
+				"Sucesor": [12,13],
+				"salidaProbabilistica" : true,
+				"probabilidadPorSalida" : [0.5 , 0.5],
+				"tiempoDeDemora" : {
+					"distribucion": "uniforme",
+					"minimo" : 2,
+					"maximo" : 8,
+					"semilla": 666
+				}
+			}
+		]
+	}
+}
