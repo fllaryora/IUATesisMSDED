@@ -24,23 +24,26 @@ typedef struct {
 #define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
 #define SendCombisToRaffler(X,Y)	(void)0
 #define SendLiveLockToRaffler()	(void)0
-#define SendLiveLockToRaffler()	(void)0
+#define SendLiveLockToPrinter()	(void)0
 
 //EJECUTADOS POR EL RAFFLER
 #define ProbeCombiForRaffler(X)	(void)0
-#define GetRafflerCombiCount(X, Y) *(Y)=8
+#define GetRafflerCombiCount(X, Y) *(Y)=10
+//-1,0,1,2,3,4,5,6,7,8
+//pero sacando el inicio
+//0,1,2,3,4,5,6,7,8
 #define ReciveRafflerCombi(X,Y)	for(int i = 0 ; i < Y; i++){ X[i]=i+1; }
-
 //prueba si recibio orden de algun nodo
-#define ProbeOrderForRaffler(X)	(X)->MPI_TAG=LIVE_LOCK;(X)->MPI_SOURCE=MASTER_ID;
+#define ProbeOrderForRaffler(X)	(X)->MPI_TAG=NEW_RAFFLE;(X)->MPI_SOURCE=MASTER_ID
 //descubre el largo del mensaje
-#define GetRafflerOrderCount( X, Y)	*(Y)=3
+#define GetRafflerOrderCount( X, Y)	*(Y)=4
 //lee la orden
+//1,2,3,4
 #define ReciveRafflerOrder(X,Y)	for(int i = 0 ; i < Y; i++){ X[i]=i+1; }
 //dice al master que ya sorteo
-#define SendRaffleDoneToMaster()	(void)0
+#define SendRaffleDoneToMaster()	currentTag = GET_RAFFLE
 //dice a una cola cuales la prioridad del actual sorteo
-#define SendRafflePeiorityToQueue(X,Y,Z)	(void)0
+#define SendRafflePeiorityToQueue(X,Y,Z)	currentTag = LIVE_LOCK
 
 
 #ifdef _MOCK_SCHADULER_
