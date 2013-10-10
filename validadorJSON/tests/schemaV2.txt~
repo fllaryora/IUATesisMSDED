@@ -87,30 +87,63 @@
                                     "type":"number",
                                     "required":false
                                 }
-                            }
+                            },
 							"delay": {
-								"type":"object",
+								"type": [
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "uniform","u" ]
+													},
+													"least": {
+														"type":"number",
+														"required":true
+													},
+													"highest": {
+														"type":"number",
+														"required":true
+													},
+													"seed": {
+														"type":"number",
+														"required":true
+													}
+												}
+											},
+											{
+												"type": "object",
+												"properties": {
+													"distribution": {
+														"enum": [ "deterministic","d" ]
+													},
+													"constant": {
+														"type":"number",
+														"required":true
+													}
+												}
+											}
+										],
 								"required":true,
 								"properties":{
-									"distribucion": {
-										"type":"string",
-										"required":true
+									"distribution": {
+										"enum": [ "uniform","deterministic" ] 
 									},
 									"least": {
-										"type":"number",
-										"required":true
+										"type":"number"
 									},
 									"highest": {
-										"type":"number",
-										"required":true
+										"type":"number"
 									},
 									"seed": {
-										"type":"number",
-										"required":true
+										"type":"number"
+									},
+									"constant": {
+										"type":"number"
 									}
 								}
 							}
 						}
+					}
                 }
             }
         }

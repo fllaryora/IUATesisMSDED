@@ -36,7 +36,7 @@
 				"enableProbabilisticBranch" : true,
 				"probabilisticBranch" : [0.5 , 0.5],
 				"delay" : {
-					"distribucion": "uniform",
+					"distribution": "uniform",
 					"least" : 2,
 					"highest" : 8,
 					"seed": 666
