@@ -99,8 +99,9 @@ int validateJsonImput(const char *filename, char *error) {
 	    {
 		object2 = json_array_get_object(array, k);
 		if (idComparar == json_object_dotget_number(object2,"idnodo")){
-		     sprintf(error,"ERROR: La COLA %.0f está repetida en la lista de COLAS",
-json_object_dotget_number(objectInArray,"idnodo"));
+		     sprintf(error,"ERROR: La COLA %.0f está repetida en la lista de COLAS"
+,
+			json_object_dotget_number(objectInArray,"idnodo"));
 		     return 0;
 		}
 	    }

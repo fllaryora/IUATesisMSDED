@@ -43,11 +43,12 @@ callback: plop validation errors to stderr
 */
 static void schema_error(void *client, const char *format, ...)
 {
-	va_list ap;
+	/*va_list ap;
 	va_start(ap, format);
 	vfprintf(stderr, format, ap);
 	va_end(ap);
-	fprintf(stderr, "\n");
+	fprintf(stderr, "\n");*/
+	return;
 }
 
 

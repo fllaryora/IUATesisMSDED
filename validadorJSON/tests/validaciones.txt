@@ -1,0 +1,51 @@
+Validaciones contempladas en SCHEMA
+
+tener solamente "cycle", "length", "transformation" en raiz
+tener solamente "queues", "counters", "normals", "functions", "combis" en "transformation"
+
+queues tengan integer, array de integer y numbers
+
+"enableProbabilisticBranch" true, hace que "probabilisticBranch" sea requerido
+"probabilisticBranch" debe tener al menos 2 items
+
+
+    /*COLA: ANTESESOR: No pueden ser Colas.*/
+    /*COLA: SUCESOR: Solo pueden ser combis.*/
+    /*COMBI: ANTESESOR: Solo pueden ser nodos Cola.*/
+    /*COMBI: ANTESESOR: Se admite cualquier número de entradas, excepto 0 (cero).*/
+    /*COMBI: SUCESOR: No pueden ser Combis.*/
+    /*COMBI: SUCESOR: Se admite cualquier número de salidas, excepto 0.*/
+    /*NORMAL: ANTESESOR: Se admite cualquier número de entradas, excepto 0.*/
+    /*NORMAL: ANTESESOR: No pueden ser colas*/
+    /*NORMAL: SUCESOR: Se admite cualquier número de salidas, excepto 0.*/
+    /*NORMAL: SUCESOR: No pueden ser COMBIS.*/
+    /*FUNCION: ANTESESOR: Se admite cualquier número de entradas, excepto 0.*/
+    /*FUNCION: ANTESESOR: No pueden ser colas.*/
+    /*FUNCION: SUCESOR: Se admite cualquier número de salidas, excepto 0.*/
+    /*FUNCION: SUCESOR: No pueden ser Combis*/
+    /*CONTADOR: ANTESESOR: Se admite cualquier número de entradas, excepto 0.*/
+    /*CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
+    /*CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
+
+los excepto cero se pueden validar con SCHEMA,
+lo de sucesores y antecesores no repetidos tambien se puede validar,
+no se puede validar diferentes id en cola combi etc con SCHEMA (hacer con parson)
+verificar en en sucesores y antecesores se referencia a los que se puede no se puede hacer con SCHEMA
+
+
+Las Colas:
+-Los id sucesores de las colas solo apuntan a ids de combis.
+-Los id Antecesores no estan en el arreglo de ids de colas.
+
+Las combis:
+-Los id Antecesores, nunca 0, solo estan en el arreglo de ids de colas.
+-Los id sucesores nunca apuntan a ids del arreglo de las combis.
+-nunca ambos 0.
+
+Las normales y funciones:
+-Los id sucesores nunca apuntan a ids del arreglo de las combis , nunca 0.
+-Los id Antecesores no estan en el arreglo de ids de colas, nunca 0.
+
+Las contadores:
+-Los id sucesores nunca apuntan a ids del arreglo de las combis ni de contadores.
+-Los id Antecesores no estan en el arreglo de ids de colas ni de contadores, nunca 0.

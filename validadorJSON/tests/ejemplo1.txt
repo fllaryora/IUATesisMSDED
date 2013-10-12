@@ -2,6 +2,24 @@
  "length": 1000,
  "cycle": 30,
  "transformation": {
+		"queues": [
+			{
+				"idNode": 1,
+				"resource": 5,
+				"preceders": [4],
+				"followers": [11,10],
+				"fixedCost": 12.0,
+				"variableCost": 2.0
+			},
+			{
+				"idNode": 2,
+				"resource": 0,
+				"preceders":[11,4],
+				"followers": [10],
+				"fixedCost": 12.0,
+				"variableCost": 2.0
+			}
+		],
 		"counters": [
 			{
 				"idNode": 4,
@@ -15,6 +33,96 @@
 				"preceders":[11],
 				"followers": [3]
 				
+			}
+		],
+		"normals": [
+			{
+				"idNode": 8,
+				"preceders":[6],
+				"followers": [12,13],
+				"enableProbabilisticBranch": false,
+				"probabilisticBranch": [],
+				"delay": {
+					"distribution": "normal",
+					"mean": 2,
+					"variance" : 9,
+					"seed": 666
+				}
+			},
+			{
+				"idNode": 9,
+				"preceders":[10,6],
+				"followers": [12,2],
+				"enableProbabilisticBranch": true,
+				"probabilisticBranch": [0.5 , 0.5],
+				"delay": {
+					"distribution": "exponential",
+					"lambda" : 0.5,
+					"seed": 666
+				}
+			},
+			{
+				"idNode": 9,
+				"preceders":[10,6],
+				"followers": [12,2],
+				"enableProbabilisticBranch": true,
+				"probabilisticBranch": [0.5 , 0.5],
+				"delay" : {
+					"distribution": "triangular",
+					"least" : 2,
+					"highest" : 8,
+					"mode" : 5,
+					"seed": 666
+				}
+			},
+			{
+				"idNode": 9,
+				"preceders":[10,6],
+				"followers": [12,2],
+				"enableProbabilisticBranch": true,
+				"probabilisticBranch": [0.5 , 0.5],
+				"delay": {
+					"distribution": "beta",
+					"minimun": 2,
+					"maximun": 8,
+					"shapeAlpha": 5,
+					"shapeBeta": 0.5,
+					"seed": 666
+				}
+			},
+			{
+				"idNode": 9,
+				"preceders": [10,6],
+				"followers": [12,2],
+				"enableProbabilisticBranch": true,
+				"probabilisticBranch": [0.5 , 0.5],
+				"delay" : {
+					"distribution": "log-normal",
+					"mean": 2,
+					"escale": 2,
+					"shape": 3,
+					"minimun": 0,
+					"seed": 666
+				}
+			}
+		],
+		"functions": [
+			{
+				"idNode": 6,
+				"input": 3,
+				"output": 2,
+				"preceders":[10],
+				"followers": [12,13],
+				"enableProbabilisticBranch" : false
+			},
+			{
+				"idNode": 7,
+				"input": 3,
+				"output": 2,
+				"preceders":[9,6],
+				"followers": [13],
+				"enableProbabilisticBranch" : true,
+				"probabilisticBranch" : [0.5 , 0.5]
 			}
 		],
 		"combis": [

@@ -60,12 +60,11 @@
 				"preceders":[6],
 				"followers": [12,13],
 				"enableProbabilisticBranch": false,
-				"tiempoDeDemora": {
-					"distribucion": "normal",
-					"media" : 2,
-					"varianza" : 9, //desviacion al cuadrado
-					"desviacionEstandar" : 3,
-					"semilla": 666
+				"delay": {
+					"distribution": "normal",
+					"mean": 2,
+					"variance" : 9,
+					"seed": 666
 				}
 			},
 			{
@@ -74,11 +73,10 @@
 				"followers": [12,2],
 				"enableProbabilisticBranch": true,
 				"probabilisticBranch": [0.5 , 0.5],
-				"tiempoDeDemora": {
-					"distribucion": "exponencial",
-					"media" : 2,
-					"lambda" : 0.5, //inverso de la media
-					"semilla": 666
+				"delay": {
+					"distribution": "exponential",
+					"lambda" : 0.5,
+					"seed": 666
 				}
 			},
 			{
@@ -87,12 +85,12 @@
 				"followers": [12,2],
 				"enableProbabilisticBranch": true,
 				"probabilisticBranch": [0.5 , 0.5],
-				"tiempoDeDemora" : {
-					"distribucion": "triangular",
-					"minimo" : 2,
-					"maximo" : 8,
-					"moda" : 5,
-					"semilla": 666
+				"delay" : {
+					"distribution": "triangular",
+					"least" : 2,
+					"highest" : 8,
+					"mode" : 5,
+					"seed": 666
 				}
 			},
 			{
@@ -101,58 +99,54 @@
 				"followers": [12,2],
 				"enableProbabilisticBranch": true,
 				"probabilisticBranch": [0.5 , 0.5],
-				"tiempoDeDemora" : {
-					"distribucion": "beta",
-					"minimo" : 2,
-					"maximo" : 8,
-					"alfa" : 5, 
-					"formaA" : 5, //igual a alfa 
-					"beta" : 0.5,
-					"formaB" : 0.5, //igual a beta
-					"semilla": 666
+				"delay": {
+					"distribution": "beta",
+					"minimun": 2,
+					"maximun": 8,
+					"shapeAlpha": 5,
+					"shapeBeta": 0.5,
+					"seed": 666
 				}
 			},
 			{
 				"idNode": 9,
-				"preceders":[10,6],
+				"preceders": [10,6],
 				"followers": [12,2],
 				"enableProbabilisticBranch": true,
 				"probabilisticBranch": [0.5 , 0.5],
-				"tiempoDeDemora" : {
-					"distribucion": "log-normal",
-					"media" : 2,
-					"escala" :2,
-					"varianza" : 9, //desviacion al cuadrado
-					"desviacionEstandar" : 3,
-					"forma" : 3,
-					"minimo" : 0,
-					"semilla": 666
+				"delay" : {
+					"distribution": "log-normal",
+					"mean": 2,
+					"escale": 2,
+					"shape": 3,
+					"minimun": 0,
+					"seed": 666
 				}
 			}
 		],
 		"combis": [
 			{
 				"idNode": 10,
-				"Antecesor":[1],
-				"Sucesor": [12,13],
+				"preceders":[1],
+				"followers": [12,13],
 				"salidaProbabilistica" : false,
 				"probabilidadPorSalida" : [],
-				"tiempoDeDemora" : {
-					"distribucion": "deterministica",
-					"constante" : 6
+				"delay" : {
+					"distribution": "deterministic",
+					"constant" : 6
 				}
 			},
 			{
-				"idnodo": 11,
-				"Antecesor":[3,2],
-				"Sucesor": [12,13],
-				"salidaProbabilistica" : true,
-				"probabilidadPorSalida" : [0.5 , 0.5],
-				"tiempoDeDemora" : {
-					"distribucion": "uniforme",
-					"minimo" : 2,
-					"maximo" : 8,
-					"semilla": 666
+				"idNode": 11,
+				"preceders":[3,2],
+				"followers": [12,13],
+				"enableProbabilisticBranch" : true,
+				"probabilisticBranch" : [0.5 , 0.5],
+				"delay" : {
+					"distribucion": "uniform",
+					"least" : 2,
+					"highest" : 8,
+					"seed": 666
 				}
 			}
 		]
