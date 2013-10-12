@@ -23,6 +23,7 @@ typedef struct {
 //EJECUTADOS POR EL MASTER
 #define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
 #define SendCombisToRaffler(X,Y)	(void)0
+#define NewRaffle()	(void)0
 #define SendLiveLockToRaffler()	(void)0
 #define SendLiveLockToPrinter()	(void)0
 
@@ -44,6 +45,13 @@ typedef struct {
 #define SendRaffleDoneToMaster()	currentTag = GET_RAFFLE
 //dice a una cola cuales la prioridad del actual sorteo
 #define SendRafflePeiorityToQueue(X,Y,Z)	currentTag = LIVE_LOCK
+
+
+
+// EJECUTADOS POR EL PRINTER
+#define ProbeOrderForPrinter(X)	(void)0
+#define GetPrinterOrderCount( X, Y)	(void)0
+#define RecivePrinterOrder(X,Y)	(void)0
 
 
 #ifdef _MOCK_SCHADULER_
@@ -137,8 +145,17 @@ typedef struct {
 
 // FUNCIONES del MASTER
 #define SendCombisToRaffler(X,Y)	MPI_Send( X , Y , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD)
+#define NewRaffle()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD)
 #define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD)
 #define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
 #endif
+
+
+
+// FUNCIONES del PRINTER
+#define ProbeOrderForPrinter(X)	MPI_Probe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, X)
+#define GetPrinterOrderCount( X, Y)	MPI_Get_count(X, MPI_BYTE, Y)
+#define RecivePrinterOrder(X,Y)	MPI_Recv(X, Y, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE)
+
 
 #endif /* our mpi*/

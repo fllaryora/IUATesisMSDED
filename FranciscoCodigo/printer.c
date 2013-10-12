@@ -5,4 +5,5 @@
 
 void printer(){
 	printf("Hola desde el printer\n");
+	
 }

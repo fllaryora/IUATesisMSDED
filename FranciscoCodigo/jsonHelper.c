@@ -19,7 +19,7 @@ void* getNodeById( int id){
 }
 
 int* getCombiIds( void ){
-	int count = 9;
+	int count = 11;
 	int* ids = (int*)malloc(sizeof(int) * count);
 	ids[0] = count;
 	for(int i = 1 ; i < count; i++){ ids[i]=i-2; }

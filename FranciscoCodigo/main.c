@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 				scheduler();
 				
 				SendLiveLockToRaffler();
-				SendLiveLockToPrinter();
+				//SendLiveLockToPrinter();
 				/* Shut down MPI */
 				MPI_Finalize();
 				return 0;
