@@ -32,8 +32,8 @@ void genericNode(int myIdNodo){
 	//---------------------------------------------------
 	
 	
-	
-	
+	//Test comunicator
+	MPI_Barrier( commNodes );
 	
 	
 	getNodeById( myIdNodo );

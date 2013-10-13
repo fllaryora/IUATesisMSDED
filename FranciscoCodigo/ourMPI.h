@@ -27,7 +27,8 @@ typedef struct {
 #define MPI_Comm_create(X, Y, Z)	(void)0
 #define MPI_Comm_free(X)	(void)0
 #define MPI_Group_free(X)	(void)0
-	
+#define MPI_Barrier( X )	(void)0
+
 //EJECUTADOS POR EL MASTER
 #define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
 #define SendCombisToRaffler(X,Y)	(void)0

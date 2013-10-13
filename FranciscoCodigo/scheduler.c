@@ -39,7 +39,8 @@ void scheduler(void){
 	// create the new communicator
 	MPI_Comm_create(MPI_COMM_WORLD, groupNodes, &commNodes);
 	
-	
+	//Test comunicator
+	MPI_Barrier( commNodes );
 	
 	
 	
@@ -48,7 +49,7 @@ void scheduler(void){
 	
 	
 	
-	
+	//------------------------
 	MPI_Comm_free(&commNodes);
 	MPI_Group_free(&groupNodes);
 	free(processRank);
