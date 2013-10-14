@@ -30,27 +30,27 @@ int main(int argc, char **argv){
 	int idNodo;
 	int mpiProcesses;
 	int jsonResult;
-	
+	printf("AAAAAAAA\n");
 	/* Inicio de zona MPI */
 	MPI_Init(&argc, &argv);
-	
-	printf("NEW RAFFLE = %d\n", NEW_RAFFLE);
-	printf("LIST COMB = %d\n", SEED_AND_COMBI_LIST);
-	printf("GET_RAFFLE = %d\n", GET_RAFFLE);
-	printf("LIVELOCK = %d\n", LIVE_LOCK);
-	
+	printf("AAAAAAAA\n");
 	/* Busco mi nodo Id */
 	MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
-	
+	printf("AAAAAAAA\n");
 	if ( idNodo == MASTER_ID ) {
 		if ( validateJsonInput() == JSON_APPROVED ) {
+			printf("AAAAAAAA\n");
 			MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
+			printf("AAAAAAAA\n");
 			if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
+				printf("AAAAAAAA\n");
 				putNodesInMem();
+				printf("AAAAAAAA\n");
 				//broadcast TAG JSON BUENO
 				jsonResult = GOOD_JSON;
+				printf("AAAAAAAA\n");
 				MPI_Bcast_JSON(&jsonResult);
-				
+				printf("AAAAAAAA\n");
 				//enviar lo combisIds al raffler
 				int* seedAndCombis = getCombiIds( );
 				SendCombisToRaffler( &seedAndCombis[1] ,  seedAndCombis[0] );

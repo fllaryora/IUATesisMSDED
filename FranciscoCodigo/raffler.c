@@ -73,7 +73,7 @@ void raffler(){
 			for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",bufferSender[i]);}
 			printf("\n");
 			
-			SendRafflePeiorityToQueue(bufferSender, currentCombiIds, currentSource);	
+			SendRafflePeiorityToQueue(bufferSender, currentCombiIdsAmount, currentSource);	
 			if(bufferSender)free(bufferSender);
 			
 			
