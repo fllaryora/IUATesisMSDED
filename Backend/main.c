@@ -94,7 +94,9 @@ void master(int mpiProcesses, MPI_Comm commNodes ,const char *filenameJson , con
 			int* seedAndCombis = getCombiIds( filenameJson);
 			MPI_Send( &seedAndCombis[1] ,  seedAndCombis[0]  , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			free(seedAndCombis);
+			int* targetCounter = getTargets( filenameJson);
 			scheduler();
+			free(targetCounter);
 
 			//envio el live lock al raffler y al printer
 			MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD);

@@ -439,13 +439,13 @@ int* getTargets( const char *filenameJson ){
 	JSON_Array* arrayJsonFunction = json_object_dotget_array(object,"transformation.counters");
 
 	count += json_array_get_count( arrayJsonFunction);
-	int* targets = (int*)malloc(sizeof(int) * count+1);
-	targets[0] = count+1; //combis + seed
+	int* targets = (int*)malloc(sizeof(int) * (count*2+1));
+	targets[0] = count;
 	
-
 	for (i = 0; i < count; i++){
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
-	    targets[i+1] = json_object_dotget_number(objectInArray, "cycle" );
+	    targets[i*2+1] = json_object_dotget_number(objectInArray, "idNode" );
+	    targets[i*2+2] = json_object_dotget_number(objectInArray, "cycle" );
 	}
 	return targets;
 }
