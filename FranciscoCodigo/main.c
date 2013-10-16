@@ -26,7 +26,7 @@
 #include "genericNode.h"
 #include "jsonHelper.h"
 
-void logError(int error_code);
+void logError(int error_code, int my_rank);
 
 int main(int argc, char **argv){
 	int idNodo; int idNodoInterno;
@@ -34,46 +34,55 @@ int main(int argc, char **argv){
 	int mpiProcesses; int* processRank = NULL;
 	int jsonResult;
 	int error_code;
+	int color;
 	/* Inicio de zona MPI */
 	MPI_Init(&argc, &argv);
 	
 	/* Busco mi nodo Id */
 	MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
 	
-	if ( idNodo != RAFFLER_ID && idNodo != PRINTER_ID ) {
-		/*voy a armar comunicadores*/
-		MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
-		processRank = (int*) malloc((mpiProcesses - RAFFLER_PRINTER)*sizeof(int));
-		processRank[0] = MASTER_ID;
-		for(int i = FIST_NODE_ID; i < mpiProcesses ; i++){
-			processRank[i - RAFFLER_PRINTER] = i;
-		}
-		printf("Se genero el nuevo arreglo de ranks\n");
-		
-		MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
-		
-		error_code = GetCommWorldHandle(&groupWorld);
-		logError( error_code);
-		printf("Obtengo el hande del comm world\n");
-		error_code = CreateGroupByIds(groupWorld,(mpiProcesses - RAFFLER_PRINTER), processRank, &groupNodes );
-		logError( error_code);
-		printf("Cree un grupo con los rangos\n");
-		error_code = CreateCommByGroup(groupNodes, &commNodes);
-		logError( error_code);
-		printf("Cree un comunicador a partir del grupo\n");
-		MPI_Comm_rank( commNodes, &idNodoInterno);
-		printf("My bicycle = %d\n", idNodoInterno);
-		//Test comunicator
-		//MPI_Barrier( commNodes );
-		printf("\n");
-
+	
+	/*voy a armar comunicadores*/
+	MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
+	processRank = (int*) malloc((mpiProcesses - RAFFLER_PRINTER)*sizeof(int));
+	processRank[0] = MASTER_ID;
+	for(int i = FIST_NODE_ID; i < mpiProcesses ; i++){
+		processRank[i - RAFFLER_PRINTER] = i;
 	}
+	
+	/* Mothefuckers zone  *
+	
+	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
+	
+	error_code = GetCommWorldHandle(&groupWorld);
+	logError( error_code, idNodo);
+	error_code = CreateGroupByIds(groupWorld,(mpiProcesses - RAFFLER_PRINTER), processRank, &groupNodes );
+	logError( error_code, idNodo);
+	error_code = CreateCommByGroup(groupNodes, &commNodes);
+	logError( error_code, idNodo);
+
+	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_ARE_FATAL);
+	MPI_Barrier( MPI_COMM_WORLD );
+	/* End Mothefuckers zone  */
+	if(idNodo == RAFFLER_ID || idNodo == PRINTER_ID ) {
+		color = 1;
+	}
+	else {
+		color = 2;
+	}
+	
+	MPI_Comm_split(MPI_COMM_WORLD, color, idNodo, &commNodes);
+	MPI_Comm_rank( commNodes, &idNodoInterno);
+	printf("My bicycle %d => %d\n", idNodo, idNodoInterno);
+
 	
 	if ( idNodo == MASTER_ID ) {
 		if ( validateJsonInput() == JSON_APPROVED ) {
 			
 			
-			
+			//MPI_Barrier( commNodes );
+			int saraza = 999;
+			MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
 			if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
 				
 				putNodesInMem();
@@ -110,6 +119,11 @@ int main(int argc, char **argv){
 				if (idNodo == PRINTER_ID) {
 					printer();
 				} else {
+					
+					//MPI_Barrier( commNodes );
+					int saroza = 888;
+					MPI_Bcast(&saroza, 1 , MPI_INT, 0 ,commNodes);
+					printf("quero ver nueves = %d\n", saroza );
 					genericNode(idNodo);
 				}
 			}
@@ -128,17 +142,15 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void logError(int error_code){
+void logError(int error_code, int my_rank){
 	if (error_code != MPI_SUCCESS) {
-
 		char error_string[MPI_MAX_ERROR_STRING];
 		int length_of_error_string, error_class;
-
 		MPI_Error_class(error_code, &error_class);
 		MPI_Error_string(error_class, error_string, &length_of_error_string);
-		printf("%3d: %s\n", my_rank, error_string);
+		printf("%3d: %s     \n", my_rank, error_string);
 		MPI_Error_string(error_code, error_string, &length_of_error_string);
-		printf("%3d: %s\n", my_rank, error_string);
+		printf("%3d: %s     \n", my_rank, error_string);
 		MPI_Abort(MPI_COMM_WORLD, error_code);
 	}
 }
