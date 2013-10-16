@@ -142,7 +142,7 @@ int validateJson(const char *filenameJson){
 	int i, j;
 	int sizeQueues, sizeCounters, sizeNormals, sizeFunctions, sizeCombis, sizeNodes;
 	int *arrayQueues = NULL, *arrayCounters = NULL, *arrayNormals = NULL, *arrayFunctions = NULL, *arrayCombis = NULL,*arrayNodes = NULL;
-	int sizePreceders, sizeFollowers;
+	int sizePreceders = 0, sizeFollowers = 0;
 	int *arrayPreceders = NULL, *arrayFollowers = NULL;
     /*VALIDATE JSON*/
     root_value = json_parse_file(filenameJson);
@@ -185,14 +185,18 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL QUEUE*/
 
-		//if(arrayPreceders){
-		//	free(arrayPreceders);
-		//	arrayPreceders = NULL;
-		//}
-		//if(arrayFollowers){
-			//free(arrayFollowers);
-			//sizeFollowers = NULL;
-		//}
+		if(arrayPreceders)
+			free(arrayPreceders);
+
+		if(arrayFollowers)
+			free(arrayFollowers);
+			
+		
+		arrayPreceders = NULL;
+		arrayFollowers = NULL;
+		sizeFollowers = 0;
+		sizePreceders = 0;
+		
 	
 	}
 
@@ -212,14 +216,17 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL COMBI*/
 
-		//if(arrayPreceders){
-		//	free(arrayPreceders);
-		//	arrayPreceders = NULL;
-		//}
-		//if(arrayFollowers){
-		//	free(arrayFollowers);
-		//	sizeFollowers = NULL;
-		//}
+		if(arrayPreceders)
+			free(arrayPreceders);
+
+		if(arrayFollowers)
+			free(arrayFollowers);
+			
+		
+		arrayPreceders = NULL;
+		arrayFollowers = NULL;
+		sizeFollowers = 0;
+		sizePreceders = 0;
 	}
 
 	for (i = 0; i < sizeNormals ; i++)
@@ -238,14 +245,18 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL NORMAL*/
 
-		//if(arrayPreceders){
-		//	free(arrayPreceders);
-		//	arrayPreceders = NULL;
-		//}
-		//if(arrayFollowers){
-		//	free(arrayFollowers);
-		//	sizeFollowers = NULL;
-		//}
+		if(arrayPreceders)
+			free(arrayPreceders);
+
+		if(arrayFollowers)
+			free(arrayFollowers);
+			
+		
+		arrayPreceders = NULL;
+		arrayFollowers = NULL;
+		sizeFollowers = 0;
+		sizePreceders = 0;
+
 	}
 
 	for (i = 0; i < sizeFunctions ; i++)
@@ -264,14 +275,18 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL FUNCION*/
 
-		//if(arrayPreceders){
-		//	free(arrayPreceders);
-		//	arrayPreceders = NULL;
-		//}
-		//if(arrayFollowers){
-		//	free(arrayFollowers);
-		//	sizeFollowers = NULL;
-		//}
+		if(arrayPreceders)
+			free(arrayPreceders);
+
+		if(arrayFollowers)
+			free(arrayFollowers);
+			
+		
+		arrayPreceders = NULL;
+		arrayFollowers = NULL;
+		sizeFollowers = 0;
+		sizePreceders = 0;
+
 	}
 
 	for (i = 0; i < sizeCounters ; i++)
@@ -290,14 +305,18 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL CONTADOR*/
 
-		if(arrayPreceders){
+		if(arrayPreceders)
 			free(arrayPreceders);
-			arrayPreceders = NULL;
-		}
-		//if(arrayFollowers){
-		//	free(arrayFollowers);
-		//	sizeFollowers = NULL;
-		//}
+
+		if(arrayFollowers)
+			free(arrayFollowers);
+			
+		
+		arrayPreceders = NULL;
+		arrayFollowers = NULL;
+		sizeFollowers = 0;
+		sizePreceders = 0;
+
 	}
     
     return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
