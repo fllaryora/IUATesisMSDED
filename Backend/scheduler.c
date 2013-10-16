@@ -14,6 +14,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 	int  isAllFinalized = 0;
 	
 	double totalTime = 0.0;
+	UNUSEDWARNING(totalTime);
 	//TODO sacal el siguente comentario
 	//definido en la fotografia que envie por watzap y no vio chen
 	

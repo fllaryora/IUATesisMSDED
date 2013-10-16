@@ -18,14 +18,8 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-#ifdef UNUSED
-#elif defined(__GNUC__)
-# define UNUSED(x) UNUSED_ ## x __attribute__((unused))
-#elif defined(__LCLINT__)
-# define UNUSED(x) /*@unused@*/ x
-#else
-# define UNUSED(x) x
-#endif
+# define UNUSEDWARNING(x) (void)x
+
 
 #define MASTER_ID	0
 #define RAFFLER_ID	1

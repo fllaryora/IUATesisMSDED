@@ -137,10 +137,13 @@ int validateJson(const char *filenameJson){
 	
 	JSON_Value  *root_value = NULL;
     JSON_Object *object = NULL,*objectInArray = NULL;
+    UNUSEDWARNING(objectInArray);
     JSON_Array  *array = NULL;
-
+	UNUSEDWARNING(array);
 	int i, j;
+	UNUSEDWARNING(j);
 	int sizeQueues, sizeCounters, sizeNormals, sizeFunctions, sizeCombis, sizeNodes;
+	
 	int *arrayQueues = NULL, *arrayCounters = NULL, *arrayNormals = NULL, *arrayFunctions = NULL, *arrayCombis = NULL,*arrayNodes = NULL;
 	int sizePreceders = 0, sizeFollowers = 0;
 	int *arrayPreceders = NULL, *arrayFollowers = NULL;
@@ -427,6 +430,10 @@ int* getCombiIds( const char *filenameJson ){
 	int count = 0,i;
 	int  *arrayCombis = NULL;
 	int  sizeCombis;
+	
+	UNUSEDWARNING(arrayCombis);
+	UNUSEDWARNING(sizeCombis);
+	
 	JSON_Value* root_value = json_parse_file(filenameJson);
 	JSON_Object* object = json_value_get_object(root_value);
 	JSON_Object *objectInArray;
@@ -458,6 +465,8 @@ int* getTargets( const char *filenameJson ){
 	int count = 0,i;
 	int  *arrayCombis = NULL;
 	int  sizeCombis;
+	UNUSEDWARNING(arrayCombis);
+	UNUSEDWARNING(sizeCombis);
 	JSON_Value* root_value = json_parse_file(filenameJson);
 	JSON_Object* object = json_value_get_object(root_value);
 	JSON_Object *objectInArray;
@@ -781,6 +790,7 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
     JSON_Array  *array,*arrayInternal;
 	int i, j;
 
+
     root_value = json_parse_file(filenameJson);
     object = json_value_get_object(root_value);
 	array = json_object_dotget_array(object, "transformation.combis");
@@ -893,8 +903,7 @@ void printQueue(Queue queue)
 		printf("%d: followers[%d]: %d\n", queue.idNode,i,queue.followers[i]);
 }
 
-void printCounter(Counter counter)
-{
+void printCounter(Counter counter){
 	int i;
 
 	printf("%d: idNode: %d\n", counter.idNode, counter.idNode);
