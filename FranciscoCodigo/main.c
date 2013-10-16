@@ -26,12 +26,14 @@
 #include "genericNode.h"
 #include "jsonHelper.h"
 
+void logError(int error_code);
+
 int main(int argc, char **argv){
 	int idNodo; int idNodoInterno;
 	MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
 	int mpiProcesses; int* processRank = NULL;
 	int jsonResult;
-	
+	int error_code;
 	/* Inicio de zona MPI */
 	MPI_Init(&argc, &argv);
 	
@@ -47,11 +49,17 @@ int main(int argc, char **argv){
 			processRank[i - RAFFLER_PRINTER] = i;
 		}
 		printf("Se genero el nuevo arreglo de ranks\n");
-		GetCommWorldHandle(&groupWorld);
+		
+		MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
+		
+		error_code = GetCommWorldHandle(&groupWorld);
+		logError( error_code);
 		printf("Obtengo el hande del comm world\n");
-		CreateGroupByIds(groupWorld,(mpiProcesses - RAFFLER_PRINTER), processRank, &groupNodes );
+		error_code = CreateGroupByIds(groupWorld,(mpiProcesses - RAFFLER_PRINTER), processRank, &groupNodes );
+		logError( error_code);
 		printf("Cree un grupo con los rangos\n");
-		CreateCommByGroup(groupNodes, &commNodes);
+		error_code = CreateCommByGroup(groupNodes, &commNodes);
+		logError( error_code);
 		printf("Cree un comunicador a partir del grupo\n");
 		MPI_Comm_rank( commNodes, &idNodoInterno);
 		printf("My bicycle = %d\n", idNodoInterno);
@@ -118,4 +126,19 @@ int main(int argc, char **argv){
 	}
 	MPI_Finalize();
 	return 0;
+}
+
+void logError(int error_code){
+	if (error_code != MPI_SUCCESS) {
+
+		char error_string[MPI_MAX_ERROR_STRING];
+		int length_of_error_string, error_class;
+
+		MPI_Error_class(error_code, &error_class);
+		MPI_Error_string(error_class, error_string, &length_of_error_string);
+		printf("%3d: %s\n", my_rank, error_string);
+		MPI_Error_string(error_code, error_string, &length_of_error_string);
+		printf("%3d: %s\n", my_rank, error_string);
+		MPI_Abort(MPI_COMM_WORLD, error_code);
+	}
 }
