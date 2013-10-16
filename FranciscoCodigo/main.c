@@ -89,10 +89,6 @@ int main(int argc, char **argv){
 	if ( idNodo == MASTER_ID ) {
 		if ( validateJsonInput() == JSON_APPROVED ) {
 			
-			
-			MPI_Barrier( commNodes );
-			//int saraza = 999;
-			//MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
 			if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
 				
 				putNodesInMem();
@@ -110,7 +106,9 @@ int main(int argc, char **argv){
 				scheduler();
 				
 				SendLiveLockToRaffler();
-				
+				//MPI_Barrier( commNodes );
+				//int saraza = 999;
+				//MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
 				//SendLiveLockToPrinter();
 				/* Shut down MPI */
 				MPI_Finalize();
@@ -130,7 +128,7 @@ int main(int argc, char **argv){
 					printer();
 				} else {
 					
-					MPI_Barrier( commNodes );
+					//MPI_Barrier( commNodes );
 					//int saroza = 888;
 					//MPI_Bcast(&saroza, 1 , MPI_INT, 0 ,commNodes);
 					//printf("quero ver nueves = %d\n", saroza );
