@@ -7,7 +7,6 @@
 
 void genericNode(int myIdNodo){
 	
-	
 	getNodeById( myIdNodo );
 	printf("Hello from slave\n");
 	

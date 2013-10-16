@@ -27,7 +27,7 @@
 #include "jsonHelper.h"
 
 void logError(int error_code, int my_rank);
-void master(int mpiProcesses);
+void master(int mpiProcesses, MPI_Comm commNodes);
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
@@ -44,7 +44,7 @@ int main(int argc, char **argv){
 	MPI_Comm_rank( commNodes, &idNodoInterno);
 	printf("nuevo rank %d => %d\n", idNodo, idNodoInterno);
 	if ( idNodo == MASTER_ID ) {
-		master(mpiProcesses);
+		master(mpiProcesses, commNodes);
 	} else {
 		MPI_Bcast_JSON( &jsonResult );
 		if ( jsonResult == GOOD_JSON ) {
@@ -68,7 +68,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void master(int mpiProcesses){
+void master(int mpiProcesses, MPI_Comm commNodes){
 	int jsonResult;
 	if ( validateJsonInput() == JSON_APPROVED ) {			
 		if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
@@ -104,7 +104,7 @@ void logError(int error_code, int my_rank){
 		printf("%3d: %s     \n", my_rank, error_string);
 		getErrorString(error_code, error_string, &length_of_error_string);
 		printf("%3d: %s     \n", my_rank, error_string);
-		abort(error_code);
+		abortAllProcess(error_code);
 	}
 }
 

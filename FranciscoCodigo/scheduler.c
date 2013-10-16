@@ -4,9 +4,7 @@
 #include <stdlib.h>
 #include "scheduler.h"
 
-
 #define WATCHDOG_DOESNT_BITE_ME(X) (X >= 0)
-
 
 void scheduler(void){
 

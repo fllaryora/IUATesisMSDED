@@ -37,10 +37,10 @@ typedef struct {
 //retorna el error en un string
 #define getErrorString(X, Y, Z)	Y[0]='E';Y[1]='R';Y[2]='R';Y[3]='O';Y[4]='R';Y[5]='\0'
 //aborta MPI
-#define abort(X)	exit(X)
+#define abortAllProcess(X)	exit(X)
 
 //EJECUTADOS POR EL MASTER
-#define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
+#define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON
 #define SendCombisToRaffler(X,Y)	(void)0
 #define NewRaffle()	(void)0
 #define SendLiveLockToRaffler()	(void)0
@@ -79,7 +79,6 @@ typedef struct {
 
 
 
-
 #ifdef _MOCK_PRINTER_
 #define MPI_Comm_rank(X, Y) *(Y)=2
 #endif
@@ -88,7 +87,6 @@ typedef struct {
 
 #ifdef _MOCK_RAFFLER_
 #define MPI_Comm_rank(X, Y) *(Y)=1
-
 #endif
 
 
@@ -148,7 +146,7 @@ typedef struct {
 //retorna el error en un string
 #define getErrorString(X, Y, Z)	MPI_Error_string(X, Y, Z)
 //aborta MPI
-#define abort(X)	MPI_Abort(MPI_COMM_WORLD, X)
+#define abortAllProcess(X)	MPI_Abort(MPI_COMM_WORLD, X)
 
 
 //broadcastea el resultado de la validacion del json al principio de la arquitectura
