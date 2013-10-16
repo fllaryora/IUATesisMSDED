@@ -197,7 +197,6 @@ int validateJson(const char *filenameJson){
 		sizeFollowers = 0;
 		sizePreceders = 0;
 		
-	
 	}
 
 	for (i = 0; i < sizeCombis ; i++)
@@ -496,6 +495,7 @@ void sendStructToNodes( const char *filenameJson )
 
 	// ENVIO DE STRUCTURAS
 	sendStruct(&queues, &queuesCount,&counters, &counterCount,&functions, &functionCount,&normals, &normalCount, &combis, &combiCount);
+
 	return;
 }
 
