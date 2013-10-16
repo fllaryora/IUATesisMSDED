@@ -9,9 +9,8 @@ int freeAllAndReturn(int *arrayQueues , int*arrayCounters , int *arrayNormals , 
 	free(arrayNormals); free(arrayFunctions);
 	free(arrayCombis);  json_value_free(root_value);
 	if(arrayNodes)free(arrayNodes);
-	if(arrayPreceders)free(arrayPreceders);
-	if(arrayFollowers)free(arrayFollowers);
-	
+	//if(arrayPreceders)free(arrayPreceders);
+	//if(arrayFollowers)free(arrayFollowers);
 	return ret; 
 }
 
@@ -186,10 +185,15 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL QUEUE*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		//free(sizeFollowers);
-		//sizeFollowers = NULL;
+		//if(arrayPreceders){
+		//	free(arrayPreceders);
+		//	arrayPreceders = NULL;
+		//}
+		//if(arrayFollowers){
+			//free(arrayFollowers);
+			//sizeFollowers = NULL;
+		//}
+	
 	}
 
 	for (i = 0; i < sizeCombis ; i++)
@@ -208,10 +212,14 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL COMBI*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		//free(sizeFollowers);
-		//sizeFollowers = NULL;
+		//if(arrayPreceders){
+		//	free(arrayPreceders);
+		//	arrayPreceders = NULL;
+		//}
+		//if(arrayFollowers){
+		//	free(arrayFollowers);
+		//	sizeFollowers = NULL;
+		//}
 	}
 
 	for (i = 0; i < sizeNormals ; i++)
@@ -230,10 +238,14 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL NORMAL*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		//free(sizeFollowers);
-		//sizeFollowers = NULL;
+		//if(arrayPreceders){
+		//	free(arrayPreceders);
+		//	arrayPreceders = NULL;
+		//}
+		//if(arrayFollowers){
+		//	free(arrayFollowers);
+		//	sizeFollowers = NULL;
+		//}
 	}
 
 	for (i = 0; i < sizeFunctions ; i++)
@@ -252,10 +264,14 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL FUNCION*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		//free(sizeFollowers);
-		//sizeFollowers = NULL;
+		//if(arrayPreceders){
+		//	free(arrayPreceders);
+		//	arrayPreceders = NULL;
+		//}
+		//if(arrayFollowers){
+		//	free(arrayFollowers);
+		//	sizeFollowers = NULL;
+		//}
 	}
 
 	for (i = 0; i < sizeCounters ; i++)
@@ -274,10 +290,14 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL CONTADOR*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		//free(sizeFollowers);
-		//sizeFollowers = NULL;
+		if(arrayPreceders){
+			free(arrayPreceders);
+			arrayPreceders = NULL;
+		}
+		//if(arrayFollowers){
+		//	free(arrayFollowers);
+		//	sizeFollowers = NULL;
+		//}
 	}
     
     return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
@@ -299,7 +319,6 @@ void getArray( JSON_Object *objectJson, const char *arrayJson, const char *atrib
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
 	    (*array)[i] = json_object_dotget_number(objectInArray, atributeJson );
 	}
-
 }
 
 /*
@@ -342,9 +361,10 @@ void getArrayInArray(JSON_Object * objectJson,const char *arrayJson,int pos,cons
 	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectInArray, arrayJsonIn);
 	int i;
     *countArreglo = json_array_get_count(arrayJsonFunction);
-    *arreglo = (int*)malloc(sizeof(int) * json_array_get_count(arrayJsonFunction));
+    if((*countArreglo))
+		*arreglo = (int*)malloc(sizeof(int) * (*countArreglo));
 
-    for (i = 0; i < json_array_get_count(arrayJsonFunction); i++)
+    for (i = 0; i < (*countArreglo); i++)
 	{
 	    (*arreglo)[i] = json_array_get_number(arrayJsonFunction, i);
 	}
@@ -405,6 +425,29 @@ int* getCombiIds( const char *filenameJson ){
 	    ids[i+2] = json_object_dotget_number(objectInArray, "idNode" );
 	}
 	return ids;
+}
+
+
+int* getTargets( const char *filenameJson ){
+	int count = 0,i;
+	int  *arrayCombis = NULL;
+	int  sizeCombis;
+	JSON_Value* root_value = json_parse_file(filenameJson);
+	JSON_Object* object = json_value_get_object(root_value);
+	JSON_Object *objectInArray;
+
+	JSON_Array* arrayJsonFunction = json_object_dotget_array(object,"transformation.counters");
+
+	count += json_array_get_count( arrayJsonFunction);
+	int* targets = (int*)malloc(sizeof(int) * count+1);
+	targets[0] = count+1; //combis + seed
+	
+
+	for (i = 0; i < count; i++){
+	    objectInArray = json_array_get_object(arrayJsonFunction, i);
+	    targets[i+1] = json_object_dotget_number(objectInArray, "cycle" );
+	}
+	return targets;
 }
 
 
