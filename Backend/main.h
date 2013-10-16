@@ -52,6 +52,7 @@ typedef enum{
 	COUNTER_FINAL_REPORT,
 	PRINT_SIGNAL, 		   /*when scheduler send to printer must write another 
 						   dT story or give up it */
+	COUNTER_CYCLES,    /* cuando el printer envia al scheduler los ciclos de las combis*/
 
 
 	ADVANCE_PAHSE,			/* the resources only can out*/
