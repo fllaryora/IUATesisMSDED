@@ -50,28 +50,38 @@ int main(int argc, char **argv){
 		processRank[i - RAFFLER_PRINTER] = i;
 	}
 	
-	/* Mothefuckers zone  *
+	/* Mothefuckers zone  */
 	
 	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
 	
 	error_code = GetCommWorldHandle(&groupWorld);
 	logError( error_code, idNodo);
-	error_code = CreateGroupByIds(groupWorld,(mpiProcesses - RAFFLER_PRINTER), processRank, &groupNodes );
-	logError( error_code, idNodo);
+	if(idNodo == RAFFLER_ID || idNodo == PRINTER_ID ) {
+		processRank[0] = RAFFLER_ID;
+		processRank[1] = PRINTER_ID;
+		error_code = CreateGroupByIds(groupWorld, RAFFLER_PRINTER, processRank, &groupNodes );
+		logError( error_code, idNodo);
+	} else{
+		error_code = CreateGroupByIds(groupWorld,(mpiProcesses - RAFFLER_PRINTER), processRank, &groupNodes );
+		logError( error_code, idNodo);
+	}
 	error_code = CreateCommByGroup(groupNodes, &commNodes);
 	logError( error_code, idNodo);
 
 	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_ARE_FATAL);
-	MPI_Barrier( MPI_COMM_WORLD );
+	
+	
 	/* End Mothefuckers zone  */
-	if(idNodo == RAFFLER_ID || idNodo == PRINTER_ID ) {
-		color = 1;
+	
+	/*if(idNodo == RAFFLER_ID || idNodo == PRINTER_ID ) {
+		color = 0;
 	}
 	else {
-		color = 2;
+		color = 1;
 	}
 	
-	MPI_Comm_split(MPI_COMM_WORLD, color, idNodo, &commNodes);
+	MPI_Comm_split(MPI_COMM_WORLD, color, idNodo, &commNodes);*/
+	
 	MPI_Comm_rank( commNodes, &idNodoInterno);
 	printf("My bicycle %d => %d\n", idNodo, idNodoInterno);
 
@@ -80,9 +90,9 @@ int main(int argc, char **argv){
 		if ( validateJsonInput() == JSON_APPROVED ) {
 			
 			
-			//MPI_Barrier( commNodes );
-			int saraza = 999;
-			MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
+			MPI_Barrier( commNodes );
+			//int saraza = 999;
+			//MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
 			if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
 				
 				putNodesInMem();
@@ -120,10 +130,10 @@ int main(int argc, char **argv){
 					printer();
 				} else {
 					
-					//MPI_Barrier( commNodes );
-					int saroza = 888;
-					MPI_Bcast(&saroza, 1 , MPI_INT, 0 ,commNodes);
-					printf("quero ver nueves = %d\n", saroza );
+					MPI_Barrier( commNodes );
+					//int saroza = 888;
+					//MPI_Bcast(&saroza, 1 , MPI_INT, 0 ,commNodes);
+					//printf("quero ver nueves = %d\n", saroza );
 					genericNode(idNodo);
 				}
 			}
