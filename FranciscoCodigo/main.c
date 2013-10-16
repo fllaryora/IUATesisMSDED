@@ -27,30 +27,54 @@
 #include "jsonHelper.h"
 
 int main(int argc, char **argv){
-	int idNodo;
-	int mpiProcesses;
+	int idNodo; int idNodoInterno;
+	MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
+	int mpiProcesses; int* processRank = NULL;
 	int jsonResult;
-	printf("AAAAAAAA\n");
+	
 	/* Inicio de zona MPI */
 	MPI_Init(&argc, &argv);
-	printf("AAAAAAAA\n");
+	
 	/* Busco mi nodo Id */
 	MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
-	printf("AAAAAAAA\n");
+	
+	if ( idNodo != RAFFLER_ID && idNodo != PRINTER_ID ) {
+		/*voy a armar comunicadores*/
+		MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
+		processRank = (int*) malloc((mpiProcesses - RAFFLER_PRINTER)*sizeof(int));
+		processRank[0] = MASTER_ID;
+		for(int i = FIST_NODE_ID; i < mpiProcesses ; i++){
+			processRank[i - RAFFLER_PRINTER] = i;
+		}
+		printf("Se genero el nuevo arreglo de ranks\n");
+		GetCommWorldHandle(&groupWorld);
+		printf("Obtengo el hande del comm world\n");
+		CreateGroupByIds(groupWorld,(mpiProcesses - RAFFLER_PRINTER), processRank, &groupNodes );
+		printf("Cree un grupo con los rangos\n");
+		CreateCommByGroup(groupNodes, &commNodes);
+		printf("Cree un comunicador a partir del grupo\n");
+		MPI_Comm_rank( commNodes, &idNodoInterno);
+		printf("My bicycle = %d\n", idNodoInterno);
+		//Test comunicator
+		//MPI_Barrier( commNodes );
+		printf("\n");
+
+	}
+	
 	if ( idNodo == MASTER_ID ) {
 		if ( validateJsonInput() == JSON_APPROVED ) {
-			printf("AAAAAAAA\n");
-			MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
-			printf("AAAAAAAA\n");
+			
+			
+			
 			if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
-				printf("AAAAAAAA\n");
+				
 				putNodesInMem();
-				printf("AAAAAAAA\n");
+				
 				//broadcast TAG JSON BUENO
 				jsonResult = GOOD_JSON;
-				printf("AAAAAAAA\n");
+				
 				MPI_Bcast_JSON(&jsonResult);
-				printf("AAAAAAAA\n");
+				
 				//enviar lo combisIds al raffler
 				int* seedAndCombis = getCombiIds( );
 				SendCombisToRaffler( &seedAndCombis[1] ,  seedAndCombis[0] );
@@ -59,7 +83,7 @@ int main(int argc, char **argv){
 				scheduler();
 				
 				SendLiveLockToRaffler();
-				printf("CCCCCCCCCCCCCCCCCCCCC\n");
+				
 				//SendLiveLockToPrinter();
 				/* Shut down MPI */
 				MPI_Finalize();
@@ -86,7 +110,12 @@ int main(int argc, char **argv){
 		}
 				
 	}
+	
+	
 	/* FIN de zona de MPI */
+	if ( idNodo != RAFFLER_ID && idNodo != PRINTER_ID ) {
+			if(processRank != NULL)free(processRank);
+	}
 	MPI_Finalize();
 	return 0;
 }

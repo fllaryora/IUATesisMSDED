@@ -117,4 +117,4 @@ $COMPILER -Wall $GCCARGS RNGs.o jsonHelper.o raffler.o printer.o genericNode.o s
 rm *.o
 
 echo "$RUNFORESTRUN ./Engine"
-$RUNFORESTRUN ./Engine
+#$RUNFORESTRUN ./Engine

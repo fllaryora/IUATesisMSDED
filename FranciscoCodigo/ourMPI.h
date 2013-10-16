@@ -22,11 +22,10 @@ typedef struct {
 #define MPI_Init(X, Y) (void)0
 #define MPI_Finalize() (void)0
 #define MPI_Comm_size(X, Y) *(Y)=4
-#define MPI_Comm_group(X, Y)	(void)0
-#define MPI_Group_incl(X, Y, Z, W)	(void)0
-#define MPI_Comm_create(X, Y, Z)	(void)0
-#define MPI_Comm_free(X)	(void)0
-#define MPI_Group_free(X)	(void)0
+
+#define GetCommWorldHandle(X)	*(X)=4
+#define CreateGroupByIds(X, Y, Z, W)	*(W)=4
+#define CreateCommByGroup(X, Y)	*(Y)=4
 #define MPI_Barrier( X )	(void)0
 
 //EJECUTADOS POR EL MASTER
@@ -131,6 +130,12 @@ typedef struct {
 
 //broadcastea el resultado de la validacion del json al principio de la arquitectura
 #define MPI_Bcast_JSON( A )	MPI_Bcast( A, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD)
+//busco el handle del comm world y se lo paso a un grupo
+#define GetCommWorldHandle(X)	MPI_Comm_group(MPI_COMM_WORLD, X)
+//creo grupo by process
+#define CreateGroupByIds(X, Y, Z, W)	MPI_Group_incl(X, Y, Z, W)
+// creo comunicador by group
+#define CreateCommByGroup(X, Y)	MPI_Comm_create(MPI_COMM_WORLD, X, Y)
 
 // FUNCIONES del RAFFLER
 //prueba si recibio semilla mas lista de combis
