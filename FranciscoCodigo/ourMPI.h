@@ -16,17 +16,28 @@ typedef struct {
 #define MPI_Group	int
 #define MPI_Comm	int
 
+#define MPI_SUCCESS	0
+#define MPI_MAX_ERROR_STRING	20
 #include "main.h"
-
+#include <stdlib.h>
 
 #define MPI_Init(X, Y) (void)0
 #define MPI_Finalize() (void)0
 #define MPI_Comm_size(X, Y) *(Y)=4
 
-#define GetCommWorldHandle(X)	*(X)=4
-#define CreateGroupByIds(X, Y, Z, W)	*(W)=4
-#define CreateCommByGroup(X, Y)	*(Y)=4
-#define MPI_Barrier( X )	(void)0
+#define GetCommWorldHandle(X)	*(X)=0
+#define CreateGroupByIds(X, Y, Z, W)	*(W)=0
+#define CreateCommByGroup(X, Y)	*(Y)=0
+//Seteo que quiero leer los errores
+#define setLoger()	(void)0
+//Seteo que no voy leer los errores
+#define unsetLoger()	(void)0
+//retorna la clase de error en un string
+#define getErrorCalss(X, Y)	*(Y)=4
+//retorna el error en un string
+#define getErrorString(X, Y, Z)	Y[0]='E';Y[1]='R';Y[2]='R';Y[3]='O';Y[4]='R';Y[5]='\0'
+//aborta MPI
+#define abort(X)	exit(X)
 
 //EJECUTADOS POR EL MASTER
 #define MPI_Bcast_JSON( X )	*(X)=GOOD_JSON;
@@ -128,6 +139,18 @@ typedef struct {
 
 #include <mpi.h>
 
+//Seteo que quiero leer los errores
+#define setLoger()	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN)
+//Seteo que no voy leer los errores
+#define unsetLoger()	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_ARE_FATAL)
+//retorna la clase de error en un string
+#define getErrorCalss(X, Y)	MPI_Error_class(X, Y)
+//retorna el error en un string
+#define getErrorString(X, Y, Z)	MPI_Error_string(X, Y, Z)
+//aborta MPI
+#define abort(X)	MPI_Abort(MPI_COMM_WORLD, X)
+
+
 //broadcastea el resultado de la validacion del json al principio de la arquitectura
 #define MPI_Bcast_JSON( A )	MPI_Bcast( A, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD)
 //busco el handle del comm world y se lo paso a un grupo
@@ -136,6 +159,7 @@ typedef struct {
 #define CreateGroupByIds(X, Y, Z, W)	MPI_Group_incl(X, Y, Z, W)
 // creo comunicador by group
 #define CreateCommByGroup(X, Y)	MPI_Comm_create(MPI_COMM_WORLD, X, Y)
+
 
 // FUNCIONES del RAFFLER
 //prueba si recibio semilla mas lista de combis

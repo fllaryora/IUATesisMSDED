@@ -27,97 +27,24 @@
 #include "jsonHelper.h"
 
 void logError(int error_code, int my_rank);
+void master(int mpiProcesses);
+void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
-	int idNodo; int idNodoInterno;
-	MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
-	int mpiProcesses; int* processRank = NULL;
+	int idNodo; int idNodoInterno;  int mpiProcesses; 
+	int* processRank = NULL; MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
 	int jsonResult;
-	int error_code;
-	int color;
 	/* Inicio de zona MPI */
 	MPI_Init(&argc, &argv);
-	
-	/* Busco mi nodo Id */
+	/* Busco mi nodo Id y cantidad*/
 	MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
-	
-	
-	/*voy a armar comunicadores*/
 	MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
-	processRank = (int*) malloc((mpiProcesses - RAFFLER_PRINTER)*sizeof(int));
-	processRank[0] = MASTER_ID;
-	for(int i = FIST_NODE_ID; i < mpiProcesses ; i++){
-		processRank[i - RAFFLER_PRINTER] = i;
-	}
-	
-	/* Mothefuckers zone  */
-	
-	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
-	
-	error_code = GetCommWorldHandle(&groupWorld);
-	logError( error_code, idNodo);
-	if(idNodo == RAFFLER_ID || idNodo == PRINTER_ID ) {
-		processRank[0] = RAFFLER_ID;
-		processRank[1] = PRINTER_ID;
-		error_code = CreateGroupByIds(groupWorld, RAFFLER_PRINTER, processRank, &groupNodes );
-		logError( error_code, idNodo);
-	} else{
-		error_code = CreateGroupByIds(groupWorld,(mpiProcesses - RAFFLER_PRINTER), processRank, &groupNodes );
-		logError( error_code, idNodo);
-	}
-	error_code = CreateCommByGroup(groupNodes, &commNodes);
-	logError( error_code, idNodo);
-
-	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_ARE_FATAL);
-	
-	
-	/* End Mothefuckers zone  */
-	
-	/*if(idNodo == RAFFLER_ID || idNodo == PRINTER_ID ) {
-		color = 0;
-	}
-	else {
-		color = 1;
-	}
-	
-	MPI_Comm_split(MPI_COMM_WORLD, color, idNodo, &commNodes);*/
-	
+	/*voy a armar comunicadores*/
+	createCommunicator( &commNodes, &groupNodes, &groupWorld, &processRank, mpiProcesses, idNodo );
 	MPI_Comm_rank( commNodes, &idNodoInterno);
-	printf("My bicycle %d => %d\n", idNodo, idNodoInterno);
-
-	
+	printf("nuevo rank %d => %d\n", idNodo, idNodoInterno);
 	if ( idNodo == MASTER_ID ) {
-		if ( validateJsonInput() == JSON_APPROVED ) {
-			
-			if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
-				
-				putNodesInMem();
-				
-				//broadcast TAG JSON BUENO
-				jsonResult = GOOD_JSON;
-				
-				MPI_Bcast_JSON(&jsonResult);
-				
-				//enviar lo combisIds al raffler
-				int* seedAndCombis = getCombiIds( );
-				SendCombisToRaffler( &seedAndCombis[1] ,  seedAndCombis[0] );
-				free(seedAndCombis);
-				
-				scheduler();
-				
-				SendLiveLockToRaffler();
-				//MPI_Barrier( commNodes );
-				//int saraza = 999;
-				//MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
-				//SendLiveLockToPrinter();
-				/* Shut down MPI */
-				MPI_Finalize();
-				return 0;
-			}
-		} 
-		//Broadcast Json malo
-		jsonResult = BAD_JSON;
-		MPI_Bcast_JSON( &jsonResult );
+		master(mpiProcesses);
 	} else {
 		MPI_Bcast_JSON( &jsonResult );
 		if ( jsonResult == GOOD_JSON ) {
@@ -127,38 +54,82 @@ int main(int argc, char **argv){
 				if (idNodo == PRINTER_ID) {
 					printer();
 				} else {
-					
-					//MPI_Barrier( commNodes );
-					//int saroza = 888;
-					//MPI_Bcast(&saroza, 1 , MPI_INT, 0 ,commNodes);
-					//printf("quero ver nueves = %d\n", saroza );
+					MPI_Barrier( commNodes );
 					genericNode(idNodo);
 				}
 			}
 		} else {
 			printf("Master node has sent BAD_JSON by broadcast\n");
-		}
-				
+		}		
 	}
-	
-	
 	/* FIN de zona de MPI */
-	if ( idNodo != RAFFLER_ID && idNodo != PRINTER_ID ) {
-			if(processRank != NULL)free(processRank);
-	}
+	if(processRank != NULL)free(processRank);
 	MPI_Finalize();
 	return 0;
 }
 
+void master(int mpiProcesses){
+	int jsonResult;
+	if ( validateJsonInput() == JSON_APPROVED ) {			
+		if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
+			putNodesInMem();
+			//broadcast TAG JSON BUENO
+			jsonResult = GOOD_JSON;
+			MPI_Bcast_JSON(&jsonResult);
+			//enviar lo combisIds al raffler
+			int* seedAndCombis = getCombiIds( );
+			SendCombisToRaffler( &seedAndCombis[1] ,  seedAndCombis[0] );
+			free(seedAndCombis);
+			scheduler();
+			SendLiveLockToRaffler();
+			MPI_Barrier( commNodes );
+			//int saraza = 999;
+			//MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
+			//SendLiveLockToPrinter();
+			/* Shut down MPI */
+			return;
+		}
+	} 
+	//Broadcast Json malo
+	jsonResult = BAD_JSON;
+	MPI_Bcast_JSON( &jsonResult );
+}
+	
 void logError(int error_code, int my_rank){
 	if (error_code != MPI_SUCCESS) {
 		char error_string[MPI_MAX_ERROR_STRING];
 		int length_of_error_string, error_class;
-		MPI_Error_class(error_code, &error_class);
-		MPI_Error_string(error_class, error_string, &length_of_error_string);
+		getErrorCalss(error_code, &error_class);
+		getErrorString(error_class, error_string, &length_of_error_string);
 		printf("%3d: %s     \n", my_rank, error_string);
-		MPI_Error_string(error_code, error_string, &length_of_error_string);
+		getErrorString(error_code, error_string, &length_of_error_string);
 		printf("%3d: %s     \n", my_rank, error_string);
-		MPI_Abort(MPI_COMM_WORLD, error_code);
+		abort(error_code);
 	}
+}
+
+void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo ){
+	int error_code;
+	if(mpiProcesses < 2){return;}
+	int* myProcessRank = (int*) malloc((mpiProcesses - RAFFLER_PRINTER)*sizeof(int));
+	myProcessRank[0] = MASTER_ID;
+	for(int i = FIST_NODE_ID; i < mpiProcesses ; i++){
+		myProcessRank[i - RAFFLER_PRINTER] = i;
+	}
+	setLoger();
+	error_code = GetCommWorldHandle(groupWorld);
+	logError( error_code, idNodo);
+	if(idNodo == RAFFLER_ID || idNodo == PRINTER_ID ) {
+		myProcessRank[0] = RAFFLER_ID;
+		myProcessRank[1] = PRINTER_ID;
+		error_code = CreateGroupByIds(*groupWorld, RAFFLER_PRINTER, myProcessRank, groupNodes );
+		logError( error_code, idNodo);
+	} else{
+		error_code = CreateGroupByIds(*groupWorld,(mpiProcesses - RAFFLER_PRINTER), myProcessRank, groupNodes );
+		logError( error_code, idNodo);
+	}
+	error_code = CreateCommByGroup(*groupNodes, commNodes);
+	logError( error_code, idNodo);
+	unsetLoger();
+	*processRank = myProcessRank;
 }
