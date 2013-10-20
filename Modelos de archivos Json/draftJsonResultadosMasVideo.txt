@@ -1,0 +1,70 @@
+{
+	"timeLine": [
+		{
+		 "deltaT": 10.5,
+		 "nodesStatus": {
+				"queues": [
+					{
+						"idNode": 1,
+						"amount": 5,
+						"counterInput": 4,
+						"counterOutput": 4,
+						"average": 12.0,
+						"maximun": 6,
+						"minimun": 0,
+						"timesNotEmpty": 12.0,
+						"percentTimesNotEmpty": 2.0
+					}
+				],
+				"counters": [
+					{
+						"idNode": 4,
+						"totalProductivity": 5,
+						"deltaTProductivity": 1,
+						"productivityPerTime": 2
+					}
+				],
+				"normals": [
+					{
+						"idNode": 8,
+						"contdownWorktask": [3.5, 5.7],
+						"delayWorktask": [8.5, 12.7],
+						"counterInput": 8,
+						"delayAverage": 4.6,
+						"maximunDrawn": 6,
+						"minimunDrawn": 0
+					}
+				],
+				"functions": [
+					{
+						"idNode": 6,
+						"amount": 3
+					}
+				],
+				"combis": [
+					{
+						"idNode": 8,
+						"contdownWorktask": [3.5, 5.7],
+						"delayWorktask": [8.5, 12.7],
+						"counterInput": 8,
+						"delayAverage": 4.6,
+						"maximunDrawn": 6,
+						"minimunDrawn": 0
+					}
+				]
+			}
+		}
+	],
+	"summaryReport":{
+		"totalProductivity": [3.5, 5.7],
+		"totalTime":4.6,
+		"totalCost":4.6,
+		"queues": [
+					{
+						"idNode": 1,
+						"fixCost": 5,
+						"VariableCost": 5
+					}
+				]
+	}
+}

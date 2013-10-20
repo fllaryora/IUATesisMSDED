@@ -12,6 +12,8 @@ void scheduler(void){
 	//supongamos que comienza las faces de nuevo
 	NewRaffle();
 	
+	//Justo antes del consumo del deltaT
+	NewDeltaTToPrint();
 }
 
 
