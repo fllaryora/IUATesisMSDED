@@ -10,11 +10,14 @@
 //TODO terminar
 void printer(){
 	int fileDescriptor;
+	int* qCouNfComb = (int*) malloc( 5 * sizeof(int) );
+	//recive del master la cantidad de nodos
+	GetEachNodesAmount(qCouNfComb);
 
 	printf("Hola desde el printer\n");
 	
 	fileDescriptor = open ("/tmp/pijeriasDeJson.txt",O_WRONLY|O_CREAT,00660);
-
+	
 	//open json file
 	openBrace(fileDescriptor);
 	putLabel(fileDescriptor, "timeLine"); openBrace(fileDescriptor);
@@ -22,7 +25,10 @@ void printer(){
 			//te llama el scheduler y te dice que se va ha consumir un delta t, por lo que todos vienen
 			//y despues vienen todos
 			//separeElement(fileDescriptor); ente llamados
-			doDeltaT(fileDescriptor, deltaT);
+
+			doDeltaT(fileDescriptor, deltaT, qCouNfComb[0], qCouNfComb[1], qCouNfComb[2], qCouNfComb[3], qCouNfComb[4]);
+				//TODOD------------------------------------------------------------
+
 		closeBrace(fileDescriptor);
 	closeBracket(fileDescriptor)
 	putLabel(fileDescriptor, "summaryReport"); openBrace(fileDescriptor);
@@ -31,35 +37,8 @@ void printer(){
 
 	//close json file
 	closeBrace(fileDescriptor);
-
+	free(qCouNfComb);
 	close(fileDescriptor);
-}
-
-//TODO terminar
-void doDeltaT(int fileDescriptor, const double deltaT){
-	//open one delta T
-	openBrace(fileDescriptor);
-		putLabel(fileDescriptor, "deltaT");   putDouble(fileDescriptor, deltaT); separeElement(fileDescriptor);
-		putLabel(fileDescriptor, "nodesStatus"); openBrace(fileDescriptor);
-			putLabel(fileDescriptor, "queues"); openBracket( fileDescriptor);
-				//recibo todos los envios de colas
-			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
-			putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);
-				//recibo todos los envios de colas
-			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
-			putLabel(fileDescriptor, "normals"); openBracket( fileDescriptor);
-				//recibo todos los envios de colas
-			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
-			putLabel(fileDescriptor, "functions"); openBracket( fileDescriptor);
-				//recibo todos los envios de colas
-			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
-			putLabel(fileDescriptor, "combis"); openBracket( fileDescriptor);
-				//recibo todos los envios de colas
-			closeBracket(int fileDescriptor);
-		//close nodestatus
-		closeBrace(fileDescriptor);
-	//close one delta T
-	closeBrace(fileDescriptor);
 }
 
 //TODO terminar
@@ -72,6 +51,77 @@ void doSummaryReport(int fileDescriptor){
 	putLabel(fileDescriptor, "counters");  separeElement(fileDescriptor);
 	//llegan las queue de ??
 	putLabel(fileDescriptor, "queues"); 
+}
+
+void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const int counters, const int normals, const int functions, const int combis){
+	PrinterActivity cbStruct;
+	PrinterActivity nlStruct;
+	PrinterCounter crStruct;
+	PrinterQueue qeStruct;
+	PrinterFunction fnStruct;
+	int oldSource;
+	MPI_Status result;
+	//open one delta T
+	openBrace(fileDescriptor);
+		putLabel(fileDescriptor, "deltaT");   putDouble(fileDescriptor, deltaT); separeElement(fileDescriptor);
+		putLabel(fileDescriptor, "nodesStatus"); openBrace(fileDescriptor);
+			putLabel(fileDescriptor, "queues"); openBracket( fileDescriptor);
+				//recibo todos los envios de colas
+				for(int i = 0; i < queues; i++){
+					GetQueueStruct(&qeStruct);
+					doQueue( fileDescriptor, qeStruct.idNode, qeStruct.amount, qeStruct.counterInput, qeStruct.counterOutput, 
+							qeStruct.average, qeStruct.maximun,  qeStruct.minimun,  qeStruct.timesNotEmpty,  qeStruct.percentTimesNotEmpty);
+					if (i+1 < queues ){separeElement(fileDescriptor);}
+				}
+			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+			putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);
+				//recibo todos los envios de colas
+				for(int i = 0; i < counters; i++){
+					GetCounterStruct(&crStruct);
+					doCounter( fileDescriptor, crStruct.idNode, crStruct.totalProductivity, crStruct.deltaTProductivity, crStruct.productivityPerTime );
+					if (i+1 < counters ){separeElement(fileDescriptor);}
+				}
+			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+			putLabel(fileDescriptor, "normals"); openBracket( fileDescriptor);
+				//recibo todos los envios de colas
+				for(int i = 0; i < normals; i++){
+					GetNormalStruct(&nlStruct, &result);
+					oldSource = result.MPI_SOURCE;
+					int* worktask = (int*) malloc( nlStruct.activityInside* 2 * sizeof(double) );
+					GetNormalDalaysStruct(worktask, nlStruct.activityInside* 2, oldSource);
+					doActivity(fileDescriptor, nlStruct.idNode, nlStruct.activityInside, worktask, 
+						&worktask[nlStruct.activityInside], nlStruct.counterInput, nlStruct.delayAverage, 
+						nlStruct.maximunDrawn, nlStruct.minimunDrawn );
+					if (i+1 < normals ){separeElement(fileDescriptor);}
+					free(worktask);
+				}
+			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+			putLabel(fileDescriptor, "functions"); openBracket( fileDescriptor);
+				//recibo todos los envios de colas
+				for(int i = 0; i < functions; i++){
+					GetFunctionStruct(&fnStruct);
+					doFunction( fileDescriptor, fnStruct.idNode, fnStruct.amount);
+					if (i+1 < functions ){separeElement(fileDescriptor);}
+				}
+			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+			putLabel(fileDescriptor, "combis"); openBracket( fileDescriptor);
+				//recibo todos los envios de colas
+				for(int i = 0; i < combis; i++){
+					GetCombiStruct(&cbStruct, &result);
+					oldSource = result.MPI_SOURCE;
+					int* worktask = (int*) malloc( cbStruct.activityInside* 2 * sizeof(double) );
+					GetNormalDalaysStruct(worktask, cbStruct.activityInside* 2, oldSource);
+					doActivity(fileDescriptor, cbStruct.idNode, cbStruct.activityInside, worktask, 
+						&worktask[cbStruct.activityInside], cbStruct.counterInput, cbStruct.delayAverage, 
+						cbStruct.maximunDrawn, cbStruct.minimunDrawn );
+					if (i+1 < combis ){separeElement(fileDescriptor);}
+					free(worktask);
+				}
+			closeBracket(int fileDescriptor);
+		//close nodestatus
+		closeBrace(fileDescriptor);
+	//close one delta T
+	closeBrace(fileDescriptor);
 }
 
 

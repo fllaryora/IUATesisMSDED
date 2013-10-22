@@ -20,7 +20,8 @@ typedef struct {
 #define MPI_MAX_ERROR_STRING	20
 #include "main.h"
 #include <stdlib.h>
-
+#include <stdio.h>
+#include <string.h>
 #define MPI_Init(X, Y) (void)0
 #define MPI_Finalize() (void)0
 #define MPI_Comm_size(X, Y) *(Y)=4
@@ -52,14 +53,14 @@ typedef struct {
 //-1,0,1,2,3,4,5,6,7,8
 //pero sacando el inicio
 //0,1,2,3,4,5,6,7,8
-#define ReciveRafflerCombi(X,Y)	for(int i = 0 ; i < Y; i++){ X[i]=i+1; }
+#define ReciveRafflerCombi(X,Y)	for(int i = 0 ; i < Y; i++){ X[i]=i+1; }(void)0
 //prueba si recibio orden de algun nodo
 #define ProbeOrderForRaffler(X)	(X)->MPI_TAG=NEW_RAFFLE;(X)->MPI_SOURCE=MASTER_ID
 //descubre el largo del mensaje
 #define GetRafflerOrderCount( X, Y)	*(Y)=4
 //lee la orden
 //1,2,3,4
-#define ReciveRafflerOrder(X,Y)	for(int i = 0 ; i < Y; i++){ X[i]=i+1; }
+#define ReciveRafflerOrder(X,Y)	for(int i = 0 ; i < Y; i++){ X[i]=i+1; }(void)0
 //dice al master que ya sorteo
 #define SendRaffleDoneToMaster()	currentTag = GET_RAFFLE
 //dice a una cola cuales la prioridad del actual sorteo
@@ -68,10 +69,18 @@ typedef struct {
 
 
 // EJECUTADOS POR EL PRINTER
-#define ProbeOrderForPrinter(X)	(void)0
-#define GetPrinterOrderCount( X, Y)	(void)0
-#define RecivePrinterOrder(X,Y)	(void)0
+#define GetEachNodesAmount(X)		for(int i = 0 ; i < 5; i++){ X[i]=1; }(void)0
+#define GetNodeStruct(STRU, SIZE, TAG)	memset (STRU, 0,SIZE )
+#define GetActivityStruct(STRU, SIZE, TAG, STTUS)	 memset (STRU, 0,SIZE );(STTUS)->MPI_SOURCE=FIST_NODE_ID
+#define GetDelayActivityArrayStruct(DLY, SIZE, TAG, NODE_ID)	for(int i = 0 ; i < SIZE; i++){ DLY[i]=4.5; }(void)0
 
+
+//recive una estructura sin importarle la fuente
+#define GetNodeStruct(STRU, SIZE, TAG)	MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, MPI_STATUS_IGNORE)
+//recive una estructura sin importarle la fuente, pero la debe recordar para mas adelante
+#define GetActivityStruct(STRU, SIZE, TAG, STTUS)	MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, STTUS)
+//cuanto delay tiene cada actividad dentro de un activity
+#define GetDelayActivityArrayStruct(DLY, SIZE, TAG, NODE_ID)	MPI_Recv(DLY, SIZE, MPI_DOUBLE, NODE_ID, TAG , MPI_COMM_WORLD, STTUS)
 
 #ifdef _MOCK_SCHADULER_
 #define MPI_Comm_rank(X, Y) *(Y)=0
@@ -189,9 +198,13 @@ typedef struct {
 
 
 // FUNCIONES del PRINTER
-#define ProbeOrderForPrinter(X)	MPI_Probe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, X)
-#define GetPrinterOrderCount( X, Y)	MPI_Get_count(X, MPI_BYTE, Y)
-#define RecivePrinterOrder(X,Y)	MPI_Recv(X, Y, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE)
-
+//cuantos nodos hay de cada uno
+#define GetEachNodesAmount(X)	MPI_Recv(X, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE)
+//recive una estructura sin importarle la fuente
+#define GetNodeStruct(STRU, SIZE, TAG)	MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, MPI_STATUS_IGNORE)
+//recive una estructura sin importarle la fuente, pero la debe recordar para mas adelante
+#define GetActivityStruct(STRU, SIZE, TAG, STTUS)	MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, STTUS)
+//cuanto delay tiene cada actividad dentro de un activity
+#define GetDelayActivityArrayStruct(DLY, SIZE, TAG, NODE_ID)	MPI_Recv(DLY, SIZE, MPI_DOUBLE, NODE_ID, TAG , MPI_COMM_WORLD, STTUS)
 
 #endif /* our mpi*/

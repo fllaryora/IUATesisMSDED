@@ -31,13 +31,26 @@ typedef enum{
 	BAD_JSON,
 	GOOD_JSON,
 	
-	BOOTSTRAP,              /*before send initialization struct*/
 	LIVE_LOCK,               /*when is reached the live-lock condition or
 							the objective of fulfilling certain number 
 							of cycles*/
-							
-	//SCATTER enviada de estructura de estructura
-	
+	NEW_RAFFLE,			   /*when dT end, and the jackpot of combi's Id 
+						   must change*/
+	RAFFLE_DONE,
+	SEED_AND_COMBI_LIST,   /* cuando el scheduler le manda la lista de combis al raffer*/
+	GET_RAFFLE,			   /*when dT end, i need the jackpot of combi's
+						   Id*/	
+	INIT_NODES,		/*cuantos nodos de cada uno hay en el modelo*/
+
+	COUNTER_REPORT,            /*when dT end, all nodes must report your 
+							status*/
+	FUNCTION_REPORT,
+	NORMAL_REPORT,
+	COMBI_REPORT,
+	QUEUE_REPORT,
+	QUEUE_FINAL_REPORT,
+	COUNTER_FINAL_REPORT,
+	////------never used yet
 							
 	GENERATION_PHASE,		/* the resources only can in and procese*/
 	ADVANCE_PAHSE,			/* the resources only can out*/
@@ -45,22 +58,15 @@ typedef enum{
 							procese*/
 	ADVANCE_PAHSE_PRIMA,	/* the resources only can out and tell to 
 							scheduler if he terminate */
-	
-	
-	
 	PING_REPORT,            /*when dT end, all nodes must report your 
 							status*/
 	CONSUME_DT,            /*when dT end, all nodes consume one dT*/
-	NEW_RAFFLE,			   /*when dT end, and the jackpot of combi's Id 
-						   must change*/
-	RAFFLE_DONE,
-	SEED_AND_COMBI_LIST,   /* cuando el scheduler le manda la lista de combis al raffer*/
-	GET_RAFFLE,			   /*when dT end, i need the jackpot of combi's
-						   Id*/					   
+	
+	
+				   
 	PRINT_SIGNAL, 		   /*when dT end, printer must write another 
 						   dT story*/
 	//GATHER enviada de reporte de dT
-	
 	
 	
 	RESOURCE_REQUEST,       /*when a combi want to know about the amount
@@ -80,7 +86,53 @@ typedef enum{
 	RESOURCE_SEND          /*warns when one node has sent a resource to
 							another*/	
 }TAG;
+//
 
+/******************************************************/
+//printer structs
+typedef struct{
+	int idNode;
+	int amount;
+	int counterInput;
+	int counterOutput;
+	double average;
+	int maximun;
+	int minimun;
+	double timesNotEmpty;
+	double percentTimesNotEmpty;
+}PrinterQueue;
+			
+typedef struct{
+	int idNode;
+	int totalProductivity;
+	int deltaTProductivity;
+	double productivityPerTime;
+}PrinterCounter;
+
+typedef struct{
+	int idnodo;
+	int amount;
+}PrinterFunction;
+
+typedef struct{
+	int idNode;
+	int activityInside;
+	int counterInput;
+	double delayAverage;
+	int maximunDrawn;
+	int minimunDrawn;
+}PrinterActivity;
+//contdownWorktask y delayWorktask llegan como arreglos de double en otra llamada aparte
+
+typedef struct{
+	double totalTime;
+	double totalCost;
+	int queuesSummaryAmount;
+	int countersSummaryAmount;
+}PrinterSummary;
+//idNode, totalProductivity , idNode, fixCost y VariableCost llegan como arreglo en otra llamada
+
+/******************************************************/
 typedef enum{
 	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI
 }TYPENODE;
