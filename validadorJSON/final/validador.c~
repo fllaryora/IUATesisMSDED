@@ -8,25 +8,6 @@
 
 #define ERROR                      0
 #define SUCCESS                    1
-#define STARTING_CAPACITY         15
-#define ARRAY_MAX_CAPACITY    122880 /* 15*(2^13) */
-#define OBJECT_MAX_CAPACITY      960 /* 15*(2^6)  */
-#define MAX_NESTING               19
-#define MAX(a, b)             ((a) > (b) ? (a) : (b))
-
-#define parson_malloc(a)     malloc(a)
-#define parson_free(a)       free((void*)a)
-#define parson_realloc(a, b) realloc(a, b)
-
-/* JSON Array API */
-/*JSON_Value * json_array_get_value(const JSON_Array *array, size_t index) {
-    if (index >= json_array_get_count(array)) { return NULL; }
-    return array->items[index];
-}
-
-const char * json_array_get_string(const JSON_Array *array, size_t index) {
-    return json_value_get_string(json_array_get_value(array, index));
-}*/
 
 int validateSchema(const char *filenameJson , const char *filenameSchema)
 {

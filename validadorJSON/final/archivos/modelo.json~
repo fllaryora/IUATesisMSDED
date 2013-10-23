@@ -1,6 +1,7 @@
 {
  "length": 1000,
  "cycle": 30,
+ "seed"
  "transformation": {
 		"queues": [
 			{
@@ -60,7 +61,7 @@
 			},
 			{
 				"idNode": 12,
-				"preceders":[10,20],
+				"preceders":[10,6],
 				"followers": [12,2],
 				"probabilisticBranch": [0.5 , 0.5],
 				"delay" : {

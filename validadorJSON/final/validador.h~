@@ -6,12 +6,12 @@
 #define _MAIN_H_
 
 typedef enum{
-	ERROR_OPEN_JSON,
-	ERROR_OPEN_SCHEMA,
-	ERROR_READ_JSON,
-	ERROR_READ_SCHEMA,
-	INVALID_JSON,
-	INVALID_SCHEMA,
+	ERROR_OPEN_JSON,	/*json no existe*/
+	ERROR_OPEN_SCHEMA,	/*schema no existe*/
+	ERROR_READ_JSON,	/* el json tenga solo una palabra */
+	ERROR_READ_SCHEMA,  /* el schema tenga solo una palabra */
+	INVALID_JSON,		/* ej: sacando una coma al schema , esquema incompleto */
+	INVALID_SCHEMA,		/* ej: sacando una coma al schema , esquema incompleto */
 	VALIDATION_FAIL,
 	VALIDATION_PASS
 }VALIDATE;
@@ -48,4 +48,4 @@ int validateJsonImput(const char *filenameJson);
 void getArray(JSON_Object *object, const char *arregloJson,const char *atributeJson ,int** arreglo, int* m);
 void getArrayInArray(JSON_Object * objectJson,const char *arrayJson,int pos,const char *arrayJsonIn, int** arreglo, int* m);
 int countArrayInclude(int **array,int sizeArray,int **arrayFull, int sizeArrayFull);
-int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int **array3, int sizeArray3, int **array4, int sizeArray4, int **array5, int sizeArray5);
+int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int **array3, int sizeArray3, int **array4, int sizeArray4, int **array5, int sizeArray5,int** array, int* sizeArray);

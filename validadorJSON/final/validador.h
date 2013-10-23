@@ -6,14 +6,14 @@
 #define _MAIN_H_
 
 typedef enum{
-	ERROR_OPEN_JSON,
-	ERROR_OPEN_SCHEMA,
-	ERROR_READ_JSON,
-	ERROR_READ_SCHEMA,
-	INVALID_JSON,
-	INVALID_SCHEMA,
-	VALIDATION_FAIL,
-	VALIDATION_PASS
+	ERROR_OPEN_JSON,	/* json no existe */
+	ERROR_OPEN_SCHEMA,	/* schema no existe */
+	ERROR_READ_JSON,	/* ej: el json tenga solo una palabra */
+	ERROR_READ_SCHEMA,  /* ej: el schema tenga solo una palabra */
+	INVALID_JSON,		/* ej: sacando una coma al schema , esquema incompleto */
+	INVALID_SCHEMA,		/* ej: sacando una coma al schema , esquema incompleto */
+	VALIDATION_FAIL,	/* el json y el esquema son correctos pero el json no respeta el schema. ej: no incluir un elemento requerido o poner un number en lugar de un double*/
+	VALIDATION_PASS		/* validacion correcta */
 }VALIDATE;
 
 #endif
