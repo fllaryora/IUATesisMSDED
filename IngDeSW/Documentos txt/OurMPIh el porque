@@ -1,0 +1,17 @@
+Conseptos:
+
+Una test unitario es probar el correcto funcionamiento de un módulo de código. Esto sirve para asegurar que cada uno de los módulos funcione correctamente por separado.
+Un test de Integración, asegura el correcto funcionamiento de comunicación entre modulos.
+Un test funcional es probar y validar que el software hace lo que debe y sobre todo, lo que se ha especificado en diseño.
+
+La programación modular es un paradigma de programación que consiste en dividir un código en módulos con el fin de hacerlo más legible, manejable y reutilizable. Al aplicar la programación modular, un problema complejo es dividido en subproblemas, y estos a su vez en otros subproblemas más simples. Por cada subproblema se crea un modulo que lo resuelve. Cada modulo tiene una tarea bien definida para atacar y resolver el subproblema.
+Al dividir el código en modulos estamos generando dependencias entre los modulos. No se puede resolver el problema original sin haber implementado todos los modulos. Si el código no es autocontenido ¿ Cómo podemos probar el correcto funcionamiento de un modulo sin tener que implementar todo y probar el mounstro ?
+
+La programación orientada a objetos cuenta con una herramienta llamada Mock de objetos, que es la creación de objetos que imitan el comportamiento de otros objetos que realmente se van ha usar de una forma controlada. Se usan para simular (mockear) el comportamiento de objetos complejos cuando es imposible o impracticable usar al objeto real en la prueba. De paso resuelve el problema del caso de objetos interdependientes, que para probar el primero debe ser usado un objeto no probado aún, lo que invalida la prueba: los objetos Mock son muy simples de construir y devuelven un resultado determinado y de implementación directa, independientemente de los complejos procesos o interacciones que el objeto real pueda tener.
+
+Vamos a poder probar el correcto funcionamiento de un modulo sin tener que implementar sus dependencias creando un modulo mock que simule solo la parte que necesitamos.
+
+C a diferencia de Java, no cuenta con herramientas de mockeo de metodos. ¿Cómo hacer para simular (mockear) diferentes comportamientos de un mismo metodo segun el lugar desde donde se llame sin erramientas de mockeo?
+C cuenta con una poderosa herramienta llamada macros, los cuales, en tiempo de compilación, remplazan las funciones por otras funciones u ordenes directas empleando los argumentos pasados. 
+Entonces simplemente empleando una macro en cada dependencia del código soluciónaria el problema de la falta de auntocontencion en los test unitarios.
+El encargado de solucionar el problema de remapeo de macros a mocks o las funciónes originales es ourMPI.h, el cual a travez de la compilación condicional efectuara las tareas de remapeo por todo el código.

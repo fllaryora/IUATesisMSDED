@@ -23,7 +23,7 @@ void raffler(){
 	//seteo la semilla en caso de que se requiera
 	//el primer elemento indica si se quiere tener reusabilidad.
 	if(combiIds[0] >= 0){
-		RandomInitialise(combiIds[0],combiIds[1]);
+		RandomInitialise(combiIds[0],combiIds[0]);
 	}
 	combiIdsAmount--;
 	combiIds++;
