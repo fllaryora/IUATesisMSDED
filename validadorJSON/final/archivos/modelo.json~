@@ -1,11 +1,11 @@
 {
  "length": 1000,
  "cycle": 30,
- "seed"
+ "seed": 333,
  "transformation": {
 		"queues": [
 			{
-				"idNode": 1,
+				"idNode": 1,v
 				"resource": 5,
 				"preceders": [4],
 				"followers": [11,10],

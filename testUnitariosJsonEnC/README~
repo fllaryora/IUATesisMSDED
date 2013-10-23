@@ -1,0 +1,5 @@
+Se le agrego a los test del ruso Kgabis, un archivo propio, para mostrar
+ mas puntualmente como leeriamos nuestro propio json
+ 
+ Mirar Parson.h, para ver las las funciones.
+ Solo las funciones dotgets soportan la notacion punto!!!
