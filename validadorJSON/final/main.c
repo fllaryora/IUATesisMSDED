@@ -66,8 +66,8 @@ int main(int argc, char **argv){
 		queues[1].followers[0]=1;
 		queues[1].followers[1]=6;
 
-		int MPI_Send(&queues[0], sizeof(Queue),  MPI_BYTE, int 1, tag, MPI_COMM_WORLD)
-		int MPI_Send(&queues[1], sizeof(Queue),  MPI_BYTE, int 2, tag, MPI_COMM_WORLD)
+		MPI_Send(&queues[0], sizeof(Queue),  MPI_BYTE, 1, tag, MPI_COMM_WORLD);
+		MPI_Send(&queues[1], sizeof(Queue),  MPI_BYTE, 2, tag, MPI_COMM_WORLD);
 		/*printf("idNode: %d\n", queues[0].idNode);
 		printf("resource: %d\n", queues[0].resource);
 		printf("fixedCost: %.4f\n", queues[0].fixedCost);
@@ -83,8 +83,8 @@ int main(int argc, char **argv){
 
 	} else {
 
-		Queue queues;
-		MPI_Recv(&queues, sizeof(Queue), MPI_BYTE, MPI_ANY_SOURCE, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		Queue queue;
+		MPI_Recv(&queue, sizeof(Queue), MPI_BYTE, MPI_ANY_SOURCE, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		printf("idNode: %d\n", queue.idNode);
 		printf("resource: %d\n", queue.resource);
 		printf("fixedCost: %.4f\n", queue.fixedCost);
