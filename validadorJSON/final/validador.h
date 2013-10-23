@@ -34,7 +34,9 @@ typedef struct{
 typedef struct{
     int idNode;
     int resource;
-    int *preceders; /*primer elemento va a ser la cantidad >=0*/
+    int countPreceders;
+    int *preceders;
+    int countFollowers;
     int *followers;
     double fixedCost;
     double variableCost;
