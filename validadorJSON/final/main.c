@@ -67,7 +67,7 @@ int main(int argc, char **argv){
 		queues[1].variableCost = 0.5;
 		queues[1].countPreceders = 1;
 		queues[1].preceders = (int *) malloc(2*sizeof(int));
-		queues[1].preceders[0]=2;
+		queues[1].preceders[0]=99;
 		queues[1].countFollowers = 1;
 		queues[1].followers = (int *) malloc(2*sizeof(int));
 		queues[1].followers[0]=6;
@@ -75,13 +75,15 @@ int main(int argc, char **argv){
 		tag = 1; /*Queue*/
 		tipo = 1; /*Queue*/
 
-		MPI_Send(&tipo, sizeof(int),  MPI_INT, 1, tag, MPI_COMM_WORLD);
+		/*MPI_Send(&tipo, sizeof(int),  MPI_INT, 1, tag, MPI_COMM_WORLD);*/
 		MPI_Send(&queues[0], sizeof(Queue),  MPI_BYTE, 1, tag, MPI_COMM_WORLD);
-		MPI_Send(&(queues[0].preceders), queues[0].countPreceders ,  MPI_INT, 1, tag, MPI_COMM_WORLD);
+		if (queues[0].countPreceders>0)
+			MPI_Send(queues[0].preceders, queues[0].countPreceders ,  MPI_INT, 1, tag, MPI_COMM_WORLD);
 
-		MPI_Send(&tipo, sizeof(int),  MPI_INT, 2, tag, MPI_COMM_WORLD);
+		/*MPI_Send(&tipo, sizeof(int),  MPI_INT, 2, tag, MPI_COMM_WORLD);*/
 		MPI_Send(&queues[1], sizeof(Queue),  MPI_BYTE, 2, tag, MPI_COMM_WORLD);
-		MPI_Send(&(queues[1].preceders), queues[1].countPreceders ,  MPI_INT, 2, tag, MPI_COMM_WORLD);
+		if (queues[1].countPreceders>0)
+			MPI_Send(queues[1].preceders, queues[1].countPreceders ,  MPI_INT, 2, tag, MPI_COMM_WORLD);
 		/*printf("idNode: %d\n", queues[0].idNode);
 		printf("resource: %d\n", queues[0].resource);
 		printf("fixedCost: %.4f\n", queues[0].fixedCost);
@@ -99,9 +101,9 @@ int main(int argc, char **argv){
 		Queue queue;
 		Counter counter;
 
-		/*MPI_Probe( 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);*/
-		MPI_Recv(&tipo, sizeof(int), MPI_INT, 0, MPI_ANY_TAG , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		if (tipo == 1) // Queue //TODO: USAR ENUM
+		MPI_Probe( 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+		//MPI_Recv(&tipo, sizeof(int), MPI_INT, 0, MPI_ANY_TAG , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		if (status.MPI_TAG == 1) // Queue //TODO: USAR ENUM
 		{
 			tag = 1;
 			MPI_Recv(&queue, sizeof(Queue), MPI_BYTE, 0, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -115,11 +117,11 @@ int main(int argc, char **argv){
 			queue.preceders = (int *) malloc( queue.countPreceders *sizeof(int));
 
 			if (queue.countPreceders>0)
-				MPI_Recv(&queue.preceders, queue.countPreceders, MPI_INT, 0, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				MPI_Recv(queue.preceders, queue.countPreceders, MPI_INT, 0, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			/*if (queue.countFollowers>0)
 				MPI_Recv(&queue.followers, queue.countFollowers, MPI_INT, 0, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);*/
 
-			printf("preceders: %d\n", *(queue.preceders[0]));
+			printf("preceders: %d\n", queue.preceders[0]);
 			/*printf("followers: %d\n", queue.followers[0]);
 
 			/*MPI_Get_count(&infoComm, MPI_INT, &receiverCount)
