@@ -1,4 +1,5 @@
 #include "validador.h"
+#include "main.h"
 #include <mpi.h>
 /* #include <stdio.h>
 #include <stdlib.h>
@@ -20,12 +21,11 @@ int main(int argc, char **argv){
 	const char *filenameJson   = "archivos/modelo.json";
 	const char *filenameSchema = "archivos/schema.json";
 
-	int idNodo, tag=2,tipo, mpiProcesses; 
+	int idNodo,i,j, mpiProcesses; 
 	int receiverCount,currentTag;
 
 	MPI_Status infoComm;
 	MPI_Status result;
-
 	MPI_Status status;
 
 	MPI_Init(&argc, &argv);
@@ -46,6 +46,15 @@ int main(int argc, char **argv){
 
 	if ( idNodo == 0 ) {
 	
+		/* funcion que retorne cantida de nodos*/
+		int *countNodes = (int *) malloc(5*sizeof(int));
+		countNodes[0] = 2; // QUEUE
+		countNodes[1] = 0; // NORMAL
+		countNodes[2] = 0; // COUNTER
+		countNodes[3] = 0; // FUNCTION
+		countNodes[4] = 1; // COMBI
+
+		/* fucion lee json y retorna la estructuras con valores reales */
 		Queue *queues = (Queue *) malloc(2*sizeof(Queue));
 		queues[0].idNode = 44;
 	   	queues[0].resource = 2;
@@ -66,80 +75,146 @@ int main(int argc, char **argv){
 		queues[1].fixedCost = 0.8;
 		queues[1].variableCost = 0.5;
 		queues[1].countPreceders = 1;
-		queues[1].preceders = (int *) malloc(2*sizeof(int));
+		queues[1].preceders = (int *) malloc(1*sizeof(int));
 		queues[1].preceders[0]=99;
 		queues[1].countFollowers = 1;
-		queues[1].followers = (int *) malloc(2*sizeof(int));
+		queues[1].followers = (int *) malloc(1*sizeof(int));
 		queues[1].followers[0]=6;
 
-		tag = 1; /*Queue*/
-		tipo = 1; /*Queue*/
+		Combi *combis = (Combi *) malloc(2*sizeof(Combi));
+		combis[0].idNode = 86;
+		combis[0].countPreceders = 2;
+		combis[0].preceders = (int *) malloc(2*sizeof(int));
+		combis[0].preceders[0] = 2;
+		combis[0].preceders[1] = 44;
+		combis[0].countFollowers = 3;
+		combis[0].followers = (int *) malloc(3*sizeof(int));
+		combis[0].followers[0] = 101;
+		combis[0].followers[1] = 102;
+		combis[0].followers[2] = 105;
+		combis[0].countProbabilisticBranch = 3;
+		combis[0].probabilisticBranch = (double *) malloc(3*sizeof(double));
+		combis[0].probabilisticBranch[0] = 25.5;
+		combis[0].probabilisticBranch[1] = 24.5;
+		combis[0].probabilisticBranch[2] = 50;
+		//combis[0].delay.distribution = (char *) malloc(8*sizeof(char)); //uniform //deprecado
+		combis[0].delay.distribution = 0; //uniform
+		combis[0].delay.least = 1.56;
+		combis[0].delay.highest =  8.23;
+		combis[0].delay.seed = 895;
 
-		/*MPI_Send(&tipo, sizeof(int),  MPI_INT, 1, tag, MPI_COMM_WORLD);*/
-		MPI_Send(&queues[0], sizeof(Queue),  MPI_BYTE, 1, tag, MPI_COMM_WORLD);
-		if (queues[0].countPreceders>0)
-			MPI_Send(queues[0].preceders, queues[0].countPreceders ,  MPI_INT, 1, tag, MPI_COMM_WORLD);
+		// ENVIO DE STRUCTURAS
 
-		/*MPI_Send(&tipo, sizeof(int),  MPI_INT, 2, tag, MPI_COMM_WORLD);*/
-		MPI_Send(&queues[1], sizeof(Queue),  MPI_BYTE, 2, tag, MPI_COMM_WORLD);
-		if (queues[1].countPreceders>0)
-			MPI_Send(queues[1].preceders, queues[1].countPreceders ,  MPI_INT, 2, tag, MPI_COMM_WORLD);
-		/*printf("idNode: %d\n", queues[0].idNode);
-		printf("resource: %d\n", queues[0].resource);
-		printf("fixedCost: %.4f\n", queues[0].fixedCost);
-		printf("variableCost: %.4f\n", queues[0].variableCost);
-		printf("preceders: %d %d %d\n\n", queues[0].preceders[0], queues[0].preceders[1],queues[0].preceders[2]);
+		// ENVIO DE QUEUES (Preceders,Followers)
+		for (i=0,j=0 ; i < countNodes[0] ; i++,j++) //QUEUE
+		{
+			MPI_Send(&queues[i], sizeof(Queue),  MPI_BYTE, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
+			if (queues[i].countPreceders>0)
+				MPI_Send(queues[i].preceders, queues[i].countPreceders ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
+			if (queues[i].countFollowers>0)
+				MPI_Send(queues[i].followers, queues[i].countFollowers ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
+		}
 
-		printf("idNode: %d\n", queues[1].idNode);
-		printf("resource: %d\n", queues[1].resource);
-		printf("fixedCost: %.4f\n", queues[1].fixedCost);
-		printf("variableCost: %.4f\n\n", queues[1].variableCost);
+		// ENVIO DE NORMAL
+		// ENVIO DE COUNTER
+		// ENVIO DE FUNCTION
 
-		printf("sizeof: %d %d\n", sizeof(queues[0]), sizeof(queues[1]));*/
+		for (i=0 ; i < countNodes[4] ; i++,j++) //COMBI
+		{
+			MPI_Send(&combis[i], sizeof(Combi),  MPI_BYTE, i+countNodes[0]+countNodes[1]+countNodes[2]+countNodes[3]+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+			if (combis[i].countPreceders>0)
+				MPI_Send(combis[i].preceders, combis[i].countPreceders ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+			if (combis[i].countFollowers>0)
+				MPI_Send(combis[i].followers, combis[i].countFollowers ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+			if (combis[i].countProbabilisticBranch>0)
+				MPI_Send(combis[i].probabilisticBranch, combis[i].countProbabilisticBranch ,  MPI_DOUBLE, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+		}
 
-	} else {
+
+	} else if ( idNodo >= FIST_NODE_ID ) {
 		Queue queue;
 		Counter counter;
-
+		Function function;
+		Normal normal;
+		Combi combi;
+		// RECIBO ESTRUCTURA PARTICULAR, DEJO DE SER NODO_GENERICO
 		MPI_Probe( 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-		//MPI_Recv(&tipo, sizeof(int), MPI_INT, 0, MPI_ANY_TAG , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		if (status.MPI_TAG == 1) // Queue //TODO: USAR ENUM
+		if (status.MPI_TAG == QUEUE)
 		{
-			tag = 1;
-			MPI_Recv(&queue, sizeof(Queue), MPI_BYTE, 0, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			printf("idNode: %d\n", queue.idNode);
-			printf("resource: %d\n", queue.resource);
-			printf("fixedCost: %.4f\n", queue.fixedCost);
-			printf("variableCost: %.4f\n", queue.variableCost);
-			printf("countPreceders: %d\n", queue.countPreceders);
-			printf("countFollowers: %d\n", queue.countFollowers);
-
-			queue.preceders = (int *) malloc( queue.countPreceders *sizeof(int));
-
-			if (queue.countPreceders>0)
-				MPI_Recv(queue.preceders, queue.countPreceders, MPI_INT, 0, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			/*if (queue.countFollowers>0)
-				MPI_Recv(&queue.followers, queue.countFollowers, MPI_INT, 0, tag , MPI_COMM_WORLD, MPI_STATUS_IGNORE);*/
-
-			printf("preceders: %d\n", queue.preceders[0]);
-			/*printf("followers: %d\n", queue.followers[0]);
-
-			/*MPI_Get_count(&infoComm, MPI_INT, &receiverCount)
-			if( receiverCount == 0 ) receiverCount = 1;
-			printf("receiverCount = %d\n", receiverCount);
-			if(receiverCount){
-				bufferReceiver = (int*)malloc(sizeof(int) * receiverCount);
+			MPI_Recv(&queue, sizeof(Queue), MPI_BYTE, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			if (queue.countPreceders>0) {
+				queue.preceders = (int *) malloc( queue.countPreceders *sizeof(int));
+				MPI_Recv(queue.preceders, queue.countPreceders, MPI_INT, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			}
-			MPI_Recv(bufferReceiver, receiverCount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE)*/
-			/*printf("preceders: %d %d %d\n\n", queues[0].preceders[0], queues[0].preceders[1],queues[0].preceders[2]);*/
+			if (queue.countFollowers>0) {
+				queue.followers = (int *) malloc( queue.countFollowers *sizeof(int));
+				MPI_Recv(queue.followers, queue.countFollowers, MPI_INT, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			}
+
+			// printQueue(queue);
 		}
-		else if (status.MPI_TAG == 2) //Counter
+		else if (status.MPI_TAG == COMBI)
 		{
-			
+			MPI_Recv(&combi, sizeof(Combi), MPI_BYTE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			if (combi.countPreceders>0) {
+				combi.preceders = (int *) malloc( combi.countPreceders *sizeof(int));
+				MPI_Recv(combi.preceders, combi.countPreceders, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			}
+			if (combi.countFollowers>0) {
+				combi.followers = (int *) malloc( combi.countFollowers *sizeof(int));
+				MPI_Recv(combi.followers, combi.countFollowers, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			}
+			if (combi.countProbabilisticBranch>0) {
+				combi.probabilisticBranch = (double *) malloc( combi.countProbabilisticBranch *sizeof(double));
+				MPI_Recv(combi.probabilisticBranch, combi.countProbabilisticBranch, MPI_DOUBLE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			}
+
+			printCombi(combi);
 		}
 
 	}
 
 	MPI_Finalize();
 	return 0;
+}
+
+void printQueue(Queue queue)
+{
+	int i;
+
+	printf("idNode: %d\n", queue.idNode);
+	printf("resource: %d\n", queue.resource);
+	printf("fixedCost: %.4f\n", queue.fixedCost);
+	printf("variableCost: %.4f\n", queue.variableCost);
+	printf("countPreceders: %d\n", queue.countPreceders);
+	printf("countFollowers: %d\n", queue.countFollowers);
+
+	for (i=0 ; i<queue.countPreceders ; i++)
+		printf("preceders[%d]: %d\n", i,queue.preceders[i]);
+
+	for (i=0 ; i<queue.countFollowers ; i++)
+		printf("followers[%d]: %d\n", i,queue.followers[i]);
+}
+
+void printCombi(Combi combi)
+{
+	int i;
+
+	printf("idNode: %d\n", combi.idNode);
+	printf("countPreceders: %d\n", combi.countPreceders);
+	printf("countFollowers: %d\n", combi.countFollowers);
+	printf("countProbabilisticBranch: %d\n", combi.countProbabilisticBranch);
+	printf("delay.distribution: %d\n",combi.delay.distribution);
+	printf("delay.least: %.4f\n",combi.delay.least);
+	printf("delay.highest: %.4f\n",combi.delay.highest);
+	printf("delay.seed: %d\n",combi.delay.seed);
+
+	for (i=0 ; i<combi.countPreceders ; i++)
+		printf("preceders[%d]: %d\n", i,combi.preceders[i]);
+
+	for (i=0 ; i<combi.countFollowers ; i++)
+		printf("followers[%d]: %d\n", i,combi.followers[i]);
+
+	for (i=0 ; i<combi.countProbabilisticBranch ; i++)
+		printf("probabilisticBranch[%d]: %.2f\n", i,combi.probabilisticBranch[i]);
 }

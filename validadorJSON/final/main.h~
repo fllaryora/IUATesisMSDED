@@ -1,11 +1,24 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
+#define MASTER_ID	0
+#define RAFFLER_ID	1
+#define PRINTER_ID	2
+#define FIST_NODE_ID	3
+#define	RAFFLER_PRINTER	2
+#define MASTER_RAFFLER_PRINTER	3
+
 typedef enum{
-	VALID,
-	INVALID_SCHEMA,
-	INVALID_JSON,
-	INVALID_SCHEMA	
-}VALIDATE;
+	CONS1,
+	CONS2
+}OTRO;
+
+typedef enum{
+	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI
+}TYPENODE;
+
+extern void printQueue(Queue);
 
 #endif /* #ifndef _MAIN_H_*/
+
+

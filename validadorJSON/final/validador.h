@@ -45,7 +45,9 @@ typedef struct{
 typedef struct{
     int idNode;
     int quantity;
+    int countPreceders;
     int *preceders;
+    int countFollowers;
     int *followers;
 }Counter;
 
@@ -53,23 +55,32 @@ typedef struct{
 	int idNode;
     int input;
 	int output;
+    int countPreceders;
     int *preceders;
+    int countFollowers;
     int *followers;
-    double *probabilisticBranch; /*primer elemento poner cero si no tiene elementos aunque sea double*/
+    int countProbabilisticBranch;
+    double *probabilisticBranch;
 }Function;
 
 typedef struct{
     int idNode;
-	int *preceders;
+    int countPreceders;
+    int *preceders;
+    int countFollowers;
 	int *followers;
+    int countProbabilisticBranch;
     double *probabilisticBranch;
 	Delay delay;
 }Normal;
 
 typedef struct{
 	int idNode;
-	int *preceders;
+    int countPreceders;
+    int *preceders;
+    int countFollowers;
 	int *followers;
+    int countProbabilisticBranch;
     double *probabilisticBranch;
 	Delay delay;
 }Combi;
