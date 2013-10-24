@@ -102,44 +102,6 @@ typedef struct{
 	Delay delay;
 }Combi;
 
-/*	Delay
-	char *distribution; /uniform/
-	double least
-	double highest
-	int seed
-
-	char *distribution; /deterministic/
-	double constant;
-
-	char *distribution; /normal/
-	double mean;
-	double variance;
-	int seed
-
-	char *distribution; /exponential/
-	double lambda;
-	int seed
-
-	char *distribution; /triangular/
-	double least
-	double highest
-	double mode
-	integer seed
-
-	char *distribution; /beta/
-	double minimun;
-	double maximun;
-	double shapeAlpha;
-	double shapeBeta
-	int seed;
-
-	char *distribution; /log-normal/
-	double escale
-	double shape
-	double minimun
-	int seed
-*/
-
 extern void	schema_error(void *client, const char *format, ...);
 extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
 

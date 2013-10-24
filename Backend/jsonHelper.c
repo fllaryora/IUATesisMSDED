@@ -429,7 +429,7 @@ void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
 void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 {
 	JSON_Value  *root_value;
-    JSON_Object *object,*objectInArray;
+    JSON_Object *object,*objectInArray, *objectDelay;
     JSON_Array  *array,*arrayInternal;
 	int i, j;
 
@@ -464,6 +464,71 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 			(*combis)[i].probabilisticBranch[j]=json_array_get_number(arrayInternal,j);
 
 		(*combis)[i].delay.distribution = DIST_UNIFORM; //uniform
+
+		objectDelay = json_object_dotget_object(objectInArray, "delay" ); 
+
+		if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"uniform")==0)
+		{
+			(*combis)[i].delay.distribution = DIST_UNIFORM;
+			(*combis)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
+			(*combis)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
+			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"deterministic")==0)
+		{
+			(*combis)[i].delay.distribution = DIST_DETERMINISTIC;
+			(*combis)[i].delay.constant = json_object_dotget_number(objectDelay, "constant" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"normal")==0)
+		{
+			(*combis)[i].delay.distribution = DIST_NORMAL;
+			(*combis)[i].delay.mean = json_object_dotget_number(objectDelay, "mean" );
+			(*combis)[i].delay.variance = json_object_dotget_number(objectDelay, "variance" );
+			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"exponential")==0)
+		{
+			(*combis)[i].delay.distribution = DIST_EXPONENTIAL;
+			(*combis)[i].delay.lambda = json_object_dotget_number(objectDelay, "lambda" );
+			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"triangular")==0)
+		{
+			(*combis)[i].delay.distribution = DIST_TRIANGULAR;
+			(*combis)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
+			(*combis)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
+			(*combis)[i].delay.mode = json_object_dotget_number(objectDelay, "mode" );
+			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"beta")==0)
+		{
+			(*combis)[i].delay.distribution = DIST_BETA;
+			(*combis)[i].delay.minimun = json_object_dotget_number(objectDelay, "minimun" );
+			(*combis)[i].delay.maximun = json_object_dotget_number(objectDelay, "maximun" );
+			(*combis)[i].delay.shapeAlpha = json_object_dotget_number(objectDelay, "shapeAlpha" );
+			(*combis)[i].delay.shapeBeta = json_object_dotget_number(objectDelay, "shapeBeta" );
+			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"log-normal")==0)
+		{
+			(*combis)[i].delay.distribution = DIST_LOG_NORMAL;
+			(*combis)[i].delay.escale = json_object_dotget_number(objectDelay, "escale" );
+			(*combis)[i].delay.shape = json_object_dotget_number(objectDelay, "shape" );
+			(*combis)[i].delay.minimun = json_object_dotget_number(objectDelay, "minimun" );
+			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+
+
+
+
+
+		/*switch( json_object_dotget_object(objectInArray, "delay" ) ){
+			case "normal":
+				break;
+			case "uniform":
+				break;
+		}*/
+
 		(*combis)[i].delay.least = 1.56;
 		(*combis)[i].delay.highest =  8.23;
 		(*combis)[i].delay.seed = 895;
@@ -509,6 +574,57 @@ void printCombi(Combi combi)
 
 	for (i=0 ; i<combi.countProbabilisticBranch ; i++)
 		printf("%d: probabilisticBranch[%d]: %.2f\n", combi.idNode, i,combi.probabilisticBranch[i]);
+
+	if (combi.delay.distribution == DIST_UNIFORM)
+	{
+		printf("%d: delay.distribution: 'uniform'\n",combi.idNode);
+		printf("%d: delay.least: %.4f\n",combi.idNode,combi.delay.least);
+		printf("%d: delay.highest: %.4f\n",combi.idNode,combi.delay.highest);
+		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
+	}
+	else if (combi.delay.distribution == DIST_DETERMINISTIC)
+	{
+		printf("%d: delay.distribution: 'deterministic'\n",combi.idNode);
+		printf("%d: delay.constant: %d\n",combi.idNode,combi.delay.constant);
+	}
+	/*else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"normal")==0)
+	{
+		(*combis)[i].delay.distribution = DIST_NORMAL;
+		(*combis)[i].delay.mean = json_object_dotget_number(objectDelay, "mean" );
+		(*combis)[i].delay.variance = json_object_dotget_number(objectDelay, "variance" );
+		(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+	}
+	else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"exponential")==0)
+	{
+		(*combis)[i].delay.distribution = DIST_EXPONENTIAL;
+		(*combis)[i].delay.lambda = json_object_dotget_number(objectDelay, "lambda" );
+		(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+	}
+	else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"triangular")==0)
+	{
+		(*combis)[i].delay.distribution = DIST_TRIANGULAR;
+		(*combis)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
+		(*combis)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
+		(*combis)[i].delay.mode = json_object_dotget_number(objectDelay, "mode" );
+		(*combis)[i].seed = json_object_dotget_number(objectDelay, "seed" );
+	}
+	else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"beta")==0)
+	{
+		(*combis)[i].delay.distribution = DIST_BETA;
+		(*combis)[i].delay.minimun = json_object_dotget_number(objectDelay, "minimun" );
+		(*combis)[i].delay.maximun = json_object_dotget_number(objectDelay, "maximun" );
+		(*combis)[i].delay.shapeAlpha = json_object_dotget_number(objectDelay, "shapeAlpha" );
+		(*combis)[i].delay.shapeBeta = json_object_dotget_number(objectDelay, "shapeBeta" );
+		(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+	}
+	else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"log-normal")==0)
+	{
+		(*combis)[i].delay.distribution = DIST_LOG_NORMAL;
+		(*combis)[i].delay.escale = json_object_dotget_number(objectDelay, "escale" );
+		(*combis)[i].delay.shape = json_object_dotget_number(objectDelay, "shape" );
+		(*combis)[i].delay.minimun = json_object_dotget_number(objectDelay, "minimun" );
+		(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+	}*/
 }
 
 int getNodesAmount( void ){
