@@ -76,8 +76,11 @@ typedef struct{
 
 typedef struct{
 	int idNode;
-	int *preceders;
+    int countPreceders;
+    int *preceders;
+    int countFollowers;
 	int *followers;
+    int countProbabilisticBranch;
     double *probabilisticBranch;
 	Delay delay;
 }Combi;

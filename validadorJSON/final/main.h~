@@ -17,7 +17,14 @@ typedef enum{
 	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI
 }TYPENODE;
 
-extern void printQueue(Queue);
+void printQueue(Queue queue);
+void printCombi(Combi combi);
+int getCountNodes(int **arrayCountNodes);
+void getQueues(Queue **queues, int *queuesCount);
+void getCounters(Counter **normals, int *counterCount);
+void getFunctions(Function **functions, int *functionCount);
+void getNormals(Normal **normals, int *normalCount);
+void getCombis(Combi **combis, int *combiCount);
 
 #endif /* #ifndef _MAIN_H_*/
 

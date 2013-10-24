@@ -14,7 +14,7 @@ typedef enum{
 }VALIDATE;
 
 typedef struct{
-	char *distribution;
+	int distribution; //
 	double least;
 	double highest;
 	double constant;

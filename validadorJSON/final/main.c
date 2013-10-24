@@ -46,67 +46,26 @@ int main(int argc, char **argv){
 
 	if ( idNodo == 0 ) {
 	
-		/* funcion que retorne cantida de nodos*/
-		int *countNodes = (int *) malloc(5*sizeof(int));
-		countNodes[0] = 2; // QUEUE
-		countNodes[1] = 0; // NORMAL
-		countNodes[2] = 0; // COUNTER
-		countNodes[3] = 0; // FUNCTION
-		countNodes[4] = 1; // COMBI
+		Queue 	 *queues;	int queuesCount;
+		Counter  *counters;	int counterCount;
+		Function *functions;int functionCount;
+		Normal	 *normals;	int normalCount;
+		Combi 	 *combis;	int combiCount;
+
+		/*getCountNodes (&countNodes);*/
 
 		/* fucion lee json y retorna la estructuras con valores reales */
-		Queue *queues = (Queue *) malloc(2*sizeof(Queue));
-		queues[0].idNode = 44;
-	   	queues[0].resource = 2;
-		queues[0].fixedCost = 9.8;
-		queues[0].variableCost = 7.5;
-		queues[0].countPreceders = 2;
-		queues[0].preceders = (int *) malloc(2*sizeof(int));
-		queues[0].preceders[0]=2;
-		queues[0].preceders[1]=3;
-		queues[0].countFollowers = 3;
-		queues[0].followers = (int *) malloc(3*sizeof(int));
-		queues[0].followers[0]=7;
-		queues[0].followers[1]=10;
-		queues[0].followers[2]=12;
+		getQueues(&queues, &queuesCount);
+		getCounters(&counters, &counterCount);
+		getFunctions(&functions, &functionCount);
+		getNormals(&normals, &normalCount);
+		getCombis(&combis, &combiCount);
 
-		queues[1].idNode = 2;
-	   	queues[1].resource = 0;
-		queues[1].fixedCost = 0.8;
-		queues[1].variableCost = 0.5;
-		queues[1].countPreceders = 1;
-		queues[1].preceders = (int *) malloc(1*sizeof(int));
-		queues[1].preceders[0]=99;
-		queues[1].countFollowers = 1;
-		queues[1].followers = (int *) malloc(1*sizeof(int));
-		queues[1].followers[0]=6;
-
-		Combi *combis = (Combi *) malloc(2*sizeof(Combi));
-		combis[0].idNode = 86;
-		combis[0].countPreceders = 2;
-		combis[0].preceders = (int *) malloc(2*sizeof(int));
-		combis[0].preceders[0] = 2;
-		combis[0].preceders[1] = 44;
-		combis[0].countFollowers = 3;
-		combis[0].followers = (int *) malloc(3*sizeof(int));
-		combis[0].followers[0] = 101;
-		combis[0].followers[1] = 102;
-		combis[0].followers[2] = 105;
-		combis[0].countProbabilisticBranch = 3;
-		combis[0].probabilisticBranch = (double *) malloc(3*sizeof(double));
-		combis[0].probabilisticBranch[0] = 25.5;
-		combis[0].probabilisticBranch[1] = 24.5;
-		combis[0].probabilisticBranch[2] = 50;
-		//combis[0].delay.distribution = (char *) malloc(8*sizeof(char)); //uniform //deprecado
-		combis[0].delay.distribution = 0; //uniform
-		combis[0].delay.least = 1.56;
-		combis[0].delay.highest =  8.23;
-		combis[0].delay.seed = 895;
 
 		// ENVIO DE STRUCTURAS
 
 		// ENVIO DE QUEUES (Preceders,Followers)
-		for (i=0,j=0 ; i < countNodes[0] ; i++,j++) //QUEUE
+		for (i=0,j=0 ; i < queuesCount ; i++,j++) //QUEUE
 		{
 			MPI_Send(&queues[i], sizeof(Queue),  MPI_BYTE, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
 			if (queues[i].countPreceders>0)
@@ -119,9 +78,9 @@ int main(int argc, char **argv){
 		// ENVIO DE COUNTER
 		// ENVIO DE FUNCTION
 
-		for (i=0 ; i < countNodes[4] ; i++,j++) //COMBI
+		for (i=0 ; i < combiCount ; i++,j++) //COMBI
 		{
-			MPI_Send(&combis[i], sizeof(Combi),  MPI_BYTE, i+countNodes[0]+countNodes[1]+countNodes[2]+countNodes[3]+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+			MPI_Send(&combis[i], sizeof(Combi),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
 			if (combis[i].countPreceders>0)
 				MPI_Send(combis[i].preceders, combis[i].countPreceders ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
 			if (combis[i].countFollowers>0)
@@ -217,4 +176,90 @@ void printCombi(Combi combi)
 
 	for (i=0 ; i<combi.countProbabilisticBranch ; i++)
 		printf("probabilisticBranch[%d]: %.2f\n", i,combi.probabilisticBranch[i]);
+}
+
+/*pasar a otro .c*/
+int getCountNodes (int **arrayCountNodes)
+{
+	*arrayCountNodes = (int*)malloc(5*sizeof(int));
+	(*arrayCountNodes)[0] = 2; // QUEUE
+	(*arrayCountNodes)[1] = 0; // NORMAL
+	(*arrayCountNodes)[2] = 0; // COUNTER
+	(*arrayCountNodes)[3] = 0; // FUNCTION
+	(*arrayCountNodes)[4] = 1; // COMBI
+	return 0;
+}
+
+void getQueues(Queue **queues, int *queuesCount)
+{
+	*queuesCount = 2;
+
+	*queues = (Queue *) malloc(2*sizeof(Queue));
+	(*queues)[0].idNode = 44;
+   	(*queues)[0].resource = 2;
+	(*queues)[0].fixedCost = 9.8;
+	(*queues)[0].variableCost = 7.5;
+	(*queues)[0].countPreceders = 2;
+	(*queues)[0].preceders = (int *) malloc(2*sizeof(int));
+	(*queues)[0].preceders[0]=2;
+	(*queues)[0].preceders[1]=3;
+	(*queues)[0].countFollowers = 3;
+	(*queues)[0].followers = (int *) malloc(3*sizeof(int));
+	(*queues)[0].followers[0]=7;
+	(*queues)[0].followers[1]=10;
+	(*queues)[0].followers[2]=12;
+
+	(*queues)[1].idNode = 2;
+   	(*queues)[1].resource = 0;
+	(*queues)[1].fixedCost = 0.8;
+	(*queues)[1].variableCost = 0.5;
+	(*queues)[1].countPreceders = 1;
+	(*queues)[1].preceders = (int *) malloc(1*sizeof(int));
+	(*queues)[1].preceders[0]=99;
+	(*queues)[1].countFollowers = 1;
+	(*queues)[1].followers = (int *) malloc(1*sizeof(int));
+	(*queues)[1].followers[0]=6;
+
+}
+
+void getCounters(Counter **normals, int *counterCount)
+{
+	*counterCount = 0;
+}
+
+void getFunctions(Function **functions, int *functionCount)
+{
+	*functionCount = 0;
+}
+
+void getNormals(Normal **normals, int *normalCount)
+{
+	*normalCount = 0;
+}
+
+void getCombis(Combi **combis, int *combiCount)
+{
+	*combiCount = 1;
+
+	*combis = (Combi *) malloc(2*sizeof(Combi));
+	(*combis)[0].idNode = 86;
+	(*combis)[0].countPreceders = 2;
+	(*combis)[0].preceders = (int *) malloc(2*sizeof(int));
+	(*combis)[0].preceders[0] = 2;
+	(*combis)[0].preceders[1] = 44;
+	(*combis)[0].countFollowers = 3;
+	(*combis)[0].followers = (int *) malloc(3*sizeof(int));
+	(*combis)[0].followers[0] = 101;
+	(*combis)[0].followers[1] = 102;
+	(*combis)[0].followers[2] = 105;
+	(*combis)[0].countProbabilisticBranch = 3;
+	(*combis)[0].probabilisticBranch = (double *) malloc(3*sizeof(double));
+	(*combis)[0].probabilisticBranch[0] = 25.5;
+	(*combis)[0].probabilisticBranch[1] = 24.5;
+	(*combis)[0].probabilisticBranch[2] = 50;
+	//(*combis)[0].delay.distribution = (char *) malloc(8*sizeof(char)); //uniform //deprecado
+	(*combis)[0].delay.distribution = 0; //uniform
+	(*combis)[0].delay.least = 1.56;
+	(*combis)[0].delay.highest =  8.23;
+	(*combis)[0].delay.seed = 895;
 }
