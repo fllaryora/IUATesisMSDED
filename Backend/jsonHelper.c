@@ -348,9 +348,9 @@ void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counte
 	int i,j=0;
 
 	// ENVIO DE 'QUEUES' (2 ENVIOS ADICIONALES PARA 'PRECEDERS' Y 'FOLLOWERS')
-	for (i=0,j=0 ; i < *queuesCount ; i++) //QUEUE
+	for (i=0 ; i < *queuesCount ; i++) //QUEUE
 	{
-		MPI_Send(&(*queues)[i], sizeof(Queue),  MPI_BYTE, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
+		MPI_Send(&((*queues)[i]), sizeof(Queue),  MPI_BYTE, i+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
 		if ((*queues)[i].countPreceders>0)
 			MPI_Send((*queues)[i].preceders, (*queues)[i].countPreceders ,  MPI_INT, i+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
 		if ((*queues)[i].countFollowers>0)
@@ -364,7 +364,7 @@ void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counte
 	// ENVIO DE 'COMBIS' (3 ENVIOS ADICIONALES PARA 'PRECEDERS', 'FOLLOWERS' y 'PROBABILISTIC_BRANCH')
 	for (i=0 ; i < *combiCount ; i++,j++)
 	{
-		MPI_Send(combis[i], sizeof(Combi),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+		MPI_Send(&((*combis)[i]), sizeof(Combi),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
 		if ((*combis)[i].countPreceders>0)
 			MPI_Send((*combis)[i].preceders, (*combis)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
 		if ((*combis)[i].countFollowers>0)
@@ -408,6 +408,9 @@ void getQueues(const char *filenameJson , Queue **queues, int *queuesCount)
 		(*queues)[i].followers = (int *) malloc((*queues)[i].countFollowers*sizeof(int));
 		for (j = 0; j < (*queues)[i].countFollowers; j++)
 			(*queues)[i].followers[j]=json_array_get_number(arrayInternal,j);
+
+		printf("ll%dll\n",(*queues)[i].countPreceders);
+		/*printf("l%d\n",(*queues)[i].countFollowers);*/
 	}
 }
 
@@ -457,45 +460,45 @@ void printQueue(Queue queue)
 {
 	int i;
 
-	printf("idNode: %d\n", queue.idNode);
-	printf("resource: %d\n", queue.resource);
-	printf("fixedCost: %.4f\n", queue.fixedCost);
-	printf("variableCost: %.4f\n", queue.variableCost);
-	printf("countPreceders: %d\n", queue.countPreceders);
-	printf("countFollowers: %d\n", queue.countFollowers);
+	printf("%d: idNode: %d\n", queue.idNode, queue.idNode);
+	printf("%d: resource: %d\n", queue.idNode, queue.resource);
+	printf("%d: fixedCost: %.4f\n", queue.idNode, queue.fixedCost);
+	printf("%d: variableCost: %.4f\n", queue.idNode, queue.variableCost);
+	printf("%d: countPreceders: %d\n", queue.idNode, queue.countPreceders);
+	printf("%d: countFollowers: %d\n", queue.idNode, queue.countFollowers);
 
 	for (i=0 ; i<queue.countPreceders ; i++)
-		printf("preceders[%d]: %d\n", i,queue.preceders[i]);
+		printf("%d: preceders[%d]: %d\n", queue.idNode,i,queue.preceders[i]);
 
 	for (i=0 ; i<queue.countFollowers ; i++)
-		printf("followers[%d]: %d\n", i,queue.followers[i]);
+		printf("%d: followers[%d]: %d\n", queue.idNode,i,queue.followers[i]);
 }
 
 void printCombi(Combi combi)
 {
 	int i;
 
-	printf("idNode: %d\n", combi.idNode);
-	printf("countPreceders: %d\n", combi.countPreceders);
-	printf("countFollowers: %d\n", combi.countFollowers);
-	printf("countProbabilisticBranch: %d\n", combi.countProbabilisticBranch);
-	printf("delay.distribution: %d\n",combi.delay.distribution);
-	printf("delay.least: %.4f\n",combi.delay.least);
-	printf("delay.highest: %.4f\n",combi.delay.highest);
-	printf("delay.seed: %d\n",combi.delay.seed);
+	printf("idNode: %d\n", combi.idNode,combi.idNode);
+	printf("%d: countPreceders: %d\n", combi.idNode, combi.countPreceders);
+	printf("%d: countFollowers: %d\n", combi.idNode, combi.countFollowers);
+	printf("%d: countProbabilisticBranch: %d\n", combi.countProbabilisticBranch);
+	printf("%d: delay.distribution: %d\n",combi.delay.distribution);
+	printf("%d: delay.least: %.4f\n",combi.delay.least);
+	printf("%d: delay.highest: %.4f\n",combi.delay.highest);
+	printf("%d: delay.seed: %d\n",combi.delay.seed);
 
 	for (i=0 ; i<combi.countPreceders ; i++)
-		printf("preceders[%d]: %d\n", i,combi.preceders[i]);
+		printf("%d: preceders[%d]: %d\n", combi.idNode, i,combi.preceders[i]);
 
 	for (i=0 ; i<combi.countFollowers ; i++)
-		printf("followers[%d]: %d\n", i,combi.followers[i]);
+		printf("%d: followers[%d]: %d\n", combi.idNode, i,combi.followers[i]);
 
 	for (i=0 ; i<combi.countProbabilisticBranch ; i++)
-		printf("probabilisticBranch[%d]: %.2f\n", i,combi.probabilisticBranch[i]);
+		printf("%d: probabilisticBranch[%d]: %.2f\n", combi.idNode, i,combi.probabilisticBranch[i]);
 }
 
 int getNodesAmount( void ){
-	return 1;
+	return 3;
 }
 
 int* getCombiIds( void ){

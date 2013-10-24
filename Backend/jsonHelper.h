@@ -3,6 +3,7 @@
 
 #include "parson.h"
 #include "ourMPI.h"
+#include "main.h"
 #include <stddef.h>
 #include <wjelement.h>
 #include <stdio.h>
