@@ -5,9 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
-#define ERROR                      0
-#define SUCCESS                    1
+#include <math.h>
 
 int validateSchema(const char *filenameJson , const char *filenameSchema)
 {
@@ -111,20 +109,18 @@ int validateJsonImput(const char *filenameJson)
 	int sizePreceders, sizeFollowers;
 	int *arrayPreceders, *arrayFollowers;
 
-    /*validate json*/
+    /*VALIDATE JSON*/
     root_value = json_parse_file(filenameJson);
-    if (!root_value)
-    {
+
+    if (!root_value) {
 		return INVALID_JSON;
     }
 
-    if (json_value_get_type(root_value) == JSONArray)
-    {
+    if (json_value_get_type(root_value) == JSONArray) {
 		return INVALID_JSON;
     }
 
-    if (json_value_get_type(root_value) != JSONObject)
-    {
+    if (json_value_get_type(root_value) != JSONObject) {
 		return INVALID_JSON;
     }
 
@@ -135,7 +131,7 @@ int validateJsonImput(const char *filenameJson)
 	getArray(object, "transformation.normals"  , "idNode" ,&arrayNormals   , &sizeNormals);
 	getArray(object, "transformation.functions", "idNode" ,&arrayFunctions , &sizeFunctions);
 	getArray(object, "transformation.combis"   , "idNode" ,&arrayCombis    , &sizeCombis);
-	/*for (i = 0; i < sizeNormals ; i++) printf("%d ",arrayNormals[i]); printf("\n");*/
+	//for (i = 0; i < sizeNormals ; i++) printf("%d ",arrayNormals[i]); printf("\n");
 
 	/*DIFERENTE NUMERO DE ID*/
 	if (repeatArrays(&arrayQueues, sizeQueues, &arrayCounters, sizeCounters, &arrayNormals, sizeNormals, &arrayFunctions, sizeFunctions, &arrayCombis, sizeCombis,&arrayNodes,&sizeNodes) > 0)
@@ -305,58 +301,69 @@ int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int 
 
 /* MANEJO DE ESTRUCTURA */
 
-void getQueues(Queue **queues, int *queuesCount)
+void getQueues(const char *filenameJson , Queue **queues, int *queuesCount)
 {
-	*queuesCount = 2;
 
-	*queues = (Queue *) malloc(2*sizeof(Queue));
-	(*queues)[0].idNode = 44;
-   	(*queues)[0].resource = 2;
-	(*queues)[0].fixedCost = 9.8;
-	(*queues)[0].variableCost = 7.5;
-	(*queues)[0].countPreceders = 2;
-	(*queues)[0].preceders = (int *) malloc(2*sizeof(int));
-	(*queues)[0].preceders[0]=2;
-	(*queues)[0].preceders[1]=3;
-	(*queues)[0].countFollowers = 3;
-	(*queues)[0].followers = (int *) malloc(3*sizeof(int));
-	(*queues)[0].followers[0]=7;
-	(*queues)[0].followers[1]=10;
-	(*queues)[0].followers[2]=12;
+    JSON_Value  *root_value;
+    JSON_Object *object,*objectInArray;
+    JSON_Array  *array,*arrayInternal;
+	int i, j;
+	/*int sizeQueues, sizeCounters, sizeNormals, sizeFunctions, sizeCombis, sizeNodes;
+	int *arrayQueues, *arrayCounters, *arrayNormals, *arrayFunctions, *arrayCombis,*arrayNodes;
+	int sizePreceders, sizeFollowers;
+	int *arrayPreceders, *arrayFollowers;*/
 
-	(*queues)[1].idNode = 2;
-   	(*queues)[1].resource = 0;
-	(*queues)[1].fixedCost = 0.8;
-	(*queues)[1].variableCost = 0.5;
-	(*queues)[1].countPreceders = 1;
-	(*queues)[1].preceders = (int *) malloc(1*sizeof(int));
-	(*queues)[1].preceders[0]=99;
-	(*queues)[1].countFollowers = 1;
-	(*queues)[1].followers = (int *) malloc(1*sizeof(int));
-	(*queues)[1].followers[0]=6;
+    root_value = json_parse_file(filenameJson);
+    object = json_value_get_object(root_value);
 
+	array = json_object_dotget_array(object, "transformation.queues");
+
+	*queuesCount = json_array_get_count(array);
+	*queues = (Queue *) malloc((*queuesCount)*sizeof(Queue));
+
+    for (i = 0; i < json_array_get_count(array); i++)
+	{
+	    objectInArray = json_array_get_object(array, i);
+	    (*queues)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
+	   	(*queues)[i].resource = (int)json_object_dotget_number(objectInArray, "resource" );
+		(*queues)[i].fixedCost = json_object_dotget_number(objectInArray, "fixedCost" );
+		(*queues)[i].variableCost = json_object_dotget_number(objectInArray, "variableCost" );
+
+		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
+		(*queues)[i].countPreceders = json_array_get_count(arrayInternal);
+		(*queues)[i].preceders = (int *) malloc((*queues)[i].countPreceders*sizeof(int));
+		for (j = 0; j < (*queues)[i].countPreceders; j++)
+			(*queues)[i].preceders[j]=json_array_get_number(arrayInternal,j);
+
+		arrayInternal = json_object_dotget_array(objectInArray, "followers");
+		(*queues)[i].countFollowers = json_array_get_count(arrayInternal);
+		(*queues)[i].followers = (int *) malloc((*queues)[i].countFollowers*sizeof(int));
+		for (j = 0; j < (*queues)[i].countFollowers; j++)
+			(*queues)[i].followers[j]=json_array_get_number(arrayInternal,j);
+	}
 }
 
-void getCounters(Counter **normals, int *counterCount)
+void getCounters(const char *filenameJson , Counter **normals, int *counterCount)
 {
 	*counterCount = 0;
 }
 
-void getFunctions(Function **functions, int *functionCount)
+void getFunctions(const char *filenameJson , Function **functions, int *functionCount)
 {
 	*functionCount = 0;
 }
 
-void getNormals(Normal **normals, int *normalCount)
+void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
 {
 	*normalCount = 0;
 }
 
-void getCombis(Combi **combis, int *combiCount)
+void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 {
+	*combis = (Combi *) malloc(2*sizeof(Combi));
+
 	*combiCount = 1;
 
-	*combis = (Combi *) malloc(2*sizeof(Combi));
 	(*combis)[0].idNode = 86;
 	(*combis)[0].countPreceders = 2;
 	(*combis)[0].preceders = (int *) malloc(2*sizeof(int));

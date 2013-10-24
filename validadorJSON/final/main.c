@@ -75,12 +75,12 @@ int main(int argc, char **argv)
 		if (status.MPI_TAG == QUEUE)
 		{
 			receiveQueue(&queue);
-			//printQueue(queue);
+			printQueue(queue);
 		}
 		else if (status.MPI_TAG == COMBI)
 		{
 			receiveCombi(&combi);
-			printCombi(combi);
+			//printCombi(combi);
 		}
 
 	}

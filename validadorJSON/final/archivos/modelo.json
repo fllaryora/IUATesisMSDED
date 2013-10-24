@@ -18,7 +18,7 @@
 				"preceders":[11,4],
 				"followers": [10],
 				"fixedCost": 12.0,
-				"variableCost": 2.0
+				"variableCost": 5.0
 			}
 		],
 		"counters": [
