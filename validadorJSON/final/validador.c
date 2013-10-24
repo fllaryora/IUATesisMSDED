@@ -8,25 +8,6 @@
 
 #define ERROR                      0
 #define SUCCESS                    1
-#define STARTING_CAPACITY         15
-#define ARRAY_MAX_CAPACITY    122880 /* 15*(2^13) */
-#define OBJECT_MAX_CAPACITY      960 /* 15*(2^6)  */
-#define MAX_NESTING               19
-#define MAX(a, b)             ((a) > (b) ? (a) : (b))
-
-#define parson_malloc(a)     malloc(a)
-#define parson_free(a)       free((void*)a)
-#define parson_realloc(a, b) realloc(a, b)
-
-/* JSON Array API */
-/*JSON_Value * json_array_get_value(const JSON_Array *array, size_t index) {
-    if (index >= json_array_get_count(array)) { return NULL; }
-    return array->items[index];
-}
-
-const char * json_array_get_string(const JSON_Array *array, size_t index) {
-    return json_value_get_string(json_array_get_value(array, index));
-}*/
 
 int validateSchema(const char *filenameJson , const char *filenameSchema)
 {
@@ -125,8 +106,8 @@ int validateJsonImput(const char *filenameJson)
     JSON_Object *object,*objectInArray;
     JSON_Array  *array;
 	int i, j;
-	int sizeQueues, sizeCounters, sizeNormals, sizeFunctions, sizeCombis;
-	int *arrayQueues, *arrayCounters, *arrayNormals, *arrayFunctions, *arrayCombis;
+	int sizeQueues, sizeCounters, sizeNormals, sizeFunctions, sizeCombis, sizeNodes;
+	int *arrayQueues, *arrayCounters, *arrayNormals, *arrayFunctions, *arrayCombis,*arrayNodes;
 	int sizePreceders, sizeFollowers;
 	int *arrayPreceders, *arrayFollowers;
 
@@ -154,18 +135,13 @@ int validateJsonImput(const char *filenameJson)
 	getArray(object, "transformation.normals"  , "idNode" ,&arrayNormals   , &sizeNormals);
 	getArray(object, "transformation.functions", "idNode" ,&arrayFunctions , &sizeFunctions);
 	getArray(object, "transformation.combis"   , "idNode" ,&arrayCombis    , &sizeCombis);
-
-	/*for (i = 0; i < sizeNormals ; i++)
-	    printf("%d ",arrayNormals[i]);
-	printf("\n");*/
+	/*for (i = 0; i < sizeNormals ; i++) printf("%d ",arrayNormals[i]); printf("\n");*/
 
 	/*DIFERENTE NUMERO DE ID*/
-	if (repeatArrays(&arrayQueues, sizeQueues, &arrayCounters, sizeCounters, &arrayNormals, sizeNormals, &arrayFunctions, sizeFunctions, &arrayCombis, sizeCombis) > 0)
+	if (repeatArrays(&arrayQueues, sizeQueues, &arrayCounters, sizeCounters, &arrayNormals, sizeNormals, &arrayFunctions, sizeFunctions, &arrayCombis, sizeCombis,&arrayNodes,&sizeNodes) > 0)
 		return VALIDATION_FAIL; /*FAIL ID*/
 
-	/*TODO: referencias en antecesores y predecesores existan, que no apunten a un id que no existe*/
-
-	for (i = 0; i < sizeNormals ; i++)
+	for (i = 0; i < sizeQueues ; i++)
 	{
 	    /*COLA: ANTESESOR: No pueden ser Colas.*/
 		getArrayInArray(object, "transformation.queues", i,"preceders",&arrayPreceders , &sizePreceders);
@@ -175,8 +151,12 @@ int validateJsonImput(const char *filenameJson)
 		getArrayInArray(object, "transformation.queues", i,"followers",&arrayFollowers , &sizeFollowers);
 		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) != sizeFollowers)
 			return VALIDATION_FAIL; /*FAIL QUEUE*/
+		/*COLA: Existe referencia Preceders Followers*/
+		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
+			return VALIDATION_FAIL; /*FAIL QUEUE*/
+		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
+			return VALIDATION_FAIL; /*FAIL QUEUE*/
 	}
-
 
 	for (i = 0; i < sizeCombis ; i++)
 	{
@@ -188,14 +168,63 @@ int validateJsonImput(const char *filenameJson)
 		getArrayInArray(object, "transformation.combis", i,"followers",&arrayFollowers , &sizeFollowers);
 		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) >0)
 			return VALIDATION_FAIL; /*FAIL COMBI*/
+		/*COMBI: Existe referencia Preceders Followers*/
+		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
+			return VALIDATION_FAIL; /*FAIL COMBI*/
+		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
+			return VALIDATION_FAIL; /*FAIL COMBI*/
 	}
 
-    /*TODO: NORMAL: ANTESESOR: No pueden ser colas*/
-    /*TODO: NORMAL: SUCESOR: No pueden ser COMBIS.*/
-    /*TODO: FUNCION: ANTESESOR: No pueden ser colas.*/
-    /*TODO: FUNCION: SUCESOR: No pueden ser Combis*/
-    /*TODO: CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
-    /*TODO: CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
+	for (i = 0; i < sizeNormals ; i++)
+	{
+		/*NORMAL: ANTESESOR: No pueden ser colas*/
+		getArrayInArray(object, "transformation.normals", i,"preceders",&arrayPreceders , &sizePreceders);
+		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayQueues,sizeQueues)> 0)
+			return VALIDATION_FAIL; /*FAIL NORMAL*/
+    	/*NORMAL: SUCESOR: No pueden ser combis.*/
+		getArrayInArray(object, "transformation.normals", i,"followers",&arrayFollowers , &sizeFollowers);
+		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) >0)
+			return VALIDATION_FAIL; /*FAIL NORMAL*/
+		/*NORMAL: Existe referencia Preceders Followers*/
+		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
+			return VALIDATION_FAIL; /*FAIL NORMAL*/
+		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
+			return VALIDATION_FAIL; /*FAIL NORMAL*/
+	}
+
+	for (i = 0; i < sizeFunctions ; i++)
+	{
+		/*FUNCION: ANTESESOR: No pueden ser colas*/
+		getArrayInArray(object, "transformation.functions", i,"preceders",&arrayPreceders , &sizePreceders);
+		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayQueues,sizeQueues)> 0)
+			return VALIDATION_FAIL; /*FAIL FUNCTION*/
+    	/*FUNCION: SUCESOR: No pueden ser combis.*/
+		getArrayInArray(object, "transformation.functions", i,"followers",&arrayFollowers , &sizeFollowers);
+		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) >0)
+			return VALIDATION_FAIL; /*FAIL FUNCTION*/
+		/*FUNCION: Existe referencia Preceders Followers*/
+		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
+			return VALIDATION_FAIL; /*FAIL FUNCION*/
+		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
+			return VALIDATION_FAIL; /*FAIL FUNCION*/
+	}
+
+	for (i = 0; i < sizeCounters ; i++)
+	{
+    	/*CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
+		getArrayInArray(object, "transformation.counters", i,"preceders",&arrayPreceders , &sizePreceders);
+		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayQueues,sizeQueues)> 0 || countArrayInclude(&arrayPreceders,sizePreceders,&arrayCounters,sizeCounters)> 0)
+			return VALIDATION_FAIL; /*FAIL CONTADOR*/
+    	/*CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
+		getArrayInArray(object, "transformation.counters", i,"followers",&arrayFollowers , &sizeFollowers);
+		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) >0 || countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCounters,sizeCounters)> 0)
+			return VALIDATION_FAIL; /*FAIL CONTADOR*/
+		/*CONTADOR: Existe referencia Preceders Followers*/
+		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
+			return VALIDATION_FAIL; /*FAIL CONTADOR*/
+		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
+			return VALIDATION_FAIL; /*FAIL CONTADOR*/
+	}
 
     json_value_free(root_value);
     return VALIDATION_PASS;
@@ -249,26 +278,26 @@ int countArrayInclude(int **array,int sizeArray,int **arrayFull, int sizeArrayFu
 	return count;
 }
 
-int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int **array3, int sizeArray3, int **array4, int sizeArray4, int **array5, int sizeArray5)
+int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int **array3, int sizeArray3, int **array4, int sizeArray4, int **array5, int sizeArray5, int** array, int* sizeArray)
 {
 	int i=0,j,count=0;
-	int sizeArray = sizeArray1 + sizeArray2 + sizeArray3 + sizeArray4 + sizeArray5;
-	int *array = (int*)malloc(sizeof(int) * sizeArray);
+	*sizeArray = sizeArray1 + sizeArray2 + sizeArray3 + sizeArray4 + sizeArray5;
+	*array = (int*)malloc(sizeof(int) * (*sizeArray));
 
 	for (j = 0; j < sizeArray1; i++, j++)
-		array[i] = (*array1)[j];
+		(*array)[i] = (*array1)[j];
 	for (j = 0; j < sizeArray2; i++, j++)
-		array[i] = (*array2)[j];
+		(*array)[i] = (*array2)[j];
 	for (j = 0; j < sizeArray3; i++, j++)
-		array[i] = (*array3)[j];
+		(*array)[i] = (*array3)[j];
 	for (j = 0; j < sizeArray4; i++, j++)
-		array[i] = (*array4)[j];
+		(*array)[i] = (*array4)[j];
 	for (j = 0; j < sizeArray5; i++, j++)
-		array[i] = (*array5)[j];
+		(*array)[i] = (*array5)[j];
 
-	for (i = 0; i < sizeArray ; i++)
-		for (j = i+1; j < sizeArray ; j++)
-	    	if (array[i] == array[j])
+	for (i = 0; i < *sizeArray ; i++)
+		for (j = i+1; j < *sizeArray ; j++)
+	    	if ((*array)[i] == (*array)[j])
 				count=count+1;
 
 	return count;
