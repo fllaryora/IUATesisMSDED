@@ -11,11 +11,13 @@ extern void putInteger(int , const int );
 extern void putDouble(int , const double );
 extern void putArrayDouble(int , const double* , int );
 extern void putArrayInteger(int , const int* , int );
-extern void doSummaryReport(int );
+extern void doSummaryReport(int , const double , const int , const int  );
 extern void doDeltaT(int , const double , const int , const int , const int , const int , const int );
 
 extern void doQueue(int , const int , const int , const int , const int , const double , const int ,  const int ,  const double ,  const double );
+extern void doFinalQueue(int , const int , const double , const double );
 extern void doCounter(int , const int , const int , const int , const double  );
+extern void doFinalCounter(int , const int , const int );
 extern void doFunction(int , const int , const int );
 #define doNormal(A , B , C, D, E, F, G, H, I )	doActivity(A , B , C, D, E, F, G, H, I );
 #define doCombi(A , B , C, D, E, F, G, H, I )	doActivity(A , B , C, D, E, F, G, H, I );
@@ -30,4 +32,6 @@ extern void doActivity(int , const int , const int , const double* , const doubl
 #define GetCombiDalaysStruct(DLY, SIZE, NODE_ID)	GetDelayActivityArrayStruct(DLY, SIZE, COMBI_REPORT, NODE_ID)
 #define GetNormalDalaysStruct(DLY, SIZE, NODE_ID)	GetDelayActivityArrayStruct(DLY, SIZE, NORMAL_REPORT, NODE_ID)
 
+#define GetFinalCounterStruct(STRU)	GetNodeStruct(STRU, sizeof(PrinterFinalCounter), COUNTER_FINAL_REPORT)
+#define GetFinalQueueStruct(STRU)	GetNodeStruct(STRU, sizeof(PrinterFinalQueue), QUEUE_FINAL_REPORT)
 #endif /* #ifndef _PRINTER_H_*/

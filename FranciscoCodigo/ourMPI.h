@@ -73,14 +73,8 @@ typedef struct {
 #define GetNodeStruct(STRU, SIZE, TAG)	memset (STRU, 0,SIZE )
 #define GetActivityStruct(STRU, SIZE, TAG, STTUS)	 memset (STRU, 0,SIZE );(STTUS)->MPI_SOURCE=FIST_NODE_ID
 #define GetDelayActivityArrayStruct(DLY, SIZE, TAG, NODE_ID)	for(int i = 0 ; i < SIZE; i++){ DLY[i]=4.5; }(void)0
-
-
-//recive una estructura sin importarle la fuente
-#define GetNodeStruct(STRU, SIZE, TAG)	MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, MPI_STATUS_IGNORE)
-//recive una estructura sin importarle la fuente, pero la debe recordar para mas adelante
-#define GetActivityStruct(STRU, SIZE, TAG, STTUS)	MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, STTUS)
-//cuanto delay tiene cada actividad dentro de un activity
-#define GetDelayActivityArrayStruct(DLY, SIZE, TAG, NODE_ID)	MPI_Recv(DLY, SIZE, MPI_DOUBLE, NODE_ID, TAG , MPI_COMM_WORLD, STTUS)
+#define WaitForPrinterSignal(TIME, STTUS)	 *(TIME)=0.5;(STTUS)->MPI_TAG=PRINT_SIGNAL;(STTUS)->MPI_SOURCE=MASTER_ID
+#define MockLoop(STTUS)	(STTUS)->MPI_TAG=LIVE_LOCK
 
 #ifdef _MOCK_SCHADULER_
 #define MPI_Comm_rank(X, Y) *(Y)=0
@@ -192,7 +186,8 @@ typedef struct {
 #define SendCombisToRaffler(X,Y)	MPI_Send( X , Y , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD)
 #define NewRaffle()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD)
 #define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD)
-#define SendLiveLockToPrinter()	MPI_Send( NULL , 0 , MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
+#define SendLiveLockToPrinter(TIME)	MPI_Send(TIME, 1, MPI_DOUBLE, MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
+
 #endif
 
 
@@ -206,5 +201,9 @@ typedef struct {
 #define GetActivityStruct(STRU, SIZE, TAG, STTUS)	MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, STTUS)
 //cuanto delay tiene cada actividad dentro de un activity
 #define GetDelayActivityArrayStruct(DLY, SIZE, TAG, NODE_ID)	MPI_Recv(DLY, SIZE, MPI_DOUBLE, NODE_ID, TAG , MPI_COMM_WORLD, STTUS)
+//envia el scheduler al printer si sigue o para
+#define WaitForPrinterSignal(TIME, STTUS)	MPI_Recv(TIME, 1, MPI_DOUBLE, MASTER_ID, MPI_ANY_TAG , MPI_COMM_WORLD, STTUS)
+//no hace nada
+#define MockLoop(STTUS)	(void)0
 
 #endif /* our mpi*/

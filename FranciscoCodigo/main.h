@@ -50,6 +50,8 @@ typedef enum{
 	QUEUE_REPORT,
 	QUEUE_FINAL_REPORT,
 	COUNTER_FINAL_REPORT,
+	PRINT_SIGNAL, 		   /*when scheduler send to printer must write another 
+						   dT story or give up it */
 	////------never used yet
 							
 	GENERATION_PHASE,		/* the resources only can in and procese*/
@@ -64,8 +66,7 @@ typedef enum{
 	
 	
 				   
-	PRINT_SIGNAL, 		   /*when dT end, printer must write another 
-						   dT story*/
+
 	//GATHER enviada de reporte de dT
 	
 	
@@ -132,6 +133,16 @@ typedef struct{
 }PrinterSummary;
 //idNode, totalProductivity , idNode, fixCost y VariableCost llegan como arreglo en otra llamada
 
+ypedef struct{
+	int idNode;
+	double fixCost;
+	double VariableCost;
+}PrinterFinalQueue;
+			
+typedef struct{
+	int idNode;
+	int totalProductivity;
+}PrinterFinalCounter;
 /******************************************************/
 typedef enum{
 	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI

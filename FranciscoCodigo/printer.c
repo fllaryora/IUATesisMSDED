@@ -7,50 +7,98 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-//TODO terminar
 void printer(){
 	int fileDescriptor;
+	double totalTime = 0.0;
+	int flag = FALSE;
+	MPI_Status result;
 	int* qCouNfComb = (int*) malloc( 5 * sizeof(int) );
 	//recive del master la cantidad de nodos
 	GetEachNodesAmount(qCouNfComb);
-
-	printf("Hola desde el printer\n");
-	
 	fileDescriptor = open ("/tmp/pijeriasDeJson.txt",O_WRONLY|O_CREAT,00660);
 	
 	//open json file
 	openBrace(fileDescriptor);
 	putLabel(fileDescriptor, "timeLine"); openBrace(fileDescriptor);
 		openBracket(fileDescriptor);
-			//te llama el scheduler y te dice que se va ha consumir un delta t, por lo que todos vienen
-			//y despues vienen todos
-			//separeElement(fileDescriptor); ente llamados
 
-			doDeltaT(fileDescriptor, deltaT, qCouNfComb[0], qCouNfComb[1], qCouNfComb[2], qCouNfComb[3], qCouNfComb[4]);
-				//TODOD------------------------------------------------------------
+		do{//te llama el scheduler y te dice que se va ha consumir un delta t, por lo que todos vienen
+			WaitForPrinterSignal(&totalTime, &result);
+			if(result.MPI_TAG == PRINT_SIGNAL ){
+				if(flag == TRUE){
+					separeElement(fileDescriptor);
+				} 
+				doDeltaT(fileDescriptor, totalTime, qCouNfComb[0], qCouNfComb[1], qCouNfComb[2], qCouNfComb[3], qCouNfComb[4]);
+				flag = TRUE;
+			}
+			MockLoop(&result);//si es test termina el bucle
+		}while(result.MPI_TAG != LIVE_LOCK);	
 
 		closeBrace(fileDescriptor);
-	closeBracket(fileDescriptor)
-	putLabel(fileDescriptor, "summaryReport"); openBrace(fileDescriptor);
-		doSummaryReport(fileDescriptor);
-	closeBrace(fileDescriptor);
-
+	closeBracket(fileDescriptor); separeElement(fileDescriptor);
+	putLabel(fileDescriptor, "summaryReport"); 
+		doSummaryReport(fileDescriptor, totalTime, qCouNfComb[0], qCouNfComb[1]);
+	
 	//close json file
 	closeBrace(fileDescriptor);
 	free(qCouNfComb);
 	close(fileDescriptor);
 }
 
-//TODO terminar
-void doSummaryReport(int fileDescriptor){
-	double totalTime = 0.0;
-	//llega la estructura de ?? (totalTime, totalCost, cantidad de counters, cantidad de queues)
-	putLabel(fileDescriptor, "totalTime"); putDouble(fileDescriptor, totalTime); separeElement(fileDescriptor);
-	putLabel(fileDescriptor, "totalCost"); putDouble(fileDescriptor, totalCost); separeElement(fileDescriptor);
-	//llegan los counters de ??
-	putLabel(fileDescriptor, "counters");  separeElement(fileDescriptor);
-	//llegan las queue de ??
-	putLabel(fileDescriptor, "queues"); 
+void doSummaryReport(int fileDescriptor, const double totalTime, const int queues, const int counters){
+	PrinterFinalCounter crStruct;
+	PrinterFinalQueue qeStruct;
+	double totalCost = 0.0;
+	//open summary
+	openBrace(fileDescriptor);
+		putLabel(fileDescriptor, "totalTime"); putDouble(fileDescriptor, totalTime); separeElement(fileDescriptor);
+
+		putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);
+			//recibo todos los envios de colas
+			for(int i = 0; i < counters; i++){
+				GetFinalCounterStruct(&crStruct);
+				doFinalCounter( fileDescriptor, crStruct.idNode, crStruct.totalProductivity);
+				if (i+1 < counters ){separeElement(fileDescriptor);}
+			}
+		closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+
+		putLabel(fileDescriptor, "queues"); openBracket( fileDescriptor);
+			//recibo todos los envios de colas
+			for(int i = 0; i < queues; i++){
+				GetFinalQueueStruct(&qeStruct);
+				//qeStruct.VariableCost es el constante del costo variable * el numero de recursos que salieron de la cola.
+				totalCost + =  qeStruct.fixCost + qeStruct.VariableCost;
+				doFinalQueue( fileDescriptor, qeStruct.idNode, qeStruct.fixCost, qeStruct.VariableCost );
+				if (i+1 < queues ){separeElement(fileDescriptor);}
+			}
+		closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+					
+		putLabel(fileDescriptor, "totalCost"); putDouble(fileDescriptor, totalCost); separeElement(fileDescriptor);
+
+	//close summary
+	closeBrace(fileDescriptor);
+
+}
+
+
+void doFinalCounter(int fileDescriptor, const int idNode, const int totalProductivity){
+	//open one Counter
+	openBrace(fileDescriptor);
+		putLabel(fileDescriptor, "idNode");   putInteger(fileDescriptor, idNode); separeElement(fileDescriptor);
+		putLabel(fileDescriptor, "totalProductivity");   putInteger(fileDescriptor, totalProductivity); 
+	//close one Counter
+	closeBrace(fileDescriptor);
+}
+
+
+void doFinalQueue(int fileDescriptor, const int idNode, const double fixCost, const double VariableCost){
+	//open one queue
+	openBrace(fileDescriptor);
+		putLabel(fileDescriptor, "idNode");   putInteger(fileDescriptor, idNode); separeElement(fileDescriptor);
+		putLabel(fileDescriptor, "fixCost");   putDouble(fileDescriptor, fixCost); separeElement(fileDescriptor);
+		putLabel(fileDescriptor, "VariableCost");   putDouble(fileDescriptor, VariableCost);
+	//close one queue
+	closeBrace(fileDescriptor);
 }
 
 void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const int counters, const int normals, const int functions, const int combis){
