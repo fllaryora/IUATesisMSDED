@@ -50,7 +50,8 @@ int main(int argc, char **argv){
 	switch( idNodo ){
 		case MASTER_ID:
 			master(mpiProcesses, commNodes,filenameJson,filenameSchema);
-		break;
+			printf("-1-termine\n");
+			break;
 		case RAFFLER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
@@ -58,6 +59,7 @@ int main(int argc, char **argv){
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}
+			printf("-2-termine\n");
 		break;
 		case PRINTER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
@@ -66,6 +68,7 @@ int main(int argc, char **argv){
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}
+			printf("-3-termine\n");
 			break;
 		default :
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
@@ -75,7 +78,8 @@ int main(int argc, char **argv){
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}
-		break;
+			printf("-4-termine %d\n",idNodo);
+			break;
 	}
 	/* FIN de zona de MPI */
 	if(processRank != NULL)free(processRank);

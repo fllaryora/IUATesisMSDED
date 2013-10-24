@@ -20,12 +20,12 @@ void genericNode(int myIdNodo){
 	if (status.MPI_TAG == QUEUE)
 	{
 		receiveQueue(&queue);
-		printQueue(queue);
+		//printQueue(queue);
 	}
 	else if (status.MPI_TAG == COMBI)
 	{
 		receiveCombi(&combi);
-		//printCombi(combi);
+		printCombi(combi);
 	}
 
 }
@@ -65,12 +65,15 @@ void receiveCombi(Combi *combi)
 		(*combi).preceders = (int *) malloc( (*combi).countPreceders *sizeof(int));
 		MPI_Recv12((*combi).preceders, (*combi).countPreceders, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	}
+			printf("AA\n");
 	if ((*combi).countFollowers>0) {
 		(*combi).followers = (int *) malloc( (*combi).countFollowers *sizeof(int));
 		MPI_Recv12((*combi).followers, (*combi).countFollowers, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	}
-	if ((*combi).countProbabilisticBranch>0) {
+			printf("BB\n");
+	/*if ((*combi).countProbabilisticBranch>0) {
 		(*combi).probabilisticBranch = (double *) malloc( (*combi).countProbabilisticBranch *sizeof(double));
-		MPI_Recv12((*combi).probabilisticBranch, (*combi).countProbabilisticBranch, MPI_DOUBLE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-	}
+		MPI_Recv((*combi).probabilisticBranch, (*combi).countProbabilisticBranch, MPI_DOUBLE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}*/
+			printf("CC\n");
 }
