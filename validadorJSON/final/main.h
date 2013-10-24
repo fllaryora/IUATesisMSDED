@@ -26,6 +26,7 @@ void getFunctions(Function **functions, int *functionCount);
 void getNormals(Normal **normals, int *normalCount);
 void getCombis(Combi **combis, int *combiCount);
 
+void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counterCount,Function **functions, int *functionCount,Normal **normals, int *normalCount,Combi **combis, int *combiCount);
 #endif /* #ifndef _MAIN_H_*/
 
 

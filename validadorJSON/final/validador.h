@@ -13,6 +13,16 @@ typedef enum{
 	VALIDATION_PASS		/* validacion correcta */
 }VALIDATE;
 
+typedef enum{
+	DIST_UNIFORM,
+	DIST_DETERMINISTIC,
+	DIST_NORMAL,
+	DIST_EXPONENTIAL,
+	DIST_TRIANGULAR,
+	DIST_BETA,
+	DIST_LOG_NORMAL
+}DISTRIBUTION;
+
 typedef struct{
 	int distribution; //
 	double least;

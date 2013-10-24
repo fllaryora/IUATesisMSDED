@@ -16,13 +16,13 @@
 
 #define STREQ(A, B) (A && B ? strcmp(A, B) == 0 : 0)
 
-int main(int argc, char **argv){
-	int rta;
+int main(int argc, char **argv)
+{
 	const char *filenameJson   = "archivos/modelo.json";
 	const char *filenameSchema = "archivos/schema.json";
 
-	int idNodo,i,j, mpiProcesses; 
-	int receiverCount,currentTag;
+	int i,j;
+	int idNodo, mpiProcesses; 
 
 	MPI_Status infoComm;
 	MPI_Status result;
@@ -52,9 +52,7 @@ int main(int argc, char **argv){
 		Normal	 *normals;	int normalCount;
 		Combi 	 *combis;	int combiCount;
 
-		/*getCountNodes (&countNodes);*/
-
-		/* fucion lee json y retorna la estructuras con valores reales */
+		//TODO: LEER JSON Y RETORNAR LISTA DE ESTRUCTURAS Y CANTIDAD
 		getQueues(&queues, &queuesCount);
 		getCounters(&counters, &counterCount);
 		getFunctions(&functions, &functionCount);
@@ -63,32 +61,7 @@ int main(int argc, char **argv){
 
 
 		// ENVIO DE STRUCTURAS
-
-		// ENVIO DE QUEUES (Preceders,Followers)
-		for (i=0,j=0 ; i < queuesCount ; i++,j++) //QUEUE
-		{
-			MPI_Send(&queues[i], sizeof(Queue),  MPI_BYTE, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
-			if (queues[i].countPreceders>0)
-				MPI_Send(queues[i].preceders, queues[i].countPreceders ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
-			if (queues[i].countFollowers>0)
-				MPI_Send(queues[i].followers, queues[i].countFollowers ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
-		}
-
-		// ENVIO DE NORMAL
-		// ENVIO DE COUNTER
-		// ENVIO DE FUNCTION
-
-		for (i=0 ; i < combiCount ; i++,j++) //COMBI
-		{
-			MPI_Send(&combis[i], sizeof(Combi),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
-			if (combis[i].countPreceders>0)
-				MPI_Send(combis[i].preceders, combis[i].countPreceders ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
-			if (combis[i].countFollowers>0)
-				MPI_Send(combis[i].followers, combis[i].countFollowers ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
-			if (combis[i].countProbabilisticBranch>0)
-				MPI_Send(combis[i].probabilisticBranch, combis[i].countProbabilisticBranch ,  MPI_DOUBLE, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
-		}
-
+		sendStruct(&queues, &queuesCount,&counters, &counterCount,&functions, &functionCount,&normals, &normalCount, &combis, &combiCount);
 
 	} else if ( idNodo >= FIST_NODE_ID ) {
 		Queue queue;
@@ -101,6 +74,8 @@ int main(int argc, char **argv){
 		if (status.MPI_TAG == QUEUE)
 		{
 			MPI_Recv(&queue, sizeof(Queue), MPI_BYTE, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			printf("countPreceders: %d\n", queue.countPreceders);
+			printf("countFollowers: %d\n", queue.countFollowers);
 			if (queue.countPreceders>0) {
 				queue.preceders = (int *) malloc( queue.countPreceders *sizeof(int));
 				MPI_Recv(queue.preceders, queue.countPreceders, MPI_INT, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -110,11 +85,14 @@ int main(int argc, char **argv){
 				MPI_Recv(queue.followers, queue.countFollowers, MPI_INT, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			}
 
-			// printQueue(queue);
+			 //printQueue(queue);
 		}
 		else if (status.MPI_TAG == COMBI)
 		{
 			MPI_Recv(&combi, sizeof(Combi), MPI_BYTE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			//printf("countPreceders: %d\n", combi.countPreceders);
+			//printf("countFollowers: %d\n", combi.countFollowers);
+			//printf("countProbabilisticBranch: %d\n", combi.countProbabilisticBranch);
 			if (combi.countPreceders>0) {
 				combi.preceders = (int *) malloc( combi.countPreceders *sizeof(int));
 				MPI_Recv(combi.preceders, combi.countPreceders, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -128,7 +106,7 @@ int main(int argc, char **argv){
 				MPI_Recv(combi.probabilisticBranch, combi.countProbabilisticBranch, MPI_DOUBLE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			}
 
-			printCombi(combi);
+			//printCombi(combi);
 		}
 
 	}
@@ -241,7 +219,7 @@ void getCombis(Combi **combis, int *combiCount)
 {
 	*combiCount = 1;
 
-	Combi *combis = (Combi *) malloc(2*sizeof(Combi));
+	*combis = (Combi *) malloc(2*sizeof(Combi));
 	(*combis)[0].idNode = 86;
 	(*combis)[0].countPreceders = 2;
 	(*combis)[0].preceders = (int *) malloc(2*sizeof(int));
@@ -257,9 +235,38 @@ void getCombis(Combi **combis, int *combiCount)
 	(*combis)[0].probabilisticBranch[0] = 25.5;
 	(*combis)[0].probabilisticBranch[1] = 24.5;
 	(*combis)[0].probabilisticBranch[2] = 50;
-	//(*combis)[0].delay.distribution = (char *) malloc(8*sizeof(char)); //uniform //deprecado
-	(*combis)[0].delay.distribution = 0; //uniform
+	(*combis)[0].delay.distribution = DIST_UNIFORM; //uniform
 	(*combis)[0].delay.least = 1.56;
 	(*combis)[0].delay.highest =  8.23;
 	(*combis)[0].delay.seed = 895;
+}
+
+void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counterCount,Function **functions, int *functionCount,Normal **normals, int *normalCount,Combi **combis, int *combiCount)
+{
+	int i,j;
+
+	// ENVIO DE QUEUES (Preceders,Followers)
+	for (i=0,j=0 ; i < *queuesCount ; i++,j++) //QUEUE
+	{
+		MPI_Send(&(*queues)[i], sizeof(Queue),  MPI_BYTE, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
+		if ((*queues)[i].countPreceders>0)
+			MPI_Send((*queues)[i].preceders, (*queues)[i].countPreceders ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
+		if ((*queues)[i].countFollowers>0)
+			MPI_Send((*queues)[i].followers, (*queues)[i].countFollowers ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
+	}
+
+	// ENVIO DE NORMAL
+	// ENVIO DE COUNTER
+	// ENVIO DE FUNCTION
+
+	for (i=0 ; i < *combiCount ; i++,j++) //COMBI
+	{
+		MPI_Send(combis[i], sizeof(Combi),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+		if ((*combis)[i].countPreceders>0)
+			MPI_Send((*combis)[i].preceders, (*combis)[i].countPreceders ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+		if ((*combis)[i].countFollowers>0)
+			MPI_Send((*combis)[i].followers, (*combis)[i].countFollowers ,  MPI_INT, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+		if ((*combis)[i].countProbabilisticBranch>0)
+			MPI_Send((*combis)[i].probabilisticBranch, (*combis)[i].countProbabilisticBranch ,  MPI_DOUBLE, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+	}
 }

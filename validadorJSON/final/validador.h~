@@ -13,8 +13,18 @@ typedef enum{
 	VALIDATION_PASS		/* validacion correcta */
 }VALIDATE;
 
+typedef enum{
+	UNIFORM,
+	DETERMINISTIC,
+	NORMAL2,
+	EXPONENTIAL,
+	TRIANGULAR,
+	BETA,
+	LOG_NORMAL2
+}DISTRIBUTION;
+
 typedef struct{
-	char *distribution;
+	int distribution; //
 	double least;
 	double highest;
 	double constant;
