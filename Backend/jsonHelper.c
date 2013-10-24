@@ -96,7 +96,7 @@ WJElement schema_load(const char *name, void *client, const char *file, const in
 		path = malloc(strlen(format) + strlen(name));
 		sprintf(path, format, name);
 
-		if(schemafile = fopen(path, "r")) {
+		if( (schemafile = fopen(path, "r") )!= NULL) {
 			if((readschema = WJROpenFILEDocument(schemafile, NULL, 0))) {
 				schema = WJEOpenDocument(readschema, NULL, NULL, NULL);
 			} /*else {
