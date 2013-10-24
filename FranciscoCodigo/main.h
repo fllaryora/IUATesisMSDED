@@ -111,7 +111,7 @@ typedef struct{
 }PrinterCounter;
 
 typedef struct{
-	int idnodo;
+	int idNode;
 	int amount;
 }PrinterFunction;
 
@@ -133,7 +133,7 @@ typedef struct{
 }PrinterSummary;
 //idNode, totalProductivity , idNode, fixCost y VariableCost llegan como arreglo en otra llamada
 
-ypedef struct{
+typedef struct{
 	int idNode;
 	double fixCost;
 	double VariableCost;

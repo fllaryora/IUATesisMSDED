@@ -188,10 +188,6 @@ typedef struct {
 #define SendLiveLockToRaffler()	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD)
 #define SendLiveLockToPrinter(TIME)	MPI_Send(TIME, 1, MPI_DOUBLE, MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)
 
-#endif
-
-
-
 // FUNCIONES del PRINTER
 //cuantos nodos hay de cada uno
 #define GetEachNodesAmount(X)	MPI_Recv(X, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE)
@@ -205,5 +201,8 @@ typedef struct {
 #define WaitForPrinterSignal(TIME, STTUS)	MPI_Recv(TIME, 1, MPI_DOUBLE, MASTER_ID, MPI_ANY_TAG , MPI_COMM_WORLD, STTUS)
 //no hace nada
 #define MockLoop(STTUS)	(void)0
+
+
+#endif
 
 #endif /* our mpi*/

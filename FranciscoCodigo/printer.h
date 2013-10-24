@@ -1,5 +1,14 @@
 #ifndef _PRINTER_H_
 #define _PRINTER_H_
+
+
+#ifndef FALSE
+#define FALSE (0)
+#endif
+#ifndef TRUE
+#define TRUE (!FALSE)
+#endif
+
 extern void printer(void);
 extern void openBrace(int );
 extern void closeBrace(int );

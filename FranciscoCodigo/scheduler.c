@@ -13,7 +13,7 @@ void scheduler(void){
 	NewRaffle();
 	
 	//Justo antes del consumo del deltaT
-	NewDeltaTToPrint();
+	//NewDeltaTToPrint();
 }
 
 

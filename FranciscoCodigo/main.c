@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 				if (idNodo == PRINTER_ID) {
 					printer();
 				} else {
-					MPI_Barrier( commNodes );
+					//MPI_Barrier( commNodes );
 					genericNode(idNodo);
 				}
 			}
@@ -82,7 +82,7 @@ void master(int mpiProcesses, MPI_Comm commNodes){
 			free(seedAndCombis);
 			scheduler();
 			SendLiveLockToRaffler();
-			MPI_Barrier( commNodes );
+			//MPI_Barrier( commNodes );
 			//int saraza = 999;
 			//MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
 			//SendLiveLockToPrinter();

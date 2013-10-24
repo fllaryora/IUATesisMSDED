@@ -19,7 +19,7 @@ void printer(){
 	
 	//open json file
 	openBrace(fileDescriptor);
-	putLabel(fileDescriptor, "timeLine"); openBrace(fileDescriptor);
+	putLabel(fileDescriptor, "timeLine"); 
 		openBracket(fileDescriptor);
 
 		do{//te llama el scheduler y te dice que se va ha consumir un delta t, por lo que todos vienen
@@ -34,7 +34,6 @@ void printer(){
 			MockLoop(&result);//si es test termina el bucle
 		}while(result.MPI_TAG != LIVE_LOCK);	
 
-		closeBrace(fileDescriptor);
 	closeBracket(fileDescriptor); separeElement(fileDescriptor);
 	putLabel(fileDescriptor, "summaryReport"); 
 		doSummaryReport(fileDescriptor, totalTime, qCouNfComb[0], qCouNfComb[1]);
@@ -60,20 +59,20 @@ void doSummaryReport(int fileDescriptor, const double totalTime, const int queue
 				doFinalCounter( fileDescriptor, crStruct.idNode, crStruct.totalProductivity);
 				if (i+1 < counters ){separeElement(fileDescriptor);}
 			}
-		closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+		closeBracket(fileDescriptor); separeElement(fileDescriptor);
 
 		putLabel(fileDescriptor, "queues"); openBracket( fileDescriptor);
 			//recibo todos los envios de colas
 			for(int i = 0; i < queues; i++){
 				GetFinalQueueStruct(&qeStruct);
 				//qeStruct.VariableCost es el constante del costo variable * el numero de recursos que salieron de la cola.
-				totalCost + =  qeStruct.fixCost + qeStruct.VariableCost;
+				totalCost +=  qeStruct.fixCost + qeStruct.VariableCost;
 				doFinalQueue( fileDescriptor, qeStruct.idNode, qeStruct.fixCost, qeStruct.VariableCost );
 				if (i+1 < queues ){separeElement(fileDescriptor);}
 			}
-		closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+		closeBracket(fileDescriptor); separeElement(fileDescriptor);
 					
-		putLabel(fileDescriptor, "totalCost"); putDouble(fileDescriptor, totalCost); separeElement(fileDescriptor);
+		putLabel(fileDescriptor, "totalCost"); putDouble(fileDescriptor, totalCost);
 
 	//close summary
 	closeBrace(fileDescriptor);
@@ -107,7 +106,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 	PrinterCounter crStruct;
 	PrinterQueue qeStruct;
 	PrinterFunction fnStruct;
-	int oldSource;
+	int oldSource = 0;
 	MPI_Status result;
 	//open one delta T
 	openBrace(fileDescriptor);
@@ -121,7 +120,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 							qeStruct.average, qeStruct.maximun,  qeStruct.minimun,  qeStruct.timesNotEmpty,  qeStruct.percentTimesNotEmpty);
 					if (i+1 < queues ){separeElement(fileDescriptor);}
 				}
-			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+			closeBracket(fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < counters; i++){
@@ -129,13 +128,13 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 					doCounter( fileDescriptor, crStruct.idNode, crStruct.totalProductivity, crStruct.deltaTProductivity, crStruct.productivityPerTime );
 					if (i+1 < counters ){separeElement(fileDescriptor);}
 				}
-			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+			closeBracket( fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "normals"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < normals; i++){
 					GetNormalStruct(&nlStruct, &result);
 					oldSource = result.MPI_SOURCE;
-					int* worktask = (int*) malloc( nlStruct.activityInside* 2 * sizeof(double) );
+					double* worktask = (double*) malloc( nlStruct.activityInside* 2 * sizeof(double) );
 					GetNormalDalaysStruct(worktask, nlStruct.activityInside* 2, oldSource);
 					doActivity(fileDescriptor, nlStruct.idNode, nlStruct.activityInside, worktask, 
 						&worktask[nlStruct.activityInside], nlStruct.counterInput, nlStruct.delayAverage, 
@@ -143,7 +142,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 					if (i+1 < normals ){separeElement(fileDescriptor);}
 					free(worktask);
 				}
-			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+			closeBracket( fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "functions"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < functions; i++){
@@ -151,13 +150,13 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 					doFunction( fileDescriptor, fnStruct.idNode, fnStruct.amount);
 					if (i+1 < functions ){separeElement(fileDescriptor);}
 				}
-			closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+			closeBracket( fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "combis"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < combis; i++){
 					GetCombiStruct(&cbStruct, &result);
 					oldSource = result.MPI_SOURCE;
-					int* worktask = (int*) malloc( cbStruct.activityInside* 2 * sizeof(double) );
+					double* worktask = (double*) malloc( cbStruct.activityInside* 2 * sizeof(double) );
 					GetNormalDalaysStruct(worktask, cbStruct.activityInside* 2, oldSource);
 					doActivity(fileDescriptor, cbStruct.idNode, cbStruct.activityInside, worktask, 
 						&worktask[cbStruct.activityInside], cbStruct.counterInput, cbStruct.delayAverage, 
@@ -165,7 +164,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 					if (i+1 < combis ){separeElement(fileDescriptor);}
 					free(worktask);
 				}
-			closeBracket(int fileDescriptor);
+			closeBracket( fileDescriptor);
 		//close nodestatus
 		closeBrace(fileDescriptor);
 	//close one delta T
@@ -190,7 +189,7 @@ void doActivity(int fileDescriptor, const int idNode, const int activityInside, 
 		for(int i =1 ; i < activityInside; i++){
 			separeElement(fileDescriptor);
 			putDouble(fileDescriptor, contdownWorktask[i]);
-		} closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+		} closeBracket( fileDescriptor); separeElement(fileDescriptor);
 
 		putLabel(fileDescriptor, "delayWorktask"); openBracket( fileDescriptor);
 		if (activityInside > 0){
@@ -199,7 +198,7 @@ void doActivity(int fileDescriptor, const int idNode, const int activityInside, 
 		for(int i =1 ; i < activityInside; i++){
 			separeElement(fileDescriptor);
 			putDouble(fileDescriptor, delayWorktask[i]);
-		} closeBracket(int fileDescriptor); separeElement(fileDescriptor);
+		} closeBracket( fileDescriptor); separeElement(fileDescriptor);
 
 		putLabel(fileDescriptor, "counterInput");   putInteger(fileDescriptor, counterInput); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "delayAverage");   putDouble(fileDescriptor, delayAverage); separeElement(fileDescriptor);
