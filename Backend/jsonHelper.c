@@ -77,12 +77,12 @@ int validateSchema(const char *filenameJson , const char *filenameSchema)
 	return VALIDATION_PASS;
 }
 
-static void schema_error(void *client, const char *format, ...)
+void schema_error(void *client, const char *format, ...)
 {
 	return;
 }
 
-static WJElement schema_load(const char *name, void *client, const char *file, const int line)
+WJElement schema_load(const char *name, void *client, const char *file, const int line)
 {
 	char *format;
 	char *path;

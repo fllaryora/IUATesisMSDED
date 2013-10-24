@@ -2,6 +2,7 @@
 #define _JSON_HELPER_H_
 
 #include "parson.h"
+#include "ourMPI.h"
 #include <stddef.h>
 #include <wjelement.h>
 #include <stdio.h>
@@ -101,47 +102,47 @@ typedef struct{
 }Combi;
 
 /*	Delay
-	char *distribution; /*uniform/
+	char *distribution; /uniform/
 	double least
 	double highest
 	int seed
 
-	char *distribution; /*deterministic/
+	char *distribution; /deterministic/
 	double constant;
 
-	char *distribution; /*normal/
+	char *distribution; /normal/
 	double mean;
 	double variance;
 	int seed
 
-	char *distribution; /*exponential/
+	char *distribution; /exponential/
 	double lambda;
 	int seed
 
-	char *distribution; /*triangular/
+	char *distribution; /triangular/
 	double least
 	double highest
 	double mode
 	integer seed
 
-	char *distribution; /*beta/
+	char *distribution; /beta/
 	double minimun;
 	double maximun;
 	double shapeAlpha;
 	double shapeBeta
 	int seed;
 
-	char *distribution; /*log-normal/
+	char *distribution; /log-normal/
 	double escale
 	double shape
 	double minimun
 	int seed
 */
 
-extern static void	schema_error(void *client, const char *format, ...);
-extern static WJElement	schema_load(const char *name, void *client, const char *file, const int line);
+extern void	schema_error(void *client, const char *format, ...);
+extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
 
-extern int validateJsonInput(const char *, const char *));
+extern int validateJsonInput(const char *, const char *);
 
 extern int validateSchema(const char *, const char *);
 extern int validateJson(const char *);
