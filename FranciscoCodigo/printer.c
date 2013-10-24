@@ -15,7 +15,7 @@ void printer(){
 	int* qCouNfComb = (int*) malloc( 5 * sizeof(int) );
 	//recive del master la cantidad de nodos
 	GetEachNodesAmount(qCouNfComb);
-	fileDescriptor = open ("/tmp/pijeriasDeJson.txt",O_WRONLY|O_CREAT,00660);
+	fileDescriptor = open ("/tmp/pijeriasDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	
 	//open json file
 	openBrace(fileDescriptor);
