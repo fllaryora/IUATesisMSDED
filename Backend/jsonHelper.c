@@ -358,6 +358,18 @@ void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counte
 	}
 	j+=i;
 	// ENVIO DE NORMAL
+	for (i=0 ; i < *normalCount ; i++)
+	{
+		MPI_Send(&((*normals)[i]), sizeof(Normal),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, NORMAL, MPI_COMM_WORLD);
+		if ((*normals)[i].countPreceders>0)
+			MPI_Send((*normals)[i].preceders, (*normals)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, NORMAL, MPI_COMM_WORLD);
+		if ((*normals)[i].countFollowers>0)
+			MPI_Send((*normals)[i].followers, (*normals)[i].countFollowers ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, NORMAL, MPI_COMM_WORLD);
+		if ((*normals)[i].countProbabilisticBranch>0)
+			MPI_Send((*normals)[i].probabilisticBranch, (*normals)[i].countProbabilisticBranch ,  MPI_DOUBLE, i+j+MASTER_RAFFLER_PRINTER, NORMAL, MPI_COMM_WORLD);
+	}
+	j+=i;
+
 	// ENVIO DE COUNTER
 	// ENVIO DE FUNCTION
 
@@ -423,7 +435,104 @@ void getFunctions(const char *filenameJson , Function **functions, int *function
 
 void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
 {
-	*normalCount = 0;
+	JSON_Value  *root_value;
+    JSON_Object *object,*objectInArray, *objectDelay;
+    JSON_Array  *array,*arrayInternal;
+	int i, j;
+
+    root_value = json_parse_file(filenameJson);
+    object = json_value_get_object(root_value);
+	array = json_object_dotget_array(object, "transformation.normals");
+
+	*normalCount = json_array_get_count(array);
+	*normals = (Normal *) malloc((*normalCount)*sizeof(Normal));
+
+	for (i = 0; i < json_array_get_count(array); i++)
+	{
+	    objectInArray = json_array_get_object(array, i);
+	    (*normals)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
+
+		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
+		(*normals)[i].countPreceders = json_array_get_count(arrayInternal);
+		(*normals)[i].preceders = (int *) malloc((*normals)[i].countPreceders*sizeof(int));
+		for (j = 0; j < (*normals)[i].countPreceders; j++)
+			(*normals)[i].preceders[j]=json_array_get_number(arrayInternal,j);
+
+		arrayInternal = json_object_dotget_array(objectInArray, "followers");
+		(*normals)[i].countFollowers = json_array_get_count(arrayInternal);
+		(*normals)[i].followers = (int *) malloc((*normals)[i].countFollowers*sizeof(int));
+		for (j = 0; j < (*normals)[i].countFollowers; j++)
+			(*normals)[i].followers[j]=json_array_get_number(arrayInternal,j);
+
+		arrayInternal = json_object_dotget_array(objectInArray, "probabilisticBranch");
+		(*normals)[i].countProbabilisticBranch = json_array_get_count(arrayInternal);
+		(*normals)[i].probabilisticBranch = (int *) malloc((*normals)[i].countProbabilisticBranch*sizeof(int));
+		for (j = 0; j < (*normals)[i].countProbabilisticBranch; j++)
+			(*normals)[i].probabilisticBranch[j]=json_array_get_number(arrayInternal,j);
+
+		(*normals)[i].delay.distribution = DIST_UNIFORM; //uniform
+
+		objectDelay = json_object_dotget_object(objectInArray, "delay" ); 
+
+		if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"uniform")==0)
+		{
+			(*normals)[i].delay.distribution = DIST_UNIFORM;
+			(*normals)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
+			(*normals)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
+			(*normals)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+			printf("least: %.4f\n",(*normals)[i].delay.least);
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"deterministic")==0)
+		{
+			(*normals)[i].delay.distribution = DIST_DETERMINISTIC;
+			(*normals)[i].delay.constant = json_object_dotget_number(objectDelay, "constant" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"normal")==0)
+		{
+			(*normals)[i].delay.distribution = DIST_NORMAL;
+			(*normals)[i].delay.mean = json_object_dotget_number(objectDelay, "mean" );
+			(*normals)[i].delay.variance = json_object_dotget_number(objectDelay, "variance" );
+			(*normals)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"exponential")==0)
+		{
+			(*normals)[i].delay.distribution = DIST_EXPONENTIAL;
+			(*normals)[i].delay.lambda = json_object_dotget_number(objectDelay, "lambda" );
+			(*normals)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"triangular")==0)
+		{
+			(*normals)[i].delay.distribution = DIST_TRIANGULAR;
+			(*normals)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
+			(*normals)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
+			(*normals)[i].delay.mode = json_object_dotget_number(objectDelay, "mode" );
+			(*normals)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"beta")==0)
+		{
+			(*normals)[i].delay.distribution = DIST_BETA;
+			(*normals)[i].delay.minimun = json_object_dotget_number(objectDelay, "minimun" );
+			(*normals)[i].delay.maximun = json_object_dotget_number(objectDelay, "maximun" );
+			(*normals)[i].delay.shapeAlpha = json_object_dotget_number(objectDelay, "shapeAlpha" );
+			(*normals)[i].delay.shapeBeta = json_object_dotget_number(objectDelay, "shapeBeta" );
+			(*normals)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"log-normal")==0)
+		{
+			(*normals)[i].delay.distribution = DIST_LOG_NORMAL;
+			(*normals)[i].delay.escale = json_object_dotget_number(objectDelay, "escale" );
+			(*normals)[i].delay.shape = json_object_dotget_number(objectDelay, "shape" );
+			(*normals)[i].delay.minimun = json_object_dotget_number(objectDelay, "minimun" );
+			(*normals)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		}
+
+		/*switch( json_object_dotget_object(objectInArray, "delay" ) ){
+			case "normal":
+				break;
+			case "uniform":
+				break;
+		}*/
+	}
 }
 
 void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
@@ -546,6 +655,76 @@ void printQueue(Queue queue)
 		printf("%d: followers[%d]: %d\n", queue.idNode,i,queue.followers[i]);
 }
 
+void printNormal(Normal normal)
+{
+	int i;
+
+	printf("%d: idNode: %d\n", normal.idNode,normal.idNode);
+	printf("%d: countPreceders: %d\n", normal.idNode, normal.countPreceders);
+	printf("%d: countFollowers: %d\n", normal.idNode, normal.countFollowers);
+	printf("%d: countProbabilisticBranch: %d\n", normal.idNode, normal.countProbabilisticBranch);
+
+	for (i=0 ; i<normal.countPreceders ; i++)
+		printf("%d: preceders[%d]: %d\n", normal.idNode, i,normal.preceders[i]);
+
+	for (i=0 ; i<normal.countFollowers ; i++)
+		printf("%d: followers[%d]: %d\n", normal.idNode, i,normal.followers[i]);
+
+	for (i=0 ; i<normal.countProbabilisticBranch ; i++)
+		printf("%d: probabilisticBranch[%d]: %.2f\n", normal.idNode, i,normal.probabilisticBranch[i]);
+
+	if (normal.delay.distribution == DIST_UNIFORM)
+	{
+		printf("%d: delay.distribution: 'uniform'\n",normal.idNode);
+		printf("%d: delay.least: %.4f\n",normal.idNode,normal.delay.least);
+		printf("%d: delay.highest: %.4f\n",normal.idNode,normal.delay.highest);
+		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
+	}
+	else if (normal.delay.distribution == DIST_DETERMINISTIC)
+	{
+		printf("%d: delay.distribution: 'deterministic'\n",normal.idNode);
+		printf("%d: delay.constant: %.4f\n",normal.idNode,normal.delay.constant);
+	}
+	else if (normal.delay.distribution == DIST_NORMAL)
+	{
+		printf("%d: delay.distribution: 'normal'\n",normal.idNode);
+		printf("%d: delay.mean: %.4f\n",normal.idNode,normal.delay.mean);
+		printf("%d: delay.variance: %.4f\n",normal.idNode,normal.delay.variance);
+		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
+	}
+	else if (normal.delay.distribution == DIST_EXPONENTIAL)
+	{
+		printf("%d: delay.distribution: 'exponential'\n",normal.idNode);
+		printf("%d: delay.lambda: %.4f\n",normal.idNode,normal.delay.lambda);
+		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
+	}
+	else if (normal.delay.distribution == DIST_TRIANGULAR)
+	{
+		printf("%d: delay.distribution: 'triangular'\n",normal.idNode);
+		printf("%d: delay.least: %.4f\n",normal.idNode,normal.delay.least);
+		printf("%d: delay.highest: %.4f\n",normal.idNode,normal.delay.highest);
+		printf("%d: delay.mode: %.4f\n",normal.idNode,normal.delay.mode);
+		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
+	}
+	else if (normal.delay.distribution == DIST_BETA)
+	{
+		printf("%d: delay.distribution: 'beta'\n",normal.idNode);
+		printf("%d: delay.minimun: %.4f\n",normal.idNode,normal.delay.minimun);
+		printf("%d: delay.maximun: %.4f\n",normal.idNode,normal.delay.maximun);
+		printf("%d: delay.shapeAlpha: %.4f\n",normal.idNode,normal.delay.shapeAlpha);
+		printf("%d: delay.shapeBeta: %.4f\n",normal.idNode,normal.delay.shapeBeta);
+		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
+	}
+	else if (normal.delay.distribution == DIST_LOG_NORMAL)
+	{
+		printf("%d: delay.distribution: 'log-normal'\n",normal.idNode);
+		printf("%d: delay.escale: %.4f\n",normal.idNode,normal.delay.escale);
+		printf("%d: delay.shape: %.4f\n",normal.idNode,normal.delay.shape);
+		printf("%d: delay.minimun: %.4f\n",normal.idNode,normal.delay.minimun);
+		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
+	}
+}
+
 void printCombi(Combi combi)
 {
 	int i;
@@ -576,48 +755,48 @@ void printCombi(Combi combi)
 		printf("%d: delay.distribution: 'deterministic'\n",combi.idNode);
 		printf("%d: delay.constant: %.4f\n",combi.idNode,combi.delay.constant);
 	}
-	/*else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"normal")==0)
+	else if (combi.delay.distribution == DIST_NORMAL)
 	{
-		(*combis)[i].delay.distribution = DIST_NORMAL;
-		(*combis)[i].delay.mean = json_object_dotget_number(objectDelay, "mean" );
-		(*combis)[i].delay.variance = json_object_dotget_number(objectDelay, "variance" );
-		(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		printf("%d: delay.distribution: 'normal'\n",combi.idNode);
+		printf("%d: delay.mean: %.4f\n",combi.idNode,combi.delay.mean);
+		printf("%d: delay.variance: %.4f\n",combi.idNode,combi.delay.variance);
+		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
 	}
-	else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"exponential")==0)
+	else if (combi.delay.distribution == DIST_EXPONENTIAL)
 	{
-		(*combis)[i].delay.distribution = DIST_EXPONENTIAL;
-		(*combis)[i].delay.lambda = json_object_dotget_number(objectDelay, "lambda" );
-		(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		printf("%d: delay.distribution: 'exponential'\n",combi.idNode);
+		printf("%d: delay.lambda: %.4f\n",combi.idNode,combi.delay.lambda);
+		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
 	}
-	else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"triangular")==0)
+	else if (combi.delay.distribution == DIST_TRIANGULAR)
 	{
-		(*combis)[i].delay.distribution = DIST_TRIANGULAR;
-		(*combis)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
-		(*combis)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
-		(*combis)[i].delay.mode = json_object_dotget_number(objectDelay, "mode" );
-		(*combis)[i].seed = json_object_dotget_number(objectDelay, "seed" );
+		printf("%d: delay.distribution: 'triangular'\n",combi.idNode);
+		printf("%d: delay.least: %.4f\n",combi.idNode,combi.delay.least);
+		printf("%d: delay.highest: %.4f\n",combi.idNode,combi.delay.highest);
+		printf("%d: delay.mode: %.4f\n",combi.idNode,combi.delay.mode);
+		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
 	}
-	else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"beta")==0)
+	else if (combi.delay.distribution == DIST_BETA)
 	{
-		(*combis)[i].delay.distribution = DIST_BETA;
-		(*combis)[i].delay.minimun = json_object_dotget_number(objectDelay, "minimun" );
-		(*combis)[i].delay.maximun = json_object_dotget_number(objectDelay, "maximun" );
-		(*combis)[i].delay.shapeAlpha = json_object_dotget_number(objectDelay, "shapeAlpha" );
-		(*combis)[i].delay.shapeBeta = json_object_dotget_number(objectDelay, "shapeBeta" );
-		(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+		printf("%d: delay.distribution: 'beta'\n",combi.idNode);
+		printf("%d: delay.minimun: %.4f\n",combi.idNode,combi.delay.minimun);
+		printf("%d: delay.maximun: %.4f\n",combi.idNode,combi.delay.maximun);
+		printf("%d: delay.shapeAlpha: %.4f\n",combi.idNode,combi.delay.shapeAlpha);
+		printf("%d: delay.shapeBeta: %.4f\n",combi.idNode,combi.delay.shapeBeta);
+		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
 	}
-	else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"log-normal")==0)
+	else if (combi.delay.distribution == DIST_LOG_NORMAL)
 	{
-		(*combis)[i].delay.distribution = DIST_LOG_NORMAL;
-		(*combis)[i].delay.escale = json_object_dotget_number(objectDelay, "escale" );
-		(*combis)[i].delay.shape = json_object_dotget_number(objectDelay, "shape" );
-		(*combis)[i].delay.minimun = json_object_dotget_number(objectDelay, "minimun" );
-		(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
-	}*/
+		printf("%d: delay.distribution: 'log-normal'\n",combi.idNode);
+		printf("%d: delay.escale: %.4f\n",combi.idNode,combi.delay.escale);
+		printf("%d: delay.shape: %.4f\n",combi.idNode,combi.delay.shape);
+		printf("%d: delay.minimun: %.4f\n",combi.idNode,combi.delay.minimun);
+		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
+	}
 }
 
 int getNodesAmount( void ){
-	return 4;
+	return 4+5;
 }
 
 int* getCombiIds( void ){

@@ -22,10 +22,15 @@ void genericNode(int myIdNodo){
 		receiveQueue(&queue);
 		//printQueue(queue);
 	}
+	else if (status.MPI_TAG == NORMAL)
+	{
+		receiveNormal(&normal);
+		printNormal(normal);
+	}
 	else if (status.MPI_TAG == COMBI)
 	{
 		receiveCombi(&combi);
-		printCombi(combi);
+		//printCombi(combi);
 	}
 
 }
@@ -55,7 +60,19 @@ void receiveFunction(Function *function)
 
 void receiveNormal(Normal *normal)
 {
-
+	MPI_Recv3(normal, sizeof(Normal), MPI_BYTE, 0, NORMAL , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	if ((*normal).countPreceders>0) {
+		(*normal).preceders = (int *) malloc( (*normal).countPreceders *sizeof(int));
+		MPI_Recv12((*normal).preceders, (*normal).countPreceders, MPI_INT, 0, NORMAL , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
+	if ((*normal).countFollowers>0) {
+		(*normal).followers = (int *) malloc( (*normal).countFollowers *sizeof(int));
+		MPI_Recv12((*normal).followers, (*normal).countFollowers, MPI_INT, 0, NORMAL , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
+	if ((*normal).countProbabilisticBranch>0) {
+		(*normal).probabilisticBranch = (double *) malloc( (*normal).countProbabilisticBranch *sizeof(double));
+		MPI_Recv((*normal).probabilisticBranch, (*normal).countProbabilisticBranch, MPI_DOUBLE, 0, NORMAL , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
 }
 
 void receiveCombi(Combi *combi)
