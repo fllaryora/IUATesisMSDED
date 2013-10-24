@@ -65,15 +65,12 @@ void receiveCombi(Combi *combi)
 		(*combi).preceders = (int *) malloc( (*combi).countPreceders *sizeof(int));
 		MPI_Recv12((*combi).preceders, (*combi).countPreceders, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	}
-			printf("AA\n");
 	if ((*combi).countFollowers>0) {
 		(*combi).followers = (int *) malloc( (*combi).countFollowers *sizeof(int));
 		MPI_Recv12((*combi).followers, (*combi).countFollowers, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	}
-			printf("BB\n");
-	/*if ((*combi).countProbabilisticBranch>0) {
+	if ((*combi).countProbabilisticBranch>0) {
 		(*combi).probabilisticBranch = (double *) malloc( (*combi).countProbabilisticBranch *sizeof(double));
 		MPI_Recv((*combi).probabilisticBranch, (*combi).countProbabilisticBranch, MPI_DOUBLE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-	}*/
-			printf("CC\n");
+	}
 }

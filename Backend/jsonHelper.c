@@ -369,8 +369,8 @@ void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counte
 			MPI_Send((*combis)[i].preceders, (*combis)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
 		if ((*combis)[i].countFollowers>0)
 			MPI_Send((*combis)[i].followers, (*combis)[i].countFollowers ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
-		/*if ((*combis)[i].countProbabilisticBranch>0)
-			MPI_Send((*combis)[i].probabilisticBranch, (*combis)[i].countProbabilisticBranch ,  MPI_DOUBLE, j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);*/
+		if ((*combis)[i].countProbabilisticBranch>0)
+			MPI_Send((*combis)[i].probabilisticBranch, (*combis)[i].countProbabilisticBranch ,  MPI_DOUBLE, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
 	}
 	j+=i;
 }
@@ -495,7 +495,7 @@ void printCombi(Combi combi)
 	printf("%d: idNode: %d\n", combi.idNode,combi.idNode);
 	printf("%d: countPreceders: %d\n", combi.idNode, combi.countPreceders);
 	printf("%d: countFollowers: %d\n", combi.idNode, combi.countFollowers);
-	printf("%d: countProbabilisticBranch: %d\n", combi.countProbabilisticBranch);
+	printf("%d: countProbabilisticBranch: %d\n", combi.idNode, combi.countProbabilisticBranch);
 	printf("%d: delay.distribution: %d\n",combi.idNode,combi.delay.distribution);
 	printf("%d: delay.least: %.4f\n",combi.idNode,combi.delay.least);
 	printf("%d: delay.highest: %.4f\n",combi.idNode,combi.delay.highest);
@@ -507,8 +507,8 @@ void printCombi(Combi combi)
 	for (i=0 ; i<combi.countFollowers ; i++)
 		printf("%d: followers[%d]: %d\n", combi.idNode, i,combi.followers[i]);
 
-	//for (i=0 ; i<combi.countProbabilisticBranch ; i++)
-	//	printf("%d: probabilisticBranch[%d]: %.2f\n", combi.idNode, i,combi.probabilisticBranch[i]);
+	for (i=0 ; i<combi.countProbabilisticBranch ; i++)
+		printf("%d: probabilisticBranch[%d]: %.2f\n", combi.idNode, i,combi.probabilisticBranch[i]);
 }
 
 int getNodesAmount( void ){
