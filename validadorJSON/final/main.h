@@ -19,14 +19,25 @@ typedef enum{
 
 void printQueue(Queue queue);
 void printCombi(Combi combi);
-int getCountNodes(int **arrayCountNodes);
+
 void getQueues(Queue **queues, int *queuesCount);
 void getCounters(Counter **counters, int *counterCount);
 void getFunctions(Function **functions, int *functionCount);
 void getNormals(Normal **normals, int *normalCount);
 void getCombis(Combi **combis, int *combiCount);
 
-void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counterCount,Function **functions, int *functionCount,Normal **normals, int *normalCount,Combi **combis, int *combiCount);
+void sendStruct(Queue **queues,		  int *queuesCount,
+				Counter **counters,	  int *counterCount,
+				Function **functions, int *functionCount,
+				Normal **normals,	  int *normalCount,
+				Combi **combis, 	  int *combiCount);
+
+void receiveQueue(Queue *queue);
+void receiveCounter(Counter *counter);
+void receiveFunction(Function *function);
+void receiveNormal(Normal *normal);
+void receiveCombi(Combi *combis);
+
 #endif /* #ifndef _MAIN_H_*/
 
 
