@@ -17,15 +17,6 @@ typedef enum{
 	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI
 }TYPENODE;
 
-void printQueue(Queue queue);
-void printCombi(Combi combi);
-
-void getQueues(Queue **queues, int *queuesCount);
-void getCounters(Counter **counters, int *counterCount);
-void getFunctions(Function **functions, int *functionCount);
-void getNormals(Normal **normals, int *normalCount);
-void getCombis(Combi **combis, int *combiCount);
-
 void sendStruct(Queue **queues,		  int *queuesCount,
 				Counter **counters,	  int *counterCount,
 				Function **functions, int *functionCount,

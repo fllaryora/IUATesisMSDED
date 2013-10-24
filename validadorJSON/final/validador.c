@@ -302,3 +302,119 @@ int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int 
 
 	return count;
 }
+
+/* MANEJO DE ESTRUCTURA */
+
+void getQueues(const char *filenameJson , Queue **queues, int *queuesCount)
+{
+	*queuesCount = 2;
+
+	*queues = (Queue *) malloc(2*sizeof(Queue));
+	(*queues)[0].idNode = 44;
+   	(*queues)[0].resource = 2;
+	(*queues)[0].fixedCost = 9.8;
+	(*queues)[0].variableCost = 7.5;
+	(*queues)[0].countPreceders = 2;
+	(*queues)[0].preceders = (int *) malloc(2*sizeof(int));
+	(*queues)[0].preceders[0]=2;
+	(*queues)[0].preceders[1]=3;
+	(*queues)[0].countFollowers = 3;
+	(*queues)[0].followers = (int *) malloc(3*sizeof(int));
+	(*queues)[0].followers[0]=7;
+	(*queues)[0].followers[1]=10;
+	(*queues)[0].followers[2]=12;
+
+	(*queues)[1].idNode = 2;
+   	(*queues)[1].resource = 0;
+	(*queues)[1].fixedCost = 0.8;
+	(*queues)[1].variableCost = 0.5;
+	(*queues)[1].countPreceders = 1;
+	(*queues)[1].preceders = (int *) malloc(1*sizeof(int));
+	(*queues)[1].preceders[0]=99;
+	(*queues)[1].countFollowers = 1;
+	(*queues)[1].followers = (int *) malloc(1*sizeof(int));
+	(*queues)[1].followers[0]=6;
+
+}
+
+void getCounters(const char *filenameJson , Counter **normals, int *counterCount)
+{
+	*counterCount = 0;
+}
+
+void getFunctions(const char *filenameJson , Function **functions, int *functionCount)
+{
+	*functionCount = 0;
+}
+
+void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
+{
+	*normalCount = 0;
+}
+
+void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
+{
+	*combiCount = 1;
+
+	*combis = (Combi *) malloc(2*sizeof(Combi));
+	(*combis)[0].idNode = 86;
+	(*combis)[0].countPreceders = 2;
+	(*combis)[0].preceders = (int *) malloc(2*sizeof(int));
+	(*combis)[0].preceders[0] = 2;
+	(*combis)[0].preceders[1] = 44;
+	(*combis)[0].countFollowers = 3;
+	(*combis)[0].followers = (int *) malloc(3*sizeof(int));
+	(*combis)[0].followers[0] = 101;
+	(*combis)[0].followers[1] = 102;
+	(*combis)[0].followers[2] = 105;
+	(*combis)[0].countProbabilisticBranch = 3;
+	(*combis)[0].probabilisticBranch = (double *) malloc(3*sizeof(double));
+	(*combis)[0].probabilisticBranch[0] = 25.5;
+	(*combis)[0].probabilisticBranch[1] = 24.5;
+	(*combis)[0].probabilisticBranch[2] = 50;
+	(*combis)[0].delay.distribution = DIST_UNIFORM; //uniform
+	(*combis)[0].delay.least = 1.56;
+	(*combis)[0].delay.highest =  8.23;
+	(*combis)[0].delay.seed = 895;
+}
+
+void printQueue(Queue queue)
+{
+	int i;
+
+	printf("idNode: %d\n", queue.idNode);
+	printf("resource: %d\n", queue.resource);
+	printf("fixedCost: %.4f\n", queue.fixedCost);
+	printf("variableCost: %.4f\n", queue.variableCost);
+	printf("countPreceders: %d\n", queue.countPreceders);
+	printf("countFollowers: %d\n", queue.countFollowers);
+
+	for (i=0 ; i<queue.countPreceders ; i++)
+		printf("preceders[%d]: %d\n", i,queue.preceders[i]);
+
+	for (i=0 ; i<queue.countFollowers ; i++)
+		printf("followers[%d]: %d\n", i,queue.followers[i]);
+}
+
+void printCombi(Combi combi)
+{
+	int i;
+
+	printf("idNode: %d\n", combi.idNode);
+	printf("countPreceders: %d\n", combi.countPreceders);
+	printf("countFollowers: %d\n", combi.countFollowers);
+	printf("countProbabilisticBranch: %d\n", combi.countProbabilisticBranch);
+	printf("delay.distribution: %d\n",combi.delay.distribution);
+	printf("delay.least: %.4f\n",combi.delay.least);
+	printf("delay.highest: %.4f\n",combi.delay.highest);
+	printf("delay.seed: %d\n",combi.delay.seed);
+
+	for (i=0 ; i<combi.countPreceders ; i++)
+		printf("preceders[%d]: %d\n", i,combi.preceders[i]);
+
+	for (i=0 ; i<combi.countFollowers ; i++)
+		printf("followers[%d]: %d\n", i,combi.followers[i]);
+
+	for (i=0 ; i<combi.countProbabilisticBranch ; i++)
+		printf("probabilisticBranch[%d]: %.2f\n", i,combi.probabilisticBranch[i]);
+}

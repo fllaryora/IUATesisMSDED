@@ -132,12 +132,30 @@ typedef struct{
 	double minimun
 	int seed
 */
-int					validateSchema(const char *filenameJson , const char *filenameSchema);
+
+/* UTILIDAD */
+
 static void			schema_error(void *client, const char *format, ...);
 static WJElement	schema_load(const char *name, void *client, const char *file, const int line);
+
+/* VALIDACIONES*/
+
+int	validateSchema(const char *filenameJson , const char *filenameSchema);
 int validateJsonImput(const char *filenameJson);
+
 void getArray(JSON_Object *object, const char *arregloJson,const char *atributeJson ,int** arreglo, int* m);
 void getArrayInArray(JSON_Object * objectJson,const char *arrayJson,int pos,const char *arrayJsonIn, int** arreglo, int* m);
 int countArrayInclude(int **array,int sizeArray,int **arrayFull, int sizeArrayFull);
 int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int **array3, int sizeArray3, int **array4, int sizeArray4, int **array5, int sizeArray5,int** array, int* sizeArray);
+
+/* ESTRUCTURA */
+
+void getQueues(const char *filenameJson , Queue **queues, int *queuesCount);
+void getCounters(const char *filenameJson , Counter **counters, int *counterCount);
+void getFunctions(const char *filenameJson , Function **functions, int *functionCount);
+void getNormals(const char *filenameJson , Normal **normals, int *normalCount);
+void getCombis(const char *filenameJson , Combi **combis, int *combiCount);
+
+void printQueue(Queue queue);
+void printCombi(Combi combi);
 
