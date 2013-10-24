@@ -28,7 +28,7 @@ int validateSchema(const char *filenameJson , const char *filenameSchema)
 	WJReader readschema;
 	WJElement json;
 	WJElement schema;
-	XplBool succ;
+	//XplBool succ;
 	char *format=NULL;
 
 	if(!(jsonfile = fopen(filenameJson, "r"))) {
