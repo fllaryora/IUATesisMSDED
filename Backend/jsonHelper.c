@@ -473,6 +473,7 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 			(*combis)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
 			(*combis)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
 			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
+			printf("least: %.4f\n",(*combis)[i].delay.least);
 		}
 		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"deterministic")==0)
 		{
@@ -518,20 +519,12 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
 		}
 
-
-
-
-
 		/*switch( json_object_dotget_object(objectInArray, "delay" ) ){
 			case "normal":
 				break;
 			case "uniform":
 				break;
 		}*/
-
-		(*combis)[i].delay.least = 1.56;
-		(*combis)[i].delay.highest =  8.23;
-		(*combis)[i].delay.seed = 895;
 	}
 }
 
@@ -561,10 +554,6 @@ void printCombi(Combi combi)
 	printf("%d: countPreceders: %d\n", combi.idNode, combi.countPreceders);
 	printf("%d: countFollowers: %d\n", combi.idNode, combi.countFollowers);
 	printf("%d: countProbabilisticBranch: %d\n", combi.idNode, combi.countProbabilisticBranch);
-	printf("%d: delay.distribution: %d\n",combi.idNode,combi.delay.distribution);
-	printf("%d: delay.least: %.4f\n",combi.idNode,combi.delay.least);
-	printf("%d: delay.highest: %.4f\n",combi.idNode,combi.delay.highest);
-	printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
 
 	for (i=0 ; i<combi.countPreceders ; i++)
 		printf("%d: preceders[%d]: %d\n", combi.idNode, i,combi.preceders[i]);
@@ -585,7 +574,7 @@ void printCombi(Combi combi)
 	else if (combi.delay.distribution == DIST_DETERMINISTIC)
 	{
 		printf("%d: delay.distribution: 'deterministic'\n",combi.idNode);
-		printf("%d: delay.constant: %d\n",combi.idNode,combi.delay.constant);
+		printf("%d: delay.constant: %.4f\n",combi.idNode,combi.delay.constant);
 	}
 	/*else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"normal")==0)
 	{
