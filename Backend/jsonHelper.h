@@ -8,6 +8,7 @@
 #include <wjelement.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef enum{
 	ERROR_OPEN_JSON,	/* json no existe */
@@ -102,18 +103,22 @@ typedef struct{
 	Delay delay;
 }Combi;
 
+extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * ,int * ,int * , JSON_Value  * , const int );
 extern void	schema_error(void *client, const char *format, ...);
 extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
 
-extern int validateJsonInput(const char *, const char *);
+extern int validateJsonInput(const char *,const char *);
 
-extern int validateSchema(const char *, const char *);
+extern int validateSchema(const char *,const char *);
 extern int validateJson(const char *);
 
 extern void getArray(JSON_Object *, const char *,const char *,int** , int* );
 extern void getArrayInArray(JSON_Object *,const char *,int ,const char *, int** , int* );
-extern int countArrayInclude(int **, int, int **, int );
-extern int repeatArrays(int ** , int, int **, int, int **, int, int **, int, int **, int ,int**, int*);
+extern int countArrayInclude(const int * const , const int , const int *const , const int );
+extern int repeatArrays(const int *const  ,const int , const int * const , const int , const int * const , const int , const int * const , const int , const int *const , const int , int** , int* );
+extern int getNodesAmount( const char * );
+extern int* getCombiIds( const char * );
+
 
 extern void sendStructToNodes( const char * );
 extern void sendStruct(Queue **, int *,Counter **, int *,Function **, int *,Normal **, int *,Combi **, int *);
@@ -127,8 +132,6 @@ extern void getCombis(const char * , Combi **, int *);
 extern void printQueue(Queue );
 extern void printCombi(Combi );
 
-extern int getNodesAmount( void );
-extern int* getCombiIds( void );
 
 extern void sendStruct(Queue **queues,		  int *queuesCount,
 				Counter **counters,	  int *counterCount,

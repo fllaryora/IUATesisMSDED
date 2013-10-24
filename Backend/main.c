@@ -33,8 +33,7 @@ void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* 
 int main(int argc, char **argv){
 
 	const char *filenameJson   = "archivos/modelo.json";
-	const char *filenameSchema = "archivos/schema.json";
-
+	const char *filenameSchema   = "archivos/schema.json";
 	int idNodo; int idNodoInterno;  int mpiProcesses; 
 	int* processRank = NULL; MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
 	int jsonResult;
@@ -83,16 +82,16 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void master(int mpiProcesses, MPI_Comm commNodes ,const char *filenameJson ,const char *filenameSchema){
+void master(int mpiProcesses, MPI_Comm commNodes ,const char *filenameJson , const char *filenameSchema){
 	int jsonResult;
-	if ( validateJsonInput(filenameJson,filenameSchema) == VALIDATION_PASS ) {			
-		if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
+	if ( validateJsonInput(filenameJson,filenameSchema) == VALIDATION_PASS ) {		
+		if ( getNodesAmount(filenameJson) + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
 			sendStructToNodes(filenameJson);
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			//enviar lo combisIds al raffler
-			int* seedAndCombis = getCombiIds( );
+			int* seedAndCombis = getCombiIds( filenameJson);
 			MPI_Send( &seedAndCombis[1] ,  seedAndCombis[0]  , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			free(seedAndCombis);
 			scheduler();

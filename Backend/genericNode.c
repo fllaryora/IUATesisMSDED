@@ -30,7 +30,7 @@ void genericNode(int myIdNodo){
 	else if (status.MPI_TAG == NORMAL)
 	{
 		receiveNormal(&normal);
-		//printNormal(normal);
+		printNormal(normal);
 	}
 	else if (status.MPI_TAG == FUNCTION)
 	{
