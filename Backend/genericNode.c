@@ -22,10 +22,20 @@ void genericNode(int myIdNodo){
 		receiveQueue(&queue);
 		//printQueue(queue);
 	}
+		else if (status.MPI_TAG == COUNTER)
+	{
+		receiveCounter(&counter);
+		//printCounter(counter);
+	}
 	else if (status.MPI_TAG == NORMAL)
 	{
 		receiveNormal(&normal);
-		printNormal(normal);
+		//printNormal(normal);
+	}
+	else if (status.MPI_TAG == FUNCTION)
+	{
+		receiveFunction(&function);
+		//printFunction(function);
 	}
 	else if (status.MPI_TAG == COMBI)
 	{
@@ -50,12 +60,32 @@ void receiveQueue(Queue *queue)
 
 void receiveCounter(Counter *counter)
 {
-
+	MPI_Recv3(counter, sizeof(Counter), MPI_BYTE, 0, COUNTER , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	if ((*counter).countPreceders>0) {
+		(*counter).preceders = (int *) malloc( (*counter).countPreceders *sizeof(int));
+		MPI_Recv12((*counter).preceders, (*counter).countPreceders, MPI_INT, 0, COUNTER , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
+	if ((*counter).countFollowers>0) {
+		(*counter).followers = (int *) malloc( (*counter).countFollowers *sizeof(int));
+		MPI_Recv12((*counter).followers, (*counter).countFollowers, MPI_INT, 0, COUNTER , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
 }
 
 void receiveFunction(Function *function)
 {
-
+	MPI_Recv3(function, sizeof(Function), MPI_BYTE, 0, FUNCTION , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	if ((*function).countPreceders>0) {
+		(*function).preceders = (int *) malloc( (*function).countPreceders *sizeof(int));
+		MPI_Recv12((*function).preceders, (*function).countPreceders, MPI_INT, 0, FUNCTION , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
+	if ((*function).countFollowers>0) {
+		(*function).followers = (int *) malloc( (*function).countFollowers *sizeof(int));
+		MPI_Recv12((*function).followers, (*function).countFollowers, MPI_INT, 0, FUNCTION , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
+	if ((*function).countProbabilisticBranch>0) {
+		(*function).probabilisticBranch = (double *) malloc( (*function).countProbabilisticBranch *sizeof(double));
+		MPI_Recv((*function).probabilisticBranch, (*function).countProbabilisticBranch, MPI_DOUBLE, 0, FUNCTION , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
 }
 
 void receiveNormal(Normal *normal)
