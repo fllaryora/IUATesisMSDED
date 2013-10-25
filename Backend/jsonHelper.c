@@ -548,7 +548,7 @@ void getCounters(const char *filenameJson , Counter **counters, int *counterCoun
 	    objectInArray = json_array_get_object(array, i);
 	    (*counters)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
 	   	(*counters)[i].quantity = (int)json_object_dotget_number(objectInArray, "quantity" );
-
+		(*counters)[i].cycle = json_object_dotget_number(objectInArray, "cycle" );
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*counters)[i].countPreceders = json_array_get_count(arrayInternal);
 		(*counters)[i].preceders = (int *) malloc((*counters)[i].countPreceders*sizeof(int));
@@ -750,7 +750,6 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 			(*combis)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
 			(*combis)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
 			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
-			printf("least: %.4f\n",(*combis)[i].delay.least);
 		}
 		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"deterministic")==0)
 		{
@@ -829,6 +828,7 @@ void printCounter(Counter counter)
 
 	printf("%d: idNode: %d\n", counter.idNode, counter.idNode);
 	printf("%d: quantity: %d\n", counter.idNode, counter.quantity);
+	printf("%d: cycle: %.2f\n", counter.idNode, counter.cycle);
 	printf("%d: countPreceders: %d\n", counter.idNode, counter.countPreceders);
 	printf("%d: countFollowers: %d\n", counter.idNode, counter.countFollowers);
 

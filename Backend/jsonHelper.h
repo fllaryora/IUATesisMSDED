@@ -63,6 +63,7 @@ typedef struct{
 typedef struct{
     int idNode;
     int quantity;
+    double cycle;
     int countPreceders;
     int *preceders;
     int countFollowers;

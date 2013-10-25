@@ -3,10 +3,6 @@
     "$schema": "http://json-schema.org/draft-03/schema",
     "required":true,
     "properties":{
-        "cycle": {
-            "type":"number",
-            "required":true
-        },
         "length": {
             "type":"number",
             "required":true
@@ -79,6 +75,10 @@
                                 "type":"integer",
                                 "required":true
                             },
+					        "cycle": {
+					            "type":"number",
+					            "required":true
+					        },
                             "preceders": {
                                 "type":"array",
                                 "required":true,
