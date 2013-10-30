@@ -15,7 +15,7 @@ void printer(){
 	int* qCouNfComb = (int*) malloc( 5 * sizeof(int) );
 	//recive del master la cantidad de nodos
 	GetEachNodesAmount(qCouNfComb);
-	fileDescriptor = open ("/tmp/pijeriasDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	fileDescriptor = open ("/tmp/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	
 	//open json file
 	openBrace(fileDescriptor);
@@ -171,8 +171,6 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 	closeBrace(fileDescriptor);
 }
 
-
-
 //#define doNormal(A , B , C, D, E, F, G, H, I )	doActivity(A , B , C, D, E, F, G, H, I );
 //#define doCombi(A , B , C, D, E, F, G, H, I )	doActivity(A , B , C, D, E, F, G, H, I );
 void doActivity(int fileDescriptor, const int idNode, const int activityInside, const double* contdownWorktask, 
@@ -287,28 +285,4 @@ void putDouble(int fileDescriptor, const double nro){
 	snprintf(strNro, (len + 1), "%lf", nro);
 	write(fileDescriptor, strNro, len );
 	free(strNro);
-}
-
-void putArrayDouble(int fileDescriptor, const double* array, int size){
-	openBracket(fileDescriptor);
-	if(size > 0){
-		putDouble(fileDescriptor, array[0]);
-		for(int i = 1; i < size;i++){
-			separeElement(fileDescriptor);
-			putDouble( fileDescriptor, array[i]);
-		}
-	}
-	closeBracket(fileDescriptor);
-}
-
-void putArrayInteger(int fileDescriptor, const int* array, int size){
-	openBracket(fileDescriptor);
-	if(size > 0){
-		putInteger(fileDescriptor, array[0]);
-		for(int i = 1; i < size;i++){
-			separeElement(fileDescriptor);
-			putInteger( fileDescriptor, array[i]);
-		}
-	}
-	closeBracket(fileDescriptor);
 }
