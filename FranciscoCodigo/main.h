@@ -64,9 +64,6 @@ typedef enum{
 							status*/
 	CONSUME_DT,            /*when dT end, all nodes consume one dT*/
 	
-	
-				   
-
 	//GATHER enviada de reporte de dT
 	
 	
@@ -187,7 +184,7 @@ typedef struct{
 	int idnodo;
 	int salidaProbabilistica;
 	int probabilidadPorSalidasConter;
-	float* probabilidadPorSalidas;
+	double * probabilidadPorSalidas;
 	int antecesoresCount;
 	int* antecesores; //arreglo
 	int sucesoresCount;
@@ -198,7 +195,7 @@ typedef struct{
 	int idnodo;
 	int salidaProbabilistica;
 	int probabilidadPorSalidasConter;
-	float* probabilidadPorSalidas;
+	double * probabilidadPorSalidas;
 	int antecesoresCount;
 	int* antecesores; //arreglo
 	int sucesoresCount;

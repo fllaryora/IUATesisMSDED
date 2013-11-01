@@ -5,6 +5,8 @@
 #include "RNGs.h"
 #include "main.h"
 
+//http://mpitutorial.com/dynamic-receiving-with-mpi-probe-and-mpi-status/
+//Para Probe y MPI_Recv para saber a priori el buffer y fluyar
 void raffler(){
 	int* combiIds = NULL, *currentCombiIds = NULL;
 	int combiIdsAmount, currentCombiIdsAmount;
@@ -15,10 +17,11 @@ void raffler(){
 	int* bufferSender = NULL;
 	
 	//obtengo los id de todas las combis del modelo
-	ProbeCombiForRaffler( &infoComm );
-	GetRafflerCombiCount( &infoComm, &combiIdsAmount );
+	MPI_Probe( MASTER_ID, SEED_AND_COMBI_LIST, MPI_COMM_WORLD,  &infoComm );
+	//"el sizeof" de lo que viene
+	MPI_Get_count(&infoComm, MPI_INT, &combiIdsAmount );
 	combiIds = (int*)malloc(sizeof(int) * combiIdsAmount);
-	ReciveRafflerCombi( combiIds, combiIdsAmount );
+	MPI_Recv( combiIds, combiIdsAmount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
 	//seteo la semilla en caso de que se requiera
 	//el primer elemento indica si se quiere tener reusabilidad.
@@ -27,27 +30,22 @@ void raffler(){
 	}
 	combiIdsAmount--;
 	combiIds++;
-	printf("Orden de los ids original\n");
-	for(int i = 0; i < combiIdsAmount ; i++){ printf("%d ",combiIds[i]);}
+	//printf("Orden de los ids original\n");
+	//for(int i = 0; i < combiIdsAmount ; i++){ printf("%d ",combiIds[i]);}
 	
 	
 	do {
-		printf("AAAAAAAAAAAAAAAAAAAAAA\n");
-		//http://mpitutorial.com/dynamic-receiving-with-mpi-probe-and-mpi-status/
-		//Para Probe y MPI_Recv para saber a priori el buffer y fluyar
-		//obtengo la orden en currentTag y mi destinatario de respuesta en currentSource 
 		
-		ProbeOrderForRaffler(&infoComm);
+		//obtengo la orden en currentTag y mi destinatario de respuesta en currentSource 
+		MPI_Probe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &infoComm);
 		currentTag = infoComm.MPI_TAG;
-		printf("TAG = %d\n", currentTag);
+		//printf("TAG = %d\n", currentTag);
 		currentSource = infoComm.MPI_SOURCE;
-		GetRafflerOrderCount(&infoComm, &receiverCount);
+		MPI_Get_count( &infoComm, MPI_INT, &receiverCount);
 		if( receiverCount == 0 ) receiverCount = 1;
 		printf("receiverCount = %d\n", receiverCount);
-		if(receiverCount){bufferReceiver = (int*)malloc(sizeof(int) * receiverCount);}
-		
-		ReciveRafflerOrder( bufferReceiver, receiverCount );
-		printf("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n");
+		bufferReceiver = (int*)malloc(sizeof(int) * receiverCount);
+		MPI_Recv( bufferReceiver, receiverCount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
 		if (currentTag == NEW_RAFFLE ) {
 			
@@ -55,12 +53,13 @@ void raffler(){
 			printf("Orden de los ids mesclados\n");
 			for(int i = 0; i < combiIdsAmount ; i++){ printf("%d ",combiIds[i]);}
 			printf("\n");
-			SendRaffleDoneToMaster();
+
+			MockAlRaffle(currentTag); //currentTag=GET_RAFFLE
 		} 
 		
 		if (currentTag == GET_RAFFLE){
-			//cambio nomenclatura
 			
+			//cambio nomenclatura
 			currentCombiIds = bufferReceiver;
 			currentCombiIdsAmount = receiverCount;
 			printf("Los id de combis de la cola\n");
@@ -72,11 +71,10 @@ void raffler(){
 			printf("Lo que se va ha enviar\n");
 			for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",bufferSender[i]);}
 			printf("\n");
-			
-			SendRafflePeiorityToQueue(bufferSender, currentCombiIdsAmount, currentSource);	
+			//Envio la priotidad a la cola
+			MPI_Send(bufferSender, currentCombiIdsAmount, MPI_INT, currentSource, RAFFLE_DONE, MPI_COMM_WORLD);
+			MockAlLive(currentTag); //currentTag=LIVE_LOCK
 			if(bufferSender)free(bufferSender);
-			
-			
 		}
 		
 		if(bufferReceiver)free(bufferReceiver);

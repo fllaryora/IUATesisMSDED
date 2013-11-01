@@ -14,7 +14,7 @@ void printer(){
 	MPI_Status result;
 	int* qCouNfComb = (int*) malloc( 5 * sizeof(int) );
 	//recive del master la cantidad de nodos
-	GetEachNodesAmount(qCouNfComb);
+	 MPI_Recv(qCouNfComb, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	fileDescriptor = open ("/tmp/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	
 	//open json file
@@ -23,7 +23,7 @@ void printer(){
 		openBracket(fileDescriptor);
 
 		do{//te llama el scheduler y te dice que se va ha consumir un delta t, por lo que todos vienen
-			WaitForPrinterSignal(&totalTime, &result);
+			MPI_Recv(&totalTime, 1, MPI_DOUBLE, MASTER_ID, MPI_ANY_TAG , MPI_COMM_WORLD, &result);
 			if(result.MPI_TAG == PRINT_SIGNAL ){
 				if(flag == TRUE){
 					separeElement(fileDescriptor);
@@ -115,7 +115,8 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 			putLabel(fileDescriptor, "queues"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < queues; i++){
-					GetQueueStruct(&qeStruct);
+					//obtengo estructura
+					MPI_Recv(&qeStruct, sizeof(PrinterQueue), MPI_BYTE, MPI_ANY_SOURCE, QUEUE_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doQueue( fileDescriptor, qeStruct.idNode, qeStruct.amount, qeStruct.counterInput, qeStruct.counterOutput, 
 							qeStruct.average, qeStruct.maximun,  qeStruct.minimun,  qeStruct.timesNotEmpty,  qeStruct.percentTimesNotEmpty);
 					if (i+1 < queues ){separeElement(fileDescriptor);}
@@ -124,7 +125,8 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 			putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < counters; i++){
-					GetCounterStruct(&crStruct);
+					//obtengo estructura
+					MPI_Recv(&crStruct, sizeof(PrinterCounter), MPI_BYTE, MPI_ANY_SOURCE, COUNTER_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doCounter( fileDescriptor, crStruct.idNode, crStruct.totalProductivity, crStruct.deltaTProductivity, crStruct.productivityPerTime );
 					if (i+1 < counters ){separeElement(fileDescriptor);}
 				}
@@ -132,10 +134,12 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 			putLabel(fileDescriptor, "normals"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < normals; i++){
-					GetNormalStruct(&nlStruct, &result);
+					//obtengo estructura
+					MPI_Recv(&nlStruct, sizeof(PrinterActivity), MPI_BYTE, MPI_ANY_SOURCE, NORMAL_REPORT , MPI_COMM_WORLD, &result);
 					oldSource = result.MPI_SOURCE;
 					double* worktask = (double*) malloc( nlStruct.activityInside* 2 * sizeof(double) );
-					GetNormalDalaysStruct(worktask, nlStruct.activityInside* 2, oldSource);
+					//los delay internos
+					MPI_Recv(worktask, nlStruct.activityInside* 2, MPI_DOUBLE, oldSource, NORMAL_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doActivity(fileDescriptor, nlStruct.idNode, nlStruct.activityInside, worktask, 
 						&worktask[nlStruct.activityInside], nlStruct.counterInput, nlStruct.delayAverage, 
 						nlStruct.maximunDrawn, nlStruct.minimunDrawn );
@@ -146,7 +150,8 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 			putLabel(fileDescriptor, "functions"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < functions; i++){
-					GetFunctionStruct(&fnStruct);
+					//obtengo estructura
+					MPI_Recv(&fnStruct, sizeof(PrinterFunction), MPI_BYTE, MPI_ANY_SOURCE, FUNCTION_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doFunction( fileDescriptor, fnStruct.idNode, fnStruct.amount);
 					if (i+1 < functions ){separeElement(fileDescriptor);}
 				}
@@ -154,10 +159,12 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 			putLabel(fileDescriptor, "combis"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas
 				for(int i = 0; i < combis; i++){
-					GetCombiStruct(&cbStruct, &result);
+					//obtengo estructura
+					MPI_Recv(&cbStruct, sizeof(PrinterActivity), MPI_BYTE, MPI_ANY_SOURCE, COMBI_REPORT , MPI_COMM_WORLD, &result);
 					oldSource = result.MPI_SOURCE;
 					double* worktask = (double*) malloc( cbStruct.activityInside* 2 * sizeof(double) );
-					GetNormalDalaysStruct(worktask, cbStruct.activityInside* 2, oldSource);
+					//los delay internos
+					MPI_Recv(worktask, cbStruct.activityInside* 2, MPI_DOUBLE, oldSource, COMBI_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doActivity(fileDescriptor, cbStruct.idNode, cbStruct.activityInside, worktask, 
 						&worktask[cbStruct.activityInside], cbStruct.counterInput, cbStruct.delayAverage, 
 						cbStruct.maximunDrawn, cbStruct.minimunDrawn );
@@ -171,8 +178,6 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 	closeBrace(fileDescriptor);
 }
 
-//#define doNormal(A , B , C, D, E, F, G, H, I )	doActivity(A , B , C, D, E, F, G, H, I );
-//#define doCombi(A , B , C, D, E, F, G, H, I )	doActivity(A , B , C, D, E, F, G, H, I );
 void doActivity(int fileDescriptor, const int idNode, const int activityInside, const double* contdownWorktask, 
 						const double* delayWorktask, const int counterInput, const double delayAverage, 
 						const int maximunDrawn, const int minimunDrawn ){
