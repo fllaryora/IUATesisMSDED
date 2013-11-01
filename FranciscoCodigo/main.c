@@ -43,24 +43,35 @@ int main(int argc, char **argv){
 	createCommunicator( &commNodes, &groupNodes, &groupWorld, &processRank, mpiProcesses, idNodo );
 	MPI_Comm_rank( commNodes, &idNodoInterno);
 	printf("nuevo rank %d => %d\n", idNodo, idNodoInterno);
-	if ( idNodo == MASTER_ID ) {
-		master(mpiProcesses, commNodes);
-	} else {
-		MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
-		if ( jsonResult == GOOD_JSON ) {
-			if ( idNodo == RAFFLER_ID ) {
+	switch( idNodo ){
+		case MASTER_ID:
+			master(mpiProcesses, commNodes);
+		break;
+		case RAFFLER_ID:
+			MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			if ( jsonResult == GOOD_JSON ) {
 				raffler();
-			} else {
-				if (idNodo == PRINTER_ID) {
-					printer();
-				} else {
-					//MPI_Barrier( commNodes );
-					genericNode(idNodo);
-				}
+			}else {
+				printf("Master node has sent BAD_JSON by broadcast\n");
 			}
-		} else {
-			printf("Master node has sent BAD_JSON by broadcast\n");
-		}		
+		break;
+		case PRINTER_ID:
+			MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			if ( jsonResult == GOOD_JSON ) {
+				printer();
+			}else {
+				printf("Master node has sent BAD_JSON by broadcast\n");
+			}
+			break;
+		default :
+			MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			if ( jsonResult == GOOD_JSON ) {
+				//MPI_Barrier( commNodes );
+				genericNode(idNodo);
+			}else {
+				printf("Master node has sent BAD_JSON by broadcast\n");
+			}
+		break;
 	}
 	/* FIN de zona de MPI */
 	if(processRank != NULL)free(processRank);
