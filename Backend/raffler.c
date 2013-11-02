@@ -45,7 +45,7 @@ void raffler(){
 		if( receiverCount == 0 ) receiverCount = 1;
 		printf("receiverCount = %d\n", receiverCount);
 		bufferReceiver = (int*)malloc(sizeof(int) * receiverCount);
-		MPI_Recv1( bufferReceiver, receiverCount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12( bufferReceiver, receiverCount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
 		if (currentTag == NEW_RAFFLE ) {
 			

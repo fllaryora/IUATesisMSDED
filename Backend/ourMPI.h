@@ -66,6 +66,7 @@ typedef struct {
 
 //recive arreglo de enteros desde el uno
 #define MPI_Recv1( X, Y, Z, A, B, C, D)        for(int i = 0 ; i < Y; i++){ X[i]=i+1; }(void)0
+#define MPI_Recv12( X, Y, Z, A, B, C, D)        for(int i = 0 ; i < Y; i++){ X[i]=i+2; }(void)0
 //recive un arreglo de todos unos
 #define MPI_Recv2( X, Y, Z, A, B, C, D)        for(int i = 0 ; i < Y; i++){ X[i]=1; }(void)0
 //creo una estructura llana de ceros
@@ -129,6 +130,8 @@ typedef struct {
 #define MPI_Recv4	MPI_Recv
 #define MPI_Recv5	MPI_Recv
 #define MPI_Recv6	MPI_Recv
+#define MPI_Recv12	MPI_Recv
+
 #define MPI_Bcast_JSON	MPI_Bcast
 
 //dice al master que ya sorteo
