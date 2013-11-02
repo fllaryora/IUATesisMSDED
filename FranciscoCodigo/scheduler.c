@@ -10,7 +10,8 @@ void scheduler(void){
 
 	printf("Hello from master\n");
 	//supongamos que comienza las faces de nuevo
-	NewRaffle();
+	//New rafle
+	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD);
 	
 	//Justo antes del consumo del deltaT
 	//NewDeltaTToPrint();

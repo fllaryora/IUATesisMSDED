@@ -40,6 +40,7 @@ then
 	GCCARGS="-O3 -std=c99"
 	export PATH=$PATH:/usr/lib64/mpich2/bin
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/mpich2/lib
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 	re='^[0-9]+$'
 	if ! [[ $2 =~ $re ]]
 	then
@@ -95,7 +96,7 @@ fi
 
 echo "$COMPILER -Wall $GCCARGS -c RNGs.c"
 $COMPILER -Wall $GCCARGS -c RNGs.c
-
+#gcc -o test main.c validador.c parson.c -lwjelement -lwjreader
 echo "$COMPILER -Wall $GCCARGS -c jsonHelper.c"
 $COMPILER -Wall $GCCARGS -c jsonHelper.c
 
@@ -115,6 +116,7 @@ echo "$COMPILER -Wall $GCCARGS RNGs.o jsonHelper.o raffler.o printer.o genericNo
 $COMPILER -Wall $GCCARGS RNGs.o jsonHelper.o raffler.o printer.o genericNode.o scheduler.o -lm -o Engine main.c
 
 rm *.o
+
 
 echo "$RUNFORESTRUN ./Engine"
 #$RUNFORESTRUN ./Engine
