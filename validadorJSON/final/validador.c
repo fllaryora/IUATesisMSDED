@@ -5,9 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
-#define ERROR                      0
-#define SUCCESS                    1
+#include <math.h>
 
 int validateSchema(const char *filenameJson , const char *filenameSchema)
 {
@@ -111,20 +109,18 @@ int validateJsonImput(const char *filenameJson)
 	int sizePreceders, sizeFollowers;
 	int *arrayPreceders, *arrayFollowers;
 
-    /*validate json*/
+    /*VALIDATE JSON*/
     root_value = json_parse_file(filenameJson);
-    if (!root_value)
-    {
+
+    if (!root_value) {
 		return INVALID_JSON;
     }
 
-    if (json_value_get_type(root_value) == JSONArray)
-    {
+    if (json_value_get_type(root_value) == JSONArray) {
 		return INVALID_JSON;
     }
 
-    if (json_value_get_type(root_value) != JSONObject)
-    {
+    if (json_value_get_type(root_value) != JSONObject) {
 		return INVALID_JSON;
     }
 
@@ -135,7 +131,7 @@ int validateJsonImput(const char *filenameJson)
 	getArray(object, "transformation.normals"  , "idNode" ,&arrayNormals   , &sizeNormals);
 	getArray(object, "transformation.functions", "idNode" ,&arrayFunctions , &sizeFunctions);
 	getArray(object, "transformation.combis"   , "idNode" ,&arrayCombis    , &sizeCombis);
-	/*for (i = 0; i < sizeNormals ; i++) printf("%d ",arrayNormals[i]); printf("\n");*/
+	//for (i = 0; i < sizeNormals ; i++) printf("%d ",arrayNormals[i]); printf("\n");
 
 	/*DIFERENTE NUMERO DE ID*/
 	if (repeatArrays(&arrayQueues, sizeQueues, &arrayCounters, sizeCounters, &arrayNormals, sizeNormals, &arrayFunctions, sizeFunctions, &arrayCombis, sizeCombis,&arrayNodes,&sizeNodes) > 0)
@@ -301,4 +297,125 @@ int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int 
 				count=count+1;
 
 	return count;
+}
+
+/* MANEJO DE ESTRUCTURA */
+
+void getQueues(const char *filenameJson , Queue **queues, int *queuesCount)
+{
+    JSON_Value  *root_value;
+    JSON_Object *object,*objectInArray;
+    JSON_Array  *array,*arrayInternal;
+	int i, j;
+
+    root_value = json_parse_file(filenameJson);
+    object = json_value_get_object(root_value);
+	array = json_object_dotget_array(object, "transformation.queues");
+
+	*queuesCount = json_array_get_count(array);
+	*queues = (Queue *) malloc((*queuesCount)*sizeof(Queue));
+
+    for (i = 0; i < json_array_get_count(array); i++)
+	{
+	    objectInArray = json_array_get_object(array, i);
+	    (*queues)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
+	   	(*queues)[i].resource = (int)json_object_dotget_number(objectInArray, "resource" );
+		(*queues)[i].fixedCost = json_object_dotget_number(objectInArray, "fixedCost" );
+		(*queues)[i].variableCost = json_object_dotget_number(objectInArray, "variableCost" );
+
+		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
+		(*queues)[i].countPreceders = json_array_get_count(arrayInternal);
+		(*queues)[i].preceders = (int *) malloc((*queues)[i].countPreceders*sizeof(int));
+		for (j = 0; j < (*queues)[i].countPreceders; j++)
+			(*queues)[i].preceders[j]=json_array_get_number(arrayInternal,j);
+
+		arrayInternal = json_object_dotget_array(objectInArray, "followers");
+		(*queues)[i].countFollowers = json_array_get_count(arrayInternal);
+		(*queues)[i].followers = (int *) malloc((*queues)[i].countFollowers*sizeof(int));
+		for (j = 0; j < (*queues)[i].countFollowers; j++)
+			(*queues)[i].followers[j]=json_array_get_number(arrayInternal,j);
+	}
+}
+
+void getCounters(const char *filenameJson , Counter **normals, int *counterCount)
+{
+	*counterCount = 0;
+}
+
+void getFunctions(const char *filenameJson , Function **functions, int *functionCount)
+{
+	*functionCount = 0;
+}
+
+void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
+{
+	*normalCount = 0;
+}
+
+void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
+{
+	*combis = (Combi *) malloc(2*sizeof(Combi));
+
+	*combiCount = 1;
+
+	(*combis)[0].idNode = 86;
+	(*combis)[0].countPreceders = 2;
+	(*combis)[0].preceders = (int *) malloc(2*sizeof(int));
+	(*combis)[0].preceders[0] = 2;
+	(*combis)[0].preceders[1] = 44;
+	(*combis)[0].countFollowers = 3;
+	(*combis)[0].followers = (int *) malloc(3*sizeof(int));
+	(*combis)[0].followers[0] = 101;
+	(*combis)[0].followers[1] = 102;
+	(*combis)[0].followers[2] = 105;
+	(*combis)[0].countProbabilisticBranch = 3;
+	(*combis)[0].probabilisticBranch = (double *) malloc(3*sizeof(double));
+	(*combis)[0].probabilisticBranch[0] = 25.5;
+	(*combis)[0].probabilisticBranch[1] = 24.5;
+	(*combis)[0].probabilisticBranch[2] = 50;
+	(*combis)[0].delay.distribution = DIST_UNIFORM; //uniform
+	(*combis)[0].delay.least = 1.56;
+	(*combis)[0].delay.highest =  8.23;
+	(*combis)[0].delay.seed = 895;
+}
+
+void printQueue(Queue queue)
+{
+	int i;
+
+	printf("idNode: %d\n", queue.idNode);
+	printf("resource: %d\n", queue.resource);
+	printf("fixedCost: %.4f\n", queue.fixedCost);
+	printf("variableCost: %.4f\n", queue.variableCost);
+	printf("countPreceders: %d\n", queue.countPreceders);
+	printf("countFollowers: %d\n", queue.countFollowers);
+
+	for (i=0 ; i<queue.countPreceders ; i++)
+		printf("preceders[%d]: %d\n", i,queue.preceders[i]);
+
+	for (i=0 ; i<queue.countFollowers ; i++)
+		printf("followers[%d]: %d\n", i,queue.followers[i]);
+}
+
+void printCombi(Combi combi)
+{
+	int i;
+
+	printf("idNode: %d\n", combi.idNode);
+	printf("countPreceders: %d\n", combi.countPreceders);
+	printf("countFollowers: %d\n", combi.countFollowers);
+	printf("countProbabilisticBranch: %d\n", combi.countProbabilisticBranch);
+	printf("delay.distribution: %d\n",combi.delay.distribution);
+	printf("delay.least: %.4f\n",combi.delay.least);
+	printf("delay.highest: %.4f\n",combi.delay.highest);
+	printf("delay.seed: %d\n",combi.delay.seed);
+
+	for (i=0 ; i<combi.countPreceders ; i++)
+		printf("preceders[%d]: %d\n", i,combi.preceders[i]);
+
+	for (i=0 ; i<combi.countFollowers ; i++)
+		printf("followers[%d]: %d\n", i,combi.followers[i]);
+
+	for (i=0 ; i<combi.countProbabilisticBranch ; i++)
+		printf("probabilisticBranch[%d]: %.2f\n", i,combi.probabilisticBranch[i]);
 }

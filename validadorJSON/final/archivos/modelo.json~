@@ -5,7 +5,7 @@
  "transformation": {
 		"queues": [
 			{
-				"idNode": 1,v
+				"idNode": 1,
 				"resource": 5,
 				"preceders": [4],
 				"followers": [11,10],
