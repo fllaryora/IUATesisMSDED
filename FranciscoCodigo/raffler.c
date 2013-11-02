@@ -21,7 +21,7 @@ void raffler(){
 	//"el sizeof" de lo que viene
 	MPI_Get_count(&infoComm, MPI_INT, &combiIdsAmount );
 	combiIds = (int*)malloc(sizeof(int) * combiIdsAmount);
-	MPI_Recv( combiIds, combiIdsAmount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv1( combiIds, combiIdsAmount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
 	//seteo la semilla en caso de que se requiera
 	//el primer elemento indica si se quiere tener reusabilidad.
@@ -41,11 +41,11 @@ void raffler(){
 		currentTag = infoComm.MPI_TAG;
 		//printf("TAG = %d\n", currentTag);
 		currentSource = infoComm.MPI_SOURCE;
-		MPI_Get_count( &infoComm, MPI_INT, &receiverCount);
+		MPI_Get_count1( &infoComm, MPI_INT, &receiverCount);
 		if( receiverCount == 0 ) receiverCount = 1;
 		printf("receiverCount = %d\n", receiverCount);
 		bufferReceiver = (int*)malloc(sizeof(int) * receiverCount);
-		MPI_Recv( bufferReceiver, receiverCount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv1( bufferReceiver, receiverCount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
 		if (currentTag == NEW_RAFFLE ) {
 			

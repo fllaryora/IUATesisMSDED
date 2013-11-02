@@ -30,6 +30,4 @@ extern void doFinalCounter(int , const int , const int );
 extern void doFunction(int , const int , const int );
 extern void doActivity(int , const int , const int , const double* , const double* , const int , const double , const int , const int  );
 
-#define GetFinalCounterStruct(STRU)	MPI_Recv(STRU, sizeof(PrinterFinalCounter), MPI_BYTE, MPI_ANY_SOURCE, COUNTER_FINAL_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE)
-#define GetFinalQueueStruct(STRU)	MPI_Recv(STRU, sizeof(PrinterFinalQueue), MPI_BYTE, MPI_ANY_SOURCE, QUEUE_FINAL_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE)
 #endif /* #ifndef _PRINTER_H_*/

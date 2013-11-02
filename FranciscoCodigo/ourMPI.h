@@ -40,55 +40,41 @@ typedef struct {
 #define MPI_Finalize() (void)0
 #define MPI_Comm_size(X, Y) *(Y)=4
 
-#define MPI_Comm_group(MPI_COMM_WORLD, X)        *(X)=0
+#define MPI_Comm_group(Z, X)        *(X)=0
 #define MPI_Group_incl(X, Y, Z, W)        *(W)=0
-#define MPI_Comm_create(MPI_COMM_WORLD, X, Y)        *(Y)=0
+#define MPI_Comm_create(Z, X, Y)        *(Y)=0
 //Seteo que quiero leer los errores
-#define MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN)        (void)0
-//Seteo que no voy leer los errores
-#define MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_ARE_FATAL)        (void)0
+#define MPI_Errhandler_set(X, Z)        (void)0
 //retorna la clase de error en un string
 #define MPI_Error_class(X, Y)        *(Y)=4
 //retorna el error en un string
 #define MPI_Error_string(X, Y, Z)        Y[0]='E';Y[1]='R';Y[2]='R';Y[3]='O';Y[4]='R';Y[5]='\0'
 //aborta MPI
-#define MPI_Abort(MPI_COMM_WORLD, X)        exit(X)
+#define MPI_Abort(Z, X)        exit(X)
+#define MPI_Send( X , Y , Z , W , A , B)        (void)0
 
 //EJECUTADOS POR EL MASTER
-#define MPI_Bcast( X, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD)        *(X)=GOOD_JSON
-#define MPI_Send( X , Y , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD)        (void)0
-#define MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD)        (void)0
-#define MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD)        (void)0
-#define MPI_Send(TIME, 1, MPI_DOUBLE, MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD)        (void)0
+#define MPI_Bcast_JSON( X, Q, W, Y, Z)        *(X)=GOOD_JSON
 
-//EJECUTADOS POR EL RAFFLER
-#define MPI_Probe( MASTER_ID, SEED_AND_COMBI_LIST, MPI_COMM_WORLD, X)        (void)0
-#define MPI_Get_count(X, MPI_INT, Y)	*(Y)=10
-//-1,0,1,2,3,4,5,6,7,8
-//pero sacando el inicio
-//0,1,2,3,4,5,6,7,8
-#define MPI_Recv( X, Y, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE)        for(int i = 0 ; i < Y; i++){ X[i]=i+1; }(void)0
-//prueba si recibio orden de algun nodo
-#define MPI_Probe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, X)        (X)->MPI_TAG=NEW_RAFFLE;(X)->MPI_SOURCE=MASTER_ID
-//descubre el largo del mensaje
-#define MPI_Get_count1(X, MPI_INT, Y)	*(Y)=4
-//lee la orden
-//1,2,3,4
-//lo mismo
-//dice al master que ya sorteo
+#define MPI_Get_count(X, Z, Y)	*(Y)=10
+#define MPI_Get_count1(X, Z, Y)	*(Y)=4
 #define MockAlRaffle(X)        X=GET_RAFFLE
 #define MockAlLive(X)        X=LIVE_LOCK
-
-//dice a una cola cuales la prioridad del actual sorteo
-#define MPI_Send(X,Y, MPI_INT, Z, RAFFLE_DONE, MPI_COMM_WORLD)        currentTag = LIVE_LOCK
-
-// EJECUTADOS POR EL PRINTER
-#define MPI_Recv(X, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE)	for(int i = 0 ; i < 5; i++){ X[i]=1; }(void)0
-#define MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, MPI_STATUS_IGNORE)        memset (STRU, 0,SIZE )
-#define MPI_Recv(STRU, SIZE, MPI_BYTE, MPI_ANY_SOURCE, TAG , MPI_COMM_WORLD, STTUS)         memset (STRU, 0,SIZE );(STTUS)->MPI_SOURCE=FIST_NODE_ID
-#define MPI_Recv(DLY, SIZE, MPI_DOUBLE, NODE_ID, TAG , MPI_COMM_WORLD, STTUS)        for(int i = 0 ; i < SIZE; i++){ DLY[i]=4.5; }(void)0
-#define MPI_Recv(TIME, 1, MPI_DOUBLE, MASTER_ID, MPI_ANY_TAG , MPI_COMM_WORLD, STTUS)         *(TIME)=0.5;(STTUS)->MPI_TAG=PRINT_SIGNAL;(STTUS)->MPI_SOURCE=MASTER_ID
 #define MockLoop(STTUS)        (STTUS)->MPI_TAG=LIVE_LOCK
+#define MockResult(STTUS)	(STTUS)->MPI_TAG=PRINT_SIGNAL;(STTUS)->MPI_SOURCE=MASTER_ID
+#define MPI_Probe( A, B, C, X)        (X)->MPI_TAG=NEW_RAFFLE;(X)->MPI_SOURCE=MASTER_ID
+
+//recive arreglo de enteros desde el uno
+#define MPI_Recv1( X, Y, Z, A, B, C, D)        for(int i = 0 ; i < Y; i++){ X[i]=i+1; }(void)0
+//recive un arreglo de todos unos
+#define MPI_Recv2( X, Y, Z, A, B, C, D)        for(int i = 0 ; i < Y; i++){ X[i]=1; }(void)0
+//creo una estructura llana de ceros
+#define MPI_Recv3(X, Y, Z, W, TAG , R, T)        memset (X, 0,Y )
+//creo una estructura llana de ceros y Pongo en la estructura el origen
+#define MPI_Recv4(X, Y, Z, W, TAG , R, T)        memset (X, 0,Y );(T)->MPI_SOURCE=FIST_NODE_ID
+//recive un arreglo de todos 4.5
+#define MPI_Recv5( X, Y, Z, A, B, C, D)        for(int i = 0 ; i < Y; i++){ X[i]=4.5; }(void)0
+#define MPI_Recv6( X, Y, Z, A, B, C, D)        *(X)=0.5
 
 #ifdef _MOCK_SCHADULER_
 #define MPI_Comm_rank(X, Y) *(Y)=0
@@ -137,6 +123,14 @@ typedef struct {
 //descubre el largo del mensaje
 #define MPI_Get_count1	MPI_Get_count
 
+#define MPI_Recv1	MPI_Recv
+#define MPI_Recv2	MPI_Recv
+#define MPI_Recv3	MPI_Recv
+#define MPI_Recv4	MPI_Recv
+#define MPI_Recv5	MPI_Recv
+#define MPI_Recv6	MPI_Recv
+#define MPI_Bcast_JSON	MPI_Bcast
+
 //dice al master que ya sorteo
 #define SendRaffleDoneToMaster()        (void)0
 
@@ -144,8 +138,10 @@ typedef struct {
 
 // FUNCIONES del PRINTER
 //no hace nada
+#define MockAlRaffle(X)	(void)0
 #define MockLoop(STTUS)        (void)0
-
+#define MockAlLive(X)        (void)0
+#define MockResult(STTUS)	(void)0
 #endif
 
 #endif /* our mpi*/

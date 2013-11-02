@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 			master(mpiProcesses, commNodes);
 		break;
 		case RAFFLER_ID:
-			MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
 				raffler();
 			}else {
@@ -56,7 +56,7 @@ int main(int argc, char **argv){
 			}
 		break;
 		case PRINTER_ID:
-			MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
 				printer();
 			}else {
@@ -64,7 +64,7 @@ int main(int argc, char **argv){
 			}
 			break;
 		default :
-			MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
 				//MPI_Barrier( commNodes );
 				genericNode(idNodo);
@@ -86,7 +86,7 @@ void master(int mpiProcesses, MPI_Comm commNodes){
 			putNodesInMem();
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
-			MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			//enviar lo combisIds al raffler
 			int* seedAndCombis = getCombiIds( );
 			MPI_Send( &seedAndCombis[1] ,  seedAndCombis[0]  , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
@@ -108,7 +108,7 @@ void master(int mpiProcesses, MPI_Comm commNodes){
 	} 
 	//Broadcast Json malo
 	jsonResult = BAD_JSON;
-	MPI_Bcast( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+	MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 }
 	
 void logError(int error_code, int my_rank){
