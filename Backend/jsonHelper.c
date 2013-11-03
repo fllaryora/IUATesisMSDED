@@ -28,7 +28,7 @@ int validateSchema(const char *filenameJson , const char *filenameSchema)
 	WJReader readschema;
 	WJElement json;
 	WJElement schema;
-	XplBool succ;
+	//XplBool succ;
 	char *format=NULL;
 
 	if(!(jsonfile = fopen(filenameJson, "r"))) {
@@ -77,12 +77,12 @@ int validateSchema(const char *filenameJson , const char *filenameSchema)
 	return VALIDATION_PASS;
 }
 
-static void schema_error(void *client, const char *format, ...)
+void schema_error(void *client, const char *format, ...)
 {
 	return;
 }
 
-static WJElement schema_load(const char *name, void *client, const char *file, const int line)
+WJElement schema_load(const char *name, void *client, const char *file, const int line)
 {
 	char *format;
 	char *path;
@@ -96,7 +96,7 @@ static WJElement schema_load(const char *name, void *client, const char *file, c
 		path = malloc(strlen(format) + strlen(name));
 		sprintf(path, format, name);
 
-		if(schemafile = fopen(path, "r")) {
+		if( (schemafile = fopen(path, "r") )!= NULL) {
 			if((readschema = WJROpenFILEDocument(schemafile, NULL, 0))) {
 				schema = WJEOpenDocument(readschema, NULL, NULL, NULL);
 			} /*else {

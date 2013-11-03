@@ -1,5 +1,6 @@
 #ifndef _GENERIC_NODE_H_
 #define _GENERIC_NODE_H_
+#include "jsonHelper.h"
 
 extern void genericNode(int myIdNodo);
 
