@@ -31,6 +31,7 @@ void printer(){
 				} 
 				doDeltaT(fileDescriptor, totalTime, qCouNfComb[0], qCouNfComb[1], qCouNfComb[2], qCouNfComb[3], qCouNfComb[4]);
 				flag = TRUE;
+
 			}
 			MockLoop(&result);//si es test termina el bucle
 		}while(result.MPI_TAG != LIVE_LOCK);	
@@ -124,13 +125,17 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 				}
 			closeBracket(fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);
+				int * counterCycles = (int*) malloc(sizeof (int) * counters);
 				//recibo todos los envios de colas
 				for(int i = 0; i < counters; i++){
 					//obtengo estructura
 					MPI_Recv3(&crStruct, sizeof(PrinterCounter), MPI_BYTE, MPI_ANY_SOURCE, COUNTER_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+					counterCycles[i] =  crStruct.totalProductivity;
 					doCounter( fileDescriptor, crStruct.idNode, crStruct.totalProductivity, crStruct.deltaTProductivity, crStruct.productivityPerTime );
 					if (i+1 < counters ){separeElement(fileDescriptor);}
 				}
+				MPI_Send(counterCycles, counters, MPI_INT, MASTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD);
+				free(counterCycles);
 			closeBracket( fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "normals"); openBracket( fileDescriptor);
 				//recibo todos los envios de colas

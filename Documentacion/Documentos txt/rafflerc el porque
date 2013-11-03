@@ -1,0 +1,11 @@
+No siempre las colas cuentan con los recursos necesarios para satisfacer a todas las combis sucesaras que tengan.
+Cuando esto pasa se tiene que escojer un conjunto de esas colas al cual se le va a dar recursos. En la realidad no se cuenta con una prioridad estatica, por lo que la prioridad tiene que cambiar a medida que pasa el tiempo. Esto lo resolvemos mediante un sorteo de prioridades de combis. El conjunto de combis con mayor prioridad reciben los recursos cuando no hay para todas las combis. 
+¿Quien sortea? La solución ideal es sortear en cada zona de conflicto y darle los recursos a una combi para que realice una tarea, pero esto es impracticable porque no se conose a priori la forma de la red. 
+Sortear en cada cola podria provocar cuello de botella o demoras, que en la realidad no pasaria poniendose de acuerdo las personas. Por lo que se descarto. Sortear en cada combi podria provocar sorteos innecesarios y que varias combis compartan la prioridad. Que el sorteo sea llevado a cabo por un modulo tercero es la mejor solución que encontramos, porque no se sobrecarga de sorteos innecesarios a lo sumo 1 por delta T, solo provee el resultado del sorteo a quien lo requiera y las combis no comparten nunca prioridad.
+
+El raffler es el modulo que se encarga de proveer el servicio de sorteo de prioridades de las colas.
+Al inicio del Raffler, el scheduler le pasa la lista de ids de combis, la cual usara para ordenarlas segun prioridad en los proximos sorteos.
+El sorteo es activado por el scheduler, quien le dice que comienze con un nuevo sorteo. El raffler, mesclara las combis id. 
+Dentro de cada delta T, las colas con problemas de asignacion de recursos a las combis, pasaran su lista de combis predecesoras y pediran una lista personalizada de las prioridades de esas combis.
+
+Esta tarea la repetiran hasta que el scheduler le envia la señal de live_lock.

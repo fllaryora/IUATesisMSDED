@@ -1,0 +1,20 @@
+Se requiere que un modulo que anote el estado del sistema en cada delta T, asi se conose todos los estados intermedios para poder mostrar una simulacion con animación. 
+
+El scheduler , le informa al printer, la cantidad de nodos de cada tipo  de nodo.
+
+El printer se queda esperando que el scheduler le diga si va haber un nuevo dt o si tiene que preparar el informe final.
+En cada delta T, eñ printer espera el informe de cada nodo.
+Al final el printer cuanto tiempo costo y produccion de cada cosa se realizo, para eso espera el informe final de cada cola y aplica la sumatoria a lo que le da la cola y espera el informe final de cada combi.
+
+En modo video imprimiria toto y en el resto, solo imprimiria el ultimo delta T y el informe final.
+
+El seteo y reseteo de la pocicion lo voy hacer con lseek.
+
+posicion de primer deltaT = lseek(fd, 0 , SEEK_CUR) = PDT
+
+reseteo de posicion es:
+NPDF = lseek(fd, 0 , SEEK_CUR) 
+lseek(fd, PDT , SEEK_SET)
+write(fd, ' ', NPDF - PDT)//tacho
+lseek(fd, PDT , SEEK_SET)//vuelvo a escribir
+
