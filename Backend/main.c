@@ -27,7 +27,7 @@
 #include "jsonHelper.h"
 
 void logError(int error_code, int my_rank);
-void master(int mpiProcesses, MPI_Comm commNodes,const char *filenameJson ,const char *filenameSchema);
+void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenameJson ,const char *filenameSchema);
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
@@ -83,7 +83,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void master(int mpiProcesses, MPI_Comm commNodes ,const char *filenameJson ,const char *filenameSchema){
+void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filenameJson ,const char *filenameSchema){
 	int jsonResult;
 	if ( validateJsonInput(filenameJson,filenameSchema) == VALIDATION_PASS ) {			
 		if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
