@@ -52,18 +52,21 @@ typedef enum{
 	COUNTER_FINAL_REPORT,
 	PRINT_SIGNAL, 		   /*when scheduler send to printer must write another 
 						   dT story or give up it */
-	////------never used yet
-							
-	GENERATION_PHASE,		/* the resources only can in and procese*/
+
+
 	ADVANCE_PAHSE,			/* the resources only can out*/
+	GENERATION_PHASE,		/* the resources only can in and procese*/
 	GENERATION_PHASE_PRIMA,	/* the resources only can in but can't
 							procese*/
+
 	ADVANCE_PAHSE_PRIMA,	/* the resources only can out and tell to 
 							scheduler if he terminate */
+
 	PING_REPORT,            /*when dT end, all nodes must report your 
 							status*/
 	CONSUME_DT,            /*when dT end, all nodes consume one dT*/
-	
+	////------never used yet
+							
 	//GATHER enviada de reporte de dT
 	
 	

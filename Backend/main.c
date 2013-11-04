@@ -96,16 +96,6 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			MPI_Send( &seedAndCombis[1] ,  seedAndCombis[0]  , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			free(seedAndCombis);
 			scheduler();
-
-			//envio el live lock al raffler y al printer
-			MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD);
-			//MPI_Send(TIME, 1, MPI_DOUBLE, MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD);
-
-			//MPI_Barrier( commNodes );
-			//int saraza = 999;
-			//MPI_Bcast( &saraza, 1 , MPI_INT, 0 ,commNodes);
-
-
 			/* Shut down MPI */
 			return;
 		}

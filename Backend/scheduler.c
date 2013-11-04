@@ -73,8 +73,6 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD);
 	MPI_Send(&totalTime, 1, MPI_DOUBLE, MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD);
 
-
-
 	free(nodesStatus);
 	free(targetStatus);
 
