@@ -1,27 +1,40 @@
 #include "jsonHelper.h"
 
-int validateJsonInput( const char *filenameJson, const char *filenameSchema ){
-
-	int rta = validateSchema(filenameJson , filenameSchema);
-	if (rta != VALIDATION_PASS)
-	{
-		printf("Validacion por Schema Fallido. Code=%d\n", rta);
-		return rta;
-	}
-
-	rta = validateJson(filenameJson);
-	if (rta != VALIDATION_PASS)
-	{
-		printf("Validacion datos Json Fallido. Code=%d\n", rta);
-		return rta;
-	}
-
-	return VALIDATION_PASS;
+/* 
+limpia memoria y retorna un valor
+*/
+int freeAllAndReturn(int *arrayQueues , int*arrayCounters , int *arrayNormals , int *arrayFunctions , 
+	int *arrayCombis ,int *arrayNodes ,int *arrayPreceders ,int *arrayFollowers , JSON_Value  *root_value , const int ret){
+	free(arrayQueues); free(arrayCounters);
+	free(arrayNormals); free(arrayFunctions);
+	free(arrayCombis);  json_value_free(root_value);
+	if(arrayNodes)free(arrayNodes);
+	if(arrayPreceders)free(arrayPreceders);
+	if(arrayFollowers)free(arrayFollowers);
+	
+	return ret; 
 }
 
+/*
+Valida El archivo de ingreso contra el schema y
+ luego al archivo contra las reglas misma del modelo precursor
+*/
+int validateJsonInput( const char* filenameJson ){
 
-int validateSchema(const char *filenameJson , const char *filenameSchema)
+	int rta;
+	if( (rta = validateSchema(filenameJson)) == VALIDATION_PASS && (rta = validateJson(filenameJson))== VALIDATION_PASS )
+		return VALIDATION_PASS;
+	//si el primer termino de un and falla no se aplica el segundo, es decir nuna entra en 	validateJson, si falla el schema
+	printf("Validacion datos Json Fallido. Code=%d\n", rta);
+	return rta;
+}
+
+/*
+Valida El archivo de ingreso contra el schema
+*/
+int validateSchema(const char *filenameJson)
 {
+	const char* filenameSchema = "archivos/schema.json";
 	FILE *jsonfile;
 	FILE *schemafile;
 	WJReader readjson;
@@ -77,11 +90,17 @@ int validateSchema(const char *filenameJson , const char *filenameSchema)
 	return VALIDATION_PASS;
 }
 
+/*
+Handler de que hacer en caso de que falle la validación
+*/
 void schema_error(void *client, const char *format, ...)
 {
 	return;
 }
 
+/*
+Handler de carga del validador
+*/
 WJElement schema_load(const char *name, void *client, const char *file, const int line)
 {
 	char *format;
@@ -111,17 +130,21 @@ WJElement schema_load(const char *name, void *client, const char *file, const in
 	return schema;
 }
 
-int validateJson(const char *filenameJson)
-{
-    JSON_Value  *root_value;
-    JSON_Object *object,*objectInArray;
-    JSON_Array  *array;
+
+/*
+Valida las reglas del modelo precursor
+*/
+int validateJson(const char *filenameJson){
+	
+	JSON_Value  *root_value = NULL;
+    JSON_Object *object = NULL,*objectInArray = NULL;
+    JSON_Array  *array = NULL;
+
 	int i, j;
 	int sizeQueues, sizeCounters, sizeNormals, sizeFunctions, sizeCombis, sizeNodes;
-	int *arrayQueues, *arrayCounters, *arrayNormals, *arrayFunctions, *arrayCombis,*arrayNodes;
+	int *arrayQueues = NULL, *arrayCounters = NULL, *arrayNormals = NULL, *arrayFunctions = NULL, *arrayCombis = NULL,*arrayNodes = NULL;
 	int sizePreceders, sizeFollowers;
-	int *arrayPreceders, *arrayFollowers;
-
+	int *arrayPreceders = NULL, *arrayFollowers = NULL;
     /*VALIDATE JSON*/
     root_value = json_parse_file(filenameJson);
 
@@ -129,11 +152,8 @@ int validateJson(const char *filenameJson)
 		return INVALID_JSON;
     }
 
-    if (json_value_get_type(root_value) == JSONArray) {
-		return INVALID_JSON;
-    }
-
     if (json_value_get_type(root_value) != JSONObject) {
+    	json_value_free(root_value);
 		return INVALID_JSON;
     }
 
@@ -147,110 +167,127 @@ int validateJson(const char *filenameJson)
 	//for (i = 0; i < sizeNormals ; i++) printf("%d ",arrayNormals[i]); printf("\n");
 
 	/*DIFERENTE NUMERO DE ID*/
-	if (repeatArrays(&arrayQueues, sizeQueues, &arrayCounters, sizeCounters, &arrayNormals, sizeNormals, &arrayFunctions, sizeFunctions, &arrayCombis, sizeCombis,&arrayNodes,&sizeNodes) > 0)
-		return VALIDATION_FAIL; /*FAIL ID*/
+	if (repeatArrays(arrayQueues, sizeQueues, arrayCounters, sizeCounters, arrayNormals, sizeNormals, arrayFunctions, sizeFunctions, arrayCombis, sizeCombis, &arrayNodes, &sizeNodes) > 0)
+		return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL ID*/   
 
 	for (i = 0; i < sizeQueues ; i++)
 	{
 	    /*COLA: ANTESESOR: No pueden ser Colas.*/
 		getArrayInArray(object, "transformation.queues", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayQueues,sizeQueues)> 0)
-			return VALIDATION_FAIL; /*FAIL QUEUE*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues)> 0)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL QUEUE*/
 	    /*COLA: SUCESOR: Solo pueden ser combis.*/
 		getArrayInArray(object, "transformation.queues", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) != sizeFollowers)
-			return VALIDATION_FAIL; /*FAIL QUEUE*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) != sizeFollowers)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL QUEUE*/
 		/*COLA: Existe referencia Preceders Followers*/
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
-			return VALIDATION_FAIL; /*FAIL QUEUE*/
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
-			return VALIDATION_FAIL; /*FAIL QUEUE*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL);/*FAIL QUEUE*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL QUEUE*/
+
+		free(arrayPreceders);
+		arrayPreceders = NULL;
+		free(sizeFollowers);
+		sizeFollowers = NULL;
 	}
 
 	for (i = 0; i < sizeCombis ; i++)
 	{
 	    /*COMBI: ANTESESOR: Solo pueden ser nodos Cola.*/
 		getArrayInArray(object, "transformation.combis", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayQueues,sizeQueues) !=  sizePreceders)
-			return VALIDATION_FAIL; /*FAIL COMBI*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues) !=  sizePreceders)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL);; /*FAIL COMBI*/
     	/*COMBI: SUCESOR: No pueden ser Combis.*/
 		getArrayInArray(object, "transformation.combis", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) >0)
-			return VALIDATION_FAIL; /*FAIL COMBI*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) >0)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL COMBI*/
 		/*COMBI: Existe referencia Preceders Followers*/
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
-			return VALIDATION_FAIL; /*FAIL COMBI*/
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
-			return VALIDATION_FAIL; /*FAIL COMBI*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL COMBI*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL COMBI*/
+
+		free(arrayPreceders);
+		arrayPreceders = NULL;
+		free(sizeFollowers);
+		sizeFollowers = NULL;
 	}
 
 	for (i = 0; i < sizeNormals ; i++)
 	{
 		/*NORMAL: ANTESESOR: No pueden ser colas*/
 		getArrayInArray(object, "transformation.normals", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayQueues,sizeQueues)> 0)
-			return VALIDATION_FAIL; /*FAIL NORMAL*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues)> 0)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL NORMAL*/
     	/*NORMAL: SUCESOR: No pueden ser combis.*/
 		getArrayInArray(object, "transformation.normals", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) >0)
-			return VALIDATION_FAIL; /*FAIL NORMAL*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) >0)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL NORMAL*/
 		/*NORMAL: Existe referencia Preceders Followers*/
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
-			return VALIDATION_FAIL; /*FAIL NORMAL*/
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
-			return VALIDATION_FAIL; /*FAIL NORMAL*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL NORMAL*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL NORMAL*/
+
+		free(arrayPreceders);
+		arrayPreceders = NULL;
+		free(sizeFollowers);
+		sizeFollowers = NULL;
 	}
 
 	for (i = 0; i < sizeFunctions ; i++)
 	{
 		/*FUNCION: ANTESESOR: No pueden ser colas*/
 		getArrayInArray(object, "transformation.functions", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayQueues,sizeQueues)> 0)
-			return VALIDATION_FAIL; /*FAIL FUNCTION*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues)> 0)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL FUNCTION*/
     	/*FUNCION: SUCESOR: No pueden ser combis.*/
 		getArrayInArray(object, "transformation.functions", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) >0)
-			return VALIDATION_FAIL; /*FAIL FUNCTION*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) >0)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL FUNCTION*/
 		/*FUNCION: Existe referencia Preceders Followers*/
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
-			return VALIDATION_FAIL; /*FAIL FUNCION*/
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
-			return VALIDATION_FAIL; /*FAIL FUNCION*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL FUNCION*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL FUNCION*/
+
+		free(arrayPreceders);
+		arrayPreceders = NULL;
+		free(sizeFollowers);
+		sizeFollowers = NULL;
 	}
 
 	for (i = 0; i < sizeCounters ; i++)
 	{
     	/*CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
 		getArrayInArray(object, "transformation.counters", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayQueues,sizeQueues)> 0 || countArrayInclude(&arrayPreceders,sizePreceders,&arrayCounters,sizeCounters)> 0)
-			return VALIDATION_FAIL; /*FAIL CONTADOR*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues)> 0 || countArrayInclude(arrayPreceders,sizePreceders,arrayCounters,sizeCounters)> 0)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL CONTADOR*/
     	/*CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
 		getArrayInArray(object, "transformation.counters", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCombis,sizeCombis) >0 || countArrayInclude(&arrayFollowers,sizeFollowers,&arrayCounters,sizeCounters)> 0)
-			return VALIDATION_FAIL; /*FAIL CONTADOR*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) >0 || countArrayInclude(arrayFollowers,sizeFollowers,arrayCounters,sizeCounters)> 0)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL CONTADOR*/
 		/*CONTADOR: Existe referencia Preceders Followers*/
-		if (countArrayInclude(&arrayPreceders,sizePreceders,&arrayNodes,sizeNodes)!= sizePreceders)
-			return VALIDATION_FAIL; /*FAIL CONTADOR*/
-		if (countArrayInclude(&arrayFollowers,sizeFollowers,&arrayNodes,sizeNodes)!= sizeFollowers)
-			return VALIDATION_FAIL; /*FAIL CONTADOR*/
+		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL CONTADOR*/
+		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
+			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL CONTADOR*/
+
+		free(arrayPreceders);
+		arrayPreceders = NULL;
+		free(sizeFollowers);
+		sizeFollowers = NULL;
 	}
-
-    json_value_free(root_value);
-
-    //TODO: HACER LOS FREE
-	/*free(arrayQueues);
-	free(arrayCounters);
-	free(arrayNormals);
-	free(arrayFunctions);
-	free(arrayCombis);
-	free(arrayNodes);
-	free(arrayPreceders);
-	free(arrayFollowers);*/
-    return VALIDATION_PASS;
+    
+    return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
 }
 
-void getArray(JSON_Object *objectJson, const char *arrayJson, const char *atributeJson, int** array, int* sizeArray)
-{
+/*
+Arma un arreglo con los ids de un nodo X 
+y anota el largo del arreglo en sizeArray
+*/
+void getArray( JSON_Object *objectJson, const char *arrayJson, const char *atributeJson, int** array, int* sizeArray ){
 	int i;
 	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectJson, arrayJson);
     JSON_Object *objectInArray;
@@ -265,22 +302,26 @@ void getArray(JSON_Object *objectJson, const char *arrayJson, const char *atribu
 
 }
 
-int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int **array3, int sizeArray3, int **array4, int sizeArray4, int **array5, int sizeArray5, int** array, int* sizeArray)
-{
+/*
+Cuenta los nodos del modelo en  sizeArray
+Y arma un arreglo con todos los ids en array
+Y lo ordena para validarlo
+*/
+int repeatArrays(const int *const array1 ,const int sizeArray1, const int * const array2, const int sizeArray2, const int * const array3, const int sizeArray3, const int * const array4, const int sizeArray4, const int *const array5, const int sizeArray5, int** array, int* sizeArray){
 	int i=0,j,count=0;
 	*sizeArray = sizeArray1 + sizeArray2 + sizeArray3 + sizeArray4 + sizeArray5;
 	*array = (int*)malloc(sizeof(int) * (*sizeArray));
 
 	for (j = 0; j < sizeArray1; i++, j++)
-		(*array)[i] = (*array1)[j];
+		(*array)[i] = array1[j];
 	for (j = 0; j < sizeArray2; i++, j++)
-		(*array)[i] = (*array2)[j];
+		(*array)[i] = array2[j];
 	for (j = 0; j < sizeArray3; i++, j++)
-		(*array)[i] = (*array3)[j];
+		(*array)[i] = array3[j];
 	for (j = 0; j < sizeArray4; i++, j++)
-		(*array)[i] = (*array4)[j];
+		(*array)[i] = array4[j];
 	for (j = 0; j < sizeArray5; i++, j++)
-		(*array)[i] = (*array5)[j];
+		(*array)[i] = array5[j];
 
 	for (i = 0; i < *sizeArray ; i++)
 		for (j = i+1; j < *sizeArray ; j++)
@@ -290,6 +331,10 @@ int repeatArrays(int **array1 ,int sizeArray1, int **array2,int sizeArray2, int 
 	return count;
 }
 
+/*
+Arma un arreglo con los ids precursores o sucesores del nodo i dentro del arreglo
+y anota el largo del arreglo en sizeArray
+*/
 void getArrayInArray(JSON_Object * objectJson,const char *arrayJson,int pos,const char *arrayJsonIn, int** arreglo, int* countArreglo)
 {
 	JSON_Array *array = json_object_dotget_array(objectJson, arrayJson);
@@ -305,14 +350,16 @@ void getArrayInArray(JSON_Object * objectJson,const char *arrayJson,int pos,cons
 	}
 }
 
-int countArrayInclude(int **array,int sizeArray,int **arrayFull, int sizeArrayFull)
-{
+/*
+cuenta las coincidencias dentro de un arreglo contra otro
+*/
+int countArrayInclude(const int * const array, const int sizeArray, const int *const arrayFull, const int sizeArrayFull){
 	int i,j, count=0;
     for (i = 0; i < sizeArray; i++)
 	{
 		for (j = 0; j < sizeArrayFull; j++)
 		{
-			if ((*array)[i] == (*arrayFull)[j])
+			if (array[i] == arrayFull[j])
 			{
 				count = count+1;
 				break;
