@@ -27,14 +27,12 @@
 #include "jsonHelper.h"
 
 void logError(int error_code, int my_rank);
-void master(int mpiProcesses, MPI_Comm commNodes,const char *filenameJson ,const char *filenameSchema);
+void master(int mpiProcesses, MPI_Comm commNodes,const char *filenameJson );
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
 
 	const char *filenameJson   = "archivos/modelo.json";
-	const char *filenameSchema = "archivos/schema.json";
-
 	int idNodo; int idNodoInterno;  int mpiProcesses; 
 	int* processRank = NULL; MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
 	int jsonResult;
@@ -87,9 +85,9 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void master(int mpiProcesses, MPI_Comm commNodes ,const char *filenameJson ,const char *filenameSchema){
+void master(int mpiProcesses, MPI_Comm commNodes ,const char *filenameJson ){
 	int jsonResult;
-	if ( validateJsonInput(filenameJson,filenameSchema) == VALIDATION_PASS ) {			
+	if ( validateJsonInput(filenameJson) == VALIDATION_PASS ) {			
 		if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
 			sendStructToNodes(filenameJson);
 			//broadcast TAG JSON BUENO

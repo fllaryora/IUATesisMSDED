@@ -370,6 +370,21 @@ int countArrayInclude(const int * const array, const int sizeArray, const int *c
 }
 
 
+int getNodesAmount( void ){
+	
+	return 4+5;
+}
+
+int* getCombiIds( void ){
+	int count = 11;
+	int* ids = (int*)malloc(sizeof(int) * count);
+	ids[0] = count;
+	ids[1] = -1;
+	for(int i = 2 ; i < count; i++){ ids[i]=i; }
+	return ids;
+}
+
+
 void sendStructToNodes( const char *filenameJson )
 {
 	Queue 	 *queues;	int queuesCount;
@@ -840,19 +855,6 @@ void printCombi(Combi combi)
 		printf("%d: delay.minimun: %.4f\n",combi.idNode,combi.delay.minimun);
 		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
 	}
-}
-
-int getNodesAmount( void ){
-	return 4+5;
-}
-
-int* getCombiIds( void ){
-	int count = 11;
-	int* ids = (int*)malloc(sizeof(int) * count);
-	ids[0] = count;
-	ids[1] = -1;
-	for(int i = 2 ; i < count; i++){ ids[i]=i; }
-	return ids;
 }
 
 
