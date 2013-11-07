@@ -148,6 +148,7 @@ typedef enum{
 	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI
 }TYPENODE;
 
+
 typedef union{
 	int productividad;
 	int recursos;

@@ -119,15 +119,6 @@
 		],
 		"combis": [
 			{
-				"idNode": 10,
-				"preceders":[1],
-				"followers": [12,13],
-				"delay" : {
-					"distribution": "deterministic",
-					"constant" : 6
-				}
-			},
-			{
 				"idNode": 11,
 				"preceders":[1,2],
 				"followers": [12,13],
@@ -138,7 +129,17 @@
 					"highest" : 8,
 					"seed": 666
 				}
+			},
+			{
+				"idNode": 10,
+				"preceders":[1],
+				"followers": [12,13],
+				"delay" : {
+					"distribution": "deterministic",
+					"constant" : 6
+				}
 			}
+			
 		]
 	}
 }

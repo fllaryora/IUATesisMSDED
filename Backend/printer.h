@@ -1,6 +1,7 @@
 #ifndef _PRINTER_H_
 #define _PRINTER_H_
 
+#include "main.h"
 
 #ifndef FALSE
 #define FALSE (0)

@@ -3,6 +3,7 @@
 
 #include "parson.h"
 #include "ourMPI.h"
+#include "main.h"
 #include <stddef.h>
 #include <wjelement.h>
 #include <stdio.h>
@@ -101,56 +102,22 @@ typedef struct{
 	Delay delay;
 }Combi;
 
-/*	Delay
-	char *distribution; /uniform/
-	double least
-	double highest
-	int seed
-
-	char *distribution; /deterministic/
-	double constant;
-
-	char *distribution; /normal/
-	double mean;
-	double variance;
-	int seed
-
-	char *distribution; /exponential/
-	double lambda;
-	int seed
-
-	char *distribution; /triangular/
-	double least
-	double highest
-	double mode
-	integer seed
-
-	char *distribution; /beta/
-	double minimun;
-	double maximun;
-	double shapeAlpha;
-	double shapeBeta
-	int seed;
-
-	char *distribution; /log-normal/
-	double escale
-	double shape
-	double minimun
-	int seed
-*/
-
+extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * ,int * ,int * , JSON_Value  * , const int );
 extern void	schema_error(void *client, const char *format, ...);
 extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
 
-extern int validateJsonInput(const char *, const char *);
+extern int validateJsonInput(const char *);
 
-extern int validateSchema(const char *, const char *);
+extern int validateSchema(const char *);
 extern int validateJson(const char *);
 
 extern void getArray(JSON_Object *, const char *,const char *,int** , int* );
 extern void getArrayInArray(JSON_Object *,const char *,int ,const char *, int** , int* );
-extern int countArrayInclude(int **, int, int **, int );
-extern int repeatArrays(int ** , int, int **, int, int **, int, int **, int, int **, int ,int**, int*);
+extern int countArrayInclude(const int * const , const int , const int *const , const int );
+extern int repeatArrays(const int *const  ,const int , const int * const , const int , const int * const , const int , const int * const , const int , const int *const , const int , int** , int* );
+extern int getNodesAmount( const char * );
+extern int* getCombiIds( const char * );
+
 
 extern void sendStructToNodes( const char * );
 extern void sendStruct(Queue **, int *,Counter **, int *,Function **, int *,Normal **, int *,Combi **, int *);
@@ -164,8 +131,6 @@ extern void getCombis(const char * , Combi **, int *);
 extern void printQueue(Queue );
 extern void printCombi(Combi );
 
-extern int getNodesAmount( void );
-extern int* getCombiIds( void );
 
 extern void sendStruct(Queue **queues,		  int *queuesCount,
 				Counter **counters,	  int *counterCount,
