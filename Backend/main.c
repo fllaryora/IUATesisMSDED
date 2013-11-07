@@ -88,7 +88,7 @@ int main(int argc, char **argv){
 void master(int mpiProcesses, MPI_Comm commNodes ,const char *filenameJson ){
 	int jsonResult;
 	if ( validateJsonInput(filenameJson) == VALIDATION_PASS ) {			
-		if ( getNodesAmount() + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
+		if ( getNodesAmount(filenameJson) + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
 			sendStructToNodes(filenameJson);
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;

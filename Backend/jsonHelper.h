@@ -115,6 +115,8 @@ extern void getArray(JSON_Object *, const char *,const char *,int** , int* );
 extern void getArrayInArray(JSON_Object *,const char *,int ,const char *, int** , int* );
 extern int countArrayInclude(const int * const , const int , const int *const , const int );
 extern int repeatArrays(const int *const  ,const int , const int * const , const int , const int * const , const int , const int * const , const int , const int *const , const int , int** , int* );
+extern int getNodesAmount( const char * );
+extern int* getCombiIds( const char * );
 
 
 extern void sendStructToNodes( const char * );
@@ -129,8 +131,6 @@ extern void getCombis(const char * , Combi **, int *);
 extern void printQueue(Queue );
 extern void printCombi(Combi );
 
-extern int getNodesAmount( void );
-extern int* getCombiIds( void );
 
 extern void sendStruct(Queue **queues,		  int *queuesCount,
 				Counter **counters,	  int *counterCount,

@@ -292,9 +292,9 @@ void getArray( JSON_Object *objectJson, const char *arrayJson, const char *atrib
 	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectJson, arrayJson);
     JSON_Object *objectInArray;
     *sizeArray = json_array_get_count(arrayJsonFunction);
-    *array = (int*)malloc(sizeof(int) * json_array_get_count(arrayJsonFunction));
+    *array = (int*)malloc(sizeof(int) * (*sizeArray)));
 
-    for (i = 0; i < json_array_get_count(arrayJsonFunction); i++)
+    for (i = 0; i < (*sizeArray); i++)
 	{
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
 	    (*array)[i] = json_object_dotget_number(objectInArray, atributeJson );
@@ -370,17 +370,41 @@ int countArrayInclude(const int * const array, const int sizeArray, const int *c
 }
 
 
-int getNodesAmount( void ){
-	
+int getNodesAmount( const char *filenameJson ){
+	int count = 0;
+	JSON_Value* root_value = json_parse_file(filenameJson);
+	JSON_Object* object = json_value_get_object(root_value);
+
+	count += json_array_get_count( json_object_dotget_array(object, "transformation.queues") );
+	count += json_array_get_count( json_object_dotget_array(object, "transformation.counters") );
+ 	count += json_array_get_count( json_object_dotget_array(object, "transformation.normals") );
+	count += json_array_get_count( json_object_dotget_array(object, "transformation.functions") );
+	count += json_array_get_count( json_object_dotget_array(object, "transformation.combis") );
+	json_value_free(root_value);
+	//return count; //TODO descomentar pcuando chen lo requiera 
+
 	return 4+5;
 }
 
-int* getCombiIds( void ){
-	int count = 11;
-	int* ids = (int*)malloc(sizeof(int) * count);
-	ids[0] = count;
-	ids[1] = -1;
-	for(int i = 2 ; i < count; i++){ ids[i]=i; }
+int* getCombiIds( const char *filenameJson ){
+	int count = 0;
+	int  *arrayCombis = NULL;
+	int  sizeCombis;
+	JSON_Value* root_value = json_parse_file(filenameJson);
+	JSON_Object* object = json_value_get_object(root_value);
+	JSON_Object *objectInArray;
+
+	JSON_Array* arrayJsonFunction = json_object_dotget_array(object, "transformation.combis")
+
+	count += json_array_get_count( arrayJsonFunction);
+	int* ids = (int*)malloc(sizeof(int) * count+2);
+	ids[0] = count+1; //combis + seed
+	ids[1] = json_object_dotget_number (object, "seed");
+
+	for (i = 0; i < count; i++){
+	    objectInArray = json_array_get_object(arrayJsonFunction, i);
+	    ids[i+2] = json_object_dotget_number(objectInArray, "idNode" );
+	}
 	return ids;
 }
 
