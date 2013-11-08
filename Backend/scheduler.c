@@ -58,12 +58,16 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		msg = PING_REPORT;
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 
-		MPI_Recv( targetStatus, counterNodes, MPI_INT, PRINTER_ID, COUNTER_CYCLES, , MPI_COMM_WORLD);
+		MPI_Recv( targetStatus, counterNodes*2, MPI_INT, PRINTER_ID, COUNTER_CYCLES, , MPI_COMM_WORLD);
 		isAllFinalized = 0;
 		for(int i = 0 ; i< counterNodes;i++ ){
-			//basta que uno no cumpla
-			if(!(targetStatus[i] >= targets[i]))  break;
-			isAllFinalized++;
+			for(int j = 0 ; j< counterNodes;j++ ){//FIX las colas vienen en cualquier orden
+				//basta que uno no cumpla
+				if(targetStatus[i*2] == targets[j*2]){
+					if( targetStatus[i*+1] < targets[j*2+1] )  break;
+					isAllFinalized++;
+				}	
+			}
 		}
 
 	} while( ((watchdog--) > 0) && (isAllFinalized < counterNodes) ;
