@@ -9,9 +9,8 @@ int freeAllAndReturn(int *arrayQueues , int*arrayCounters , int *arrayNormals , 
 	free(arrayNormals); free(arrayFunctions);
 	free(arrayCombis);  json_value_free(root_value);
 	if(arrayNodes)free(arrayNodes);
-	if(arrayPreceders)free(arrayPreceders);
-	if(arrayFollowers)free(arrayFollowers);
-	
+	//if(arrayPreceders)free(arrayPreceders);
+	//if(arrayFollowers)free(arrayFollowers);
 	return ret; 
 }
 
@@ -19,10 +18,10 @@ int freeAllAndReturn(int *arrayQueues , int*arrayCounters , int *arrayNormals , 
 Valida El archivo de ingreso contra el schema y
  luego al archivo contra las reglas misma del modelo precursor
 */
-int validateJsonInput( const char* filenameJson ){
+int validateJsonInput( const char* filenameJson , const char* filenameSchema ){
 
 	int rta;
-	if( (rta = validateSchema(filenameJson)) == VALIDATION_PASS && (rta = validateJson(filenameJson))== VALIDATION_PASS )
+	if( (rta = validateSchema(filenameJson,filenameSchema)) == VALIDATION_PASS && (rta = validateJson(filenameJson))== VALIDATION_PASS )
 		return VALIDATION_PASS;
 	//si el primer termino de un and falla no se aplica el segundo, es decir nuna entra en 	validateJson, si falla el schema
 	printf("Validacion datos Json Fallido. Code=%d\n", rta);
@@ -32,9 +31,9 @@ int validateJsonInput( const char* filenameJson ){
 /*
 Valida El archivo de ingreso contra el schema
 */
-int validateSchema(const char *filenameJson)
+int validateSchema(const char *filenameJson, const char *filenameSchema)
 {
-	const char* filenameSchema = "archivos/schema.json";
+	//const char* filenameSchema = "archivos/schema.json";
 	FILE *jsonfile;
 	FILE *schemafile;
 	WJReader readjson;
@@ -186,10 +185,15 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL QUEUE*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		free(sizeFollowers);
-		sizeFollowers = NULL;
+		//if(arrayPreceders){
+		//	free(arrayPreceders);
+		//	arrayPreceders = NULL;
+		//}
+		//if(arrayFollowers){
+			//free(arrayFollowers);
+			//sizeFollowers = NULL;
+		//}
+	
 	}
 
 	for (i = 0; i < sizeCombis ; i++)
@@ -208,10 +212,14 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL COMBI*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		free(sizeFollowers);
-		sizeFollowers = NULL;
+		//if(arrayPreceders){
+		//	free(arrayPreceders);
+		//	arrayPreceders = NULL;
+		//}
+		//if(arrayFollowers){
+		//	free(arrayFollowers);
+		//	sizeFollowers = NULL;
+		//}
 	}
 
 	for (i = 0; i < sizeNormals ; i++)
@@ -230,10 +238,14 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL NORMAL*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		free(sizeFollowers);
-		sizeFollowers = NULL;
+		//if(arrayPreceders){
+		//	free(arrayPreceders);
+		//	arrayPreceders = NULL;
+		//}
+		//if(arrayFollowers){
+		//	free(arrayFollowers);
+		//	sizeFollowers = NULL;
+		//}
 	}
 
 	for (i = 0; i < sizeFunctions ; i++)
@@ -252,10 +264,14 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL FUNCION*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		free(sizeFollowers);
-		sizeFollowers = NULL;
+		//if(arrayPreceders){
+		//	free(arrayPreceders);
+		//	arrayPreceders = NULL;
+		//}
+		//if(arrayFollowers){
+		//	free(arrayFollowers);
+		//	sizeFollowers = NULL;
+		//}
 	}
 
 	for (i = 0; i < sizeCounters ; i++)
@@ -274,10 +290,14 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL CONTADOR*/
 
-		free(arrayPreceders);
-		arrayPreceders = NULL;
-		free(sizeFollowers);
-		sizeFollowers = NULL;
+		if(arrayPreceders){
+			free(arrayPreceders);
+			arrayPreceders = NULL;
+		}
+		//if(arrayFollowers){
+		//	free(arrayFollowers);
+		//	sizeFollowers = NULL;
+		//}
 	}
     
     return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
@@ -292,14 +312,13 @@ void getArray( JSON_Object *objectJson, const char *arrayJson, const char *atrib
 	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectJson, arrayJson);
     JSON_Object *objectInArray;
     *sizeArray = json_array_get_count(arrayJsonFunction);
-    *array = (int*)malloc(sizeof(int) * (*sizeArray)));
+    *array = (int*)malloc(sizeof(int) * (*sizeArray));
 
     for (i = 0; i < (*sizeArray); i++)
 	{
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
 	    (*array)[i] = json_object_dotget_number(objectInArray, atributeJson );
 	}
-
 }
 
 /*
@@ -342,9 +361,10 @@ void getArrayInArray(JSON_Object * objectJson,const char *arrayJson,int pos,cons
 	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectInArray, arrayJsonIn);
 	int i;
     *countArreglo = json_array_get_count(arrayJsonFunction);
-    *arreglo = (int*)malloc(sizeof(int) * json_array_get_count(arrayJsonFunction));
+    if((*countArreglo))
+		*arreglo = (int*)malloc(sizeof(int) * (*countArreglo));
 
-    for (i = 0; i < json_array_get_count(arrayJsonFunction); i++)
+    for (i = 0; i < (*countArreglo); i++)
 	{
 	    (*arreglo)[i] = json_array_get_number(arrayJsonFunction, i);
 	}
@@ -381,20 +401,19 @@ int getNodesAmount( const char *filenameJson ){
 	count += json_array_get_count( json_object_dotget_array(object, "transformation.functions") );
 	count += json_array_get_count( json_object_dotget_array(object, "transformation.combis") );
 	json_value_free(root_value);
-	//return count; //TODO descomentar pcuando chen lo requiera 
 
-	return 4+5;
+	return count;
 }
 
 int* getCombiIds( const char *filenameJson ){
-	int count = 0;
+	int count = 0,i;
 	int  *arrayCombis = NULL;
 	int  sizeCombis;
 	JSON_Value* root_value = json_parse_file(filenameJson);
 	JSON_Object* object = json_value_get_object(root_value);
 	JSON_Object *objectInArray;
 
-	JSON_Array* arrayJsonFunction = json_object_dotget_array(object, "transformation.combis")
+	JSON_Array* arrayJsonFunction = json_object_dotget_array(object, "transformation.combis");
 
 	count += json_array_get_count( arrayJsonFunction);
 	int* ids = (int*)malloc(sizeof(int) * count+2);
@@ -405,7 +424,39 @@ int* getCombiIds( const char *filenameJson ){
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
 	    ids[i+2] = json_object_dotget_number(objectInArray, "idNode" );
 	}
+	json_value_free(root_value);
 	return ids;
+}
+
+int getWatchdog( const char *filenameJson ){
+	JSON_Value* root_value = json_parse_file(filenameJson);
+	JSON_Object* object = json_value_get_object(root_value);
+	int ret = json_object_dotget_number (object, "length");
+	json_value_free(root_value);
+	return ret;
+}
+
+int* getTargets( const char *filenameJson ){
+	int count = 0,i;
+	int  *arrayCombis = NULL;
+	int  sizeCombis;
+	JSON_Value* root_value = json_parse_file(filenameJson);
+	JSON_Object* object = json_value_get_object(root_value);
+	JSON_Object *objectInArray;
+
+	JSON_Array* arrayJsonFunction = json_object_dotget_array(object,"transformation.counters");
+
+	count += json_array_get_count( arrayJsonFunction);
+	int* targets = (int*)malloc(sizeof(int) * (count*2+1));
+	targets[0] = count;
+	
+	for (i = 0; i < count; i++){
+	    objectInArray = json_array_get_object(arrayJsonFunction, i);
+	    targets[i*2+1] = json_object_dotget_number(objectInArray, "idNode" );
+	    targets[i*2+2] = json_object_dotget_number(objectInArray, "cycle" );
+	}
+	json_value_free(root_value);
+	return targets;
 }
 
 
@@ -457,7 +508,28 @@ void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counte
 	j+=i;
 
 	// ENVIO DE COUNTER
+	for (i=0 ; i < *counterCount ; i++)
+	{
+		MPI_Send(&((*counters)[i]), sizeof(Counter),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, COUNTER, MPI_COMM_WORLD);
+		if ((*counters)[i].countPreceders>0)
+			MPI_Send((*counters)[i].preceders, (*counters)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COUNTER, MPI_COMM_WORLD);
+		if ((*counters)[i].countFollowers>0)
+			MPI_Send((*counters)[i].followers, (*counters)[i].countFollowers ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COUNTER, MPI_COMM_WORLD);
+	}
+	j+=i;
+
 	// ENVIO DE FUNCTION
+	for (i=0 ; i < *functionCount ; i++)
+	{
+		MPI_Send(&((*functions)[i]), sizeof(Function),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, FUNCTION, MPI_COMM_WORLD);
+		if ((*functions)[i].countPreceders>0)
+			MPI_Send((*functions)[i].preceders, (*functions)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, FUNCTION, MPI_COMM_WORLD);
+		if ((*functions)[i].countFollowers>0)
+			MPI_Send((*functions)[i].followers, (*functions)[i].countFollowers ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, FUNCTION, MPI_COMM_WORLD);
+		if ((*functions)[i].countProbabilisticBranch>0)
+			MPI_Send((*functions)[i].probabilisticBranch, (*functions)[i].countProbabilisticBranch ,  MPI_DOUBLE, i+j+MASTER_RAFFLER_PRINTER, FUNCTION, MPI_COMM_WORLD);
+	}
+	j+=i;
 
 	// ENVIO DE 'COMBIS' (3 ENVIOS ADICIONALES PARA 'PRECEDERS', 'FOLLOWERS' y 'PROBABILISTIC_BRANCH')
 	for (i=0 ; i < *combiCount ; i++)
@@ -509,14 +581,79 @@ void getQueues(const char *filenameJson , Queue **queues, int *queuesCount)
 	}
 }
 
-void getCounters(const char *filenameJson , Counter **normals, int *counterCount)
+void getCounters(const char *filenameJson , Counter **counters, int *counterCount)
 {
-	*counterCount = 0;
+	JSON_Value  *root_value;
+    JSON_Object *object,*objectInArray;
+    JSON_Array  *array,*arrayInternal;
+	int i, j;
+
+    root_value = json_parse_file(filenameJson);
+    object = json_value_get_object(root_value);
+	array = json_object_dotget_array(object, "transformation.counters");
+
+	*counterCount = json_array_get_count(array);
+	*counters = (Counter *) malloc((*counterCount)*sizeof(Counter));
+
+    for (i = 0; i < json_array_get_count(array); i++)
+	{
+	    objectInArray = json_array_get_object(array, i);
+	    (*counters)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
+	   	(*counters)[i].quantity = (int)json_object_dotget_number(objectInArray, "quantity" );
+		(*counters)[i].cycle = json_object_dotget_number(objectInArray, "cycle" );
+		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
+		(*counters)[i].countPreceders = json_array_get_count(arrayInternal);
+		(*counters)[i].preceders = (int *) malloc((*counters)[i].countPreceders*sizeof(int));
+		for (j = 0; j < (*counters)[i].countPreceders; j++)
+			(*counters)[i].preceders[j]=json_array_get_number(arrayInternal,j);
+
+		arrayInternal = json_object_dotget_array(objectInArray, "followers");
+		(*counters)[i].countFollowers = json_array_get_count(arrayInternal);
+		(*counters)[i].followers = (int *) malloc((*counters)[i].countFollowers*sizeof(int));
+		for (j = 0; j < (*counters)[i].countFollowers; j++)
+			(*counters)[i].followers[j]=json_array_get_number(arrayInternal,j);
+	}
 }
 
 void getFunctions(const char *filenameJson , Function **functions, int *functionCount)
 {
-	*functionCount = 0;
+		JSON_Value  *root_value;
+    JSON_Object *object,*objectInArray;
+    JSON_Array  *array,*arrayInternal;
+	int i, j;
+
+    root_value = json_parse_file(filenameJson);
+    object = json_value_get_object(root_value);
+	array = json_object_dotget_array(object, "transformation.functions");
+
+	*functionCount = json_array_get_count(array);
+	*functions = (Function *) malloc((*functionCount)*sizeof(Function));
+
+    for (i = 0; i < json_array_get_count(array); i++)
+	{
+	    objectInArray = json_array_get_object(array, i);
+	    (*functions)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
+	   	(*functions)[i].input = (int)json_object_dotget_number(objectInArray, "input" );
+	   	(*functions)[i].output = (int)json_object_dotget_number(objectInArray, "output" );
+
+		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
+		(*functions)[i].countPreceders = json_array_get_count(arrayInternal);
+		(*functions)[i].preceders = (int *) malloc((*functions)[i].countPreceders*sizeof(int));
+		for (j = 0; j < (*functions)[i].countPreceders; j++)
+			(*functions)[i].preceders[j]=json_array_get_number(arrayInternal,j);
+
+		arrayInternal = json_object_dotget_array(objectInArray, "followers");
+		(*functions)[i].countFollowers = json_array_get_count(arrayInternal);
+		(*functions)[i].followers = (int *) malloc((*functions)[i].countFollowers*sizeof(int));
+		for (j = 0; j < (*functions)[i].countFollowers; j++)
+			(*functions)[i].followers[j]=json_array_get_number(arrayInternal,j);
+
+		arrayInternal = json_object_dotget_array(objectInArray, "probabilisticBranch");
+		(*functions)[i].countProbabilisticBranch = json_array_get_count(arrayInternal);
+		(*functions)[i].probabilisticBranch = (double *) malloc((*functions)[i].countProbabilisticBranch*sizeof(double));
+		for (j = 0; j < (*functions)[i].countProbabilisticBranch; j++)
+			(*functions)[i].probabilisticBranch[j]=json_array_get_number(arrayInternal,j);
+	}
 }
 
 void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
@@ -552,11 +689,9 @@ void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
 
 		arrayInternal = json_object_dotget_array(objectInArray, "probabilisticBranch");
 		(*normals)[i].countProbabilisticBranch = json_array_get_count(arrayInternal);
-		(*normals)[i].probabilisticBranch = (int *) malloc((*normals)[i].countProbabilisticBranch*sizeof(int));
+		(*normals)[i].probabilisticBranch = (double *) malloc((*normals)[i].countProbabilisticBranch*sizeof(double));
 		for (j = 0; j < (*normals)[i].countProbabilisticBranch; j++)
 			(*normals)[i].probabilisticBranch[j]=json_array_get_number(arrayInternal,j);
-
-		(*normals)[i].delay.distribution = DIST_UNIFORM; //uniform
 
 		objectDelay = json_object_dotget_object(objectInArray, "delay" ); 
 
@@ -566,7 +701,6 @@ void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
 			(*normals)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
 			(*normals)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
 			(*normals)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
-			printf("least: %.4f\n",(*normals)[i].delay.least);
 		}
 		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"deterministic")==0)
 		{
@@ -654,7 +788,7 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 
 		arrayInternal = json_object_dotget_array(objectInArray, "probabilisticBranch");
 		(*combis)[i].countProbabilisticBranch = json_array_get_count(arrayInternal);
-		(*combis)[i].probabilisticBranch = (int *) malloc((*combis)[i].countProbabilisticBranch*sizeof(int));
+		(*combis)[i].probabilisticBranch = (double *) malloc((*combis)[i].countProbabilisticBranch*sizeof(double));
 		for (j = 0; j < (*combis)[i].countProbabilisticBranch; j++)
 			(*combis)[i].probabilisticBranch[j]=json_array_get_number(arrayInternal,j);
 
@@ -668,7 +802,6 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 			(*combis)[i].delay.least = json_object_dotget_number(objectDelay, "least" );
 			(*combis)[i].delay.highest = json_object_dotget_number(objectDelay, "highest" );
 			(*combis)[i].delay.seed = json_object_dotget_number(objectDelay, "seed" );
-			printf("least: %.4f\n",(*combis)[i].delay.least);
 		}
 		else if (strcmp(json_object_dotget_string(objectDelay,"distribution"),"deterministic")==0)
 		{
@@ -739,6 +872,44 @@ void printQueue(Queue queue)
 
 	for (i=0 ; i<queue.countFollowers ; i++)
 		printf("%d: followers[%d]: %d\n", queue.idNode,i,queue.followers[i]);
+}
+
+void printCounter(Counter counter)
+{
+	int i;
+
+	printf("%d: idNode: %d\n", counter.idNode, counter.idNode);
+	printf("%d: quantity: %d\n", counter.idNode, counter.quantity);
+	printf("%d: cycle: %.2f\n", counter.idNode, counter.cycle);
+	printf("%d: countPreceders: %d\n", counter.idNode, counter.countPreceders);
+	printf("%d: countFollowers: %d\n", counter.idNode, counter.countFollowers);
+
+	for (i=0 ; i<counter.countPreceders ; i++)
+		printf("%d: preceders[%d]: %d\n", counter.idNode,i,counter.preceders[i]);
+
+	for (i=0 ; i<counter.countFollowers ; i++)
+		printf("%d: followers[%d]: %d\n", counter.idNode,i,counter.followers[i]);
+}
+
+void printFunction(Function function)
+{
+	int i;
+
+	printf("%d: idNode: %d\n", function.idNode, function.idNode);
+	printf("%d: input: %d\n", function.idNode, function.input);
+	printf("%d: output: %d\n", function.idNode, function.output);
+	printf("%d: countPreceders: %d\n", function.idNode, function.countPreceders);
+	printf("%d: countFollowers: %d\n", function.idNode, function.countFollowers);
+	printf("%d: countProbabilisticBranch: %d\n", function.idNode, function.countProbabilisticBranch);
+
+	for (i=0 ; i<function.countPreceders ; i++)
+		printf("%d: preceders[%d]: %d\n", function.idNode,i,function.preceders[i]);
+
+	for (i=0 ; i<function.countFollowers ; i++)
+		printf("%d: followers[%d]: %d\n", function.idNode,i,function.followers[i]);
+
+	for (i=0 ; i<function.countProbabilisticBranch ; i++)
+		printf("%d: probabilisticBranch[%d]: %.2f\n", function.idNode, i,function.probabilisticBranch[i]);
 }
 
 void printNormal(Normal normal)
@@ -880,5 +1051,3 @@ void printCombi(Combi combi)
 		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
 	}
 }
-
-

@@ -1,6 +1,5 @@
 {
  "length": 1000,
- "cycle": 30,
  "seed": 333,
  "transformation": {
 		"queues": [
@@ -25,15 +24,16 @@
 			{
 				"idNode": 4,
 				"quantity": 5,
+				"cycle": 30,
 				"preceders":[6],
 				"followers": [12,13]
 			},
 			{
 				"idNode": 5,
 				"quantity": 1,
+				"cycle": 40,
 				"preceders":[11],
 				"followers": []
-				
 			}
 		],
 		"normals": [

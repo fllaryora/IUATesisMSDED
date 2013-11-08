@@ -33,6 +33,7 @@ void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* 
 int main(int argc, char **argv){
 
 	const char *filenameJson   = "archivos/modelo.json";
+	const char *filenameSchema   = "archivos/schema.json";
 	int idNodo; int idNodoInterno;  int mpiProcesses; 
 	int* processRank = NULL; MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
 	int jsonResult;
@@ -48,7 +49,6 @@ int main(int argc, char **argv){
 	switch( idNodo ){
 		case MASTER_ID:
 			master(mpiProcesses, commNodes,filenameJson,filenameSchema);
-			printf("-1-termine\n");
 			break;
 		case RAFFLER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
@@ -57,7 +57,6 @@ int main(int argc, char **argv){
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}
-			printf("-2-termine\n");
 		break;
 		case PRINTER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
@@ -66,17 +65,14 @@ int main(int argc, char **argv){
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}
-			printf("-3-termine\n");
 			break;
 		default :
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
-				//MPI_Barrier( commNodes );
 				genericNode(idNodo);
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}
-			printf("-4-termine %d\n",idNodo);
 			break;
 	}
 	/* FIN de zona de MPI */
@@ -85,20 +81,24 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-
 void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filenameJson ,const char *filenameSchema){
 	int jsonResult;
-	if ( validateJsonInput(filenameJson) == VALIDATION_PASS ) {			
+	if ( validateJsonInput(filenameJson,filenameSchema) == VALIDATION_PASS ) {		
 		if ( getNodesAmount(filenameJson) + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
 			sendStructToNodes(filenameJson);
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			//enviar lo combisIds al raffler
-			int* seedAndCombis = getCombiIds( );
+			int* seedAndCombis = getCombiIds( filenameJson);
 			MPI_Send( &seedAndCombis[1] ,  seedAndCombis[0]  , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			free(seedAndCombis);
-			scheduler();
+			int* targetCounter = getTargets( filenameJson);
+
+			//TODO watchdog = 0 para que lo haga una vez  cambiar por getWatchdog( filenameJson); despues
+			scheduler( 0, commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]){
+			free(targetCounter);
+
 			/* Shut down MPI */
 			return;
 		}

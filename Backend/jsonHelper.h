@@ -8,6 +8,7 @@
 #include <wjelement.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef enum{
 	ERROR_OPEN_JSON,	/* json no existe */
@@ -62,6 +63,7 @@ typedef struct{
 typedef struct{
     int idNode;
     int quantity;
+    double cycle;
     int countPreceders;
     int *preceders;
     int countFollowers;
@@ -106,9 +108,9 @@ extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * ,int * 
 extern void	schema_error(void *client, const char *format, ...);
 extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
 
-extern int validateJsonInput(const char *);
+extern int validateJsonInput(const char *,const char *);
 
-extern int validateSchema(const char *);
+extern int validateSchema(const char *,const char *);
 extern int validateJson(const char *);
 
 extern void getArray(JSON_Object *, const char *,const char *,int** , int* );
@@ -117,7 +119,8 @@ extern int countArrayInclude(const int * const , const int , const int *const , 
 extern int repeatArrays(const int *const  ,const int , const int * const , const int , const int * const , const int , const int * const , const int , const int *const , const int , int** , int* );
 extern int getNodesAmount( const char * );
 extern int* getCombiIds( const char * );
-
+extern int* getTargets( const char *);
+extern int getWatchdog( const char *);
 
 extern void sendStructToNodes( const char * );
 extern void sendStruct(Queue **, int *,Counter **, int *,Function **, int *,Normal **, int *,Combi **, int *);
