@@ -106,6 +106,9 @@ $COMPILER -Wall $GCCARGS -c jsonHelper.c
 echo "$COMPILER -Wall $GCCARGS -c genericNode.c"
 $COMPILER -Wall $GCCARGS -c genericNode.c
 
+echo "$COMPILER -Wall $GCCARGS -c queue.c"
+$COMPILER -Wall $GCCARGS -c queue.c
+
 echo "$COMPILER -Wall $GCCARGS -c printer.c"
 $COMPILER -Wall $GCCARGS -c printer.c
 
@@ -115,11 +118,10 @@ $COMPILER -Wall $GCCARGS -c raffler.c
 echo "$COMPILER -Wall $GCCARGS -c scheduler.c"
 $COMPILER -Wall $GCCARGS -c scheduler.c
 
-echo "$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o scheduler.o -lm  -lwjelement -lwjreader -o Engine main.c"
-$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o scheduler.o -lm -lwjelement -lwjreader -o Engine main.c
+echo "$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o queue.o scheduler.o -lm  -lwjelement -lwjreader -o Engine main.c"
+$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o queue.o scheduler.o -lm -lwjelement -lwjreader -o Engine main.c
 
 rm *.o
-
 
 echo "$RUNFORESTRUN ./Engine"
 #$RUNFORESTRUN ./Engine
