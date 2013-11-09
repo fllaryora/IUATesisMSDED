@@ -5,6 +5,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void sendStructToNodes( const char *filenameJson )
+{
+	Queue  *queues = NULL;	int queuesCount = 0;
+	Counter  *counters = NULL;	int counterCount = 0;
+	Function *functions = NULL;int functionCount = 0;
+	Normal	 *normals = NULL;	int normalCount = 0;
+	Combi 	 *combis = NULL;	int combiCount = 0;
+
+	// LECTURA DE ESTRUCTURAS
+	getQueues(filenameJson,&queues, &queuesCount);
+	getCounters(filenameJson,&counters, &counterCount);
+	getFunctions(filenameJson,&functions, &functionCount);
+	getNormals(filenameJson,&normals, &normalCount);
+	getCombis(filenameJson,&combis, &combiCount);
+
+	// ENVIO DE STRUCTURAS
+	sendStruct(&queues, &queuesCount,&counters, &counterCount,&functions, &functionCount,&normals, &normalCount, &combis, &combiCount);
+
+	if(queues)free(queues);
+	if(counters)free(counters);
+	if(functions)free(functions);
+	if(normals)free(normals);
+	if(combis)free(combis);
+
+	return;
+}
+
 void genericNode(int myIdNodo){
 	
 	printf("Hello from slave\n");
@@ -124,27 +151,6 @@ void receiveCombi(Combi *combi)
 }
 
 
-void sendStructToNodes( const char *filenameJson )
-{
-	Queue 	 *queues;	int queuesCount;
-	Counter  *counters;	int counterCount;
-	Function *functions;int functionCount;
-	Normal	 *normals;	int normalCount;
-	Combi 	 *combis;	int combiCount;
-
-	// LECTURA DE ESTRUCTURAS
-	getQueues(filenameJson,&queues, &queuesCount);
-	getCounters(filenameJson,&counters, &counterCount);
-	getFunctions(filenameJson,&functions, &functionCount);
-	getNormals(filenameJson,&normals, &normalCount);
-	getCombis(filenameJson,&combis, &combiCount);
-
-	// ENVIO DE STRUCTURAS
-	sendStruct(&queues, &queuesCount,&counters, &counterCount,&functions, &functionCount,&normals, &normalCount, &combis, &combiCount);
-
-	return;
-}
-
 void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counterCount,Function **functions, int *functionCount,Normal **normals, int *normalCount,Combi **combis, int *combiCount)
 {
 	int i,j=0;
@@ -210,7 +216,7 @@ void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counte
 	j+=i;
 }
 
-void getQueues(const char *filenameJson , Queue **queues, int *queuesCount)
+void getQueues(const char *filenameJson , Queue **queues, int* queuesCount)
 {
     JSON_Value  *root_value;
     JSON_Object *object,*objectInArray;
@@ -234,6 +240,7 @@ void getQueues(const char *filenameJson , Queue **queues, int *queuesCount)
 
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*queues)[i].countPreceders = json_array_get_count(arrayInternal);
+
 		(*queues)[i].preceders = (int *) malloc((*queues)[i].countPreceders*sizeof(int));
 		for (j = 0; j < (*queues)[i].countPreceders; j++)
 			(*queues)[i].preceders[j]=json_array_get_number(arrayInternal,j);

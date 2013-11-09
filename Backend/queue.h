@@ -9,6 +9,6 @@
 #define TRUE (!FALSE)
 #endif
 
-extern void queue( const  int , const int , const int , const int *,  const int , const int *, const double ,  const double  );
+extern void queue( const  Queue *);
 
 #endif /* #ifndef _QUEUE_H_*/
