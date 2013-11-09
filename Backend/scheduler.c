@@ -46,7 +46,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 			}
 
 		}while(((watchdog2--) > 0) && !isAllFinalized );
-		printf("DDDDDDDDDHello from master\n");
+		
 		msg = GENERATION_PHASE;
 		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 		//nodos no implementados aun--->MPI_Barrier( commNodes );

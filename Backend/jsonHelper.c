@@ -189,7 +189,7 @@ int validateJson(const char *filenameJson){
 		//	free(arrayPreceders);
 		//	arrayPreceders = NULL;
 		//}
-		//if(arrayFollowers){
+		//if(sizePreceders > 0){
 			//free(arrayFollowers);
 			//sizeFollowers = NULL;
 		//}
@@ -477,6 +477,7 @@ void sendStructToNodes( const char *filenameJson )
 
 	// ENVIO DE STRUCTURAS
 	sendStruct(&queues, &queuesCount,&counters, &counterCount,&functions, &functionCount,&normals, &normalCount, &combis, &combiCount);
+
 	return;
 }
 
