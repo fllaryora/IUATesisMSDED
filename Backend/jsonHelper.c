@@ -18,10 +18,10 @@ int freeAllAndReturn(int *arrayQueues , int*arrayCounters , int *arrayNormals , 
 Valida El archivo de ingreso contra el schema y
  luego al archivo contra las reglas misma del modelo precursor
 */
-int validateJsonInput( const char* filenameJson , const char* filenameSchema ){
+int validateJsonInput( const char* filenameJson  ){
 
 	int rta;
-	if( (rta = validateSchema(filenameJson,filenameSchema)) == VALIDATION_PASS )
+	if( (rta = validateSchema(filenameJson)) == VALIDATION_PASS )
 		if( (rta = validateJson(filenameJson))== VALIDATION_PASS ){
 			printf("Validacion datos Paso!!\n");
 			return VALIDATION_PASS;
@@ -34,9 +34,8 @@ int validateJsonInput( const char* filenameJson , const char* filenameSchema ){
 /*
 Valida El archivo de ingreso contra el schema
 */
-int validateSchema(const char *filenameJson, const char *filenameSchema)
-{
-	//const char* filenameSchema = "archivos/schema.json";
+int validateSchema(const char *filenameJson){
+	const char* filenameSchema = "archivos/schema.json";
 	FILE *jsonfile;
 	FILE *schemafile;
 	WJReader readjson;

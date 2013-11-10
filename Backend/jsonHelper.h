@@ -35,9 +35,9 @@ extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * ,int * 
 extern void	schema_error(void *client, const char *format, ...);
 extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
 
-extern int validateJsonInput(const char *,const char *);
+extern int validateJsonInput(const char *);
 
-extern int validateSchema(const char *,const char *);
+extern int validateSchema(const char *);
 extern int validateJson(const char *);
 
 extern void getArray(JSON_Object *, const char *,const char *,int** , int* );

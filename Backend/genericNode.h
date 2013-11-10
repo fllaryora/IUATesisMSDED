@@ -3,7 +3,7 @@
 #include "parson.h"
 #include "jsonHelper.h"
 
-extern void genericNode(const int myIdNodo, const MPI_Comm commNodes);
+extern void genericNode(const int , const int ,const MPI_Comm );
 
 typedef enum{
 	DIST_UNIFORM,
@@ -95,7 +95,7 @@ extern void receiveNormal(Normal *normal);
 extern void receiveCombi(Combi *combis);
 
 extern void sendStructToNodes( const char * );
-extern void sendStruct(Queue **, int *,Counter **, int *,Function **, int *,Normal **, int *,Combi **, int *);
+extern void sendStruct( Queue *,const int ,  Counter *,const  int , Function *, const int , Normal *, const int , Combi *, const int );
 
 extern void getQueues(const char * , Queue **, int *);
 extern void getCounters(const char * , Counter **, int *);
@@ -109,10 +109,6 @@ extern void printCounter(Counter );
 extern void printFunction(Function );
 extern void printNormal(Normal );
 
-extern void sendStruct(Queue **queues,		  int *queuesCount,
-				Counter **counters,	  int *counterCount,
-				Function **functions, int *functionCount,
-				Normal **normals,	  int *normalCount,
-				Combi **combis, 	  int *combiCount);
+
 #endif /* #ifndef _GENERIC_NODE_H_*/
 
