@@ -21,6 +21,9 @@ typedef enum{
 	VALIDATION_PASS		/* validacion correcta */
 }VALIDATE;
 
+extern void MergeSort(int , int , int** );
+extern void Merge(int , int , int , int** );
+
 extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * ,int * ,int * , JSON_Value  * , const int );
 extern void	schema_error(void *client, const char *format, ...);
 extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);

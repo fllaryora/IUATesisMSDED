@@ -342,13 +342,54 @@ void getArray( JSON_Object *objectJson, const char *arrayJson, const char *atrib
 	}
 }
 
+
+/*
+ * Ordena los elemntos de 'p' a 'r' 
+ * en el arreglo A[...,p,..,r,...]
+ */
+void MergeSort(int p, int r, int** array){
+	int q;
+	 if(p < r){
+		q = (p + r)/2;
+		MergeSort(p, q,array);
+		MergeSort(q + 1, r, array);
+		Merge(p, q, r, array);
+	}
+}
+/*
+ * Mescla los elementos Desde A[p] y A[q+1]
+ * hasta Desde A[q] y A[r]
+ */
+void Merge(int p, int q, int r, int** array){
+	int* A = (*array);
+	int i = p;
+	int j = q+1;
+	int k = 0;
+	int* mem = (int*) malloc((p+r+1)*sizeof(int));
+
+	while(i<=q && j<=r){
+		if(A[i] <= A[j])
+			mem[k++] =A[i++];
+		else
+			mem[k++] =A[j++];
+	}
+	while(i<=q) mem[k++] =A[i++];
+	while(j<=r) mem[k++] =A[j++];
+
+	for(i=0;i<=r-p;i++){
+		A[p+i]=mem[i];//Lleno A
+	}
+
+	free(mem);
+}
+
 /*
 Cuenta los nodos del modelo en  sizeArray
 Y arma un arreglo con todos los ids en array
 Y lo ordena para validarlo
 */
 int repeatArrays(const int *const array1 ,const int sizeArray1, const int * const array2, const int sizeArray2, const int * const array3, const int sizeArray3, const int * const array4, const int sizeArray4, const int *const array5, const int sizeArray5, int** array, int* sizeArray){
-	int i=0,j,count=0;
+	int i=0,j;
 	*sizeArray = sizeArray1 + sizeArray2 + sizeArray3 + sizeArray4 + sizeArray5;
 	*array = (int*)malloc(sizeof(int) * (*sizeArray));
 
@@ -363,12 +404,24 @@ int repeatArrays(const int *const array1 ,const int sizeArray1, const int * cons
 	for (j = 0; j < sizeArray5; i++, j++)
 		(*array)[i] = array5[j];
 
-	for (i = 0; i < *sizeArray ; i++)
-		for (j = i+1; j < *sizeArray ; j++)
-	    	if ((*array)[i] == (*array)[j])
-				count=count+1;
+	MergeSort( 0, (*sizeArray), array );
 
-	return count;
+	for (int k = 0 ; k< (*sizeArray) ; k++)
+		printf("array[%d]: %d\n", k,(*array)[k]);
+
+	if((*array)[0] != 1){// primer id distinto de 1
+			return 0;
+	}
+	for (i = 0; i < ((*sizeArray)-1) ; i++){
+		if((*array)[i] == (*array)[i+1])){//detecto repetidos
+			return 0;
+		}
+		if((*array)[i] != (*array)[i+1]+1)){//detecto huecos
+			return 0;
+		}
+	}
+
+	return (*sizeArray);
 }
 
 /*
