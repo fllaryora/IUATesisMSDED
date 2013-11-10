@@ -3,6 +3,9 @@
 #include "genericNode.h"
 #include "queue.h"
 #include "combi.h"
+#include "counter.h"
+#include "function.h"
+#include "normal.h"
 #include "jsonHelper.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -73,7 +76,6 @@ void sendStructToNodes( const char *filenameJson ,const MPI_Comm commNodes)
 }
 
 void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm commNodes, const int mpiProcesses){
-	int msg;
 	MPI_Status status;
 	Queue queue;
 	Counter counter;

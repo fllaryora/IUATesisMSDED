@@ -32,7 +32,7 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 		switch(msg){
 			case ADVANCE_PAHSE:
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
-				advancePhaseNormal( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
+				advancePhaseFunction( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
