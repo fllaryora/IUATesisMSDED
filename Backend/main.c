@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 	/*voy a armar comunicadores*/
 	createCommunicator( &commNodes, &groupNodes, &groupWorld, &processRank, mpiProcesses, idNodo );
 	MPI_Comm_rank( commNodes, &idNodoInterno);
-	printf("nuevo rank %d => %d\n", idNodo, idNodoInterno);
+	
 	switch( idNodo ){
 		case MASTER_ID:
 			master(mpiProcesses, commNodes,filenameJson);

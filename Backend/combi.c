@@ -48,23 +48,38 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 
 
 void advancePhaseCombi(int * inputWorktask, int* outPutWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima){ 
+	//printf("%d: avance combi\n", initialStatus->idNode);
     for(;;){
     	if(!hasQueueResources( initialStatus, commNodes)){
+			//printf("%d: cola sin recursos\n", initialStatus->idNode);
 	    	resourcesNoDemand( initialStatus, commNodes);
+	    	//printf("%d: no demand\n", initialStatus->idNode);
 	    	resourcesSend( initialStatus, commNodes, outPutWorktask);
+	    	//printf("%d: resource send\n", initialStatus->idNode);
 	    	finishCombi( isPrima, commNodes , inputWorktask, mpiProcesses);
+	    	//printf("%d: cola sin recursos\n", initialStatus->idNode);
 	    	break;
     	}else{
+			//printf("%d: cola con recursos\n", initialStatus->idNode);
 	    	resourcesDemand(initialStatus, commNodes);
+	    	//printf("%d: DEmand\n", initialStatus->idNode);
 	    	if(allTransactionBegin( commNodes ,initialStatus)){
+				//printf("%d: transaction b\n", initialStatus->idNode);
 	    		setAllCommit(initialStatus, commNodes);
+	    		//printf("%d: commit\n", initialStatus->idNode);
 	    		(*inputWorktask)++;
 	    	} else {
+				//printf("%d: Else b\n", initialStatus->idNode);
 	    		setAllRollback( initialStatus, commNodes);
+	    		//printf("%d: rollback b\n", initialStatus->idNode);
+	    		resourcesSend( initialStatus, commNodes, outPutWorktask);
+				//printf("%d: resource send\n", initialStatus->idNode);
 	    		finishCombi( isPrima,  commNodes , inputWorktask, mpiProcesses);
+	    		//printf("%d: fishish 2 b\n", initialStatus->idNode);
 	    		break;
 	    	}
     	}
+    	//printf("----%d",initialStatus->idNode);
     }
 	return;
 }
@@ -76,7 +91,9 @@ int hasQueueResources( const Combi *initialStatus, const MPI_Comm commNodes){
 	for(int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Send( NULL, 0, MPI_INT,  initialStatus->preceders[i], RESOURCE_REQUEST, commNodes);
 		MPI_Recv( &msg, 1, MPI_INT, initialStatus->preceders[i], RESOURCE_RESPONSE, commNodes, MPI_STATUS_IGNORE);
+		//printf("%d: msg %d\n",initialStatus->idNode,msg);
 		allHas &= (msg)?TRUE:FALSE;
+		//printf("%d: allHas %d\n",initialStatus->idNode,allHas);
 	}
 	return allHas;
 }
@@ -118,7 +135,9 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 void finishCombi(const int isPrima, const MPI_Comm commNodes ,const int* inputResource, const int mpiProcesses){
 	int msg;
 	 if( !isPrima ){
+		printf("me quede en la barrera\n");
 		MPI_Barrier( commNodes );
+		printf(" sale de la barrera\n");
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;

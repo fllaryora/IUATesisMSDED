@@ -74,7 +74,6 @@ void sendStructToNodes( const char *filenameJson ,const MPI_Comm commNodes)
 
 void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm commNodes, const int mpiProcesses){
 	int msg;
-	printf("Hello from slave\n");
 	MPI_Status status;
 	Queue queue;
 	Counter counter;

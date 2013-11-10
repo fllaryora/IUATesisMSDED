@@ -23,8 +23,8 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		//New rafle
 		MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD);
 		msg = ADVANCE_PAHSE;
-		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
-		//nodos no implementados aun--->MPI_Barrier( commNodes );
+		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
+		MPI_Barrier( commNodes );
 
 		watchdog2 = (int) (1.4 *  (mpiProcesses -MASTER_RAFFLER_PRINTER));
 

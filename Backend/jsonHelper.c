@@ -23,7 +23,6 @@ int validateJsonInput( const char* filenameJson  ){
 	int rta;
 	if( (rta = validateSchema(filenameJson)) == VALIDATION_PASS )
 		if( (rta = validateJson(filenameJson))== VALIDATION_PASS ){
-			printf("Validacion datos Paso!!\n");
 			return VALIDATION_PASS;
 		}
 	

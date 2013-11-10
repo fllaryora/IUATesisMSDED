@@ -5,9 +5,25 @@
 		"queues": [
 			{
 				"idNode": 1,
-				"resource": 2,
-				"preceders": [2],
-				"followers": [2],
+				"resource": 0,
+				"preceders": [4],
+				"followers": [4],
+				"fixedCost": 12.0,
+				"variableCost": 2.0
+			},
+			{
+				"idNode": 2,
+				"resource": 1,
+				"preceders": [4,5],
+				"followers": [4,5],
+				"fixedCost": 12.0,
+				"variableCost": 2.0
+			},
+			{
+				"idNode": 3,
+				"resource": 1,
+				"preceders": [5],
+				"followers": [5],
 				"fixedCost": 12.0,
 				"variableCost": 2.0
 			}
@@ -20,9 +36,18 @@
 		],
 		"combis": [
 			{
-				"idNode": 2,
-				"preceders":[1],
-				"followers": [1],
+				"idNode": 4,
+				"preceders":[1,2],
+				"followers": [1,2],
+				"delay" : {
+					"distribution": "deterministic",
+					"constant" : 2
+				}
+			},
+			{
+				"idNode": 5,
+				"preceders":[2,3],
+				"followers": [2,3],
 				"delay" : {
 					"distribution": "deterministic",
 					"constant" : 2
