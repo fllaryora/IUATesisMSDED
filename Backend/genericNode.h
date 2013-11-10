@@ -88,14 +88,14 @@ typedef struct{
 	Delay delay;
 }Combi;
 
-extern void receiveQueue(Queue *queue);
-extern void receiveCounter(Counter *counter);
-extern void receiveFunction(Function *function);
-extern void receiveNormal(Normal *normal);
-extern void receiveCombi(Combi *combis);
+extern void receiveQueue(const MPI_Comm ,Queue *queue);
+extern void receiveCounter(const MPI_Comm ,Counter *counter);
+extern void receiveFunction(const MPI_Comm ,Function *function);
+extern void receiveNormal(const MPI_Comm ,Normal *normal);
+extern void receiveCombi(const MPI_Comm ,Combi *combis);
 
-extern void sendStructToNodes( const char * );
-extern void sendStruct( Queue *,const int ,  Counter *,const  int , Function *, const int , Normal *, const int , Combi *, const int );
+extern void sendStructToNodes( const char * ,const MPI_Comm commNodes);
+extern void sendStruct( const MPI_Comm commNodes , Queue *,const int ,  Counter *,const  int , Function *, const int , Normal *, const int , Combi *, const int );
 
 extern void getQueues(const char * , Queue **, int *);
 extern void getCounters(const char * , Counter **, int *);

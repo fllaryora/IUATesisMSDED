@@ -85,7 +85,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 	int jsonResult;
 	if ( validateJsonInput(filenameJson) == VALIDATION_PASS ) {		
 		if ( getNodesAmount(filenameJson) + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
-			sendStructToNodes(filenameJson);
+			sendStructToNodes(filenameJson, commNodes);
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
