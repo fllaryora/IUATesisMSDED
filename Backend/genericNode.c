@@ -88,7 +88,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 	{
 		receiveQueue(commNodes, &queue);
 		//printQueue(queue);
-		queueNode(  commNodes, &queue);
+		queueNode(  commNodes, &queue, mpiProcesses);
 		
 		if(queue.countPreceders > 0) free( queue.preceders );
 		if(queue.countFollowers > 0) free( queue.followers );
@@ -100,7 +100,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		//TODO provisorio
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 		if(counter.countPreceders > 0) free( counter.preceders );
-		if(counter.countFollowers > 0) free(  counter.followers );
+		if(counter.countFollowers > 0) free( counter.followers );
 		
 	}
 	else if (status.MPI_TAG == NORMAL)
@@ -127,7 +127,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 	{
 		receiveCombi(commNodes, &combi);
 		//printCombi(combi);
-		combiNode(commNodes, combi, mpiProcesses);
+		combiNode(commNodes, &combi, mpiProcesses);
 		if(combi.countPreceders > 0) free( combi.preceders);
 		if(combi.countFollowers > 0) free(combi.followers);
 		if(combi.countProbabilisticBranch > 0) free(combi.probabilisticBranch);
