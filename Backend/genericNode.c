@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void sendStructToNodes( const char *filenameJson )
+void sendStructToNodes( const char *filenameJson ,const MPI_Comm commNodes)
 {
 	Queue  *queues = NULL;	int queuesCount = 0;
 	Counter  *counters = NULL;	int counterCount = 0;
@@ -21,19 +21,57 @@ void sendStructToNodes( const char *filenameJson )
 	getCombis(filenameJson,&combis, &combiCount);
 
 	// ENVIO DE STRUCTURAS
-	sendStruct(&queues, &queuesCount,&counters, &counterCount,&functions, &functionCount,&normals, &normalCount, &combis, &combiCount);
+	sendStruct(commNodes,queues, queuesCount,counters, counterCount,functions, functionCount,normals, normalCount, combis, combiCount);
+	//Libero memoria
+	if(queues){
+		for (int i = 0; i < queuesCount; i++){
+			if(queues[i].countPreceders > 0) free( queues[i].preceders ) ;
+			if(queues[i].countFollowers > 0) free( queues[i].followers );
+		}
+		free(queues);
+	}
+	
+	if(counters){
+		for (int i = 0; i < counterCount; i++){
+			if(counters[i].countPreceders > 0) free( counters[i].preceders );
+			if(counters[i].countFollowers > 0) free( counters[i].followers );
+		}
+		free(counters);
+	}
+	
+	if(functions){
 
-	if(queues)free(queues);
-	if(counters)free(counters);
-	if(functions)free(functions);
-	if(normals)free(normals);
-	if(combis)free(combis);
-
+		for (int i = 0; i < functionCount; i++){
+			if(functions[i].countPreceders > 0) free( functions[i].preceders );
+			if(functions[i].countFollowers > 0) free( functions[i].followers );
+			if(functions[i].countProbabilisticBranch > 0) free(functions[i].probabilisticBranch );
+		}
+		free(functions);
+	}
+	
+	if(normals){
+		for (int i = 0; i < normalCount; i++){
+			if(normals[i].countPreceders > 0) free( normals[i].preceders);
+			if(normals[i].countFollowers > 0) free(normals[i].followers);
+			if(normals[i].countProbabilisticBranch > 0) free(normals[i].probabilisticBranch);
+		}
+		free(normals);
+	}
+	
+	if(combis){
+		for (int i = 0; i < combiCount; i++){
+			if(combis[i].countPreceders > 0) free(combis[i].preceders);
+			if(combis[i].countFollowers > 0) free(combis[i].followers);
+			if(combis[i].countProbabilisticBranch > 0) free(combis[i].probabilisticBranch);
+		}
+		free(combis);
+	}
+	
 	return;
 }
 
-void genericNode(int myIdNodo){
-	
+void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm commNodes){
+	int msg;
 	printf("Hello from slave\n");
 	MPI_Status status;
 	Queue queue;
@@ -43,177 +81,195 @@ void genericNode(int myIdNodo){
 	Combi combi;
 
 	// RECIBO ESTRUCTURA PARTICULAR, DEJO DE SER NODO_GENERICO
-	MPI_Probe( 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+	MPI_Probe( 0, MPI_ANY_TAG, commNodes, &status);
 	if (status.MPI_TAG == QUEUE)
 	{
-		receiveQueue(&queue);
-		//printQueue(queue);
+		receiveQueue(commNodes, &queue);
+		printQueue(queue);
+		
+		if(queue.countPreceders > 0) free( queue.preceders );
+		if(queue.countFollowers > 0) free( queue.followers );
 	}
 		else if (status.MPI_TAG == COUNTER)
 	{
-		receiveCounter(&counter);
+		receiveCounter(commNodes, &counter);
 		printCounter(counter);
+
+		if(counter.countPreceders > 0) free( counter.preceders );
+		if(counter.countFollowers > 0) free(  counter.followers );
+		
 	}
 	else if (status.MPI_TAG == NORMAL)
 	{
-		receiveNormal(&normal);
-		//printNormal(normal);
+		receiveNormal(commNodes, &normal);
+		printNormal(normal);
+
+		if(normal.countPreceders > 0) free( normal.preceders);
+		if(normal.countFollowers > 0) free(normal.followers);
+		if(normal.countProbabilisticBranch > 0) free(normal.probabilisticBranch);
 	}
 	else if (status.MPI_TAG == FUNCTION)
 	{
-		receiveFunction(&function);
-		//printFunction(function);
+		receiveFunction(commNodes, &function);
+		printFunction(function);
+
+		if(function.countPreceders > 0) free( function.preceders );
+		if(function.countFollowers > 0) free( function.followers );
+		if(function.countProbabilisticBranch > 0) free(function.probabilisticBranch );
 	}
 	else if (status.MPI_TAG == COMBI)
 	{
-		receiveCombi(&combi);
-		//printCombi(combi);
+		receiveCombi(commNodes, &combi);
+		printCombi(combi);
+		
+		if(combi.countPreceders > 0) free( combi.preceders);
+		if(combi.countFollowers > 0) free(combi.followers);
+		if(combi.countProbabilisticBranch > 0) free(combi.probabilisticBranch);
 	}
-
+	//TODO provisorio
+	MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 }
 
 
-void receiveQueue(Queue *queue)
+void receiveQueue(const MPI_Comm commNodes,Queue *queue)
 {
-	MPI_Recv3(queue, sizeof(Queue), MPI_BYTE, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv3(queue, sizeof(Queue), MPI_BYTE, 0, QUEUE , commNodes, MPI_STATUS_IGNORE);
 	if ((*queue).countPreceders>0) {
 		(*queue).preceders = (int *) malloc( (*queue).countPreceders *sizeof(int));
-		MPI_Recv12((*queue).preceders, (*queue).countPreceders, MPI_INT, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*queue).preceders, (*queue).countPreceders, MPI_INT, 0, QUEUE , commNodes, MPI_STATUS_IGNORE);
 	}
 	if ((*queue).countFollowers>0) {
 		(*queue).followers = (int *) malloc( (*queue).countFollowers *sizeof(int));
-		MPI_Recv12((*queue).followers, (*queue).countFollowers, MPI_INT, 0, QUEUE , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*queue).followers, (*queue).countFollowers, MPI_INT, 0, QUEUE , commNodes, MPI_STATUS_IGNORE);
 	}
 }
 
-void receiveCounter(Counter *counter)
+void receiveCounter(const MPI_Comm commNodes, Counter *counter)
 {
-	MPI_Recv3(counter, sizeof(Counter), MPI_BYTE, 0, COUNTER , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv3(counter, sizeof(Counter), MPI_BYTE, 0, COUNTER , commNodes, MPI_STATUS_IGNORE);
 	if ((*counter).countPreceders>0) {
 		(*counter).preceders = (int *) malloc( (*counter).countPreceders *sizeof(int));
-		MPI_Recv12((*counter).preceders, (*counter).countPreceders, MPI_INT, 0, COUNTER , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*counter).preceders, (*counter).countPreceders, MPI_INT, 0, COUNTER , commNodes, MPI_STATUS_IGNORE);
 	}
 	if ((*counter).countFollowers>0) {
 		(*counter).followers = (int *) malloc( (*counter).countFollowers *sizeof(int));
-		MPI_Recv12((*counter).followers, (*counter).countFollowers, MPI_INT, 0, COUNTER , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*counter).followers, (*counter).countFollowers, MPI_INT, 0, COUNTER , commNodes, MPI_STATUS_IGNORE);
 	}
 }
 
-void receiveFunction(Function *function)
+void receiveFunction(const MPI_Comm commNodes, Function *function)
 {
-	MPI_Recv3(function, sizeof(Function), MPI_BYTE, 0, FUNCTION , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv3(function, sizeof(Function), MPI_BYTE, 0, FUNCTION , commNodes, MPI_STATUS_IGNORE);
 	if ((*function).countPreceders>0) {
 		(*function).preceders = (int *) malloc( (*function).countPreceders *sizeof(int));
-		MPI_Recv12((*function).preceders, (*function).countPreceders, MPI_INT, 0, FUNCTION , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*function).preceders, (*function).countPreceders, MPI_INT, 0, FUNCTION , commNodes, MPI_STATUS_IGNORE);
 	}
 	if ((*function).countFollowers>0) {
 		(*function).followers = (int *) malloc( (*function).countFollowers *sizeof(int));
-		MPI_Recv12((*function).followers, (*function).countFollowers, MPI_INT, 0, FUNCTION , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*function).followers, (*function).countFollowers, MPI_INT, 0, FUNCTION , commNodes, MPI_STATUS_IGNORE);
 	}
 	if ((*function).countProbabilisticBranch>0) {
 		(*function).probabilisticBranch = (double *) malloc( (*function).countProbabilisticBranch *sizeof(double));
-		MPI_Recv((*function).probabilisticBranch, (*function).countProbabilisticBranch, MPI_DOUBLE, 0, FUNCTION , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv((*function).probabilisticBranch, (*function).countProbabilisticBranch, MPI_DOUBLE, 0, FUNCTION , commNodes, MPI_STATUS_IGNORE);
 	}
 }
 
-void receiveNormal(Normal *normal)
+void receiveNormal(const MPI_Comm commNodes, Normal *normal)
 {
-	MPI_Recv3(normal, sizeof(Normal), MPI_BYTE, 0, NORMAL , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv3(normal, sizeof(Normal), MPI_BYTE, 0, NORMAL , commNodes, MPI_STATUS_IGNORE);
 	if ((*normal).countPreceders>0) {
 		(*normal).preceders = (int *) malloc( (*normal).countPreceders *sizeof(int));
-		MPI_Recv12((*normal).preceders, (*normal).countPreceders, MPI_INT, 0, NORMAL , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*normal).preceders, (*normal).countPreceders, MPI_INT, 0, NORMAL , commNodes, MPI_STATUS_IGNORE);
 	}
 	if ((*normal).countFollowers>0) {
 		(*normal).followers = (int *) malloc( (*normal).countFollowers *sizeof(int));
-		MPI_Recv12((*normal).followers, (*normal).countFollowers, MPI_INT, 0, NORMAL , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*normal).followers, (*normal).countFollowers, MPI_INT, 0, NORMAL , commNodes, MPI_STATUS_IGNORE);
 	}
 	if ((*normal).countProbabilisticBranch>0) {
 		(*normal).probabilisticBranch = (double *) malloc( (*normal).countProbabilisticBranch *sizeof(double));
-		MPI_Recv((*normal).probabilisticBranch, (*normal).countProbabilisticBranch, MPI_DOUBLE, 0, NORMAL , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv((*normal).probabilisticBranch, (*normal).countProbabilisticBranch, MPI_DOUBLE, 0, NORMAL , commNodes, MPI_STATUS_IGNORE);
 	}
 }
 
-void receiveCombi(Combi *combi)
+void receiveCombi(const MPI_Comm commNodes, Combi *combi)
 {
-	MPI_Recv3(combi, sizeof(Combi), MPI_BYTE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv3(combi, sizeof(Combi), MPI_BYTE, 0, COMBI , commNodes, MPI_STATUS_IGNORE);
 	if ((*combi).countPreceders>0) {
 		(*combi).preceders = (int *) malloc( (*combi).countPreceders *sizeof(int));
-		MPI_Recv12((*combi).preceders, (*combi).countPreceders, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*combi).preceders, (*combi).countPreceders, MPI_INT, 0, COMBI , commNodes, MPI_STATUS_IGNORE);
 	}
 	if ((*combi).countFollowers>0) {
 		(*combi).followers = (int *) malloc( (*combi).countFollowers *sizeof(int));
-		MPI_Recv12((*combi).followers, (*combi).countFollowers, MPI_INT, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv12((*combi).followers, (*combi).countFollowers, MPI_INT, 0, COMBI , commNodes, MPI_STATUS_IGNORE);
 	}
 	if ((*combi).countProbabilisticBranch>0) {
 		(*combi).probabilisticBranch = (double *) malloc( (*combi).countProbabilisticBranch *sizeof(double));
-		MPI_Recv((*combi).probabilisticBranch, (*combi).countProbabilisticBranch, MPI_DOUBLE, 0, COMBI , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv((*combi).probabilisticBranch, (*combi).countProbabilisticBranch, MPI_DOUBLE, 0, COMBI , commNodes, MPI_STATUS_IGNORE);
 	}
 }
 
 
-void sendStruct(Queue **queues, int *queuesCount,Counter **counters, int *counterCount,Function **functions, int *functionCount,Normal **normals, int *normalCount,Combi **combis, int *combiCount)
+void sendStruct(const MPI_Comm commNodes, Queue *queues,const int queuesCount, Counter *counters,const  int counterCount, Function *functions, const int functionCount, Normal *normals, const int normalCount, Combi *combis, const int combiCount)
 {
-	int i,j=0;
+	int i;
 
 	// ENVIO DE 'QUEUES' (2 ENVIOS ADICIONALES PARA 'PRECEDERS' Y 'FOLLOWERS')
-	for (i=0 ; i < *queuesCount ; i++) //QUEUE
+	for (i=0 ; i < queuesCount ; i++) //QUEUE
 	{
-		MPI_Send(&((*queues)[i]), sizeof(Queue),  MPI_BYTE, i+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
-		if ((*queues)[i].countPreceders>0)
-			MPI_Send((*queues)[i].preceders, (*queues)[i].countPreceders ,  MPI_INT, i+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
-		if ((*queues)[i].countFollowers>0)
-			MPI_Send((*queues)[i].followers, (*queues)[i].countFollowers ,  MPI_INT, i+MASTER_RAFFLER_PRINTER, QUEUE, MPI_COMM_WORLD);
+		MPI_Send( &queues[i], sizeof(Queue),  MPI_BYTE, queues[i].idNode, QUEUE, commNodes);
+		if ( queues[i].countPreceders > 0 )
+			MPI_Send(queues[i].preceders, queues[i].countPreceders ,  MPI_INT, queues[i].idNode , QUEUE, commNodes);
+		if ( queues[i].countFollowers > 0 )
+			MPI_Send( queues[i].followers,  queues[i].countFollowers ,  MPI_INT, queues[i].idNode, QUEUE, commNodes);
 	}
-	j+=i;
+
 	// ENVIO DE NORMAL
-	for (i=0 ; i < *normalCount ; i++)
+	for (i=0 ; i < normalCount ; i++)
 	{
-		MPI_Send(&((*normals)[i]), sizeof(Normal),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, NORMAL, MPI_COMM_WORLD);
-		if ((*normals)[i].countPreceders>0)
-			MPI_Send((*normals)[i].preceders, (*normals)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, NORMAL, MPI_COMM_WORLD);
-		if ((*normals)[i].countFollowers>0)
-			MPI_Send((*normals)[i].followers, (*normals)[i].countFollowers ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, NORMAL, MPI_COMM_WORLD);
-		if ((*normals)[i].countProbabilisticBranch>0)
-			MPI_Send((*normals)[i].probabilisticBranch, (*normals)[i].countProbabilisticBranch ,  MPI_DOUBLE, i+j+MASTER_RAFFLER_PRINTER, NORMAL, MPI_COMM_WORLD);
+		MPI_Send( &normals[i], sizeof(Normal),  MPI_BYTE, normals[i].idNode, NORMAL, commNodes);
+		if ( normals[i].countPreceders > 0 )
+			MPI_Send( normals[i].preceders, normals[i].countPreceders ,  MPI_INT, normals[i].idNode, NORMAL, commNodes);
+		if ( normals[i].countFollowers > 0 )
+			MPI_Send( normals[i].followers, normals[i].countFollowers ,  MPI_INT, normals[i].idNode, NORMAL, commNodes);
+		if ( normals[i].countProbabilisticBranch > 0)
+			MPI_Send( normals[i].probabilisticBranch, normals[i].countProbabilisticBranch ,  MPI_DOUBLE, normals[i].idNode, NORMAL, commNodes);
 	}
-	j+=i;
 
 	// ENVIO DE COUNTER
-	for (i=0 ; i < *counterCount ; i++)
+	for (i=0 ; i < counterCount ; i++)
 	{
-		MPI_Send(&((*counters)[i]), sizeof(Counter),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, COUNTER, MPI_COMM_WORLD);
-		if ((*counters)[i].countPreceders>0)
-			MPI_Send((*counters)[i].preceders, (*counters)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COUNTER, MPI_COMM_WORLD);
-		if ((*counters)[i].countFollowers>0)
-			MPI_Send((*counters)[i].followers, (*counters)[i].countFollowers ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COUNTER, MPI_COMM_WORLD);
+		MPI_Send(&counters[i], sizeof(Counter),  MPI_BYTE, counters[i].idNode, COUNTER, commNodes);
+		if ( counters[i].countPreceders > 0 )
+			MPI_Send( counters[i].preceders, counters[i].countPreceders ,  MPI_INT, counters[i].idNode, COUNTER, commNodes);
+		if ( counters[i].countFollowers > 0 )
+			MPI_Send( counters[i].followers, counters[i].countFollowers ,  MPI_INT,  counters[i].idNode, COUNTER, commNodes);
 	}
-	j+=i;
+
 
 	// ENVIO DE FUNCTION
-	for (i=0 ; i < *functionCount ; i++)
+	for (i=0 ; i < functionCount ; i++)
 	{
-		MPI_Send(&((*functions)[i]), sizeof(Function),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, FUNCTION, MPI_COMM_WORLD);
-		if ((*functions)[i].countPreceders>0)
-			MPI_Send((*functions)[i].preceders, (*functions)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, FUNCTION, MPI_COMM_WORLD);
-		if ((*functions)[i].countFollowers>0)
-			MPI_Send((*functions)[i].followers, (*functions)[i].countFollowers ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, FUNCTION, MPI_COMM_WORLD);
-		if ((*functions)[i].countProbabilisticBranch>0)
-			MPI_Send((*functions)[i].probabilisticBranch, (*functions)[i].countProbabilisticBranch ,  MPI_DOUBLE, i+j+MASTER_RAFFLER_PRINTER, FUNCTION, MPI_COMM_WORLD);
+		MPI_Send(&functions[i], sizeof(Function),  MPI_BYTE, functions[i].idNode, FUNCTION, commNodes);
+		if ( functions[i].countPreceders > 0 )
+			MPI_Send( functions[i].preceders, functions[i].countPreceders ,  MPI_INT, functions[i].idNode, FUNCTION, commNodes);
+		if ( functions[i].countFollowers > 0 )
+			MPI_Send( functions[i].followers, functions[i].countFollowers ,  MPI_INT, functions[i].idNode, FUNCTION, commNodes);
+		if ( functions[i].countProbabilisticBranch > 0 )
+			MPI_Send( functions[i].probabilisticBranch, functions[i].countProbabilisticBranch ,  MPI_DOUBLE, functions[i].idNode, FUNCTION, commNodes);
 	}
-	j+=i;
 
 	// ENVIO DE 'COMBIS' (3 ENVIOS ADICIONALES PARA 'PRECEDERS', 'FOLLOWERS' y 'PROBABILISTIC_BRANCH')
-	for (i=0 ; i < *combiCount ; i++)
+	for (i=0 ; i < combiCount ; i++)
 	{
-		MPI_Send(&((*combis)[i]), sizeof(Combi),  MPI_BYTE, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
-		if ((*combis)[i].countPreceders>0)
-			MPI_Send((*combis)[i].preceders, (*combis)[i].countPreceders ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
-		if ((*combis)[i].countFollowers>0)
-			MPI_Send((*combis)[i].followers, (*combis)[i].countFollowers ,  MPI_INT, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
-		if ((*combis)[i].countProbabilisticBranch>0)
-			MPI_Send((*combis)[i].probabilisticBranch, (*combis)[i].countProbabilisticBranch ,  MPI_DOUBLE, i+j+MASTER_RAFFLER_PRINTER, COMBI, MPI_COMM_WORLD);
+		MPI_Send( &combis[i], sizeof(Combi),  MPI_BYTE, combis[i].idNode, COMBI, commNodes);
+		if (combis[i].countPreceders>0)
+			MPI_Send( combis[i].preceders, combis[i].countPreceders ,  MPI_INT, combis[i].idNode, COMBI, commNodes);
+		if ( combis[i].countFollowers > 0 )
+			MPI_Send( combis[i].followers, combis[i].countFollowers ,  MPI_INT, combis[i].idNode, COMBI, commNodes);
+		if ( combis[i].countProbabilisticBranch > 0)
+			MPI_Send( combis[i].probabilisticBranch, combis[i].countProbabilisticBranch ,  MPI_DOUBLE, combis[i].idNode, COMBI, commNodes);
 	}
-	j+=i;
+
 }
 
 void getQueues(const char *filenameJson , Queue **queues, int* queuesCount)
@@ -241,13 +297,13 @@ void getQueues(const char *filenameJson , Queue **queues, int* queuesCount)
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*queues)[i].countPreceders = json_array_get_count(arrayInternal);
 
-		(*queues)[i].preceders = (int *) malloc((*queues)[i].countPreceders*sizeof(int));
+		if ((*queues)[i].countPreceders)(*queues)[i].preceders = (int *) malloc((*queues)[i].countPreceders*sizeof(int));
 		for (j = 0; j < (*queues)[i].countPreceders; j++)
 			(*queues)[i].preceders[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "followers");
 		(*queues)[i].countFollowers = json_array_get_count(arrayInternal);
-		(*queues)[i].followers = (int *) malloc((*queues)[i].countFollowers*sizeof(int));
+		if((*queues)[i].countFollowers)(*queues)[i].followers = (int *) malloc((*queues)[i].countFollowers*sizeof(int));
 		for (j = 0; j < (*queues)[i].countFollowers; j++)
 			(*queues)[i].followers[j]=json_array_get_number(arrayInternal,j);
 	}
@@ -275,13 +331,13 @@ void getCounters(const char *filenameJson , Counter **counters, int *counterCoun
 		(*counters)[i].cycle = json_object_dotget_number(objectInArray, "cycle" );
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*counters)[i].countPreceders = json_array_get_count(arrayInternal);
-		(*counters)[i].preceders = (int *) malloc((*counters)[i].countPreceders*sizeof(int));
+		if((*counters)[i].countPreceders)(*counters)[i].preceders = (int *) malloc((*counters)[i].countPreceders*sizeof(int));
 		for (j = 0; j < (*counters)[i].countPreceders; j++)
 			(*counters)[i].preceders[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "followers");
 		(*counters)[i].countFollowers = json_array_get_count(arrayInternal);
-		(*counters)[i].followers = (int *) malloc((*counters)[i].countFollowers*sizeof(int));
+		if((*counters)[i].countFollowers)(*counters)[i].followers = (int *) malloc((*counters)[i].countFollowers*sizeof(int));
 		for (j = 0; j < (*counters)[i].countFollowers; j++)
 			(*counters)[i].followers[j]=json_array_get_number(arrayInternal,j);
 	}
@@ -310,19 +366,19 @@ void getFunctions(const char *filenameJson , Function **functions, int *function
 
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*functions)[i].countPreceders = json_array_get_count(arrayInternal);
-		(*functions)[i].preceders = (int *) malloc((*functions)[i].countPreceders*sizeof(int));
+		if((*functions)[i].countPreceders)(*functions)[i].preceders = (int *) malloc((*functions)[i].countPreceders*sizeof(int));
 		for (j = 0; j < (*functions)[i].countPreceders; j++)
 			(*functions)[i].preceders[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "followers");
 		(*functions)[i].countFollowers = json_array_get_count(arrayInternal);
-		(*functions)[i].followers = (int *) malloc((*functions)[i].countFollowers*sizeof(int));
+		if((*functions)[i].countFollowers)(*functions)[i].followers = (int *) malloc((*functions)[i].countFollowers*sizeof(int));
 		for (j = 0; j < (*functions)[i].countFollowers; j++)
 			(*functions)[i].followers[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "probabilisticBranch");
 		(*functions)[i].countProbabilisticBranch = json_array_get_count(arrayInternal);
-		(*functions)[i].probabilisticBranch = (double *) malloc((*functions)[i].countProbabilisticBranch*sizeof(double));
+		if((*functions)[i].countProbabilisticBranch)(*functions)[i].probabilisticBranch = (double *) malloc((*functions)[i].countProbabilisticBranch*sizeof(double));
 		for (j = 0; j < (*functions)[i].countProbabilisticBranch; j++)
 			(*functions)[i].probabilisticBranch[j]=json_array_get_number(arrayInternal,j);
 	}
@@ -349,19 +405,19 @@ void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
 
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*normals)[i].countPreceders = json_array_get_count(arrayInternal);
-		(*normals)[i].preceders = (int *) malloc((*normals)[i].countPreceders*sizeof(int));
+		if((*normals)[i].countPreceders)(*normals)[i].preceders = (int *) malloc((*normals)[i].countPreceders*sizeof(int));
 		for (j = 0; j < (*normals)[i].countPreceders; j++)
 			(*normals)[i].preceders[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "followers");
 		(*normals)[i].countFollowers = json_array_get_count(arrayInternal);
-		(*normals)[i].followers = (int *) malloc((*normals)[i].countFollowers*sizeof(int));
+		if((*normals)[i].countFollowers)(*normals)[i].followers = (int *) malloc((*normals)[i].countFollowers*sizeof(int));
 		for (j = 0; j < (*normals)[i].countFollowers; j++)
 			(*normals)[i].followers[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "probabilisticBranch");
 		(*normals)[i].countProbabilisticBranch = json_array_get_count(arrayInternal);
-		(*normals)[i].probabilisticBranch = (double *) malloc((*normals)[i].countProbabilisticBranch*sizeof(double));
+		if((*normals)[i].countProbabilisticBranch)(*normals)[i].probabilisticBranch = (double *) malloc((*normals)[i].countProbabilisticBranch*sizeof(double));
 		for (j = 0; j < (*normals)[i].countProbabilisticBranch; j++)
 			(*normals)[i].probabilisticBranch[j]=json_array_get_number(arrayInternal,j);
 
@@ -449,19 +505,19 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*combis)[i].countPreceders = json_array_get_count(arrayInternal);
-		(*combis)[i].preceders = (int *) malloc((*combis)[i].countPreceders*sizeof(int));
+		if((*combis)[i].countPreceders)(*combis)[i].preceders = (int *) malloc((*combis)[i].countPreceders*sizeof(int));
 		for (j = 0; j < (*combis)[i].countPreceders; j++)
 			(*combis)[i].preceders[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "followers");
 		(*combis)[i].countFollowers = json_array_get_count(arrayInternal);
-		(*combis)[i].followers = (int *) malloc((*combis)[i].countFollowers*sizeof(int));
+		if((*combis)[i].countFollowers)(*combis)[i].followers = (int *) malloc((*combis)[i].countFollowers*sizeof(int));
 		for (j = 0; j < (*combis)[i].countFollowers; j++)
 			(*combis)[i].followers[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "probabilisticBranch");
 		(*combis)[i].countProbabilisticBranch = json_array_get_count(arrayInternal);
-		(*combis)[i].probabilisticBranch = (double *) malloc((*combis)[i].countProbabilisticBranch*sizeof(double));
+		if((*combis)[i].countProbabilisticBranch)(*combis)[i].probabilisticBranch = (double *) malloc((*combis)[i].countProbabilisticBranch*sizeof(double));
 		for (j = 0; j < (*combis)[i].countProbabilisticBranch; j++)
 			(*combis)[i].probabilisticBranch[j]=json_array_get_number(arrayInternal,j);
 
@@ -563,8 +619,7 @@ void printCounter(Counter counter){
 		printf("%d: followers[%d]: %d\n", counter.idNode,i,counter.followers[i]);
 }
 
-void printFunction(Function function)
-{
+void printFunction(Function function){
 	int i;
 
 	printf("%d: idNode: %d\n", function.idNode, function.idNode);
@@ -584,8 +639,7 @@ void printFunction(Function function)
 		printf("%d: probabilisticBranch[%d]: %.2f\n", function.idNode, i,function.probabilisticBranch[i]);
 }
 
-void printNormal(Normal normal)
-{
+void printNormal(Normal normal){
 	int i;
 
 	printf("%d: idNode: %d\n", normal.idNode,normal.idNode);

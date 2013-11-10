@@ -77,7 +77,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 	} while( ((watchdog--) > 0) && (isAllFinalized < counterNodes) );
 	//envio livelock al resto de los nodos
 	msg = LIVE_LOCK;
-	MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
+	MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD);
 	//nodos comentado--->MPI_Send(&totalTime, 1, MPI_DOUBLE, MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD);
 

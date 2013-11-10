@@ -8,8 +8,8 @@
 #ifndef TRUE
 #define TRUE (!FALSE)
 #endif
-
 #include "genericNode.h"
-extern void queueNode( const  Queue *);
+
+extern void queueNode( const  Queue* );
 
 #endif /* #ifndef _QUEUE_H_*/

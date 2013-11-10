@@ -27,13 +27,13 @@
 #include "jsonHelper.h"
 
 void logError(int error_code, int my_rank);
-void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenameJson ,const char *filenameSchema);
+void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenameJson );
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
 
 	const char *filenameJson   = "archivos/modelo.json";
-	const char *filenameSchema   = "archivos/schema.json";
+	
 	int idNodo; int idNodoInterno;  int mpiProcesses; 
 	int* processRank = NULL; MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
 	int jsonResult;
@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 	printf("nuevo rank %d => %d\n", idNodo, idNodoInterno);
 	switch( idNodo ){
 		case MASTER_ID:
-			master(mpiProcesses, commNodes,filenameJson,filenameSchema);
+			master(mpiProcesses, commNodes,filenameJson);
 			break;
 		case RAFFLER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
@@ -69,9 +69,9 @@ int main(int argc, char **argv){
 		default :
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
-				genericNode(idNodo);
+				genericNode(idNodo, idNodoInterno, commNodes);
 			}else {
-				printf("Master node has sent BAD_JSON by broadcast\n");
+				//printf("Master node has sent BAD_JSON by broadcast\n");
 			}
 			break;
 	}
@@ -81,11 +81,11 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filenameJson ,const char *filenameSchema){
+void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filenameJson ){
 	int jsonResult;
-	if ( validateJsonInput(filenameJson,filenameSchema) == VALIDATION_PASS ) {		
+	if ( validateJsonInput(filenameJson) == VALIDATION_PASS ) {		
 		if ( getNodesAmount(filenameJson) + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
-			sendStructToNodes(filenameJson);
+			sendStructToNodes(filenameJson, commNodes);
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
@@ -101,6 +101,9 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 
 			/* Shut down MPI */
 			return;
+		}
+		else {
+			printf("Error en la cantidad de nodos contra procesos\n");
 		}
 	} 
 	//Broadcast Json malo

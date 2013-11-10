@@ -11,23 +11,33 @@
 #include <string.h>
 
 typedef enum{
-	ERROR_OPEN_JSON,	/* json no existe */
-	ERROR_OPEN_SCHEMA,	/* schema no existe */
-	ERROR_READ_JSON,	/* ej: el json tenga solo una palabra */
+	ERROR_OPEN_JSON =1,	/* json no existe */
+	ERROR_OPEN_SCHEMA ,	/* schema no existe */
+	ERROR_READ_JSON ,	/* ej: el json tenga solo una palabra */
 	ERROR_READ_SCHEMA,  /* ej: el schema tenga solo una palabra */
+	INVALID_QUEUE ,
+	INVALID_COMBI,
+	INVALID_FUNCTION,
+	INVALID_COUNTER,
+	INVALID_NORMAL,
 	INVALID_JSON,		/* ej: sacando una coma al schema , esquema incompleto */
+	INVALID_JSON_DEPTH,
+	INVALID_JSON_OBJECT,
 	INVALID_SCHEMA,		/* ej: sacando una coma al schema , esquema incompleto */
 	VALIDATION_FAIL,	/* el json y el esquema son correctos pero el json no respeta el schema. ej: no incluir un elemento requerido o poner un number en lugar de un double*/
 	VALIDATION_PASS		/* validacion correcta */
 }VALIDATE;
 
+extern void MergeSort(int , int , int** );
+extern void Merge(int , int , int , int** );
+
 extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * ,int * ,int * , JSON_Value  * , const int );
 extern void	schema_error(void *client, const char *format, ...);
 extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
 
-extern int validateJsonInput(const char *,const char *);
+extern int validateJsonInput(const char *);
 
-extern int validateSchema(const char *,const char *);
+extern int validateSchema(const char *);
 extern int validateJson(const char *);
 
 extern void getArray(JSON_Object *, const char *,const char *,int** , int* );
