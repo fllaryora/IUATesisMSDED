@@ -14,7 +14,7 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	//unsigned long long int input = 0;
 
 	int inputWorktask = 0;//que estan en la entrada antes del cuerpo
-	int outPutWorktask = 0; //que cumplieron el dalay se se pueden ir
+	int outputWorktask = 0; //que cumplieron el dalay se se pueden ir
 	int bodyResource = 0; //counterWorkTask
 
 	Worktask *workTaskList;
@@ -36,13 +36,17 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
-				advancePhaseCombi( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-			case GENERATION_PHASE:
+				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE);
+				break;
+			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
+				generationPhaseCombi( &inputWorktask, &bodyResource,  commNodes, workTaskList, initialStatus);
+				break;
 			case CONSUME_DT:
 			case PING_REPORT:
 			default:
@@ -54,14 +58,14 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 }
 
 
-void advancePhaseCombi(int * inputWorktask, int* outPutWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima){ 
+void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima){ 
 	//printf("%d: avance combi\n", initialStatus->idNode);
     for(;;){
     	if(!hasQueueResources( initialStatus, commNodes)){
 			//printf("%d: cola sin recursos\n", initialStatus->idNode);
 	    	resourcesNoDemand( initialStatus, commNodes);
 	    	//printf("%d: no demand\n", initialStatus->idNode);
-	    	resourcesSend( initialStatus, commNodes, outPutWorktask);
+	    	resourcesSend( initialStatus, commNodes, outputWorktask);
 	    	//printf("%d: resource send\n", initialStatus->idNode);
 	    	finishCombi( isPrima, commNodes , inputWorktask, mpiProcesses);
 	    	//printf("%d: cola sin recursos\n", initialStatus->idNode);
@@ -79,7 +83,7 @@ void advancePhaseCombi(int * inputWorktask, int* outPutWorktask, const Combi *in
 				//printf("%d: Else b\n", initialStatus->idNode);
 	    		setAllRollback( initialStatus, commNodes);
 	    		//printf("%d: rollback b\n", initialStatus->idNode);
-	    		resourcesSend( initialStatus, commNodes, outPutWorktask);
+	    		resourcesSend( initialStatus, commNodes, outputWorktask);
 				//printf("%d: resource send\n", initialStatus->idNode);
 	    		finishCombi( isPrima,  commNodes , inputWorktask, mpiProcesses);
 	    		//printf("%d: fishish 2 b\n", initialStatus->idNode);
@@ -181,12 +185,13 @@ void setAllCommit(const Combi *initialStatus, const MPI_Comm commNodes){
 	return ;
 }
 
-void generationPhaseCombi(int* inputResource, int* bodyResource, const MPI_Comm commNodes, Worktask *workTaskList,  const Combi *initialStatus){
+void generationPhaseCombi(int* inputWorktask, int* bodyResource, const MPI_Comm commNodes, Worktask *workTaskList,  const Combi *initialStatus){
 		
 	switch(initialStatus->delay.distribution){	
 		case DIST_DETERMINISTIC:
-			for(int i = 0; i < (*inputResource); i++){
-				insertWorktask(workTaskList, initialStatus->delay.distribution.constant);
+			for(int i = 0; i < (*inputWorktask); i++){
+				printf("cte = %d", ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
+				insertWorktask(workTaskList, ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
 			}
 		break;
 		case DIST_UNIFORM:
@@ -211,7 +216,9 @@ void generationPhaseCombi(int* inputResource, int* bodyResource, const MPI_Comm 
 
 	//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
 		
-	(*bodyResource) += (*inputResource);
-	(*inputResource) = 0;
+	(*bodyResource) += (*inputWorktask);
+	(*inputWorktask) = 0;
+	printf("espero en barrera");
 	MPI_Barrier( commNodes );
+	printf("Salgo barrera en barrera");
 }

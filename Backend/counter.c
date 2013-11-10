@@ -13,8 +13,8 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	//3. Número de recursos que entraron, hasta este delta T.
 	//unsigned long long int input = 0;
 
-	int inputWorktask = 0;//que estan en la entrada antes del cuerpo
-	int outPutWorktask = 0; //que cumplieron el dalay se se pueden ir
+	int inputResource = 0;//que estan en la entrada antes del cuerpo
+	int outputResource = 0; //que cumplieron el dalay se se pueden ir
 	    
 
 	//On the fly: Promedio de las duraciones sorteadas.
@@ -32,15 +32,17 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
-				advancePhaseCounter( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-			advancePhaseCounter( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, TRUE);
+			advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE);
 				break;
-			case GENERATION_PHASE:
+			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
+				generationPhaseCounter( &inputResource, &outputResource,  commNodes );
+				break;
 			case CONSUME_DT:
 			case PING_REPORT:
 			default:
@@ -51,7 +53,7 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	return;
 }
 
-void advancePhaseCounter(int * inputWorktask, int* outPutWorktask, const Counter *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima){ 
+void advancePhaseCounter(int * inputResource, int* outputResource, const Counter *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima){ 
 	int* bufferReceiver = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
     int receiverCount = 1;
     int msg;
@@ -66,7 +68,7 @@ void advancePhaseCounter(int * inputWorktask, int* outPutWorktask, const Counter
 	}
 	printf("enviando los outpus\n");
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
-		 MPI_Isend( outPutWorktask, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
+		 MPI_Isend( outputResource, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
 	}
 
 
@@ -74,13 +76,13 @@ void advancePhaseCounter(int * inputWorktask, int* outPutWorktask, const Counter
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
-		(*outPutWorktask) = 0;
+		(*outputResource) = 0;
 	}
 	
 	printf("Espero predecesor\n");
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
-		(*inputWorktask) += bufferReceiver[i];
+		(*inputResource) += bufferReceiver[i];
 	}
    
 	
@@ -91,7 +93,7 @@ void advancePhaseCounter(int * inputWorktask, int* outPutWorktask, const Counter
 		printf(" sale de la barrera\n");
 	} else {
 		int * nodesStatus = NULL;
-		msg = (*inputWorktask)? FALSE: TRUE;
+		msg = (*inputResource)? FALSE: TRUE;
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
 	}
 
@@ -99,4 +101,14 @@ void advancePhaseCounter(int * inputWorktask, int* outPutWorktask, const Counter
 	free(requestPreceders);
 	free(requestFollowers);
 	return;
+}
+
+void generationPhaseCounter(int* inputResource, int* outputResource ,  const MPI_Comm commNodes ){
+	(*outputResource) += (*inputResource);
+	(*inputResource) = 0;
+	
+	//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
+	printf("espero en barrera generacion contador");
+	MPI_Barrier( commNodes );
+	printf("Salgo barrera en barrera");
 }

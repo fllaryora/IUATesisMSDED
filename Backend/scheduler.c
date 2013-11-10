@@ -25,14 +25,15 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		msg = ADVANCE_PAHSE;
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 		MPI_Barrier( commNodes );
-
-		watchdog2 = (int) (1.4 *  (mpiProcesses -MASTER_RAFFLER_PRINTER));
+		
+		//heuristica anti bucles infinitos en el modelo
+		watchdog2 = 1;//(int) (1.4 *  (mpiProcesses -MASTER_RAFFLER_PRINTER));
 
 		do{
 			
 			msg = GENERATION_PHASE_PRIMA;
-			//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
-			//nodos no implementados aun--->MPI_Barrier( commNodes );
+			MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
+			MPI_Barrier( commNodes );
 
 			msg = ADVANCE_PAHSE_PRIMA;
 			//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
@@ -46,22 +47,19 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 				if(!(isAllFinalized &=  nodesStatus[i])) break;
 			}
 
+		// !isAllFinalized  == si algun nodo no finalizo -> seguir
 		}while(((watchdog2--) > 0) && !isAllFinalized );
 		
-		msg = GENERATION_PHASE;
-		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
-		//nodos no implementados aun--->MPI_Barrier( commNodes );
-
 		msg = CONSUME_DT;
 		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 		//nodos no implementados aun--->MPI_Barrier( commNodes );
-
+		watchdog--;
+		
 		//New printer
 		//nodo comentado--->MPI_Send( &totalTime , 1 , MPI_DOUBLE , PRINTER_ID , PRINT_SIGNAL , MPI_COMM_WORLD);
 		//todos los nodos deben reportarse al printer
 		msg = PING_REPORT;
 		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
-
 		//nodo comentado--->MPI_Recv( targetStatus, counterNodes*2, MPI_INT, PRINTER_ID, COUNTER_CYCLES, , MPI_COMM_WORLD);
 		isAllFinalized = 0;
 		for(int i = 0 ; i< counterNodes;i++ ){
@@ -73,8 +71,16 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 				}	
 			}
 		}
-
-	} while( ((watchdog--) > 0) && (isAllFinalized < counterNodes) );
+		//todos los contadores cumplieron con el roll
+		if (isAllFinalized == counterNodes){
+			break;
+		}
+		
+		msg = GENERATION_PHASE;
+		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
+		//nodos no implementados aun--->MPI_Barrier( commNodes );
+		
+	} while( watchdog > 0);
 	//envio livelock al resto de los nodos
 	msg = LIVE_LOCK;
 	MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);

@@ -591,8 +591,6 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 	}
 }
 
-
-
 ///********************************/
 //codigo de lal ista enlazada de los worktask
 
@@ -609,7 +607,7 @@ void insertWorktask(Worktask *pointer, unsigned long long int delay){
         pointer->initialDelay = delay;
         pointer->next = NULL;
 }
-
+ 
 int deleteFinishedWorktask(Worktask *pointer){
     /* Go to the node for which the node next to it has to be deleted */
     /*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
@@ -632,5 +630,5 @@ int deleteFinishedWorktask(Worktask *pointer){
     /* Beacuse we deleted the node, we no longer require the memory used for it . 
        free() will deallocate the memory.
      */
-    return deleteWorktask(pointer) + 1;
+    return deleteFinishedWorktask(pointer) + 1;
 }

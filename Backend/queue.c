@@ -32,7 +32,7 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 			case ADVANCE_PAHSE_PRIMA:
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses);
 				break;
-			case GENERATION_PHASE:
+			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
 				generationPhaseQueue(&inputResource, &bodyResource, commNodes);
 				break;
@@ -230,5 +230,7 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 void generationPhaseQueue(int* inputResource, int* bodyResource, const MPI_Comm commNodes){
 		(*bodyResource) += (*inputResource);
 		(*inputResource) = 0;
-		MPI_Barrier( commNodes );
+		printf("espero en barrera");
+	    MPI_Barrier( commNodes );
+	    printf("Salgo barrera en barrera");
 }

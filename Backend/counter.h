@@ -13,6 +13,6 @@
 
 extern void counterNode( const MPI_Comm ,  const  Counter *, const int);
 extern void advancePhaseCounter(int * , int* , const Counter *, const MPI_Comm , const int ,const int );
-
+extern void generationPhaseCounter(int* , int* ,  const MPI_Comm commNodes);
 
 #endif /* #ifndef _COUNTER_H_*/
