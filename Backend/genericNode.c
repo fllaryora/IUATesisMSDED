@@ -1,6 +1,8 @@
 #include "ourMPI.h"
 #include "main.h"
 #include "genericNode.h"
+#include "queue.h"
+#include "combi.h"
 #include "jsonHelper.h"
 #include <stdio.h>
 #include <stdlib.h>

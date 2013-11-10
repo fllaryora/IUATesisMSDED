@@ -25,14 +25,14 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus){
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				advancePhaseQueue(inputResource, bodyResource, commNodes, FALSE, initialStatus);
+				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-				advancePhaseQueue(inputResource, bodyResource, commNodes, TRUE, initialStatus);
+				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus);
 				break;
 			case GENERATION_PHASE:
 			case GENERATION_PHASE_PRIMA:
-				generationPhaseQueue(inputResource, bodyResource, commNodes);
+				generationPhaseQueue(&inputResource, &bodyResource, commNodes);
 				break;
 			case CONSUME_DT:
 				deltaTCount++;
@@ -47,7 +47,7 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus){
 	return;
 }
 
-void advancePhaseQueue(int & inputResource, int & bodyResource, const MPI_Comm commNodes, int isPrima, Queue *initialStatus, const int mpiProcesses){ 
+void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm commNodes, int isPrima, Queue *initialStatus, const int mpiProcesses){ 
     int* bufferReceiver = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
     int receiverCount = 1;
     int msg;
@@ -74,14 +74,14 @@ void advancePhaseQueue(int & inputResource, int & bodyResource, const MPI_Comm c
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
-		inputResource += bufferReceiver[i];
+		*inputResource += bufferReceiver[i];
 	}
 
 	if( !isPrima ){
 		MPI_Barrier( commNodes );
 	} else {
 		int * nodesStatus = NULL;
-		msg = inputResource? FALSE: TRUE;
+		msg = (*inputResource)? FALSE: TRUE;
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
 	}
 	return;
@@ -186,8 +186,8 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 
 }
 
-void generationPhaseQueue(int & inputResource, int & bodyResource, const MPI_Comm commNodes){
-		bodyResource += inputResource;
-		inputResource = 0;
+void generationPhaseQueue(int* inputResource, int & bodyResource, const MPI_Comm commNodes){
+		bodyResource += (*inputResource);
+		(*inputResource) = 0;
 		MPI_Barrier( commNodes );
 }

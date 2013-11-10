@@ -70,7 +70,7 @@ typedef enum{
 							status*/
 	CONSUME_DT,            /*when dT end, all nodes consume one dT*/
 
-	RESOURCE_SEND          /*warns when one node has sent a resource to
+	RESOURCE_SEND,          /*warns when one node has sent a resource to
 							another*/
 	
 	RESOURCE_REQUEST,       /*when a combi want to know about the amount
