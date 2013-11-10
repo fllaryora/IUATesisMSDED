@@ -9,6 +9,7 @@
 #define TRUE (!FALSE)
 #endif
 
-extern void queue( const  Queue *);
+#include "genericNode.h"
+extern void queueNode( const  Queue *);
 
 #endif /* #ifndef _QUEUE_H_*/
