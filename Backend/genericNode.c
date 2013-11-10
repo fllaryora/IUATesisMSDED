@@ -3,6 +3,9 @@
 #include "genericNode.h"
 #include "queue.h"
 #include "combi.h"
+#include "counter.h"
+#include "function.h"
+#include "normal.h"
 #include "jsonHelper.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -73,7 +76,6 @@ void sendStructToNodes( const char *filenameJson ,const MPI_Comm commNodes)
 }
 
 void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm commNodes, const int mpiProcesses){
-	int msg;
 	MPI_Status status;
 	Queue queue;
 	Counter counter;
@@ -97,7 +99,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		receiveCounter(commNodes, &counter);
 		//printCounter(counter);
 		//TODO provisorio
-		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
+		counterNode( commNodes, &counter, mpiProcesses);
 		if(counter.countPreceders > 0) free( counter.preceders );
 		if(counter.countFollowers > 0) free( counter.followers );
 		
@@ -107,7 +109,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		receiveNormal(commNodes, &normal);
 		//printNormal(normal);
 		//TODO provisorio
-		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
+		normalNode( commNodes,  &normal,  mpiProcesses);
 		if(normal.countPreceders > 0) free( normal.preceders);
 		if(normal.countFollowers > 0) free(normal.followers);
 		if(normal.countProbabilisticBranch > 0) free(normal.probabilisticBranch);
@@ -117,7 +119,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		receiveFunction(commNodes, &function);
 		//printFunction(function);
 		//TODO provisorio
-		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
+		functionNode( commNodes,   &function, mpiProcesses);
 		if(function.countPreceders > 0) free( function.preceders );
 		if(function.countFollowers > 0) free( function.followers );
 		if(function.countProbabilisticBranch > 0) free(function.probabilisticBranch );

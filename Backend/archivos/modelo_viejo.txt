@@ -1,0 +1,110 @@
+{
+ "LENGTH": 1000,
+ "CYCLES": 30,
+ "transformacion": {
+		"colas": [
+			{
+				"idnodo": 1,
+				"recursos": 5,
+				"Antecesor":[4],
+				"Sucesor": [11,10],
+				"costoFijo": 12.0,
+				"costoVariable": 2.0
+			},
+			{
+				"idnodo": 2,
+				"recursos": 0,
+				"Antecesor":[11,4],
+				"Sucesor": [10],
+				"costoFijo": 12.0,
+				"costoVariable": 2.0
+				
+			},
+			{
+				"idnodo": 3,
+				"recursos": 2,
+				"Antecesor":[19,12],
+				"Sucesor": [],
+				"costoFijo": 12.0,
+				"costoVariable": 2.0
+			}
+		],
+		"contadores": [
+			{
+				"idnodo": 4,
+				"multiplicador": 5,
+				"Antecesor":[6],
+				"Sucesor": [12,13]
+			},
+			{
+				"idnodo": 5,
+				"multiplicador": 1,
+				"Antecesor":[11],
+				"Sucesor": [3]
+				
+			}
+		],
+		"funciones": [
+			{
+				"idnodo": 6,
+				"entrada": 3,
+				"salida": 2,
+				"Antecesor":[10],
+				"Sucesor": [12,13],
+				"salidaProbabilistica" : false,
+				"probabilidadPorSalida" : []
+			},
+			{
+				"idnodo": 7,
+				"entrada": 3,
+				"salida": 2,
+				"Antecesor":[9,6],
+				"Sucesor": [13],
+				"salidaProbabilistica" : true,
+				"probabilidadPorSalida" : [0.5 , 0.5]
+			}
+		],
+		"normales": [
+			{
+				"idnodo": 8,
+				"Antecesor":[6],
+				"Sucesor": [12,13],
+				"salidaProbabilistica" : false,
+				"probabilidadPorSalida" : []
+			},
+			{
+				"idnodo": 9,
+				"Antecesor":[10,6],
+				"Sucesor": [12,2],
+				"salidaProbabilistica" : true,
+				"probabilidadPorSalida" : [0.5 , 0.5]
+			}
+		],
+		"combis": [
+			{
+				"idnodo": 10,
+				"Antecesor":[1],
+				"Sucesor": [12,13],
+				"salidaProbabilistica" : false,
+				"probabilidadPorSalida" : [],
+				"tiempoDeDemora" : {
+					"distribucion": "deterministica",
+					"constante" : 6
+				}
+			},
+			{
+				"idnodo": 11,
+				"Antecesor":[3,2],
+				"Sucesor": [12,13],
+				"salidaProbabilistica" : true,
+				"probabilidadPorSalida" : [0.5 , 0.5],
+				"tiempoDeDemora" : {
+					"distribucion": "uniforme",
+					"minimo" : 2,
+					"maximo" : 8,
+					"semilla": 666
+				}
+			}
+		]
+	}
+}
