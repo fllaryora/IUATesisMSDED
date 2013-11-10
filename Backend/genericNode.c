@@ -25,16 +25,16 @@ void sendStructToNodes( const char *filenameJson )
 	//Libero memoria
 	if(queues){
 		for (int i = 0; i < queuesCount; i++){
-			if((*queues)[i].countPreceders > 0) free( (*queues)[i].preceders ) ;
-			if((*queues)[i].countFollowers > 0) free(  (*queues)[i].followers );
+			if(queues[i].countPreceders > 0) free( queues[i].preceders ) ;
+			if(queues[i].countFollowers > 0) free( queues[i].followers );
 		}
 		free(queues);
 	}
 	
 	if(counters){
 		for (int i = 0; i < counterCount; i++){
-			if((*counters)[i].countPreceders > 0) free( (*counters)[i].preceders );
-			if((*counters)[i].countFollowers > 0) free(  (*counters)[i].followers );
+			if(counters[i].countPreceders > 0) free( counters[i].preceders );
+			if(counters[i].countFollowers > 0) free( counters[i].followers );
 		}
 		free(counters);
 	}
@@ -42,27 +42,27 @@ void sendStructToNodes( const char *filenameJson )
 	if(functions){
 
 		for (int i = 0; i < functionCount; i++){
-			if((*functions)[i].countPreceders > 0) free( (*functions)[i].preceders );
-			if((*functions)[i].countFollowers > 0) free( (*functions)[i].followers );
-			if((*functions)[i].countProbabilisticBranch > 0) free((*functions)[i].probabilisticBranch );
+			if(functions[i].countPreceders > 0) free( functions[i].preceders );
+			if(functions[i].countFollowers > 0) free( functions[i].followers );
+			if(functions[i].countProbabilisticBranch > 0) free(functions[i].probabilisticBranch );
 		}
 		free(functions);
 	}
 	
 	if(normals){
 		for (int i = 0; i < normalCount; i++){
-			if((*normals)[i].countPreceders > 0) free( (*normals)[i].preceders);
-			if((*normals)[i].countFollowers > 0) free((*normals)[i].followers);
-			if((*normals)[i].countProbabilisticBranch > 0) free((*normals)[i].probabilisticBranch);
+			if(normals[i].countPreceders > 0) free( normals[i].preceders);
+			if(normals[i].countFollowers > 0) free(normals[i].followers);
+			if(normals[i].countProbabilisticBranch > 0) free(normals[i].probabilisticBranch);
 		}
 		free(normals);
 	}
 	
 	if(combis){
 		for (int i = 0; i < combiCount; i++){
-			if((*combis)[i].countPreceders > 0) free( (*combis)[i].preceders);
-			if((*combis)[i].countFollowers > 0) free((*combis)[i].followers);
-			if((*combis)[i].countProbabilisticBranch > 0) free((*combis)[i].probabilisticBranch);
+			if(combis[i].countPreceders > 0) free(combis[i].preceders);
+			if(combis[i].countFollowers > 0) free(combis[i].followers);
+			if(combis[i].countProbabilisticBranch > 0) free(combis[i].probabilisticBranch);
 		}
 		free(combis);
 	}
@@ -70,8 +70,8 @@ void sendStructToNodes( const char *filenameJson )
 	return;
 }
 
-void genericNode(int myIdNodo){
-	
+void genericNode(const int myIdNodo, const MPI_Comm commNodes){
+	int msg;
 	printf("Hello from slave\n");
 	MPI_Status status;
 	Queue queue;
@@ -87,11 +87,8 @@ void genericNode(int myIdNodo){
 		receiveQueue(&queue);
 		printQueue(queue);
 		
-		if(queue.countPreceders > 0) free( queue.preceders ) ;
-		if(queue.countFollowers > 0) free(  queue.followers );
-		free(queue);
-		
-	
+		if(queue.countPreceders > 0) free( queue.preceders );
+		if(queue.countFollowers > 0) free( queue.followers );
 	}
 		else if (status.MPI_TAG == COUNTER)
 	{
@@ -100,7 +97,7 @@ void genericNode(int myIdNodo){
 
 		if(counter.countPreceders > 0) free( counter.preceders );
 		if(counter.countFollowers > 0) free(  counter.followers );
-		free(counter);
+		
 	}
 	else if (status.MPI_TAG == NORMAL)
 	{
@@ -110,8 +107,6 @@ void genericNode(int myIdNodo){
 		if(normal.countPreceders > 0) free( normal.preceders);
 		if(normal.countFollowers > 0) free(normal.followers);
 		if(normal.countProbabilisticBranch > 0) free(normal.probabilisticBranch);
-		free(normal);
-
 	}
 	else if (status.MPI_TAG == FUNCTION)
 	{
@@ -121,7 +116,6 @@ void genericNode(int myIdNodo){
 		if(function.countPreceders > 0) free( function.preceders );
 		if(function.countFollowers > 0) free( function.followers );
 		if(function.countProbabilisticBranch > 0) free(function.probabilisticBranch );
-		free(function);
 	}
 	else if (status.MPI_TAG == COMBI)
 	{
@@ -131,9 +125,9 @@ void genericNode(int myIdNodo){
 		if(combi.countPreceders > 0) free( combi.preceders);
 		if(combi.countFollowers > 0) free(combi.followers);
 		if(combi.countProbabilisticBranch > 0) free(combi.probabilisticBranch);
-		free(combi);
 	}
-
+	//TODO providorio
+	MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 }
 
 
@@ -625,8 +619,7 @@ void printCounter(Counter counter){
 		printf("%d: followers[%d]: %d\n", counter.idNode,i,counter.followers[i]);
 }
 
-void printFunction(Function function)
-{
+void printFunction(Function function){
 	int i;
 
 	printf("%d: idNode: %d\n", function.idNode, function.idNode);
@@ -646,8 +639,7 @@ void printFunction(Function function)
 		printf("%d: probabilisticBranch[%d]: %.2f\n", function.idNode, i,function.probabilisticBranch[i]);
 }
 
-void printNormal(Normal normal)
-{
+void printNormal(Normal normal){
 	int i;
 
 	printf("%d: idNode: %d\n", normal.idNode,normal.idNode);

@@ -69,7 +69,7 @@ int main(int argc, char **argv){
 		default :
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
-				genericNode(idNodo);
+				genericNode(idNodo, commNodes);
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}

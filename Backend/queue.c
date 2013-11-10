@@ -1,5 +1,6 @@
 #include "queue.h"
+#include "genericNode.h"
 
-void queue( const  Queue *queue){
+void queueNode( const  Queue *initialStatus){
 	return;
 }
