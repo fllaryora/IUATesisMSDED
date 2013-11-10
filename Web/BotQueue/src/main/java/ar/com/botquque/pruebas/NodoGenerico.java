@@ -20,7 +20,7 @@ public class NodoGenerico implements Nodo, Comparable<Nodo>{
 	protected final int tamanioFuente;
 	protected Color colorActual;
 	
-	protected final int orden;
+	protected int orden;
 	//auxiliares para eventos
 	private boolean esSeleccionado;
 	//diferencia entre el puntero y la selección
@@ -187,12 +187,16 @@ public class NodoGenerico implements Nodo, Comparable<Nodo>{
 	}
 
 	public int compareTo(Nodo laOtraInstancia) {
-		// TODO Auto-generated method stub
 		return this.orden - laOtraInstancia.getOrden();
 	}
 
 	public int getOrden(){
 		return this.orden;
+	}
+
+	public void setOrden(int orden) {
+		this.orden = orden;
+		
 	}
 	
 }

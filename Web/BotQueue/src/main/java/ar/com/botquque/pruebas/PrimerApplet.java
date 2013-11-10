@@ -15,7 +15,7 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 	
 	private static final long serialVersionUID = 2L;
 	private List<Nodo> nodos;
-	Flecha ff = new Flecha();
+	FlechaGenerica flechaGenerica = new FlechaGenerica();
 	
 	private double zoom ;
 	private boolean controlApretado;
@@ -42,8 +42,10 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 		
 		Nodo a = NodoBuilder.createNodo(NodoBuilder.CONTADOR, 60, 60, "Contador");
 		Nodo b = NodoBuilder.createNodo(NodoBuilder.NORMAL, 180, 60, "Normal");
-		ff.empieza = a;
-		ff.termina = b;
+		flechaGenerica.entrada(a, zoom);
+		flechaGenerica.salida(b, zoom);
+		//ff.empieza = a;
+		//ff.termina = b;
 		nodos.add(a);
 		nodos.add(b);
 		
@@ -93,7 +95,7 @@ public class PrimerApplet extends Applet implements MouseListener, MouseMotionLi
 		for(Nodo nodo: nodos){
 			nodo.pintar(g,this.zoom);
 		}
-		ff.pintar(g, zoom);
+		flechaGenerica.pintar(g, zoom);
 		
 	}
 	

@@ -28,4 +28,5 @@ public interface Nodo{
 	public int getXptoEnganche(double zoom, SuperficieDeEnganche pto);
 	public int getYptoEnganche(double zoom, SuperficieDeEnganche pto);
 	public int getOrden(); 
+	public void setOrden(int orden);
 }

@@ -7,6 +7,8 @@ public  class NodoBuilder {
 	public static String COMBI =  "Combi";
 	public static String NORMAL = "Normal";
 	public static String FUNCION =  "Funcion";
+	public static String NODOFLECHA =  "NodoFlecha";
+	
 	//le paso el nombre cualificado de la clase y le juro que es un nodo
 	public static Nodo createNodo(String nombreClase, int posX, int posY, String mensaje){
 		try{

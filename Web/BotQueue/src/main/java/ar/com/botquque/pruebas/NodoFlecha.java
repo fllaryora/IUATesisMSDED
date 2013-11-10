@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 public class NodoFlecha extends NodoCircularGenerico {
 	private boolean mensajeado;
-	public NodoFlecha(int posX, int posY, int diametro, int orden) {
+	public NodoFlecha(int posX, int posY, String nothing, int orden) {
 		super(posX, posY, "", 3, orden);
 		mensajeado = false;
 	}
@@ -13,7 +13,7 @@ public class NodoFlecha extends NodoCircularGenerico {
 	@Override
 	public void pintar(Graphics g, double zoom){
 		g.setColor(this.colorActual);
-		g.drawOval(this.posX, this.posY, (int)(this.ancho * zoom),  (int)(this.alto * zoom));
+		g.fillOval(this.posX, this.posY, (int)(this.ancho * zoom),  (int)(this.alto * zoom));
 		if(mensajeado){
 			Font fuente;
 			fuente = new Font("Arial", Font.PLAIN, (int)(this.tamanioFuente * zoom) );
