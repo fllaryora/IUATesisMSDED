@@ -85,27 +85,53 @@ void genericNode(int myIdNodo){
 	if (status.MPI_TAG == QUEUE)
 	{
 		receiveQueue(&queue);
-		//printQueue(queue);
+		printQueue(queue);
+		
+		if(queue.countPreceders > 0) free( queue.preceders ) ;
+		if(queue.countFollowers > 0) free(  queue.followers );
+		free(queue);
+		
+	
 	}
 		else if (status.MPI_TAG == COUNTER)
 	{
 		receiveCounter(&counter);
 		printCounter(counter);
+
+		if(counter.countPreceders > 0) free( counter.preceders );
+		if(counter.countFollowers > 0) free(  counter.followers );
+		free(counter);
 	}
 	else if (status.MPI_TAG == NORMAL)
 	{
 		receiveNormal(&normal);
-		//printNormal(normal);
+		printNormal(normal);
+
+		if(normal.countPreceders > 0) free( normal.preceders);
+		if(normal.countFollowers > 0) free(normal.followers);
+		if(normal.countProbabilisticBranch > 0) free(normal.probabilisticBranch);
+		free(normal);
+
 	}
 	else if (status.MPI_TAG == FUNCTION)
 	{
 		receiveFunction(&function);
-		//printFunction(function);
+		printFunction(function);
+
+		if(function.countPreceders > 0) free( function.preceders );
+		if(function.countFollowers > 0) free( function.followers );
+		if(function.countProbabilisticBranch > 0) free(function.probabilisticBranch );
+		free(function);
 	}
 	else if (status.MPI_TAG == COMBI)
 	{
 		receiveCombi(&combi);
-		//printCombi(combi);
+		printCombi(combi);
+		
+		if(combi.countPreceders > 0) free( combi.preceders);
+		if(combi.countFollowers > 0) free(combi.followers);
+		if(combi.countProbabilisticBranch > 0) free(combi.probabilisticBranch);
+		free(combi);
 	}
 
 }
