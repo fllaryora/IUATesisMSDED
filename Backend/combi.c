@@ -138,7 +138,7 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 void finishCombi(const int isPrima, const MPI_Comm commNodes ,const int* inputResource, const int mpiProcesses){
 	int msg;
 	 if( !isPrima ){
-		printf("me quede en la barrera\n");
+		printf("me quede en la barrera2\n");
 		MPI_Barrier( commNodes );
 		printf(" sale de la barrera\n");
 	} else {

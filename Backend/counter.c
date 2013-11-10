@@ -58,29 +58,36 @@ void advancePhaseCounter(int * inputWorktask, int* outPutWorktask, const Counter
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
 	MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
     
-	
+	printf("reciviendo los inputs\n");
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	
+	printf("enviando los outpus\n");
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		 MPI_Isend( outPutWorktask, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
 	}
 
-   
+
+	printf("Espero followrs\n");
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*outPutWorktask) = 0;
 	}
+	
+	printf("Espero predecesor\n");
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
 		(*inputWorktask) += bufferReceiver[i];
 	}
+   
+	
 	
 	if( !isPrima ){
+		printf("me quede en la barrera5\n");
 		MPI_Barrier( commNodes );
+		printf(" sale de la barrera\n");
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputWorktask)? FALSE: TRUE;
