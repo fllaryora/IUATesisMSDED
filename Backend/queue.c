@@ -175,8 +175,6 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 				printf("%d: Envio recurso, a %d\n", initialStatus->idNode, initialStatus->followers[currentIndexStts]);
 				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[currentIndexStts] , TRANSACTION_BEGIN, commNodes);
 				printf("%d: Envio recurso\n", initialStatus->idNode);
-				
-			
 				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[currentIndexStts], MPI_ANY_TAG, commNodes, &infoComm);
 				currentTag = infoComm.MPI_TAG;
 				if(currentTag == TRANSACTION_COMMIT){
@@ -186,8 +184,6 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 					printf("%d: recibo el no ok\n", initialStatus->idNode);
 					currentFollowerListStatus[currentIndexStts] = PROCESSESED;
 				}
-				
-				
 			} else {
 				printf("%d: Envio la cancelada\n", initialStatus->idNode);
 				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[currentIndexStts] , TRANSACTION_CANCELLED, commNodes);
@@ -201,18 +197,19 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 		printf("%d: tengo mas o igial recursos que combis\n", initialStatus->idNode);
 		//envio a los no procesados el recurso
 		for(int i = 0 ; i < initialStatus->countFollowers; i++){
+			
 			if( currentFollowerListStatus[i] == NOT_PROCESSESED ){
-				printf("%d: Envio recurso, a %d\n", initialStatus->idNode, initialStatus->followers[currentIndexStts]);
-				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[currentIndexStts], TRANSACTION_BEGIN, commNodes);
+				printf("%d: Envio recurso, a %d\n", initialStatus->idNode, initialStatus->followers[i]);
+				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[i], TRANSACTION_BEGIN, commNodes);
 				printf("%d: Envio recurso\n", initialStatus->idNode);
-				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[currentIndexStts], MPI_ANY_TAG, commNodes, &infoComm);
+				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[i], MPI_ANY_TAG, commNodes, &infoComm);
 				currentTag = infoComm.MPI_TAG;
 				if(currentTag == TRANSACTION_COMMIT){
 					printf("%d: recibo el ok\n", initialStatus->idNode);
 					--(*bodyResource);
 				} else {
 					printf("%d: recibo el no ok\n", initialStatus->idNode);
-					currentFollowerListStatus[currentIndexStts] = PROCESSESED;
+					currentFollowerListStatus[i] = PROCESSESED;
 				}
 			}
 		}
