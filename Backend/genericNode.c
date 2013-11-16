@@ -86,6 +86,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 	{
 		receiveQueue(commNodes, &queue);
 		printQueue(queue);
+		queueNode(  commNodes, &queue);
 		
 		if(queue.countPreceders > 0) free( queue.preceders );
 		if(queue.countFollowers > 0) free( queue.followers );

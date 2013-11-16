@@ -69,10 +69,9 @@ typedef enum{
 	PING_REPORT,            /*when dT end, all nodes must report your 
 							status*/
 	CONSUME_DT,            /*when dT end, all nodes consume one dT*/
-	////------never used yet
-							
-	//GATHER enviada de reporte de dT
-	
+
+	RESOURCE_SEND          /*warns when one node has sent a resource to
+							another*/
 	
 	RESOURCE_REQUEST,       /*when a combi want to know about the amount
 							of resources containing at a queue.*/
@@ -88,8 +87,7 @@ typedef enum{
 	TRANSACTION_COMMIT,      /*when a combi accept queue's resource.*/
 	TRANSACTION_ROLLBACK,   /*when a combi refuses queue's resource.*/
 	
-	RESOURCE_SEND          /*warns when one node has sent a resource to
-							another*/	
+		
 }TAG;
 //
 
