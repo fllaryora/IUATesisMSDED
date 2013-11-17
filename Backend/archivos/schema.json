@@ -62,10 +62,9 @@
                 },
                 "counters": {
                     "type":"array",
-                    "required":true,
+					"required":true,
                     "items": {
                         "type":"object",
-                        "required":true,
                         "properties":{
                             "idNode": {
                                 "type":"integer",
@@ -155,7 +154,7 @@
                 },
                 "normals": {
                     "type":"array",
-
+					"required":true,
                     "items": {
                         "type":"object",
                         "required":true,
@@ -354,6 +353,7 @@
                 },
                 "combis": {
                     "type":"array",
+					"required":true,
 					"items": {
 						"type":"object",
 						"required":true,

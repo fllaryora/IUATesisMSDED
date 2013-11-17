@@ -5,7 +5,7 @@
 		"queues": [
 			{
 				"idNode": 1,
-				"resource": 5,
+				"resource": 2,
 				"preceders": [2],
 				"followers": [2],
 				"fixedCost": 12.0,
@@ -13,47 +13,20 @@
 			}
 		],
 		"counters": [
-			{
-				"idNode": 5,
-				"quantity": 5,
-				"cycle": 30,
-				"preceders":[4],
-				"followers": [ ]
-			}
 		],
 		"normals": [
-			{
-				"idNode": 3,
-				"preceders":[2],
-				"followers": [4],
-				"delay": {
-					"distribution": "normal",
-					"mean": 2,
-					"variance" : 9,
-					"seed": 666
-				}
-			}
 		],
 		"functions": [
-			{
-				"idNode": 4,
-				"input": 3,
-				"output": 2,
-				"preceders":[3],
-				"followers": [5]
-			}
 		],
 		"combis": [
 			{
-			"idNode": 2,
-			"preceders":[1],
-			"followers": [1,3],
-			"delay" : {
-				"distribution": "uniform",
-				"least" : 2,
-				"highest" : 8,
-				"seed": 666
-			}
+				"idNode": 2,
+				"preceders":[1],
+				"followers": [1],
+				"delay" : {
+					"distribution": "deterministic",
+					"constant" : 2
+				}
 			}			
 		]
 	}
