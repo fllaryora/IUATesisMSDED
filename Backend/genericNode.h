@@ -3,7 +3,7 @@
 #include "parson.h"
 #include "jsonHelper.h"
 
-extern void genericNode(const int , const int ,const MPI_Comm );
+extern void genericNode(const int , const int ,const MPI_Comm, const int );
 
 typedef enum{
 	DIST_UNIFORM,

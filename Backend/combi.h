@@ -11,7 +11,7 @@
 #include "genericNode.h"
 
 
-extern void combiNode( const MPI_Comm ,  const  Combi *);
+extern void combiNode( const MPI_Comm ,  const  Combi *, const int);
 extern void advancePhaseCombi(int & , int & , const Counter *, const MPI_Comm , const int ,const int );
 extern int hasQueueResources( const Counter *, const MPI_Comm );
 extern void resourcesNoDemand( const Counter *, const MPI_Comm );
