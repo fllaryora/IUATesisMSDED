@@ -74,7 +74,7 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
-		*inputResource += bufferReceiver[i];
+		(*inputResource) += bufferReceiver[i];
 	}
 
 	if( !isPrima ){
@@ -97,12 +97,12 @@ int hasAvailableCombis(const int* currentFollowerListStatus, const Queue *initia
 }
 
 //Espero a que todas las combis me manden resource request
-int requestResponceCombis(const int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, const int bodyResource){
+int requestResponceCombis(const int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, const int* bodyResource){
 	int msg;
 	for(int i = 0 ; i < initialStatus->countFollowers; i++){
 		if( currentFollowerListStatus[i] == NOT_PROCESSESED ){
 			MPI_Recv( &msg, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_REQUEST, commNodes, MPI_STATUS_IGNORE);
-			msg = bodyResource;
+			msg = (*bodyResource);
 			MPI_Send( &msg, 1, MPI_INT, initialStatus->followers[i], RESOURCE_RESPONSE, commNodes);
 		}
 	}
@@ -110,7 +110,7 @@ int requestResponceCombis(const int* currentFollowerListStatus, const Queue *ini
 
 //Espero la respuesta si es un resource demand o no demand por parte de la combi
 //La combi que tiene una cola sin recurso no demandara
-void getDemandCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, const int bodyResource){
+void getDemandCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes){
 	int msg;
 	int currentTag;
 	MPI_Status infoComm;
@@ -136,14 +136,14 @@ int getAvailableCombisNumber(const int* currentFollowerListStatus, const Queue *
 	return counter;
 }
 
-void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, int& bodyResource){
+void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, int* bodyResource){
 	//Lista de combis afortunadas
 	int* prioritaryCombis = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
 	int msg;
 	int currentRec = 0;
 	int currentStatus ;
 	int currentIndexStts ;
-	if( bodyResource < getAvailableCombisNumber( currentFollowerListStatus, initialStatus) ){
+	if( (*bodyResource) < getAvailableCombisNumber( currentFollowerListStatus, initialStatus) ){
 		//obtengo la lista de prioridades
 		MPI_Send(initialStatus->followers, initialStatus->countFollowers, MPI_INT, RAFFLER_ID, GET_RAFFLE, MPI_COMM_WORLD);
 		MPI_Recv( prioritaryCombis, initialStatus->countFollowers, MPI_INT, RAFFLER_ID, RAFFLE_DONE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -163,10 +163,10 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 			if(currentStatus == PROCESSESED)
 				continue;
 
-			if(bodyResource){
+			if(*bodyResource){
 				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[currentIndexStts] , TRANSACTION_BEGIN, commNodes);
 				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[currentIndexStts], TRANSACTION_COMMIT, commNodes, MPI_STATUS_IGNORE);
-				--bodyResource;
+				--(*bodyResource);
 			} else {
 				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[currentIndexStts] , TRANSACTION_CANCELLED, commNodes);
 				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[currentIndexStts], TRANSACTION_ROLLBACK, commNodes, MPI_STATUS_IGNORE);
@@ -179,15 +179,15 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 			if( currentFollowerListStatus[i] == NOT_PROCESSESED ){
 				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[currentIndexStts], TRANSACTION_BEGIN, commNodes);
 				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[currentIndexStts], TRANSACTION_COMMIT, commNodes, MPI_STATUS_IGNORE);
-				--bodyResource;
+				--(*bodyResource);
 			}
 		}
 	}
 
 }
 
-void generationPhaseQueue(int* inputResource, int & bodyResource, const MPI_Comm commNodes){
-		bodyResource += (*inputResource);
+void generationPhaseQueue(int* inputResource, int* bodyResource, const MPI_Comm commNodes){
+		(*bodyResource) += (*inputResource);
 		(*inputResource) = 0;
 		MPI_Barrier( commNodes );
 }
