@@ -107,7 +107,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		receiveNormal(commNodes, &normal);
 		//printNormal(normal);
 		//TODO provisorio
-		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
+		normalNode( commNodes,  &normal,  mpiProcesses);
 		if(normal.countPreceders > 0) free( normal.preceders);
 		if(normal.countFollowers > 0) free(normal.followers);
 		if(normal.countProbabilisticBranch > 0) free(normal.probabilisticBranch);
@@ -117,7 +117,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		receiveFunction(commNodes, &function);
 		//printFunction(function);
 		//TODO provisorio
-		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
+		functionNode( commNodes,   &function, mpiProcesses);
 		if(function.countPreceders > 0) free( function.preceders );
 		if(function.countFollowers > 0) free( function.followers );
 		if(function.countProbabilisticBranch > 0) free(function.probabilisticBranch );

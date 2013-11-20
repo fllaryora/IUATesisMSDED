@@ -118,15 +118,15 @@ void resourcesDemand( const Combi *initialStatus, const MPI_Comm commNodes){
 //TODO FALTA LA DETERMINISTIC BRANCH
 void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* worktaskInOutput){
     //inicializo los request de las llegadas de recursos
-    MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
+    MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
-		 MPI_Isend( worktaskInOutput, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
+		 MPI_Isend( worktaskInOutput, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
 	}
 
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
-		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
+		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*worktaskInOutput) = 0;
 	}
 }
