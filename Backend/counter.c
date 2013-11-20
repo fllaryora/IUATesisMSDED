@@ -2,7 +2,7 @@
 #include "genericNode.h"
 
 
-void normalCounter( const MPI_Comm commNodes,  const  Counter *initialStatus, const int mpiProcesses){
+void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, const int mpiProcesses){
 
 	//Un array con el tiempo le falta a cada elemento para terminar (Cantidad de trabajos esta implícito dentro ) (no recursos, porque confundiría)
 	//int* cantDeltaTQFalta = NULL;

@@ -97,7 +97,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		receiveCounter(commNodes, &counter);
 		//printCounter(counter);
 		//TODO provisorio
-		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
+		counterNode( commNodes, &counter, mpiProcesses);
 		if(counter.countPreceders > 0) free( counter.preceders );
 		if(counter.countFollowers > 0) free( counter.followers );
 		
