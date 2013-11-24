@@ -31,7 +31,9 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
 				advancePhaseNormal( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 			case GENERATION_PHASE:
@@ -82,23 +84,8 @@ void advancePhaseFunction(int * inputWorktask, int* outPutWorktask, const Functi
 		msg = (*inputWorktask)? FALSE: TRUE;
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
 	}
-
+	free(bufferReceiver);
+	free(requestPreceders);
+	free(requestFollowers);
 	return;
-}
-
-//envio resource send a los followers
-//TODO FALTA LA DETERMINISTIC BRANCH
-void resourcesSend( const Function *initialStatus, const MPI_Comm commNodes, int* worktaskInOutput){
-    //inicializo los request de las llegadas de recursos
-   
-	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
-	for (int i = 0 ; i < initialStatus->countFollowers; i++){
-		 MPI_Isend( worktaskInOutput, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
-	}
-
-	//espero a que todas la operaciones allan terminado
-	for (int i = 0 ; i < initialStatus->countFollowers; i++){
-		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
-		(*worktaskInOutput) = 0;
-	}
 }

@@ -31,7 +31,9 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
 				advancePhaseCombi( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 			case GENERATION_PHASE:
@@ -129,6 +131,7 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*worktaskInOutput) = 0;
 	}
+	free(requestFollowers);
 }
 
 

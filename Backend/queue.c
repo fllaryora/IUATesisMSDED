@@ -25,7 +25,9 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
+				printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses);
+				printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses);
@@ -54,12 +56,12 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
     //inicializo los request de las llegadas de recursos
     
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
-	printf("%d: inicio\n", initialStatus->idNode);
+	//printf("%d: inicio\n", initialStatus->idNode);
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	printf("%d: Envios pendientes\n", initialStatus->idNode);
+	//printf("%d: Envios pendientes\n", initialStatus->idNode);
 	//armo la lista de nodos no procesados
 	int* currentFollowerListStatus = (int*) malloc( sizeof(int)* initialStatus->countFollowers ) ;
 	for(int i = 0 ; i < initialStatus->countFollowers; i++){
@@ -67,11 +69,11 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
 	}
 	printf("%d: pasa los processed\n", initialStatus->idNode);
 	while( hasAvailableCombis( currentFollowerListStatus, initialStatus) ){
-		printf("%d: has aviables\n", initialStatus->idNode);
+		//printf("%d: has aviables\n", initialStatus->idNode);
 		requestResponceCombis(currentFollowerListStatus, initialStatus, commNodes, (const int *) bodyResource);
-		printf("%d: request responces\n", initialStatus->idNode);
+		//printf("%d: request responces\n", initialStatus->idNode);
 		getDemandCombis(currentFollowerListStatus, initialStatus, commNodes);
-		printf("%d: fortunated\n", initialStatus->idNode);
+		//printf("%d: fortunated\n", initialStatus->idNode);
 		getFortunatedCombis( currentFollowerListStatus, initialStatus, commNodes, bodyResource);
 	}
 	printf("%d: Envios pendientes\n", initialStatus->idNode);
@@ -80,7 +82,7 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
 		(*inputResource) += bufferReceiver[i];
 	}
-	printf("%d: SALi Envios pendientes\n", initialStatus->idNode);
+	//printf("%d: SALi Envios pendientes\n", initialStatus->idNode);
 	if( !isPrima ){
 		MPI_Barrier( commNodes );
 	} else {
@@ -88,6 +90,10 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
 		msg = (*inputResource)? FALSE: TRUE;
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
 	}
+
+	free(bufferReceiver);
+	free(requestPreceders);
+	free(currentFollowerListStatus);
 	return;
 }
 
@@ -214,7 +220,9 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 			}
 		}
 	}
-
+	
+	free(prioritaryCombis);
+	return;
 }
 
 void generationPhaseQueue(int* inputResource, int* bodyResource, const MPI_Comm commNodes){

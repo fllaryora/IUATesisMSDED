@@ -31,10 +31,12 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
 				advancePhaseNormal( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outPutWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-			advancePhaseNormal( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, TRUE);
+				advancePhaseNormal( &inputWorktask,  &outPutWorktask, initialStatus, commNodes, mpiProcesses, TRUE);
 				break;
 			case GENERATION_PHASE:
 			case GENERATION_PHASE_PRIMA:
@@ -84,6 +86,9 @@ void advancePhaseNormal(int * inputWorktask, int* outPutWorktask, const Normal *
 		msg = (*inputWorktask)? FALSE: TRUE;
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
 	}
-
+	
+	free(bufferReceiver);
+	free(requestPreceders);
+	free(requestFollowers);
 	return;
 }
