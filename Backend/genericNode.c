@@ -591,196 +591,46 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 	}
 }
 
-void printQueue(Queue queue)
-{
-	int i;
 
-	printf("%d: idNode: %d\n", queue.idNode, queue.idNode);
-	printf("%d: resource: %d\n", queue.idNode, queue.resource);
-	printf("%d: fixedCost: %.4f\n", queue.idNode, queue.fixedCost);
-	printf("%d: variableCost: %.4f\n", queue.idNode, queue.variableCost);
-	printf("%d: countPreceders: %d\n", queue.idNode, queue.countPreceders);
-	printf("%d: countFollowers: %d\n", queue.idNode, queue.countFollowers);
 
-	for (i=0 ; i<queue.countPreceders ; i++)
-		printf("%d: preceders[%d]: %d\n", queue.idNode,i,queue.preceders[i]);
+///********************************/
+//codigo de lal ista enlazada de los worktask
 
-	for (i=0 ; i<queue.countFollowers ; i++)
-		printf("%d: followers[%d]: %d\n", queue.idNode,i,queue.followers[i]);
+void insertWorktask(Worktask *pointer, unsigned long long int delay){
+        /* Iterate through the list till we encounter the last node.*/
+        while(pointer->next!=NULL)
+        {
+                pointer = pointer -> next;
+        }
+        /* Allocate memory for the new node and put data in it.*/
+        pointer->next = (Worktask *)malloc(sizeof(Worktask));
+        pointer = pointer->next;
+        pointer->currentDelay = delay;
+        pointer->initialDelay = delay;
+        pointer->next = NULL;
 }
 
-void printCounter(Counter counter){
-	int i;
-
-	printf("%d: idNode: %d\n", counter.idNode, counter.idNode);
-	printf("%d: quantity: %d\n", counter.idNode, counter.quantity);
-	printf("%d: cycle: %.2f\n", counter.idNode, counter.cycle);
-	printf("%d: countPreceders: %d\n", counter.idNode, counter.countPreceders);
-	printf("%d: countFollowers: %d\n", counter.idNode, counter.countFollowers);
-
-	for (i=0 ; i<counter.countPreceders ; i++)
-		printf("%d: preceders[%d]: %d\n", counter.idNode,i,counter.preceders[i]);
-
-	for (i=0 ; i<counter.countFollowers ; i++)
-		printf("%d: followers[%d]: %d\n", counter.idNode,i,counter.followers[i]);
+int deleteFinishedWorktask(Worktask *pointer){
+    /* Go to the node for which the node next to it has to be deleted */
+    /*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
+    while(pointer->next!=NULL && (pointer->next)->currentDelay != 0)
+    {
+            pointer = pointer -> next;
+    }
+    if(pointer->next==NULL)
+    {
+            printf("Element 0 is not present in the list\n");
+            return 0;
+    }
+    /* Now pointer points to a node and the node next to it has to be removed */
+    Worktask *temp;
+    temp = pointer -> next;
+    /*temp points to the node which has to be removed*/
+    pointer->next = temp->next;
+    /*We removed the node which is next to the pointer (which is also temp) */
+    free(temp);
+    /* Beacuse we deleted the node, we no longer require the memory used for it . 
+       free() will deallocate the memory.
+     */
+    return deleteWorktask(pointer) + 1;
 }
-
-void printFunction(Function function){
-	int i;
-
-	printf("%d: idNode: %d\n", function.idNode, function.idNode);
-	printf("%d: input: %d\n", function.idNode, function.input);
-	printf("%d: output: %d\n", function.idNode, function.output);
-	printf("%d: countPreceders: %d\n", function.idNode, function.countPreceders);
-	printf("%d: countFollowers: %d\n", function.idNode, function.countFollowers);
-	printf("%d: countProbabilisticBranch: %d\n", function.idNode, function.countProbabilisticBranch);
-
-	for (i=0 ; i<function.countPreceders ; i++)
-		printf("%d: preceders[%d]: %d\n", function.idNode,i,function.preceders[i]);
-
-	for (i=0 ; i<function.countFollowers ; i++)
-		printf("%d: followers[%d]: %d\n", function.idNode,i,function.followers[i]);
-
-	for (i=0 ; i<function.countProbabilisticBranch ; i++)
-		printf("%d: probabilisticBranch[%d]: %.2f\n", function.idNode, i,function.probabilisticBranch[i]);
-}
-
-void printNormal(Normal normal){
-	int i;
-
-	printf("%d: idNode: %d\n", normal.idNode,normal.idNode);
-	printf("%d: countPreceders: %d\n", normal.idNode, normal.countPreceders);
-	printf("%d: countFollowers: %d\n", normal.idNode, normal.countFollowers);
-	printf("%d: countProbabilisticBranch: %d\n", normal.idNode, normal.countProbabilisticBranch);
-
-	for (i=0 ; i<normal.countPreceders ; i++)
-		printf("%d: preceders[%d]: %d\n", normal.idNode, i,normal.preceders[i]);
-
-	for (i=0 ; i<normal.countFollowers ; i++)
-		printf("%d: followers[%d]: %d\n", normal.idNode, i,normal.followers[i]);
-
-	for (i=0 ; i<normal.countProbabilisticBranch ; i++)
-		printf("%d: probabilisticBranch[%d]: %.2f\n", normal.idNode, i,normal.probabilisticBranch[i]);
-
-	if (normal.delay.distribution == DIST_UNIFORM)
-	{
-		printf("%d: delay.distribution: 'uniform'\n",normal.idNode);
-		printf("%d: delay.least: %.4f\n",normal.idNode,normal.delay.least);
-		printf("%d: delay.highest: %.4f\n",normal.idNode,normal.delay.highest);
-		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
-	}
-	else if (normal.delay.distribution == DIST_DETERMINISTIC)
-	{
-		printf("%d: delay.distribution: 'deterministic'\n",normal.idNode);
-		printf("%d: delay.constant: %.4f\n",normal.idNode,normal.delay.constant);
-	}
-	else if (normal.delay.distribution == DIST_NORMAL)
-	{
-		printf("%d: delay.distribution: 'normal'\n",normal.idNode);
-		printf("%d: delay.mean: %.4f\n",normal.idNode,normal.delay.mean);
-		printf("%d: delay.variance: %.4f\n",normal.idNode,normal.delay.variance);
-		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
-	}
-	else if (normal.delay.distribution == DIST_EXPONENTIAL)
-	{
-		printf("%d: delay.distribution: 'exponential'\n",normal.idNode);
-		printf("%d: delay.lambda: %.4f\n",normal.idNode,normal.delay.lambda);
-		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
-	}
-	else if (normal.delay.distribution == DIST_TRIANGULAR)
-	{
-		printf("%d: delay.distribution: 'triangular'\n",normal.idNode);
-		printf("%d: delay.least: %.4f\n",normal.idNode,normal.delay.least);
-		printf("%d: delay.highest: %.4f\n",normal.idNode,normal.delay.highest);
-		printf("%d: delay.mode: %.4f\n",normal.idNode,normal.delay.mode);
-		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
-	}
-	else if (normal.delay.distribution == DIST_BETA)
-	{
-		printf("%d: delay.distribution: 'beta'\n",normal.idNode);
-		printf("%d: delay.minimun: %.4f\n",normal.idNode,normal.delay.minimun);
-		printf("%d: delay.maximun: %.4f\n",normal.idNode,normal.delay.maximun);
-		printf("%d: delay.shapeAlpha: %.4f\n",normal.idNode,normal.delay.shapeAlpha);
-		printf("%d: delay.shapeBeta: %.4f\n",normal.idNode,normal.delay.shapeBeta);
-		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
-	}
-	else if (normal.delay.distribution == DIST_LOG_NORMAL)
-	{
-		printf("%d: delay.distribution: 'log-normal'\n",normal.idNode);
-		printf("%d: delay.escale: %.4f\n",normal.idNode,normal.delay.escale);
-		printf("%d: delay.shape: %.4f\n",normal.idNode,normal.delay.shape);
-		printf("%d: delay.minimun: %.4f\n",normal.idNode,normal.delay.minimun);
-		printf("%d: delay.seed: %d\n",normal.idNode,normal.delay.seed);
-	}
-}
-
-void printCombi(Combi combi)
-{
-	int i;
-
-	printf("%d: idNode: %d\n", combi.idNode,combi.idNode);
-	printf("%d: countPreceders: %d\n", combi.idNode, combi.countPreceders);
-	printf("%d: countFollowers: %d\n", combi.idNode, combi.countFollowers);
-	printf("%d: countProbabilisticBranch: %d\n", combi.idNode, combi.countProbabilisticBranch);
-
-	for (i=0 ; i<combi.countPreceders ; i++)
-		printf("%d: preceders[%d]: %d\n", combi.idNode, i,combi.preceders[i]);
-
-	for (i=0 ; i<combi.countFollowers ; i++)
-		printf("%d: followers[%d]: %d\n", combi.idNode, i,combi.followers[i]);
-
-	for (i=0 ; i<combi.countProbabilisticBranch ; i++)
-		printf("%d: probabilisticBranch[%d]: %.2f\n", combi.idNode, i,combi.probabilisticBranch[i]);
-
-	if (combi.delay.distribution == DIST_UNIFORM)
-	{
-		printf("%d: delay.distribution: 'uniform'\n",combi.idNode);
-		printf("%d: delay.least: %.4f\n",combi.idNode,combi.delay.least);
-		printf("%d: delay.highest: %.4f\n",combi.idNode,combi.delay.highest);
-		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
-	}
-	else if (combi.delay.distribution == DIST_DETERMINISTIC)
-	{
-		printf("%d: delay.distribution: 'deterministic'\n",combi.idNode);
-		printf("%d: delay.constant: %.4f\n",combi.idNode,combi.delay.constant);
-	}
-	else if (combi.delay.distribution == DIST_NORMAL)
-	{
-		printf("%d: delay.distribution: 'normal'\n",combi.idNode);
-		printf("%d: delay.mean: %.4f\n",combi.idNode,combi.delay.mean);
-		printf("%d: delay.variance: %.4f\n",combi.idNode,combi.delay.variance);
-		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
-	}
-	else if (combi.delay.distribution == DIST_EXPONENTIAL)
-	{
-		printf("%d: delay.distribution: 'exponential'\n",combi.idNode);
-		printf("%d: delay.lambda: %.4f\n",combi.idNode,combi.delay.lambda);
-		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
-	}
-	else if (combi.delay.distribution == DIST_TRIANGULAR)
-	{
-		printf("%d: delay.distribution: 'triangular'\n",combi.idNode);
-		printf("%d: delay.least: %.4f\n",combi.idNode,combi.delay.least);
-		printf("%d: delay.highest: %.4f\n",combi.idNode,combi.delay.highest);
-		printf("%d: delay.mode: %.4f\n",combi.idNode,combi.delay.mode);
-		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
-	}
-	else if (combi.delay.distribution == DIST_BETA)
-	{
-		printf("%d: delay.distribution: 'beta'\n",combi.idNode);
-		printf("%d: delay.minimun: %.4f\n",combi.idNode,combi.delay.minimun);
-		printf("%d: delay.maximun: %.4f\n",combi.idNode,combi.delay.maximun);
-		printf("%d: delay.shapeAlpha: %.4f\n",combi.idNode,combi.delay.shapeAlpha);
-		printf("%d: delay.shapeBeta: %.4f\n",combi.idNode,combi.delay.shapeBeta);
-		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
-	}
-	else if (combi.delay.distribution == DIST_LOG_NORMAL)
-	{
-		printf("%d: delay.distribution: 'log-normal'\n",combi.idNode);
-		printf("%d: delay.escale: %.4f\n",combi.idNode,combi.delay.escale);
-		printf("%d: delay.shape: %.4f\n",combi.idNode,combi.delay.shape);
-		printf("%d: delay.minimun: %.4f\n",combi.idNode,combi.delay.minimun);
-		printf("%d: delay.seed: %d\n",combi.idNode,combi.delay.seed);
-	}
-}
-

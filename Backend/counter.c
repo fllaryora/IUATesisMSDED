@@ -15,7 +15,8 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 
 	int inputWorktask = 0;//que estan en la entrada antes del cuerpo
 	int outPutWorktask = 0; //que cumplieron el dalay se se pueden ir
-	
+	    
+
 	//On the fly: Promedio de las duraciones sorteadas.
 	//TODO:Sumatoria de delay / cant worktask    (la primera vez)
 	//(TODO:Sumatoria de delay anterior + Sumatoria de delayde este delta T) / (cant worktask anteriores + cant worktask de este delta T)

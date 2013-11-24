@@ -15,7 +15,12 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 
 	int inputWorktask = 0;//que estan en la entrada antes del cuerpo
 	int outPutWorktask = 0; //que cumplieron el dalay se se pueden ir
-	
+	int bodyResource = 0; //counterWorkTask
+
+	Worktask *workTaskList;
+    workTaskList = (Worktask *)malloc(sizeof(Worktask)); //nodo dummy de workstasks
+    workTaskList -> next = NULL;
+
 	//On the fly: Promedio de las duraciones sorteadas.
 	//TODO:Sumatoria de delay / cant worktask    (la primera vez)
 	//(TODO:Sumatoria de delay anterior + Sumatoria de delayde este delta T) / (cant worktask anteriores + cant worktask de este delta T)
@@ -174,4 +179,39 @@ void setAllCommit(const Combi *initialStatus, const MPI_Comm commNodes){
 		MPI_Send( NULL, 0, MPI_INT,  initialStatus->preceders[i], TRANSACTION_COMMIT, commNodes);
 	}
 	return ;
+}
+
+void generationPhaseCombi(int* inputResource, int* bodyResource, const MPI_Comm commNodes, Worktask *workTaskList,  const Combi *initialStatus){
+		
+	switch(initialStatus->delay.distribution){	
+		case DIST_DETERMINISTIC:
+			for(int i = 0; i < (*inputResource); i++){
+				insertWorktask(workTaskList, initialStatus->delay.distribution.constant);
+			}
+		break;
+		case DIST_UNIFORM:
+
+		break;
+		case DIST_NORMAL:
+
+		break;
+		case DIST_EXPONENTIAL:
+
+		break;
+		case DIST_TRIANGULAR:
+
+		break;
+		case DIST_BETA:
+
+		break;
+		case DIST_LOG_NORMAL:
+
+		break;
+	}
+
+	//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
+		
+	(*bodyResource) += (*inputResource);
+	(*inputResource) = 0;
+	MPI_Barrier( commNodes );
 }

@@ -88,6 +88,15 @@ typedef struct{
 	Delay delay;
 }Combi;
 
+
+typedef struct WorkTaskType{
+        unsigned long long int  initialDelay;
+        unsigned long long int  currentDelay;
+        struct WorkTaskType *next;
+}Worktask;
+
+
+
 extern void receiveQueue(const MPI_Comm ,Queue *queue);
 extern void receiveCounter(const MPI_Comm ,Counter *counter);
 extern void receiveFunction(const MPI_Comm ,Function *function);
@@ -110,5 +119,7 @@ extern void printFunction(Function );
 extern void printNormal(Normal );
 
 
+void insertWorktask(Worktask *pointer, unsigned long long int delay);
+int deleteFinishedWorktask(Worktask *pointer);
 #endif /* #ifndef _GENERIC_NODE_H_*/
 
