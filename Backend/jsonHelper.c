@@ -175,7 +175,13 @@ int validateJson(const char *filenameJson){
 	if (repeatArrays(arrayQueues, sizeQueues, arrayCounters, sizeCounters, arrayNormals, sizeNormals, arrayFunctions, sizeFunctions, arrayCombis, sizeCombis, &arrayNodes, &sizeNodes) == 0){
 		return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL ID*/   
 	}
-	
+
+	int **arrayPrecedersFull;
+	int **arrayFollowersFull;
+	arrayPrecedersFull = (int **) malloc(sizeNodes*sizeof(int*));
+	arrayFollowersFull = (int **) malloc(sizeNodes*sizeof(int*));
+
+
 	for (i = 0; i < sizeQueues ; i++)
 	{
 	    /*COLA: ANTESESOR: No pueden ser Colas.*/
@@ -191,6 +197,9 @@ int validateJson(const char *filenameJson){
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_QUEUE);/*FAIL QUEUE*/
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_QUEUE); /*FAIL QUEUE*/
+
+		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.queues",i,&arrayPreceders , &sizePreceders);
+		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.queues",i,&arrayFollowers , &sizeFollowers);
 
 		if(arrayPreceders)
 			free(arrayPreceders);
@@ -222,6 +231,9 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COMBI); /*FAIL COMBI*/
 
+		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.combis",i,&arrayPreceders , &sizePreceders);
+		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.combis",i,&arrayFollowers , &sizeFollowers);
+
 		if(arrayPreceders)
 			free(arrayPreceders);
 
@@ -250,6 +262,9 @@ int validateJson(const char *filenameJson){
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+
+		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.normals",i,&arrayPreceders , &sizePreceders);
+		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.normals",i,&arrayFollowers , &sizeFollowers);
 
 		if(arrayPreceders)
 			free(arrayPreceders);
@@ -281,6 +296,9 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
 
+		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.functions",i,&arrayPreceders , &sizePreceders);
+		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.functions",i,&arrayFollowers , &sizeFollowers);
+
 		if(arrayPreceders)
 			free(arrayPreceders);
 
@@ -310,6 +328,9 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
 
+		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.counters",i,&arrayPreceders , &sizePreceders);
+		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.counters",i,&arrayFollowers , &sizeFollowers);
+
 		if(arrayPreceders)
 			free(arrayPreceders);
 
@@ -324,7 +345,70 @@ int validateJson(const char *filenameJson){
 
 	}
 
+	/*for (i = 0; i < sizeNodes; i++)
+		for (j = 0; j <= arrayPrecedersFull[i][0] ; j++)
+			printf("arrayPrecedersFull[%d][%d] = %d\n",i,j,arrayPrecedersFull[i][j]);
+	for (i = 0; i < sizeNodes; i++)
+		for (j = 0; j <= arrayFollowersFull[i][0] ; j++)
+			printf("arrayFollowersFull[%d][%d] = %d\n",i,j,arrayFollowersFull[i][j]);*/
+
+	//( indice-1 == idNode)
+
+	if (validateDoubleReference(sizeNodes,&arrayPrecedersFull,&arrayFollowersFull) == DOUBLE_REFERENCE_FAIL)
+		return DOUBLE_REFERENCE_FAIL;
+
     return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
+}
+
+void getArrayBidimencionalFull(JSON_Object *object, int*** arrayFull,const char *typeNode,int i, int** arreglo, int* countArreglo)
+{
+	int idNode,j;
+	JSON_Array  *arrayLocal;
+	JSON_Object *objectInArray;
+	arrayLocal = json_object_dotget_array(object, typeNode);
+	objectInArray = json_array_get_object(arrayLocal, i);
+	idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
+	(*arrayFull)[idNode-1] = (int*) malloc(((*countArreglo)+1)*sizeof(int));
+
+	(*arrayFull)[idNode-1][0] = (*countArreglo);
+	for (j = 1; j <= ((*arrayFull)[idNode-1])[0] ; j++)
+		(*arrayFull)[idNode-1][j] = (*arreglo)[j-1];
+}
+
+int validateDoubleReference(int sizeNodes, int*** arrayPrecedersFull,int*** arrayFollowersFull)
+{
+	int i,j,k;
+	int isDoubleReference = TRUE;
+	for (i = 0; i < sizeNodes; i++)
+	{
+		for (j = 1; j <= (*arrayPrecedersFull)[i][0] ; j++)
+		{
+			isDoubleReference = FALSE;
+			for (k = 1; k <= (*arrayFollowersFull)[(*arrayPrecedersFull)[i][j]-1][0] ; k++)
+			{
+				if ((*arrayFollowersFull)[(*arrayPrecedersFull)[i][j]-1][k]-1 == i)
+					isDoubleReference = TRUE;
+			}
+			if (isDoubleReference == FALSE)
+				return DOUBLE_REFERENCE_FAIL;
+		}
+	}
+
+	for (i = 0; i < sizeNodes; i++)
+	{
+		for (j = 1; j <= (*arrayFollowersFull)[i][0] ; j++)
+		{
+			isDoubleReference = FALSE;
+			for (k = 1; k <= (*arrayPrecedersFull)[(*arrayFollowersFull)[i][j]-1][0] ; k++)
+			{
+				if ((*arrayPrecedersFull)[(*arrayFollowersFull)[i][j]-1][k]-1 == i)
+					isDoubleReference = TRUE;
+			}
+			if (isDoubleReference == FALSE)
+				return DOUBLE_REFERENCE_FAIL;
+		}
+	}
+	return VALIDATION_PASS;
 }
 
 /*
