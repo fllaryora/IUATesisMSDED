@@ -43,16 +43,18 @@ void raffler(){
 		currentSource = infoComm.MPI_SOURCE;
 		MPI_Get_count1( &infoComm, MPI_INT, &receiverCount);
 		if( receiverCount == 0 ) receiverCount = 1;
-		printf("receiverCount = %d\n", receiverCount);
+		//printf("receiverCount = %d\n", receiverCount);
 		bufferReceiver = (int*)malloc(sizeof(int) * receiverCount);
 		MPI_Recv12( bufferReceiver, receiverCount, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
 		if (currentTag == NEW_RAFFLE ) {
 			
 			Raffle( combiIds ,combiIdsAmount );
-			printf("Orden de los ids mesclados\n");
-			for(int i = 0; i < combiIdsAmount ; i++){ printf("%d ",combiIds[i]);}
-			printf("\n");
+			//printf("Orden de los ids mesclados\n");
+			//for(int i = 0; i < combiIdsAmount ; i++){
+			//	 printf("%d ",combiIds[i]);
+			//}
+			//printf("\n");
 
 			MockAlRaffle(currentTag); //currentTag=GET_RAFFLE
 		} 

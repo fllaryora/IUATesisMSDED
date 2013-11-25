@@ -36,12 +36,12 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
+			printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
@@ -147,13 +147,13 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 void finishCombi(const int isPrima, const MPI_Comm commNodes ,const int* inputResource, const int mpiProcesses){
 	int msg;
 	 if( !isPrima ){
-		printf("me quede en la barrera2\n");
 		MPI_Barrier( commNodes );
-		printf(" sale de la barrera\n");
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;
+		printf("me quede en la barrera2\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
+		printf(" sale de la barrera2\n");
 	}
 
 }
@@ -190,7 +190,7 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, const MPI_Comm 
 	switch(initialStatus->delay.distribution){	
 		case DIST_DETERMINISTIC:
 			for(int i = 0; i < (*inputWorktask); i++){
-				printf("cte = %d", ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
+				//printf("cte = %d", ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
 				insertWorktask(workTaskList, ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
 			}
 		break;
@@ -218,7 +218,7 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, const MPI_Comm 
 		
 	(*bodyResource) += (*inputWorktask);
 	(*inputWorktask) = 0;
-	printf("espero en barrera");
+	//printf("espero en barrera");
 	MPI_Barrier( commNodes );
-	printf("Salgo barrera en barrera");
+	//printf("Salgo barrera en barrera");
 }

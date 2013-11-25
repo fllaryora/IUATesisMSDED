@@ -32,12 +32,12 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-			advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
@@ -61,25 +61,25 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
 	MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
     
-	printf("reciviendo los inputs\n");
+	if( isPrima )printf("reciviendo los inputs\n");
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	printf("enviando los outpus\n");
+	if( isPrima )printf("enviando los outpus\n");
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		 MPI_Isend( outputResource, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
 	}
 
 
-	printf("Espero followrs\n");
+	if( isPrima )printf("Espero followrs\n");
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*outputResource) = 0;
 	}
 	
-	printf("Espero predecesor\n");
+	if( isPrima )printf("Espero predecesor\n");
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
 		(*inputResource) += bufferReceiver[i];
@@ -88,13 +88,15 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
 	
 	
 	if( !isPrima ){
-		printf("me quede en la barrera5\n");
+		
 		MPI_Barrier( commNodes );
-		printf(" sale de la barrera\n");
+		
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;
+		printf("me quede en la barrera5\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
+		printf(" sale de la barrera5\n");
 	}
 
 	free(bufferReceiver);
@@ -108,7 +110,7 @@ void generationPhaseCounter(int* inputResource, int* outputResource ,  const MPI
 	(*inputResource) = 0;
 	
 	//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
-	printf("espero en barrera generacion contador");
+	//printf("espero en barrera generacion contador");
 	MPI_Barrier( commNodes );
-	printf("Salgo barrera en barrera");
+	//printf("Salgo barrera en barrera");
 }
