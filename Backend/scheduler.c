@@ -51,8 +51,8 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		}while(((watchdog2--) > 0) && !isAllFinalized );
 		
 		msg = CONSUME_DT;
-		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
-		//nodos no implementados aun--->MPI_Barrier( commNodes );
+		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
+		MPI_Barrier( commNodes );
 		watchdog--;
 		
 		//New printer
@@ -80,6 +80,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 		MPI_Barrier( commNodes );
 		
+		printf("***********************************************************\n");
 	} while( watchdog > 0);
 	//envio livelock al resto de los nodos
 	msg = LIVE_LOCK;

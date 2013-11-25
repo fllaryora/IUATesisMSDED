@@ -16,7 +16,7 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	int inputWorktask = 0;//que estan en la entrada antes del cuerpo
 	int outputWorktask = 0; //que cumplieron el dalay se se pueden ir
 	int bodyResource = 0; //counterWorkTask
-
+	unsigned long long int deltaTCount = 0; //cantidad de deltaT que pasaron en este tiempo
 	Worktask *workTaskList;
     workTaskList = (Worktask *)malloc(sizeof(Worktask)); //nodo dummy de workstasks
     workTaskList -> next = NULL;
@@ -36,10 +36,12 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-			printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE);
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
@@ -48,6 +50,12 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 				generationPhaseCombi( &inputWorktask, &bodyResource,  commNodes, workTaskList, initialStatus);
 				break;
 			case CONSUME_DT:
+				deltaTCount++;
+				int goOut = discountDelayAndDeleteFinishedWorktask(workTaskList);
+				bodyResource -= goOut;
+				outputWorktask += goOut;
+				MPI_Barrier( commNodes );
+				break;
 			case PING_REPORT:
 			default:
 				break;

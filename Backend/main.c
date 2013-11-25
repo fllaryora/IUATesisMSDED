@@ -96,7 +96,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			int* targetCounter = getTargets( filenameJson);
 
 			//TODO watchdog = 0 para que lo haga una vez  cambiar por getWatchdog( filenameJson); despues
-			scheduler( 1, commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]);
+			scheduler( 10, commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]);
 			free(targetCounter);
 
 			/* Shut down MPI */

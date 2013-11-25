@@ -25,7 +25,9 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
+				printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses);
+				printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 			printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
@@ -38,6 +40,7 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 				break;
 			case CONSUME_DT:
 				deltaTCount++;
+				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
 			default:

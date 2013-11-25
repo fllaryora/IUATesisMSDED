@@ -3,7 +3,7 @@
 #include "parson.h"
 #include "jsonHelper.h"
 
-#define TIME_TO_DELTA_T 10000 //admitimos hasta 4 0 en los doubles
+#define TIME_TO_DELTA_T 1//10000 //admitimos hasta 4 ceros en los doubles
 extern void genericNode(const int , const int ,const MPI_Comm, const int );
 
 typedef enum{
@@ -121,6 +121,6 @@ extern void printNormal(Normal );
 
 
 void insertWorktask(Worktask *pointer, unsigned long long int delay);
-int deleteFinishedWorktask(Worktask *pointer);
+int discountDelayAndDeleteFinishedWorktask(Worktask *pointer);
 #endif /* #ifndef _GENERIC_NODE_H_*/
 

@@ -21,17 +21,20 @@ void insert(Worktask *pointer, unsigned long long int currentDelay,  unsigned lo
         pointer->next = NULL;
 }
 
-void delete(Worktask *pointer){
+int delete(Worktask *pointer){
+	int deletedWorkTask = 0;
+	while(1){
     /* Go to the node for which the node next to it has to be deleted */
     /*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
-    while(pointer->next!=NULL && (pointer->next)->currentDelay != 0)
+    while(pointer->next!=NULL && (pointer->next)->currentDelay != 1)
     {
+			(pointer->next)->currentDelay--;
             pointer = pointer -> next;
     }
     if(pointer->next==NULL)
     {
             printf("Element 0 is not present in the list\n");
-            return;
+            return deletedWorkTask;
     }
     /* Now pointer points to a node and the node next to it has to be removed */
     Worktask *temp;
@@ -43,7 +46,8 @@ void delete(Worktask *pointer){
     /* Beacuse we deleted the node, we no longer require the memory used for it . 
        free() will deallocate the memory.
      */
-    return;
+     deletedWorkTask++;
+    }
 }
 
 void print(Worktask *pointer){

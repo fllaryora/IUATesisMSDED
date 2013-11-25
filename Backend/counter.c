@@ -15,7 +15,7 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 
 	int inputResource = 0;//que estan en la entrada antes del cuerpo
 	int outputResource = 0; //que cumplieron el dalay se se pueden ir
-	    
+	unsigned long long int deltaTCount = 0; //cantidad de deltaT que pasaron en este tiempo
 
 	//On the fly: Promedio de las duraciones sorteadas.
 	//TODO:Sumatoria de delay / cant worktask    (la primera vez)
@@ -32,7 +32,9 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
@@ -44,6 +46,9 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 				generationPhaseCounter( &inputResource, &outputResource,  commNodes );
 				break;
 			case CONSUME_DT:
+				deltaTCount++;
+				MPI_Barrier( commNodes );
+				break;
 			case PING_REPORT:
 			default:
 				break;

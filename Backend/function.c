@@ -16,6 +16,7 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	int inputResource = 0;//que estan en la entrada antes del cuerpo
 	int outputResource = 0; //que cumplieron el dalay se se pueden ir
 	int bodyResource = 0; //recources in function
+	unsigned long long int deltaTCount = 0; //cantidad de deltaT que pasaron en este tiempo
 	//On the fly: Promedio de las duraciones sorteadas.
 	//TODO:Sumatoria de delay / cant worktask    (la primera vez)
 	//(TODO:Sumatoria de delay anterior + Sumatoria de delayde este delta T) / (cant worktask anteriores + cant worktask de este delta T)
@@ -31,7 +32,9 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE);
+				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
@@ -43,6 +46,9 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 				generationPhaseFunction(&inputResource, &bodyResource, &outputResource, commNodes , initialStatus );
 				break;
 			case CONSUME_DT:
+				deltaTCount++;
+				MPI_Barrier( commNodes );
+				break;
 			case PING_REPORT:
 			default:
 				break;
