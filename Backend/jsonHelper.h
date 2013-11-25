@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define PROB_MIN 0.999
+#define PROB_MAX 1.001
+
 typedef enum{
 	ERROR_OPEN_JSON =1,	/* json no existe */
 	ERROR_OPEN_SCHEMA ,	/* schema no existe */
@@ -26,6 +29,8 @@ typedef enum{
 	INVALID_SCHEMA,		/* ej: sacando una coma al schema , esquema incompleto */
 	DOUBLE_REFERENCE_FAIL,
 	AUTOREFERENCE_FAIL,
+	PROBABILISTIC_BRANCH_COUNT_FAIL,
+	PROBABILISTIC_BRANCH_FAIL,
 	VALIDATION_FAIL,	/* el json y el esquema son correctos pero el json no respeta el schema. ej: no incluir un elemento requerido o poner un number en lugar de un double*/
 	VALIDATION_PASS		/* validacion correcta */
 }VALIDATE;
@@ -54,4 +59,6 @@ extern int getModelSeed( const char *);
 extern void getArrayBidimencionalFull(JSON_Object *,int*** ,const char *,int i, int** , int* );
 extern int validateDoubleReference(int ,int*** ,int*** );
 extern int validateAutoreference(JSON_Object *, const char *,int ,int** , int* );
+extern int validateProbabilisticBranch(double** , int* , int* );
+extern void getArrayInArrayDouble(JSON_Object * ,const char *,int ,const char *, double** , int* );
 #endif /* #ifndef _JSON_HELPER_H_*/

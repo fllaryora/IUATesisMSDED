@@ -147,8 +147,9 @@ int validateJson(const char *filenameJson){
 	int sizeQueues, sizeCounters, sizeNormals, sizeFunctions, sizeCombis, sizeNodes;
 	
 	int *arrayQueues = NULL, *arrayCounters = NULL, *arrayNormals = NULL, *arrayFunctions = NULL, *arrayCombis = NULL,*arrayNodes = NULL;
-	int sizePreceders = 0, sizeFollowers = 0;
+	int sizePreceders = 0, sizeFollowers = 0, sizeProbabilisticBranch=0;
 	int *arrayPreceders = NULL, *arrayFollowers = NULL;
+	double *arrayProbabilisticBranch = NULL;
     /*VALIDATE JSON*/
     root_value = json_parse_file(filenameJson);
 	
@@ -231,6 +232,11 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COMBI); /*FAIL COMBI*/
 
+
+		getArrayInArrayDouble(object, "transformation.combis", i,"probabilisticBranch",&arrayProbabilisticBranch , &sizeProbabilisticBranch);
+		int error = validateProbabilisticBranch(&arrayProbabilisticBranch, &sizeProbabilisticBranch, &sizeFollowers);
+		if (error != VALIDATION_PASS) return error;
+
 		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.combis",i,&arrayPreceders , &sizePreceders);
 		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.combis",i,&arrayFollowers , &sizeFollowers);
 
@@ -262,6 +268,10 @@ int validateJson(const char *filenameJson){
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+
+		getArrayInArrayDouble(object, "transformation.normals", i,"probabilisticBranch",&arrayProbabilisticBranch , &sizeProbabilisticBranch);
+		int error = validateProbabilisticBranch(&arrayProbabilisticBranch, &sizeProbabilisticBranch, &sizeFollowers);
+		if (error != VALIDATION_PASS) return error;
 
 		if (validateAutoreference(object, "transformation.normals",i,&arrayPreceders , &sizePreceders) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
 		if (validateAutoreference(object, "transformation.normals",i,&arrayFollowers , &sizeFollowers) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
@@ -297,6 +307,10 @@ int validateJson(const char *filenameJson){
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
+
+		getArrayInArrayDouble(object, "transformation.functions", i,"probabilisticBranch",&arrayProbabilisticBranch , &sizeProbabilisticBranch);
+		int error = validateProbabilisticBranch(&arrayProbabilisticBranch, &sizeProbabilisticBranch, &sizeFollowers);
+		if (error != VALIDATION_PASS) return error;
 
 		if (validateAutoreference(object, "transformation.functions",i,&arrayPreceders , &sizePreceders) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
 		if (validateAutoreference(object, "transformation.functions",i,&arrayFollowers , &sizeFollowers) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
@@ -354,6 +368,19 @@ int validateJson(const char *filenameJson){
 		return DOUBLE_REFERENCE_FAIL;
 
     return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
+}
+
+int validateProbabilisticBranch(double** arreglo, int* countArreglo, int* countArregloComparar)
+{
+	if ((*countArreglo)!=0 && (*countArreglo)!=(*countArregloComparar));
+		return PROBABILISTIC_BRANCH_COUNT_FAIL;
+
+	double sumProbabilisticBranch = 0;
+	for (int j=0 ; j<(*countArreglo) ; j++)
+		sumProbabilisticBranch += (*arreglo)[j];
+	if ((*countArreglo)>0)
+		if (sumProbabilisticBranch <= PROB_MIN || sumProbabilisticBranch >= PROB_MAX)
+			 return PROBABILISTIC_BRANCH_FAIL;
 }
 
 int validateAutoreference(JSON_Object *object, const char *typeNode,int i,int** arreglo, int* countArreglo)
@@ -534,6 +561,22 @@ void getArrayInArray(JSON_Object * objectJson,const char *arrayJson,int pos,cons
     *countArreglo = json_array_get_count(arrayJsonFunction);
     if((*countArreglo))
 		*arreglo = (int*)malloc(sizeof(int) * (*countArreglo));
+
+    for (i = 0; i < (*countArreglo); i++)
+	{
+	    (*arreglo)[i] = json_array_get_number(arrayJsonFunction, i);
+	}
+}
+
+void getArrayInArrayDouble(JSON_Object * objectJson,const char *arrayJson,int pos,const char *arrayJsonIn, double** arreglo, int* countArreglo)
+{
+	JSON_Array *array = json_object_dotget_array(objectJson, arrayJson);
+	JSON_Object *objectInArray = json_array_get_object(array, pos);
+	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectInArray, arrayJsonIn);
+	int i;
+    *countArreglo = json_array_get_count(arrayJsonFunction);
+    if((*countArreglo))
+		*arreglo = (double*)malloc(sizeof(double) * (*countArreglo));
 
     for (i = 0; i < (*countArreglo); i++)
 	{
