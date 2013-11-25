@@ -26,14 +26,14 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
+				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses);
-				printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
+				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-			printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
+				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses);
-				printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
+				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
@@ -44,7 +44,7 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
-			printf("print report----%d\n",initialStatus->idNode);
+			//printf("print report----%d\n",initialStatus->idNode);
 			qReport.idNode = initialStatus->idNode;
 			qReport.amount = 0;
 			qReport.counterInput = 0;
@@ -77,33 +77,33 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
     //inicializo los request de las llegadas de recursos
     
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
-	if( isPrima )printf("%d: inicio\n", initialStatus->idNode);
+	//if( isPrima )printf("%d: inicio\n", initialStatus->idNode);
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	if( isPrima )printf("%d: Envios pendientes\n", initialStatus->idNode);
+	//if( isPrima )printf("%d: Envios pendientes\n", initialStatus->idNode);
 	//armo la lista de nodos no procesados
 	int* currentFollowerListStatus = (int*) malloc( sizeof(int)* initialStatus->countFollowers ) ;
 	for(int i = 0 ; i < initialStatus->countFollowers; i++){
 		currentFollowerListStatus[i] = NOT_PROCESSESED;
 	}
-	if( isPrima )printf("%d: pasa los processed\n", initialStatus->idNode);
+	//if( isPrima )printf("%d: pasa los processed\n", initialStatus->idNode);
 	while( hasAvailableCombis( currentFollowerListStatus, initialStatus) ){
-		if( isPrima )printf("%d: has aviables\n", initialStatus->idNode);
+		//if( isPrima )printf("%d: has aviables\n", initialStatus->idNode);
 		requestResponceCombis(currentFollowerListStatus, initialStatus, commNodes, (const int *) bodyResource);
-		if( isPrima )printf("%d: request responces\n", initialStatus->idNode);
+		//if( isPrima )printf("%d: request responces\n", initialStatus->idNode);
 		getDemandCombis(currentFollowerListStatus, initialStatus, commNodes);
-		if( isPrima )printf("%d: fortunated\n", initialStatus->idNode);
+		//if( isPrima )printf("%d: fortunated\n", initialStatus->idNode);
 		getFortunatedCombis( currentFollowerListStatus, initialStatus, commNodes, bodyResource);
 	}
-	if( isPrima )printf("%d: Envios pendientes\n", initialStatus->idNode);
+	//if( isPrima )printf("%d: Envios pendientes\n", initialStatus->idNode);
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
 		(*inputResource) += bufferReceiver[i];
 	}
-	if( isPrima )printf("%d: SALi Envios pendientes\n", initialStatus->idNode);
+	//if( isPrima )printf("%d: SALi Envios pendientes\n", initialStatus->idNode);
 	if( !isPrima ){
 		
 		MPI_Barrier( commNodes );
@@ -111,9 +111,9 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;
-		printf("me quede en la barrera1\n");
+		//printf("me quede en la barrera1\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
-		printf(" sale de la barrera\n");
+		//printf(" sale de la barrera\n");
 	}
 
 	free(bufferReceiver);

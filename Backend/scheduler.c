@@ -69,8 +69,8 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 		
 		MPI_Recv( targetStatus, counterNodes*2, MPI_INT, PRINTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		printf("targets: %d: %d\n", targets[0], targets[1]);
-		printf("targetStatus: %d: %d\n", targetStatus[0], targetStatus[1]);
+		//printf("targets: %d: %d\n", targets[0], targets[1]);
+		//printf("targetStatus: %d: %d\n", targetStatus[0], targetStatus[1]);
 		isAllFinalized = 0;
 		
 		for(int i = 0 ; i< counterNodes;i++ ){
@@ -86,7 +86,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 			}
 		}
 		
-		printf("***********************************************************\n");
+		printf("-- FIN DELTA T --\n");
 	} while( watchdog > 0 && (isAllFinalized!=counterNodes));
 	//envio livelock al resto de los nodos
 	printf("SALIOOO del Watchdog\n");

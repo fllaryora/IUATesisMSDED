@@ -32,14 +32,14 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 			break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
@@ -50,7 +50,7 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
-			printf("print report----%d\n",initialStatus->idNode);
+			//printf("print report----%d\n",initialStatus->idNode);
 			fReport.idNode = initialStatus->idNode;
 			fReport.amount = 0;
 			MPI_Send(&fReport, sizeof(PrinterFunction), MPI_BYTE, PRINTER_ID, FUNCTION_REPORT , MPI_COMM_WORLD);
@@ -101,12 +101,12 @@ void advancePhaseFunction(int * inputResource, int* outputResource, const Functi
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
 	MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
     
-	if(isPrima)printf("4: reciviendo los inputs\n");
+	//if(isPrima)printf("4: reciviendo los inputs\n");
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	if(isPrima)printf("4: enviando los outputs\n");
+	//if(isPrima)printf("4: enviando los outputs\n");
 	if (initialStatus->countProbabilisticBranch == 0){
 		for (int i = 0 ; i < initialStatus->countFollowers; i++){
 			 MPI_Isend( outputResource, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
@@ -117,13 +117,13 @@ void advancePhaseFunction(int * inputResource, int* outputResource, const Functi
 		}
 	}
 	
-    if(isPrima)printf("4: espera en 1...\n");
+    //if(isPrima)printf("4: espera en 1...\n");
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
 		(*inputResource) += bufferReceiver[i];
 	}
-	if(isPrima)printf("4: espera en 2...\n");
+	//if(isPrima)printf("4: espera en 2...\n");
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*outputResource) = 0;
@@ -138,9 +138,9 @@ void advancePhaseFunction(int * inputResource, int* outputResource, const Functi
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;
-		printf("me quede en la barrera4\n");
+		//printf("me quede en la barrera4\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
-		printf(" sale de la barrera4\n");
+		//printf(" sale de la barrera4\n");
 	}
 	free(bufferReceiver);
 	free(requestPreceders);

@@ -63,14 +63,14 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
@@ -79,15 +79,17 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 			case CONSUME_DT:
 				deltaTCount++;
 				int goOut = discountDelayAndDeleteFinishedWorktask(workTaskList);
+				printf("body INICIO CONSUME_DT: %d\n",bodyResource);
 				bodyResource -= goOut;
+				printf("body FIN CONSUME_DT: %d\n",bodyResource);
 				outputWorktask += goOut;
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
-
+				printf("body FIN: %d\n",bodyResource);
 				cReport.activityInside = bodyResource;
 
-				printf("print report----%d\n",initialStatus->idNode);
+				//printf("print report----%d\n",initialStatus->idNode);
 
 				MPI_Send(&cReport, sizeof(PrinterActivity), MPI_BYTE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
 				double* worktask = delayOfWorktask(workTaskList, bodyResource);
@@ -108,35 +110,35 @@ void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *in
 	//printf("%d: avance combi\n", initialStatus->idNode);
     for(;;){
     	if(!hasQueueResources( initialStatus, commNodes)){
-			if(isPrima)printf("%d: cola sin recursos\n", initialStatus->idNode);
+			//if(isPrima)printf("%d: cola sin recursos\n", initialStatus->idNode);
 	    	resourcesNoDemand( initialStatus, commNodes);
-	    	if(isPrima)printf("%d: no demand\n", initialStatus->idNode);
+	    	//if(isPrima)printf("%d: no demand\n", initialStatus->idNode);
 	    	resourcesSend( initialStatus, commNodes, outputWorktask, modelSeed);
-	    	if(isPrima)printf("%d: resource send\n", initialStatus->idNode);
+	    	//if(isPrima)printf("%d: resource send\n", initialStatus->idNode);
 	    	finishCombi( isPrima, commNodes , inputWorktask, mpiProcesses);
-	    	if(isPrima)printf("%d: cola sin recursos\n", initialStatus->idNode);
+	    	//if(isPrima)printf("%d: cola sin recursos\n", initialStatus->idNode);
 	    	break;
     	}else{
-			if(isPrima)printf("%d: cola con recursos\n", initialStatus->idNode);
+			//if(isPrima)printf("%d: cola con recursos\n", initialStatus->idNode);
 	    	resourcesDemand(initialStatus, commNodes);
 	    	//printf("%d: DEmand\n", initialStatus->idNode);
 	    	if(allTransactionBegin( commNodes ,initialStatus)){
-				if(isPrima)printf("%d: transaction b\n", initialStatus->idNode);
+				//if(isPrima)printf("%d: transaction b\n", initialStatus->idNode);
 	    		setAllCommit(initialStatus, commNodes);
-	    		if(isPrima)printf("%d: commit\n", initialStatus->idNode);
+	    		//if(isPrima)printf("%d: commit\n", initialStatus->idNode);
 	    		(*inputWorktask)++;
 	    	} else {
-				if(isPrima)printf("%d: Else b\n", initialStatus->idNode);
+				//if(isPrima)printf("%d: Else b\n", initialStatus->idNode);
 	    		setAllRollback( initialStatus, commNodes);
-	    		if(isPrima)printf("%d: rollback b\n", initialStatus->idNode);
+	    		//if(isPrima)printf("%d: rollback b\n", initialStatus->idNode);
 	    		resourcesSend( initialStatus, commNodes, outputWorktask, modelSeed);
-				if(isPrima)printf("%d: resource send\n", initialStatus->idNode);
+				//if(isPrima)printf("%d: resource send\n", initialStatus->idNode);
 	    		finishCombi( isPrima,  commNodes , inputWorktask, mpiProcesses);
-	    		if(isPrima)printf("%d: fishish 2 b\n", initialStatus->idNode);
+	    		//if(isPrima)printf("%d: fishish 2 b\n", initialStatus->idNode);
 	    		break;
 	    	}
     	}
-    	if(isPrima)printf("----%d",initialStatus->idNode);
+    	//if(isPrima)printf("----%d",initialStatus->idNode);
     }
 	return;
 }
@@ -177,7 +179,7 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 	
 	double* walls = NULL;
 	int* hollows = NULL;
-	printf("brob branch %d \n",initialStatus->countProbabilisticBranch);
+	//printf("brob branch %d \n",initialStatus->countProbabilisticBranch);
 	if (initialStatus->countProbabilisticBranch > 0){
 		walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
 		hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
@@ -188,7 +190,7 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 	for(int i = 0; i < initialStatus->countProbabilisticBranch-1; i++){
 		acummulatedProb += initialStatus->probabilisticBranch[i];
 		walls[i] = acummulatedProb;
-		printf("wall i %d= %g \n",i, acummulatedProb);
+		//printf("wall i %d= %g \n",i, acummulatedProb);
 		hollows[i] = 0; //inicializo de paso
 	}
 	
@@ -238,9 +240,9 @@ void finishCombi(const int isPrima, const MPI_Comm commNodes ,const int* inputRe
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;
-		printf("me quede en la barrera2\n");
+		//printf("me quede en la barrera2\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
-		printf(" sale de la barrera2\n");
+		//printf(" sale de la barrera2\n");
 	}
 
 }
@@ -388,7 +390,7 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
 		break;
 
 	}
-	
+	printf("body INICIO GEN: %d\n",(*bodyResource));
 
 	(*bodyResource) += (*inputWorktask);
 	(*inputWorktask) = 0;
@@ -396,6 +398,8 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
 	int detZero = deleteFinishedWorktask(workTaskList);
 	(*bodyResource) -= detZero;
 	(*outputWorktask) += detZero;
+
+	printf("body FIN GEN: %d\n",(*bodyResource));
 
 	//printf("espero en barrera");
 	MPI_Barrier( commNodes );

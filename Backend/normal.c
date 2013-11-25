@@ -37,14 +37,14 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
-				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case GENERATION_PHASE:
 				generationPhaseNormalPrima(&inputWorktask, &outputWorktask, &bodyResource ,commNodes, workTaskList,  initialStatus, FALSE);
@@ -60,7 +60,7 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
-			printf("print report----%d\n",initialStatus->idNode);
+			//printf("print report----%d\n",initialStatus->idNode);
 			
 			nReport.idNode = initialStatus->idNode;
 			nReport.activityInside = 0;
@@ -118,12 +118,12 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
 	MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
     
-	if( isPrima) printf("3: reciviendo los inputs\n");
+	//if( isPrima) printf("3: reciviendo los inputs\n");
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	if( isPrima)printf("3: enciando los outputs\n");
+	//if( isPrima)printf("3: enciando los outputs\n");
 	
 	if (initialStatus->countProbabilisticBranch == 0){
 		for (int i = 0 ; i < initialStatus->countFollowers; i++){
@@ -135,13 +135,13 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
 		}
 	}
 	
-    if( isPrima)printf("3: Esperando...1\n");
+    //if( isPrima)printf("3: Esperando...1\n");
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*outputWorktask) = 0;
 	}
-	if( isPrima)printf("3: Esperando...2\n");
+	//if( isPrima)printf("3: Esperando...2\n");
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
 		(*inputWorktask) += bufferReceiver[i];
@@ -153,9 +153,9 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputWorktask)? FALSE: TRUE;
-		printf("me quede en la barrera3\n");
+		//printf("me quede en la barrera3\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
-		printf(" sale de la barrera3\n");
+		//printf(" sale de la barrera3\n");
 	}
 	
 	free(bufferReceiver);
