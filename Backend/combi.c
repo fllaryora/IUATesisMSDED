@@ -62,35 +62,35 @@ void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *in
 	//printf("%d: avance combi\n", initialStatus->idNode);
     for(;;){
     	if(!hasQueueResources( initialStatus, commNodes)){
-			//printf("%d: cola sin recursos\n", initialStatus->idNode);
+			if(isPrima)printf("%d: cola sin recursos\n", initialStatus->idNode);
 	    	resourcesNoDemand( initialStatus, commNodes);
-	    	//printf("%d: no demand\n", initialStatus->idNode);
+	    	if(isPrima)printf("%d: no demand\n", initialStatus->idNode);
 	    	resourcesSend( initialStatus, commNodes, outputWorktask);
-	    	//printf("%d: resource send\n", initialStatus->idNode);
+	    	if(isPrima)printf("%d: resource send\n", initialStatus->idNode);
 	    	finishCombi( isPrima, commNodes , inputWorktask, mpiProcesses);
-	    	//printf("%d: cola sin recursos\n", initialStatus->idNode);
+	    	if(isPrima)printf("%d: cola sin recursos\n", initialStatus->idNode);
 	    	break;
     	}else{
-			//printf("%d: cola con recursos\n", initialStatus->idNode);
+			if(isPrima)printf("%d: cola con recursos\n", initialStatus->idNode);
 	    	resourcesDemand(initialStatus, commNodes);
 	    	//printf("%d: DEmand\n", initialStatus->idNode);
 	    	if(allTransactionBegin( commNodes ,initialStatus)){
-				//printf("%d: transaction b\n", initialStatus->idNode);
+				if(isPrima)printf("%d: transaction b\n", initialStatus->idNode);
 	    		setAllCommit(initialStatus, commNodes);
-	    		//printf("%d: commit\n", initialStatus->idNode);
+	    		if(isPrima)printf("%d: commit\n", initialStatus->idNode);
 	    		(*inputWorktask)++;
 	    	} else {
-				//printf("%d: Else b\n", initialStatus->idNode);
+				if(isPrima)printf("%d: Else b\n", initialStatus->idNode);
 	    		setAllRollback( initialStatus, commNodes);
-	    		//printf("%d: rollback b\n", initialStatus->idNode);
+	    		if(isPrima)printf("%d: rollback b\n", initialStatus->idNode);
 	    		resourcesSend( initialStatus, commNodes, outputWorktask);
-				//printf("%d: resource send\n", initialStatus->idNode);
+				if(isPrima)printf("%d: resource send\n", initialStatus->idNode);
 	    		finishCombi( isPrima,  commNodes , inputWorktask, mpiProcesses);
-	    		//printf("%d: fishish 2 b\n", initialStatus->idNode);
+	    		if(isPrima)printf("%d: fishish 2 b\n", initialStatus->idNode);
 	    		break;
 	    	}
     	}
-    	//printf("----%d",initialStatus->idNode);
+    	if(isPrima)printf("----%d",initialStatus->idNode);
     }
 	return;
 }

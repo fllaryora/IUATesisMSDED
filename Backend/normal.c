@@ -69,23 +69,23 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
 	MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
     
-	if( isPrima) printf("reciviendo los inputs\n");
+	if( isPrima) printf("3: reciviendo los inputs\n");
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	if( isPrima)printf("enciando los outputs\n");
+	if( isPrima)printf("3: enciando los outputs\n");
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		 MPI_Isend( outputWorktask, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
 	}
 
-    if( isPrima)printf("Esperando...1\n");
+    if( isPrima)printf("3: Esperando...1\n");
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*outputWorktask) = 0;
 	}
-	if( isPrima)printf("Esperando...2\n");
+	if( isPrima)printf("3: Esperando...2\n");
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
 		(*inputWorktask) += bufferReceiver[i];

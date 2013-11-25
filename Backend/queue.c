@@ -69,11 +69,11 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
 	}
 	if( isPrima )printf("%d: pasa los processed\n", initialStatus->idNode);
 	while( hasAvailableCombis( currentFollowerListStatus, initialStatus) ){
-		//printf("%d: has aviables\n", initialStatus->idNode);
+		if( isPrima )printf("%d: has aviables\n", initialStatus->idNode);
 		requestResponceCombis(currentFollowerListStatus, initialStatus, commNodes, (const int *) bodyResource);
-		//printf("%d: request responces\n", initialStatus->idNode);
+		if( isPrima )printf("%d: request responces\n", initialStatus->idNode);
 		getDemandCombis(currentFollowerListStatus, initialStatus, commNodes);
-		//printf("%d: fortunated\n", initialStatus->idNode);
+		if( isPrima )printf("%d: fortunated\n", initialStatus->idNode);
 		getFortunatedCombis( currentFollowerListStatus, initialStatus, commNodes, bodyResource);
 	}
 	if( isPrima )printf("%d: Envios pendientes\n", initialStatus->idNode);
