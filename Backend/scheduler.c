@@ -77,8 +77,8 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		}
 		
 		msg = GENERATION_PHASE;
-		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
-		//nodos no implementados aun--->MPI_Barrier( commNodes );
+		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
+		MPI_Barrier( commNodes );
 		
 	} while( watchdog > 0);
 	//envio livelock al resto de los nodos
