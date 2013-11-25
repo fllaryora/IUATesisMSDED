@@ -98,7 +98,7 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
 		int * nodesStatus = NULL;
 		msg = (*inputWorktask)? FALSE: TRUE;
 		printf("me quede en la barrera3\n");
-		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
+		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
 		printf(" sale de la barrera3\n");
 	}
 	

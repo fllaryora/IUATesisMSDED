@@ -91,7 +91,7 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;
 		printf("me quede en la barrera1\n");
-		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
+		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
 		printf(" sale de la barrera\n");
 	}
 

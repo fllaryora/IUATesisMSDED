@@ -36,12 +36,12 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 			MPI_Barrier( commNodes );
 
 			msg = ADVANCE_PAHSE_PRIMA;
-			//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
+			MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 			
 			//calculo que todos los nodos hayan finalizado
 			isAllFinalized = TRUE;
 			msg = TRUE; //no importa
-			//nodos no implementados aun--->MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, (mpiProcesses - RAFFLER_PRINTER) , MPI_INT,  MASTER_ID, commNodes);
+			MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
 			for(int i = 1 ; i< (mpiProcesses - RAFFLER_PRINTER);i++ ){
 				//basta que uno no cumpla
 				if(!(isAllFinalized &=  nodesStatus[i])) break;
