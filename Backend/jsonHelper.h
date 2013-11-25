@@ -25,6 +25,7 @@ typedef enum{
 	INVALID_JSON_OBJECT,
 	INVALID_SCHEMA,		/* ej: sacando una coma al schema , esquema incompleto */
 	DOUBLE_REFERENCE_FAIL,
+	AUTOREFERENCE_FAIL,
 	VALIDATION_FAIL,	/* el json y el esquema son correctos pero el json no respeta el schema. ej: no incluir un elemento requerido o poner un number en lugar de un double*/
 	VALIDATION_PASS		/* validacion correcta */
 }VALIDATE;
@@ -51,5 +52,5 @@ extern int* getTargets( const char *);
 extern int getWatchdog( const char *);
 extern void getArrayBidimencionalFull(JSON_Object *,int*** ,const char *,int i, int** , int* );
 extern int validateDoubleReference(int ,int*** ,int*** );
-
+extern int validateAutoreference(JSON_Object *, const char *,int ,int** , int* );
 #endif /* #ifndef _JSON_HELPER_H_*/

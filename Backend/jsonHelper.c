@@ -263,6 +263,8 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
 
+		if (validateAutoreference(object, "transformation.normals",i,&arrayPreceders , &sizePreceders) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
+		if (validateAutoreference(object, "transformation.normals",i,&arrayFollowers , &sizeFollowers) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
 		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.normals",i,&arrayPreceders , &sizePreceders);
 		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.normals",i,&arrayFollowers , &sizeFollowers);
 
@@ -296,6 +298,8 @@ int validateJson(const char *filenameJson){
 		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
 			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
 
+		if (validateAutoreference(object, "transformation.functions",i,&arrayPreceders , &sizePreceders) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
+		if (validateAutoreference(object, "transformation.functions",i,&arrayFollowers , &sizeFollowers) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
 		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.functions",i,&arrayPreceders , &sizePreceders);
 		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.functions",i,&arrayFollowers , &sizeFollowers);
 
@@ -345,20 +349,27 @@ int validateJson(const char *filenameJson){
 
 	}
 
-	/*for (i = 0; i < sizeNodes; i++)
-		for (j = 0; j <= arrayPrecedersFull[i][0] ; j++)
-			printf("arrayPrecedersFull[%d][%d] = %d\n",i,j,arrayPrecedersFull[i][j]);
-	for (i = 0; i < sizeNodes; i++)
-		for (j = 0; j <= arrayFollowersFull[i][0] ; j++)
-			printf("arrayFollowersFull[%d][%d] = %d\n",i,j,arrayFollowersFull[i][j]);*/
-
 	//( indice-1 == idNode)
-
 	if (validateDoubleReference(sizeNodes,&arrayPrecedersFull,&arrayFollowersFull) == DOUBLE_REFERENCE_FAIL)
 		return DOUBLE_REFERENCE_FAIL;
 
     return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
 }
+
+int validateAutoreference(JSON_Object *object, const char *typeNode,int i,int** arreglo, int* countArreglo)
+{
+	int idNode,j;
+	JSON_Array  *arrayLocal;
+	JSON_Object *objectInArray;
+	arrayLocal = json_object_dotget_array(object, typeNode);
+	objectInArray = json_array_get_object(arrayLocal, i);
+	idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
+
+	for (j=0 ; j<(*countArreglo) ; j++)
+		if((*arreglo)[j]==idNode)
+			return AUTOREFERENCE_FAIL;
+	return VALIDATION_PASS;
+}		
 
 void getArrayBidimencionalFull(JSON_Object *object, int*** arrayFull,const char *typeNode,int i, int** arreglo, int* countArreglo)
 {
