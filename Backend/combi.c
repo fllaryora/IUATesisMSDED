@@ -139,14 +139,22 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 	
 	double* walls = NULL;
 	int* hollows = NULL;
-	walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
-	hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
+	printf("brob branch %d \n",initialStatus->countProbabilisticBranch);
+	if (initialStatus->countProbabilisticBranch > 0){
+		walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
+		hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
+	}
 	double acummulatedProb = 0.0;
 	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
 		acummulatedProb += initialStatus->probabilisticBranch[i];
 		walls[i] = acummulatedProb;
+		printf("wall i %d= %g \n",i, acummulatedProb);
 		hollows[i] = 0; //inicializo de paso
 	}
+	//preeveo errores de redondeo
+	if(initialStatus->countProbabilisticBranch > 0)
+		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
+	
 	if(modelSeed != -1 && initialStatus->countProbabilisticBranch > 0)
 		RandomInitialise(modelSeed,modelSeed);
 	//para cada nodo sortear	
@@ -162,9 +170,6 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 	}
 	
 	 
-	//preeveo errores de redondeo
-	walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
-	
     //inicializo los request de las llegadas de recursos
     MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
     
@@ -186,8 +191,9 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 	}
 	
 	free(requestFollowers);
+	
 	if(walls)free(walls);
-	if(hollows )free(hollows);
+	if(hollows)free(hollows);
 }
 
 

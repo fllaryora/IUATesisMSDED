@@ -51,7 +51,8 @@
 				"delay" : {
 					"distribution": "deterministic",
 					"constant" : 2
-				}
+				},
+				"probabilisticBranch": [0.5, 0.5]
 			}	
 		]
 	}
