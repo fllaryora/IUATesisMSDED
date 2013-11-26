@@ -611,6 +611,14 @@ int getWatchdog( const char *filenameJson ){
 	return ret;
 }
 
+int getModelSeed( const char *filenameJson ){
+	JSON_Value* root_value = json_parse_file(filenameJson);
+	JSON_Object* object = json_value_get_object(root_value);
+	int ret = json_object_dotget_number (object, "seed");
+	json_value_free(root_value);
+	return ret;
+}
+
 int* getTargets( const char *filenameJson ){
 	int count = 0,i;
 	int  *arrayCombis = NULL;

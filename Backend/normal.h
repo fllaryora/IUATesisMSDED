@@ -11,7 +11,7 @@
 #include "genericNode.h"
 
 
-extern void normalNode( const MPI_Comm ,  const  Normal *, const int);
+extern void normalNode( const MPI_Comm ,  const  Normal *, const int, const int );
 extern void advancePhaseNormal(int * , int* , const Normal *, const MPI_Comm , const int ,const int );
 extern void generationPhaseNormalPrima(int* , int* , int*  ,const MPI_Comm , Worktask *,  const Normal *, const int );
 

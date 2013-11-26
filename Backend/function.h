@@ -11,7 +11,7 @@
 #include "genericNode.h"
 
 
-extern void functionNode( const MPI_Comm ,  const  Function *, const int);
+extern void functionNode( const MPI_Comm ,  const  Function *, const int, const int );
 extern void advancePhaseFunction(int * , int* , const Function *, const MPI_Comm , const int ,const int );
 extern void generationPhaseFunction(int*  , int* , int* ,  const MPI_Comm  , const Function * );
 

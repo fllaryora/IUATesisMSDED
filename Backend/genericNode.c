@@ -75,7 +75,7 @@ void sendStructToNodes( const char *filenameJson ,const MPI_Comm commNodes)
 	return;
 }
 
-void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm commNodes, const int mpiProcesses){
+void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm commNodes, const int mpiProcesses, const int modelSeed){
 	MPI_Status status;
 	Queue queue;
 	Counter counter;
@@ -109,7 +109,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		receiveNormal(commNodes, &normal);
 		//printNormal(normal);
 		//TODO provisorio
-		normalNode( commNodes,  &normal,  mpiProcesses);
+		normalNode( commNodes,  &normal,  mpiProcesses, modelSeed);
 		if(normal.countPreceders > 0) free( normal.preceders);
 		if(normal.countFollowers > 0) free(normal.followers);
 		if(normal.countProbabilisticBranch > 0) free(normal.probabilisticBranch);
@@ -119,7 +119,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 		receiveFunction(commNodes, &function);
 		//printFunction(function);
 		//TODO provisorio
-		functionNode( commNodes,   &function, mpiProcesses);
+		functionNode( commNodes,   &function, mpiProcesses, modelSeed);
 		if(function.countPreceders > 0) free( function.preceders );
 		if(function.countFollowers > 0) free( function.followers );
 		if(function.countProbabilisticBranch > 0) free(function.probabilisticBranch );
@@ -128,7 +128,7 @@ void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm comm
 	{
 		receiveCombi(commNodes, &combi);
 		//printCombi(combi);
-		combiNode(commNodes, &combi, mpiProcesses);
+		combiNode(commNodes, &combi, mpiProcesses , modelSeed);
 		if(combi.countPreceders > 0) free( combi.preceders);
 		if(combi.countFollowers > 0) free(combi.followers);
 		if(combi.countProbabilisticBranch > 0) free(combi.probabilisticBranch);

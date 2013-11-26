@@ -50,6 +50,7 @@ extern int getNodesAmount( const char * );
 extern int* getCombiIds( const char * );
 extern int* getTargets( const char *);
 extern int getWatchdog( const char *);
+extern int getModelSeed( const char *);
 extern void getArrayBidimencionalFull(JSON_Object *,int*** ,const char *,int i, int** , int* );
 extern int validateDoubleReference(int ,int*** ,int*** );
 extern int validateAutoreference(JSON_Object *, const char *,int ,int** , int* );

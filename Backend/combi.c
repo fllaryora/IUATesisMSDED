@@ -1,8 +1,8 @@
 #include "combi.h"
 #include "genericNode.h"
+#include "RNGs.h"
 
-
-void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const int mpiProcesses){
+void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const int mpiProcesses, const int modelSeed){
 
 	//Un array con el tiempo le falta a cada elemento para terminar (Cantidad de trabajos esta implícito dentro ) (no recursos, porque confundiría)
 	//int* cantDeltaTQFalta = NULL;
@@ -37,12 +37,12 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 		switch(msg){
 			case ADVANCE_PAHSE:
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
-				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE);
+				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
-				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE);
+				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
@@ -66,14 +66,14 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 }
 
 
-void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima){ 
+void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed){ 
 	//printf("%d: avance combi\n", initialStatus->idNode);
     for(;;){
     	if(!hasQueueResources( initialStatus, commNodes)){
 			if(isPrima)printf("%d: cola sin recursos\n", initialStatus->idNode);
 	    	resourcesNoDemand( initialStatus, commNodes);
 	    	if(isPrima)printf("%d: no demand\n", initialStatus->idNode);
-	    	resourcesSend( initialStatus, commNodes, outputWorktask);
+	    	resourcesSend( initialStatus, commNodes, outputWorktask, modelSeed);
 	    	if(isPrima)printf("%d: resource send\n", initialStatus->idNode);
 	    	finishCombi( isPrima, commNodes , inputWorktask, mpiProcesses);
 	    	if(isPrima)printf("%d: cola sin recursos\n", initialStatus->idNode);
@@ -91,7 +91,7 @@ void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *in
 				if(isPrima)printf("%d: Else b\n", initialStatus->idNode);
 	    		setAllRollback( initialStatus, commNodes);
 	    		if(isPrima)printf("%d: rollback b\n", initialStatus->idNode);
-	    		resourcesSend( initialStatus, commNodes, outputWorktask);
+	    		resourcesSend( initialStatus, commNodes, outputWorktask, modelSeed);
 				if(isPrima)printf("%d: resource send\n", initialStatus->idNode);
 	    		finishCombi( isPrima,  commNodes , inputWorktask, mpiProcesses);
 	    		if(isPrima)printf("%d: fishish 2 b\n", initialStatus->idNode);
@@ -135,20 +135,59 @@ void resourcesDemand( const Combi *initialStatus, const MPI_Comm commNodes){
 
 //envio resource send a los followers
 //TODO FALTA LA DETERMINISTIC BRANCH
-void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* worktaskInOutput){
+void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* worktaskInOutput, const int modelSeed){
+	
+	double* walls = NULL;
+	int* hollows = NULL;
+	walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
+	hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
+	double acummulatedProb = 0.0;
+	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
+		acummulatedProb += initialStatus->probabilisticBranch[i];
+		walls[i] = acummulatedProb;
+		hollows[i] = 0; //inicializo de paso
+	}
+	if(modelSeed != -1 && initialStatus->countProbabilisticBranch > 0)
+		RandomInitialise(modelSeed,modelSeed);
+	//para cada nodo sortear	
+	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
+		double hollowNumber = RandomUniform();
+		//defino donde cae la moneda
+		for(int j = 0; j < initialStatus->countProbabilisticBranch; j++){
+			if( hollowNumber <= walls[j] ){
+				hollows[j]++;
+				break;
+			}
+		}
+	}
+	
+	 
+	//preeveo errores de redondeo
+	walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
+	
     //inicializo los request de las llegadas de recursos
     MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
-	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
-	for (int i = 0 ; i < initialStatus->countFollowers; i++){
-		 MPI_Isend( worktaskInOutput, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
+    
+    if (initialStatus->countProbabilisticBranch == 0){
+		//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
+		for (int i = 0 ; i < initialStatus->countFollowers; i++){
+			 MPI_Isend( worktaskInOutput, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
+		}
+	} else {
+		for (int i = 0 ; i < initialStatus->countFollowers; i++){
+			 MPI_Isend( &hollows[i], 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
+		}
 	}
-
+	
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*worktaskInOutput) = 0;
 	}
+	
 	free(requestFollowers);
+	if(walls)free(walls);
+	if(hollows )free(hollows);
 }
 
 
