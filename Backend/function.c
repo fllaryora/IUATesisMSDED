@@ -1,6 +1,6 @@
 #include "function.h"
 #include "genericNode.h"
-
+#include "RNGs.h"
 
 void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, const int mpiProcesses, const int modelSeed){
 
@@ -33,12 +33,12 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 		switch(msg){
 			case ADVANCE_PAHSE:
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
-				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE);
+				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
-				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE);
+				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
 				printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 			break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
@@ -58,7 +58,38 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	return;
 }
 
-void advancePhaseFunction(int * inputResource, int* outputResource, const Function *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima){ 
+void advancePhaseFunction(int * inputResource, int* outputResource, const Function *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed){ 
+	double* walls = NULL;
+	int* hollows = NULL;
+	if (initialStatus->countProbabilisticBranch > 0){
+		walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
+		hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
+	}
+	double acummulatedProb = 0.0;
+	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
+		acummulatedProb += initialStatus->probabilisticBranch[i];
+		walls[i] = acummulatedProb;
+		hollows[i] = 0; //inicializo de paso
+	}
+	//preeveo errores de redondeo
+	if(initialStatus->countProbabilisticBranch > 0)
+		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
+	
+	if(modelSeed != -1 && initialStatus->countProbabilisticBranch > 0)
+		RandomInitialise(modelSeed,modelSeed);
+	//para cada nodo sortear	
+	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
+		double hollowNumber = RandomUniform();
+		//defino donde cae la moneda
+		for(int j = 0; j < initialStatus->countProbabilisticBranch; j++){
+			if( hollowNumber <= walls[j] ){
+				hollows[j]++;
+				break;
+			}
+		}
+	}
+	
+	
 	int* bufferReceiver = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
     int receiverCount = 1;
     int msg;
@@ -72,10 +103,16 @@ void advancePhaseFunction(int * inputResource, int* outputResource, const Functi
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
 	if(isPrima)printf("4: enviando los outputs\n");
-	for (int i = 0 ; i < initialStatus->countFollowers; i++){
-		 MPI_Isend( outputResource, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
+	if (initialStatus->countProbabilisticBranch == 0){
+		for (int i = 0 ; i < initialStatus->countFollowers; i++){
+			 MPI_Isend( outputResource, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
+		}
+	} else {
+		for (int i = 0 ; i < initialStatus->countFollowers; i++){
+			 MPI_Isend( &hollows[i], 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
+		}
 	}
-
+	
     if(isPrima)printf("4: espera en 1...\n");
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
