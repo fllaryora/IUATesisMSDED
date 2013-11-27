@@ -18,21 +18,21 @@ typedef enum{
 	ERROR_OPEN_SCHEMA ,	/* schema no existe */
 	ERROR_READ_JSON ,	/* ej: el json tenga solo una palabra */
 	ERROR_READ_SCHEMA,  /* ej: el schema tenga solo una palabra */
-	INVALID_QUEUE ,
+	INVALID_QUEUE , //5
 	INVALID_COMBI,
 	INVALID_FUNCTION,
 	INVALID_COUNTER,
 	INVALID_NORMAL,
-	INVALID_JSON,		/* ej: sacando una coma al schema , esquema incompleto */
+	INVALID_JSON,		/* 10 ej: sacando una coma al schema , esquema incompleto */
 	INVALID_JSON_DEPTH,
 	INVALID_JSON_OBJECT,
 	INVALID_SCHEMA,		/* ej: sacando una coma al schema , esquema incompleto */
 	DOUBLE_REFERENCE_FAIL,
-	AUTOREFERENCE_FAIL,
+	AUTOREFERENCE_FAIL, //15
 	PROBABILISTIC_BRANCH_COUNT_FAIL,
 	PROBABILISTIC_BRANCH_FAIL,
 	VALIDATION_FAIL,	/* el json y el esquema son correctos pero el json no respeta el schema. ej: no incluir un elemento requerido o poner un number en lugar de un double*/
-	VALIDATION_PASS		/* validacion correcta */
+	VALIDATION_PASS		/* 19 validacion correcta */
 }VALIDATE;
 
 extern void MergeSort(int , int , int** );

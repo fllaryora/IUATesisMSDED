@@ -152,11 +152,11 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 		hollows[i] = 0; //inicializo de paso
 	}
 	//preeveo errores de redondeo
-	if(initialStatus->countProbabilisticBranch > 0)
+	if(initialStatus->countProbabilisticBranch > 0){
 		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
-	
-	if(modelSeed != -1 && initialStatus->countProbabilisticBranch > 0)
-		RandomInitialise(modelSeed,modelSeed);
+		if(modelSeed != -1 )
+			RandomInitialise(modelSeed,modelSeed);
+	}
 	//para cada nodo sortear	
 	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
 		double hollowNumber = RandomUniform();

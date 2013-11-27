@@ -136,7 +136,7 @@ WJElement schema_load(const char *name, void *client, const char *file, const in
 Valida las reglas del modelo precursor
 */
 int validateJson(const char *filenameJson){
-	
+
 	JSON_Value  *root_value = NULL;
     JSON_Object *object = NULL,*objectInArray = NULL;
     UNUSEDWARNING(objectInArray);
@@ -150,6 +150,8 @@ int validateJson(const char *filenameJson){
 	int sizePreceders = 0, sizeFollowers = 0, sizeProbabilisticBranch=0;
 	int *arrayPreceders = NULL, *arrayFollowers = NULL;
 	double *arrayProbabilisticBranch = NULL;
+	int **arrayPrecedersFull = NULL;
+	int **arrayFollowersFull = NULL;
     /*VALIDATE JSON*/
     root_value = json_parse_file(filenameJson);
 	
@@ -177,8 +179,7 @@ int validateJson(const char *filenameJson){
 		return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL ID*/   
 	}
 
-	int **arrayPrecedersFull;
-	int **arrayFollowersFull;
+	//Lista de punteros a proceders y followers segun id de nodo menos 1
 	arrayPrecedersFull = (int **) malloc(sizeNodes*sizeof(int*));
 	arrayFollowersFull = (int **) malloc(sizeNodes*sizeof(int*));
 
@@ -251,6 +252,7 @@ int validateJson(const char *filenameJson){
 		arrayFollowers = NULL;
 		sizeFollowers = 0;
 		sizePreceders = 0;
+		sizeProbabilisticBranch = 0;
 	}
 
 	for (i = 0; i < sizeNormals ; i++)
@@ -355,7 +357,6 @@ int validateJson(const char *filenameJson){
 		if(arrayFollowers)
 			free(arrayFollowers);
 			
-		
 		arrayPreceders = NULL;
 		arrayFollowers = NULL;
 		sizeFollowers = 0;
@@ -370,17 +371,16 @@ int validateJson(const char *filenameJson){
     return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
 }
 
-int validateProbabilisticBranch(double** arreglo, int* countArreglo, int* countArregloComparar)
-{
-	if ((*countArreglo)!=0 && (*countArreglo)!=(*countArregloComparar));
+int validateProbabilisticBranch(double** arreglo, int* countArreglo, int* countArregloComparar){
+	if ( (*countArreglo) != 0  && (*countArreglo) != (*countArregloComparar) )
 		return PROBABILISTIC_BRANCH_COUNT_FAIL;
-
 	double sumProbabilisticBranch = 0;
 	for (int j=0 ; j<(*countArreglo) ; j++)
 		sumProbabilisticBranch += (*arreglo)[j];
 	if ((*countArreglo)>0)
 		if (sumProbabilisticBranch <= PROB_MIN || sumProbabilisticBranch >= PROB_MAX)
 			 return PROBABILISTIC_BRANCH_FAIL;
+	return VALIDATION_PASS;
 }
 
 int validateAutoreference(JSON_Object *object, const char *typeNode,int i,int** arreglo, int* countArreglo)
