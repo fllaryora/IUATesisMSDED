@@ -38,7 +38,7 @@ typedef enum{
 extern void MergeSort(int , int , int** );
 extern void Merge(int , int , int , int** );
 
-extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * , JSON_Value  * , const int );
+extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * , JSON_Value  * , const int , int** ,int** ,const int );
 extern void	schema_error(void *client, const char *format, ...);
 extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
 
@@ -56,8 +56,10 @@ extern int* getCombiIds( const char * );
 extern int* getTargets( const char *);
 extern int getWatchdog( const char *);
 extern int getModelSeed( const char *);
-extern void getArrayBidimencionalFull(JSON_Object *object, int** linkTable, const char *nodeName, const int pos, int* linkArray, const int linkArraySize);
-extern int validateDoubleReference(int ,int*** ,int*** );
+extern void freeLinkTables(const int , int** ,int** );
+extern int validateEachLinkIsUnique(const int * const , const int );
+extern void setLinksInTableOfLinks(JSON_Object *object, int** linkTable, const char *nodeName, const int pos, int* linkArray, const int linkArraySize);
+extern int validateDoubleReference(const int ,int** ,int** );
 extern int validateAutoreference(JSON_Object*, const char *, const int , int* , const int );
 extern int validateProbabilisticBranch(const double* , const int , const int );
 extern void getProbabilisticBranch(JSON_Object * ,const char *, const int ,const char *, double** , int* );

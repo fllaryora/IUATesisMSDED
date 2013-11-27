@@ -3,11 +3,13 @@
 /* 
 limpia memoria y retorna un valor
 */
-int freeAllAndReturn( int* queueArray, int* counterArray, int* normalArray, int* functionArray, int* combiArray, int* allNodes, JSON_Value* root_value, const int ret){
+int freeAllAndReturn( int* queueArray, int* counterArray, int* normalArray, int* functionArray, int* combiArray, int* allNodes, JSON_Value* root_value, const int sizeAllNodes, int** precederArrayFull,int** followerArrayFull, const int ret){
 	free(queueArray); free(counterArray);
 	free(normalArray); free(functionArray);
 	free(combiArray);  json_value_free(root_value);
 	if(allNodes)free(allNodes);
+	
+	freeLinkTables(sizeAllNodes, precederArrayFull, followerArrayFull);
 	return ret; 
 }
 
@@ -160,7 +162,7 @@ int validateJson(const char *filenameJson){
 
 	/*DIFERENTE NUMERO DE ID*/
 	if (repeatArrays(queueArray, queueSize, counterArray, counterSize, normalArray, normalSize, functionArray, functionSize, combiArray, combiSize, &allNodes, &sizeAllNodes) == 0){
-		return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes , root_value, VALIDATION_FAIL); /*FAIL ID*/   
+		return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes , root_value,sizeAllNodes, precederArrayFull, followerArrayFull, VALIDATION_FAIL); /*FAIL ID*/   
 	}
 
 	//Lista de punteros a proceders y followers segun id de nodo menos 1
@@ -171,19 +173,22 @@ int validateJson(const char *filenameJson){
 	    /*COLA: ANTESESOR: No pueden ser Colas.*/
 		getLink(object, "transformation.queues", i,"preceders",&precederArray , &precederSize);
 		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize)> 0)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_QUEUE); /*FAIL QUEUE*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_QUEUE); /*FAIL QUEUE*/
 	    /*COLA: SUCESOR: Solo pueden ser combis.*/
 		getLink(object, "transformation.queues", i,"followers",&followerArray , &followerSize);
 		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) != followerSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_QUEUE); /*FAIL QUEUE*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_QUEUE); /*FAIL QUEUE*/
 		/*COLA: Existe referencia Preceders Followers*/
 		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_QUEUE);/*FAIL QUEUE*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_QUEUE);/*FAIL QUEUE*/
 		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_QUEUE); /*FAIL QUEUE*/
-
-		getArrayBidimencionalFull(object,precederArrayFull,"transformation.queues",i,precederArray , precederSize);
-		getArrayBidimencionalFull(object,followerArrayFull,"transformation.queues",i,followerArray , followerSize);
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_QUEUE); /*FAIL QUEUE*/
+		
+		if ( validateEachLinkIsUnique(followerArray,followerSize) ==VALIDATION_FAIL || validateEachLinkIsUnique(precederArray,precederSize) ==VALIDATION_FAIL)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_QUEUE); /*FAIL QUEUE*/
+			
+		setLinksInTableOfLinks(object,precederArrayFull,"transformation.queues",i,precederArray , precederSize);
+		setLinksInTableOfLinks(object,followerArrayFull,"transformation.queues",i,followerArray , followerSize);
 
 		if(precederArray)
 			free(precederArray);
@@ -201,23 +206,26 @@ int validateJson(const char *filenameJson){
 	    /*COMBI: ANTESESOR: Solo pueden ser nodos Cola.*/
 		getLink(object, "transformation.combis", i,"preceders",&precederArray , &precederSize);
 		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize) !=  precederSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COMBI); /*FAIL COMBI*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_COMBI); /*FAIL COMBI*/
     	/*COMBI: SUCESOR: No pueden ser Combis.*/
 		getLink(object, "transformation.combis", i,"followers",&followerArray , &followerSize);
 		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) >0)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COMBI); /*FAIL COMBI*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_COMBI); /*FAIL COMBI*/
 		/*COMBI: Existe referencia Preceders Followers*/
 		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COMBI); /*FAIL COMBI*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_COMBI); /*FAIL COMBI*/
 		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COMBI); /*FAIL COMBI*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_COMBI); /*FAIL COMBI*/
+
+		if ( validateEachLinkIsUnique(followerArray,followerSize) ==VALIDATION_FAIL || validateEachLinkIsUnique(precederArray,precederSize) ==VALIDATION_FAIL)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_COMBI); /*FAIL QUEUE*/
 
 		getProbabilisticBranch(object, "transformation.combis", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
 		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
-		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, error); /*FAIL COMBI*/
+		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, error); /*FAIL COMBI*/
 
-		getArrayBidimencionalFull(object,precederArrayFull,"transformation.combis",i,precederArray , precederSize);
-		getArrayBidimencionalFull(object,followerArrayFull,"transformation.combis",i,followerArray , followerSize);
+		setLinksInTableOfLinks(object,precederArrayFull,"transformation.combis",i,precederArray , precederSize);
+		setLinksInTableOfLinks(object,followerArrayFull,"transformation.combis",i,followerArray , followerSize);
 
 		if(precederArray)
 			free(precederArray);
@@ -241,25 +249,28 @@ int validateJson(const char *filenameJson){
 		/*NORMAL: ANTESESOR: No pueden ser colas*/
 		getLink(object, "transformation.normals", i,"preceders",&precederArray , &precederSize);
 		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize)> 0)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_NORMAL); /*FAIL NORMAL*/
     	/*NORMAL: SUCESOR: No pueden ser combis.*/
 		getLink(object, "transformation.normals", i,"followers",&followerArray , &followerSize);
 		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) >0)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_NORMAL); /*FAIL NORMAL*/
 		/*NORMAL: Existe referencia Preceders Followers*/
 		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_NORMAL); /*FAIL NORMAL*/
 		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_NORMAL); /*FAIL NORMAL*/
 
+		if ( validateEachLinkIsUnique(followerArray,followerSize) ==VALIDATION_FAIL || validateEachLinkIsUnique(precederArray,precederSize) ==VALIDATION_FAIL)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_NORMAL); /*FAIL QUEUE*/
+			
 		getProbabilisticBranch(object, "transformation.normals", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
 		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
-		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, error); /*FAIL NORMAL*/
+		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull, error); /*FAIL NORMAL*/
 
 		if (validateAutoreference(object, "transformation.normals",i,precederArray , precederSize) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
 		if (validateAutoreference(object, "transformation.normals",i,followerArray , followerSize) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
-		getArrayBidimencionalFull(object,precederArrayFull,"transformation.normals",i,precederArray , precederSize);
-		getArrayBidimencionalFull(object,followerArrayFull,"transformation.normals",i,followerArray , followerSize);
+		setLinksInTableOfLinks(object,precederArrayFull,"transformation.normals",i,precederArray , precederSize);
+		setLinksInTableOfLinks(object,followerArrayFull,"transformation.normals",i,followerArray , followerSize);
 
 		if(precederArray)
 			free(precederArray);
@@ -284,25 +295,28 @@ int validateJson(const char *filenameJson){
 		/*FUNCION: ANTESESOR: No pueden ser colas*/
 		getLink(object, "transformation.functions", i,"preceders",&precederArray , &precederSize);
 		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize)> 0)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_FUNCTION); /*FAIL FUNCTION*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_FUNCTION); /*FAIL FUNCTION*/
     	/*FUNCION: SUCESOR: No pueden ser combis.*/
 		getLink(object, "transformation.functions", i,"followers",&followerArray , &followerSize);
 		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) >0)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_FUNCTION); /*FAIL FUNCTION*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_FUNCTION); /*FAIL FUNCTION*/
 		/*FUNCION: Existe referencia Preceders Followers*/
 		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_FUNCTION); /*FAIL FUNCION*/
 		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_FUNCTION); /*FAIL FUNCION*/
 
+		if ( validateEachLinkIsUnique(followerArray,followerSize) ==VALIDATION_FAIL || validateEachLinkIsUnique(precederArray,precederSize) ==VALIDATION_FAIL)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_FUNCTION); /*FAIL QUEUE*/
+			
 		getProbabilisticBranch(object, "transformation.functions", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
 		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
-		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, error); /*FAIL FUNCTION*/
+		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, error); /*FAIL FUNCTION*/
 
 		if (validateAutoreference(object, "transformation.functions",i,precederArray , precederSize) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
 		if (validateAutoreference(object, "transformation.functions",i,followerArray , followerSize) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
-		getArrayBidimencionalFull(object,precederArrayFull,"transformation.functions",i,precederArray , precederSize);
-		getArrayBidimencionalFull(object,followerArrayFull,"transformation.functions",i,followerArray , followerSize);
+		setLinksInTableOfLinks(object,precederArrayFull,"transformation.functions",i,precederArray , precederSize);
+		setLinksInTableOfLinks(object,followerArrayFull,"transformation.functions",i,followerArray , followerSize);
 
 		if(precederArray)
 			free(precederArray);
@@ -326,19 +340,22 @@ int validateJson(const char *filenameJson){
     	/*CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
 		getLink(object, "transformation.counters", i,"preceders",&precederArray , &precederSize);
 		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize)> 0 || countArrayInclude(precederArray,precederSize,counterArray,counterSize)> 0)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_COUNTER); /*FAIL CONTADOR*/
     	/*CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
 		getLink(object, "transformation.counters", i,"followers",&followerArray , &followerSize);
 		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) >0 || countArrayInclude(followerArray,followerSize,counterArray,counterSize)> 0)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_COUNTER); /*FAIL CONTADOR*/
 		/*CONTADOR: Existe referencia Preceders Followers*/
 		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value,sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_COUNTER); /*FAIL CONTADOR*/
 		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
-			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_COUNTER); /*FAIL CONTADOR*/
 
-		getArrayBidimencionalFull(object,precederArrayFull,"transformation.counters",i,precederArray , precederSize);
-		getArrayBidimencionalFull(object,followerArrayFull,"transformation.counters",i,followerArray , followerSize);
+		if ( validateEachLinkIsUnique(followerArray,followerSize) ==VALIDATION_FAIL || validateEachLinkIsUnique(precederArray,precederSize) ==VALIDATION_FAIL)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,INVALID_COUNTER); /*FAIL QUEUE*/
+			
+		setLinksInTableOfLinks(object,precederArrayFull,"transformation.counters",i,precederArray , precederSize);
+		setLinksInTableOfLinks(object,followerArrayFull,"transformation.counters",i,followerArray , followerSize);
 
 		if(precederArray)
 			free(precederArray);
@@ -354,10 +371,10 @@ int validateJson(const char *filenameJson){
 	}
 
 	//( indice-1 == idNode)
-	if (validateDoubleReference(sizeAllNodes,&precederArrayFull,&followerArrayFull) == DOUBLE_REFERENCE_FAIL)
+	if (validateDoubleReference(sizeAllNodes,precederArrayFull,followerArrayFull) == DOUBLE_REFERENCE_FAIL)
 		return DOUBLE_REFERENCE_FAIL;
-
-    return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, VALIDATION_PASS);
+	
+    return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,VALIDATION_PASS);
 }
 
 /*
@@ -395,7 +412,7 @@ int validateAutoreference(JSON_Object *object, const char *nodeName, const int p
 /*
  * Obtiene la lista links de cada nodo y lo pone en una pocicion de una tabla segun el id
  * */
-void getArrayBidimencionalFull(JSON_Object *object, int** linkTable, const char *nodeName, const int pos, int* linkArray, const int linkArraySize){
+void setLinksInTableOfLinks(JSON_Object *object, int** linkTable, const char *nodeName, const int pos, int* linkArray, const int linkArraySize){
 	int idNode,j;
 	JSON_Array  *arrayLocal;
 	JSON_Object *objectInArray;
@@ -403,43 +420,62 @@ void getArrayBidimencionalFull(JSON_Object *object, int** linkTable, const char 
 	objectInArray = json_array_get_object(arrayLocal, pos);
 	idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
 	linkTable[idNode-1] = (int*) malloc((linkArraySize+1)*sizeof(int));
-	//linkArray
 	linkTable[idNode-1][0] = linkArraySize;
 	for (j = 1; j <= linkTable[idNode-1][0] ; j++)
 		linkTable[idNode-1][j] = linkArray[j-1];
 }
 
-int validateDoubleReference(int sizeAllNodes, int*** precederArrayFull,int*** followerArrayFull)
-{
-	int i,j,k;
+int validateDoubleReference(const int sizeAllNodes, int** precederArrayFull,int** followerArrayFull){
 	int isDoubleReference = TRUE;
-	for (i = 0; i < sizeAllNodes; i++)
-	{
-		for (j = 1; j <= (*precederArrayFull)[i][0] ; j++)
-		{
-			isDoubleReference = FALSE;
-			for (k = 1; k <= (*followerArrayFull)[(*precederArrayFull)[i][j]-1][0] ; k++)
-			{
-				if ((*followerArrayFull)[(*precederArrayFull)[i][j]-1][k]-1 == i)
+	
+	//para cada nodo i
+	for (int i = 0; i < sizeAllNodes; i++){
+		//para cada nodo j en la listra de predecesores del nodo i
+		for (int j = 1; j <= precederArrayFull[i][0] ; j++){
+			isDoubleReference = FALSE; // asumo que no esta y pruebo lo contrario
+			
+			//me busco en la lista sucesora en ese nodo k
+			for ( int k = 1; k <= followerArrayFull[ precederArrayFull[i][j]-1 ][0] ; k++){
+				if (followerArrayFull[ precederArrayFull[i][j]-1 ][k]-1 == i){
 					isDoubleReference = TRUE;
+					break;
+				}
 			}
 			if (isDoubleReference == FALSE)
 				return DOUBLE_REFERENCE_FAIL;
 		}
-	}
-
-	for (i = 0; i < sizeAllNodes; i++){
-		for (j = 1; j <= (*followerArrayFull)[i][0] ; j++){
-			isDoubleReference = FALSE;
-			for (k = 1; k <= (*precederArrayFull)[(*followerArrayFull)[i][j]-1][0] ; k++){
-				if ((*precederArrayFull)[(*followerArrayFull)[i][j]-1][k]-1 == i)
+		//para cada nodo j en la listra de sucesores del nodo i
+		for (int j = 1; j <= followerArrayFull[i][0] ; j++){
+			isDoubleReference = FALSE;// asumo que no esta y pruebo lo contrario
+			
+			//me busco en la lista de predecesores en ese nodo k
+			for (int k = 1; k <= precederArrayFull[followerArrayFull[i][j]-1][0] ; k++){
+				if (precederArrayFull[followerArrayFull[i][j]-1][k]-1 == i){
 					isDoubleReference = TRUE;
+					break;
+				}
 			}
 			if (isDoubleReference == FALSE)
 				return DOUBLE_REFERENCE_FAIL;
 		}
 	}
 	return VALIDATION_PASS;
+}
+
+/*
+ * Libero ambas tablas de links full
+ * */
+void freeLinkTables(const int sizeAllNodes, int** precederArrayFull,int** followerArrayFull){
+	//para cada nodo i
+	for (int i = 0; i < sizeAllNodes; i++){
+		//para cada nodo j en la listra de predecesores del nodo i
+		if(precederArrayFull[i]) free(precederArrayFull[i]);
+		if(followerArrayFull[i]) free(followerArrayFull[i]);
+	}
+	if(precederArrayFull) free(precederArrayFull);
+	precederArrayFull = NULL;
+	if(followerArrayFull) free(followerArrayFull);
+	followerArrayFull =NULL;
 }
 
 /*
@@ -591,6 +627,28 @@ int countArrayInclude(const int * const linkBag, const int linkBagSize, const in
 	return count;
 }
 
+
+/*
+cuenta las coincidencias dentro de un arreglo contra otro
+*/
+int validateEachLinkIsUnique(const int * const linkBag, const int linkBagSize){
+	int count=0;
+    for (int i = 0; i < linkBagSize; i++){
+		for (int j = 0; j < linkBagSize; j++){
+			if (linkBag[i] == linkBag[j]){
+				count++;
+			}
+		}
+	}
+	if(linkBagSize == count)
+		return VALIDATION_PASS;
+	return VALIDATION_FAIL;
+}
+
+
+/*
+ * Retorna la cantidad de nodos que hay en el modelo
+ * */
 int getNodesAmount( const char *filenameJson ){
 	int count = 0;
 	JSON_Value* root_value = json_parse_file(filenameJson);
