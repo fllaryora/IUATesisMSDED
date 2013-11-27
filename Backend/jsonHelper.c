@@ -3,14 +3,11 @@
 /* 
 limpia memoria y retorna un valor
 */
-int freeAllAndReturn(int *arrayQueues , int*arrayCounters , int *arrayNormals , int *arrayFunctions , 
-	int *arrayCombis ,int *arrayNodes ,int *arrayPreceders ,int *arrayFollowers , JSON_Value  *root_value , const int ret){
-	free(arrayQueues); free(arrayCounters);
-	free(arrayNormals); free(arrayFunctions);
-	free(arrayCombis);  json_value_free(root_value);
-	if(arrayNodes)free(arrayNodes);
-	//if(arrayPreceders)free(arrayPreceders);
-	//if(arrayFollowers)free(arrayFollowers);
+int freeAllAndReturn( int* queueArray, int* counterArray, int* normalArray, int* functionArray, int* combiArray, int* allNodes, JSON_Value* root_value, const int ret){
+	free(queueArray); free(counterArray);
+	free(normalArray); free(functionArray);
+	free(combiArray);  json_value_free(root_value);
+	if(allNodes)free(allNodes);
 	return ret; 
 }
 
@@ -18,14 +15,12 @@ int freeAllAndReturn(int *arrayQueues , int*arrayCounters , int *arrayNormals , 
 Valida El archivo de ingreso contra el schema y
  luego al archivo contra las reglas misma del modelo precursor
 */
-int validateJsonInput( const char* filenameJson  ){
-
+int validateJsonInput( const char* filenameJson ){
 	int rta;
 	if( (rta = validateSchema(filenameJson)) == VALIDATION_PASS )
 		if( (rta = validateJson(filenameJson))== VALIDATION_PASS ){
 			return VALIDATION_PASS;
 		}
-	
 	printf("Validacion datos Json Fallido. Code=%d\n", rta);
 	return rta;
 }
@@ -41,7 +36,6 @@ int validateSchema(const char *filenameJson){
 	WJReader readschema;
 	WJElement json;
 	WJElement schema;
-	//XplBool succ;
 	char *format=NULL;
 
 	if(!(jsonfile = fopen(filenameJson, "r"))) {
@@ -60,15 +54,13 @@ int validateSchema(const char *filenameJson){
 	}
 
 	/*WJEDump(json);*/
-	if (readjson->depth)
-	{
-		printf("Aca falla!!");
+	if (readjson->depth){
+		printf("Fallo porque te olvidaste alguna coma\n");
 		return INVALID_JSON_DEPTH;
 	}
 
 	/*WJEDump(schema);*/
-	if (readschema->depth)
-	{
+	if (readschema->depth){
 		return INVALID_SCHEMA;
 	}
 
@@ -94,16 +86,14 @@ int validateSchema(const char *filenameJson){
 /*
 Handler de que hacer en caso de que falle la validación
 */
-void schema_error(void *client, const char *format, ...)
-{
+void schema_error(void *client, const char *format, ...){
 	return;
 }
 
 /*
 Handler de carga del validador
 */
-WJElement schema_load(const char *name, void *client, const char *file, const int line)
-{
+WJElement schema_load(const char *name, void *client, const char *file, const int line){
 	char *format;
 	char *path;
 	FILE *schemafile;
@@ -136,24 +126,20 @@ WJElement schema_load(const char *name, void *client, const char *file, const in
 Valida las reglas del modelo precursor
 */
 int validateJson(const char *filenameJson){
-
 	JSON_Value  *root_value = NULL;
-    JSON_Object *object = NULL,*objectInArray = NULL;
-    UNUSEDWARNING(objectInArray);
-    JSON_Array  *array = NULL;
-	UNUSEDWARNING(array);
-	int i, j;
-	UNUSEDWARNING(j);
-	int sizeQueues, sizeCounters, sizeNormals, sizeFunctions, sizeCombis, sizeNodes;
+    JSON_Object *object = NULL;
+	int queueSize = 0, counterSize = 0, normalSize = 0,
+	 functionSize = 0, combiSize = 0, sizeAllNodes = 0;
+	int *queueArray = NULL, *counterArray = NULL, *normalArray = NULL,
+	 *functionArray = NULL, *combiArray = NULL,*allNodes = NULL;
+	int precederSize = 0, followerSize = 0, probabilisticBranchSize = 0;
+	int *precederArray = NULL, *followerArray = NULL;
+	double *probabilisticBranchArray = NULL;
+	int **precederArrayFull = NULL;
+	int **followerArrayFull = NULL;
 	
-	int *arrayQueues = NULL, *arrayCounters = NULL, *arrayNormals = NULL, *arrayFunctions = NULL, *arrayCombis = NULL,*arrayNodes = NULL;
-	int sizePreceders = 0, sizeFollowers = 0, sizeProbabilisticBranch=0;
-	int *arrayPreceders = NULL, *arrayFollowers = NULL;
-	double *arrayProbabilisticBranch = NULL;
-	int **arrayPrecedersFull = NULL;
-	int **arrayFollowersFull = NULL;
     /*VALIDATE JSON*/
-    root_value = json_parse_file(filenameJson);
+    root_value = json_parse_file( filenameJson );
 	
     if (!root_value) {
 		return INVALID_JSON;
@@ -164,267 +150,277 @@ int validateJson(const char *filenameJson){
 		return INVALID_JSON_OBJECT;
     }
     
-
     object = json_value_get_object(root_value);
 
-	getArray(object, "transformation.queues"   , "idNode" ,&arrayQueues    , &sizeQueues);
-	getArray(object, "transformation.counters" , "idNode" ,&arrayCounters  , &sizeCounters);
-	getArray(object, "transformation.normals"  , "idNode" ,&arrayNormals   , &sizeNormals);
-	getArray(object, "transformation.functions", "idNode" ,&arrayFunctions , &sizeFunctions);
-	getArray(object, "transformation.combis"   , "idNode" ,&arrayCombis    , &sizeCombis);
-	//for (i = 0; i < sizeNormals ; i++) printf("%d ",arrayNormals[i]); printf("\n");
+	getArray(object, "transformation.queues"   , "idNode" ,&queueArray    , &queueSize);
+	getArray(object, "transformation.counters" , "idNode" ,&counterArray  , &counterSize);
+	getArray(object, "transformation.normals"  , "idNode" ,&normalArray   , &normalSize);
+	getArray(object, "transformation.functions", "idNode" ,&functionArray , &functionSize);
+	getArray(object, "transformation.combis"   , "idNode" ,&combiArray    , &combiSize);
 
 	/*DIFERENTE NUMERO DE ID*/
-	if (repeatArrays(arrayQueues, sizeQueues, arrayCounters, sizeCounters, arrayNormals, sizeNormals, arrayFunctions, sizeFunctions, arrayCombis, sizeCombis, &arrayNodes, &sizeNodes) == 0){
-		return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_FAIL); /*FAIL ID*/   
+	if (repeatArrays(queueArray, queueSize, counterArray, counterSize, normalArray, normalSize, functionArray, functionSize, combiArray, combiSize, &allNodes, &sizeAllNodes) == 0){
+		return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes , root_value, VALIDATION_FAIL); /*FAIL ID*/   
 	}
 
 	//Lista de punteros a proceders y followers segun id de nodo menos 1
-	arrayPrecedersFull = (int **) malloc(sizeNodes*sizeof(int*));
-	arrayFollowersFull = (int **) malloc(sizeNodes*sizeof(int*));
+	precederArrayFull = (int **) malloc(sizeAllNodes*sizeof(int*));
+	followerArrayFull = (int **) malloc(sizeAllNodes*sizeof(int*));
 
-
-	for (i = 0; i < sizeQueues ; i++)
-	{
+	for (int i = 0; i < queueSize ; i++){
 	    /*COLA: ANTESESOR: No pueden ser Colas.*/
-		getArrayInArray(object, "transformation.queues", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues)> 0)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_QUEUE); /*FAIL QUEUE*/
+		getLink(object, "transformation.queues", i,"preceders",&precederArray , &precederSize);
+		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize)> 0)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_QUEUE); /*FAIL QUEUE*/
 	    /*COLA: SUCESOR: Solo pueden ser combis.*/
-		getArrayInArray(object, "transformation.queues", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) != sizeFollowers)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_QUEUE); /*FAIL QUEUE*/
+		getLink(object, "transformation.queues", i,"followers",&followerArray , &followerSize);
+		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) != followerSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_QUEUE); /*FAIL QUEUE*/
 		/*COLA: Existe referencia Preceders Followers*/
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_QUEUE);/*FAIL QUEUE*/
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_QUEUE); /*FAIL QUEUE*/
+		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_QUEUE);/*FAIL QUEUE*/
+		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_QUEUE); /*FAIL QUEUE*/
 
-		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.queues",i,&arrayPreceders , &sizePreceders);
-		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.queues",i,&arrayFollowers , &sizeFollowers);
+		getArrayBidimencionalFull(object,precederArrayFull,"transformation.queues",i,precederArray , precederSize);
+		getArrayBidimencionalFull(object,followerArrayFull,"transformation.queues",i,followerArray , followerSize);
 
-		if(arrayPreceders)
-			free(arrayPreceders);
+		if(precederArray)
+			free(precederArray);
 
-		if(arrayFollowers)
-			free(arrayFollowers);
+		if(followerArray)
+			free(followerArray);
 			
-		
-		arrayPreceders = NULL;
-		arrayFollowers = NULL;
-		sizeFollowers = 0;
-		sizePreceders = 0;
-		
+		precederArray = NULL;
+		followerArray = NULL;
+		followerSize = 0;
+		precederSize = 0;
 	}
 
-	for (i = 0; i < sizeCombis ; i++)
-	{
+	for (int i = 0; i < combiSize ; i++){
 	    /*COMBI: ANTESESOR: Solo pueden ser nodos Cola.*/
-		getArrayInArray(object, "transformation.combis", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues) !=  sizePreceders)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COMBI); /*FAIL COMBI*/
+		getLink(object, "transformation.combis", i,"preceders",&precederArray , &precederSize);
+		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize) !=  precederSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COMBI); /*FAIL COMBI*/
     	/*COMBI: SUCESOR: No pueden ser Combis.*/
-		getArrayInArray(object, "transformation.combis", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) >0)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COMBI); /*FAIL COMBI*/
+		getLink(object, "transformation.combis", i,"followers",&followerArray , &followerSize);
+		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) >0)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COMBI); /*FAIL COMBI*/
 		/*COMBI: Existe referencia Preceders Followers*/
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COMBI); /*FAIL COMBI*/
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COMBI); /*FAIL COMBI*/
+		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COMBI); /*FAIL COMBI*/
+		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COMBI); /*FAIL COMBI*/
 
+		getProbabilisticBranch(object, "transformation.combis", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
+		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
+		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, error); /*FAIL COMBI*/
 
-		getArrayInArrayDouble(object, "transformation.combis", i,"probabilisticBranch",&arrayProbabilisticBranch , &sizeProbabilisticBranch);
-		int error = validateProbabilisticBranch(&arrayProbabilisticBranch, &sizeProbabilisticBranch, &sizeFollowers);
-		if (error != VALIDATION_PASS) return error;
+		getArrayBidimencionalFull(object,precederArrayFull,"transformation.combis",i,precederArray , precederSize);
+		getArrayBidimencionalFull(object,followerArrayFull,"transformation.combis",i,followerArray , followerSize);
 
-		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.combis",i,&arrayPreceders , &sizePreceders);
-		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.combis",i,&arrayFollowers , &sizeFollowers);
+		if(precederArray)
+			free(precederArray);
 
-		if(arrayPreceders)
-			free(arrayPreceders);
-
-		if(arrayFollowers)
-			free(arrayFollowers);
+		if(followerArray)
+			free(followerArray);
 			
+		precederArray = NULL;
+		followerArray = NULL;
+		followerSize = 0;
+		precederSize = 0;
 		
-		arrayPreceders = NULL;
-		arrayFollowers = NULL;
-		sizeFollowers = 0;
-		sizePreceders = 0;
-		sizeProbabilisticBranch = 0;
+		if (probabilisticBranchArray) 
+			free(probabilisticBranchArray);
+			
+		probabilisticBranchArray = NULL;
+		probabilisticBranchSize = 0;
 	}
 
-	for (i = 0; i < sizeNormals ; i++)
-	{
+	for (int i = 0; i < normalSize ; i++){
 		/*NORMAL: ANTESESOR: No pueden ser colas*/
-		getArrayInArray(object, "transformation.normals", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues)> 0)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+		getLink(object, "transformation.normals", i,"preceders",&precederArray , &precederSize);
+		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize)> 0)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_NORMAL); /*FAIL NORMAL*/
     	/*NORMAL: SUCESOR: No pueden ser combis.*/
-		getArrayInArray(object, "transformation.normals", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) >0)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+		getLink(object, "transformation.normals", i,"followers",&followerArray , &followerSize);
+		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) >0)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_NORMAL); /*FAIL NORMAL*/
 		/*NORMAL: Existe referencia Preceders Followers*/
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_NORMAL); /*FAIL NORMAL*/
+		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_NORMAL); /*FAIL NORMAL*/
 
-		getArrayInArrayDouble(object, "transformation.normals", i,"probabilisticBranch",&arrayProbabilisticBranch , &sizeProbabilisticBranch);
-		int error = validateProbabilisticBranch(&arrayProbabilisticBranch, &sizeProbabilisticBranch, &sizeFollowers);
-		if (error != VALIDATION_PASS) return error;
+		getProbabilisticBranch(object, "transformation.normals", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
+		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
+		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, error); /*FAIL NORMAL*/
 
-		if (validateAutoreference(object, "transformation.normals",i,&arrayPreceders , &sizePreceders) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
-		if (validateAutoreference(object, "transformation.normals",i,&arrayFollowers , &sizeFollowers) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
-		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.normals",i,&arrayPreceders , &sizePreceders);
-		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.normals",i,&arrayFollowers , &sizeFollowers);
+		if (validateAutoreference(object, "transformation.normals",i,precederArray , precederSize) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
+		if (validateAutoreference(object, "transformation.normals",i,followerArray , followerSize) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
+		getArrayBidimencionalFull(object,precederArrayFull,"transformation.normals",i,precederArray , precederSize);
+		getArrayBidimencionalFull(object,followerArrayFull,"transformation.normals",i,followerArray , followerSize);
 
-		if(arrayPreceders)
-			free(arrayPreceders);
+		if(precederArray)
+			free(precederArray);
 
-		if(arrayFollowers)
-			free(arrayFollowers);
+		if(followerArray)
+			free(followerArray);
 			
 		
-		arrayPreceders = NULL;
-		arrayFollowers = NULL;
-		sizeFollowers = 0;
-		sizePreceders = 0;
-
+		precederArray = NULL;
+		followerArray = NULL;
+		followerSize = 0;
+		precederSize = 0;
+		
+		if (probabilisticBranchArray) 
+			free(probabilisticBranchArray);
+			
+		probabilisticBranchArray = NULL;
+		probabilisticBranchSize = 0;
 	}
 
-	for (i = 0; i < sizeFunctions ; i++)
-	{
+	for (int i = 0; i < functionSize ; i++){
 		/*FUNCION: ANTESESOR: No pueden ser colas*/
-		getArrayInArray(object, "transformation.functions", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues)> 0)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_FUNCTION); /*FAIL FUNCTION*/
+		getLink(object, "transformation.functions", i,"preceders",&precederArray , &precederSize);
+		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize)> 0)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_FUNCTION); /*FAIL FUNCTION*/
     	/*FUNCION: SUCESOR: No pueden ser combis.*/
-		getArrayInArray(object, "transformation.functions", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) >0)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_FUNCTION); /*FAIL FUNCTION*/
+		getLink(object, "transformation.functions", i,"followers",&followerArray , &followerSize);
+		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) >0)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_FUNCTION); /*FAIL FUNCTION*/
 		/*FUNCION: Existe referencia Preceders Followers*/
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
+		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
+		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_FUNCTION); /*FAIL FUNCION*/
 
-		getArrayInArrayDouble(object, "transformation.functions", i,"probabilisticBranch",&arrayProbabilisticBranch , &sizeProbabilisticBranch);
-		int error = validateProbabilisticBranch(&arrayProbabilisticBranch, &sizeProbabilisticBranch, &sizeFollowers);
-		if (error != VALIDATION_PASS) return error;
+		getProbabilisticBranch(object, "transformation.functions", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
+		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
+		if (error != VALIDATION_PASS) return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, error); /*FAIL FUNCTION*/
 
-		if (validateAutoreference(object, "transformation.functions",i,&arrayPreceders , &sizePreceders) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
-		if (validateAutoreference(object, "transformation.functions",i,&arrayFollowers , &sizeFollowers) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
-		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.functions",i,&arrayPreceders , &sizePreceders);
-		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.functions",i,&arrayFollowers , &sizeFollowers);
+		if (validateAutoreference(object, "transformation.functions",i,precederArray , precederSize) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
+		if (validateAutoreference(object, "transformation.functions",i,followerArray , followerSize) == AUTOREFERENCE_FAIL) return AUTOREFERENCE_FAIL;
+		getArrayBidimencionalFull(object,precederArrayFull,"transformation.functions",i,precederArray , precederSize);
+		getArrayBidimencionalFull(object,followerArrayFull,"transformation.functions",i,followerArray , followerSize);
 
-		if(arrayPreceders)
-			free(arrayPreceders);
+		if(precederArray)
+			free(precederArray);
 
-		if(arrayFollowers)
-			free(arrayFollowers);
+		if(followerArray)
+			free(followerArray);
 		
-		arrayPreceders = NULL;
-		arrayFollowers = NULL;
-		sizeFollowers = 0;
-		sizePreceders = 0;
-
+		precederArray = NULL;
+		followerArray = NULL;
+		followerSize = 0;
+		precederSize = 0;
+		
+		if (probabilisticBranchArray) 
+			free(probabilisticBranchArray);
+			
+		probabilisticBranchArray = NULL;
+		probabilisticBranchSize = 0;
 	}
 
-	for (i = 0; i < sizeCounters ; i++)
-	{
+	for (int i = 0; i < counterSize ; i++){
     	/*CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
-		getArrayInArray(object, "transformation.counters", i,"preceders",&arrayPreceders , &sizePreceders);
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayQueues,sizeQueues)> 0 || countArrayInclude(arrayPreceders,sizePreceders,arrayCounters,sizeCounters)> 0)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
+		getLink(object, "transformation.counters", i,"preceders",&precederArray , &precederSize);
+		if (countArrayInclude(precederArray,precederSize,queueArray,queueSize)> 0 || countArrayInclude(precederArray,precederSize,counterArray,counterSize)> 0)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
     	/*CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
-		getArrayInArray(object, "transformation.counters", i,"followers",&arrayFollowers , &sizeFollowers);
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayCombis,sizeCombis) >0 || countArrayInclude(arrayFollowers,sizeFollowers,arrayCounters,sizeCounters)> 0)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
+		getLink(object, "transformation.counters", i,"followers",&followerArray , &followerSize);
+		if (countArrayInclude(followerArray,followerSize,combiArray,combiSize) >0 || countArrayInclude(followerArray,followerSize,counterArray,counterSize)> 0)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
 		/*CONTADOR: Existe referencia Preceders Followers*/
-		if (countArrayInclude(arrayPreceders,sizePreceders,arrayNodes,sizeNodes)!= sizePreceders)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
-		if (countArrayInclude(arrayFollowers,sizeFollowers,arrayNodes,sizeNodes)!= sizeFollowers)
-			return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
+		if (countArrayInclude(precederArray,precederSize,allNodes,sizeAllNodes)!= precederSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
+		if (countArrayInclude(followerArray,followerSize,allNodes,sizeAllNodes)!= followerSize)
+			return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, INVALID_COUNTER); /*FAIL CONTADOR*/
 
-		getArrayBidimencionalFull(object,&arrayPrecedersFull,"transformation.counters",i,&arrayPreceders , &sizePreceders);
-		getArrayBidimencionalFull(object,&arrayFollowersFull,"transformation.counters",i,&arrayFollowers , &sizeFollowers);
+		getArrayBidimencionalFull(object,precederArrayFull,"transformation.counters",i,precederArray , precederSize);
+		getArrayBidimencionalFull(object,followerArrayFull,"transformation.counters",i,followerArray , followerSize);
 
-		if(arrayPreceders)
-			free(arrayPreceders);
+		if(precederArray)
+			free(precederArray);
 
-		if(arrayFollowers)
-			free(arrayFollowers);
+		if(followerArray)
+			free(followerArray);
 			
-		arrayPreceders = NULL;
-		arrayFollowers = NULL;
-		sizeFollowers = 0;
-		sizePreceders = 0;
+		precederArray = NULL;
+		followerArray = NULL;
+		followerSize = 0;
+		precederSize = 0;
 
 	}
 
 	//( indice-1 == idNode)
-	if (validateDoubleReference(sizeNodes,&arrayPrecedersFull,&arrayFollowersFull) == DOUBLE_REFERENCE_FAIL)
+	if (validateDoubleReference(sizeAllNodes,&precederArrayFull,&followerArrayFull) == DOUBLE_REFERENCE_FAIL)
 		return DOUBLE_REFERENCE_FAIL;
 
-    return freeAllAndReturn(arrayQueues, arrayCounters, arrayNormals, arrayFunctions, arrayCombis, arrayNodes, arrayPreceders, arrayFollowers , root_value, VALIDATION_PASS);
+    return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, VALIDATION_PASS);
 }
 
-int validateProbabilisticBranch(double** arreglo, int* countArreglo, int* countArregloComparar){
-	if ( (*countArreglo) != 0  && (*countArreglo) != (*countArregloComparar) )
+/*
+ * VAlida la probabilidad de cada rama y todas en conjunto
+ * */
+int validateProbabilisticBranch(const double* probabilisticBranch, const int probabilisticCounter, const int  followCounter){
+	if ( probabilisticCounter != 0  && probabilisticCounter != followCounter )
 		return PROBABILISTIC_BRANCH_COUNT_FAIL;
-	double sumProbabilisticBranch = 0;
-	for (int j=0 ; j<(*countArreglo) ; j++)
-		sumProbabilisticBranch += (*arreglo)[j];
-	if ((*countArreglo)>0)
-		if (sumProbabilisticBranch <= PROB_MIN || sumProbabilisticBranch >= PROB_MAX)
+	double cumulativeProbabilistic = 0.0;
+	for (int j = 0 ; j < probabilisticCounter ; j++)
+		cumulativeProbabilistic += probabilisticBranch[j];
+	if ( probabilisticCounter > 0 )
+		if (cumulativeProbabilistic < PROB_MIN || cumulativeProbabilistic > PROB_MAX)
 			 return PROBABILISTIC_BRANCH_FAIL;
 	return VALIDATION_PASS;
 }
 
-int validateAutoreference(JSON_Object *object, const char *typeNode,int i,int** arreglo, int* countArreglo)
-{
-	int idNode,j;
+/*
+ * Valida que un nodo no se apunte a si mismo en las referencias
+ * */
+int validateAutoreference(JSON_Object *object, const char *nodeName, const int pos, int* link, const int linkSize){
+	int idNode;
 	JSON_Array  *arrayLocal;
 	JSON_Object *objectInArray;
-	arrayLocal = json_object_dotget_array(object, typeNode);
-	objectInArray = json_array_get_object(arrayLocal, i);
+	arrayLocal = json_object_dotget_array(object, nodeName);
+	objectInArray = json_array_get_object(arrayLocal, pos);
 	idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
 
-	for (j=0 ; j<(*countArreglo) ; j++)
-		if((*arreglo)[j]==idNode)
+	for (int j=0 ; j < linkSize ; j++)
+		if(link[j]==idNode)
 			return AUTOREFERENCE_FAIL;
 	return VALIDATION_PASS;
 }		
 
-void getArrayBidimencionalFull(JSON_Object *object, int*** arrayFull,const char *typeNode,int i, int** arreglo, int* countArreglo)
-{
+/*
+ * Obtiene la lista links de cada nodo y lo pone en una pocicion de una tabla segun el id
+ * */
+void getArrayBidimencionalFull(JSON_Object *object, int** linkTable, const char *nodeName, const int pos, int* linkArray, const int linkArraySize){
 	int idNode,j;
 	JSON_Array  *arrayLocal;
 	JSON_Object *objectInArray;
-	arrayLocal = json_object_dotget_array(object, typeNode);
-	objectInArray = json_array_get_object(arrayLocal, i);
+	arrayLocal = json_object_dotget_array(object, nodeName);
+	objectInArray = json_array_get_object(arrayLocal, pos);
 	idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
-	(*arrayFull)[idNode-1] = (int*) malloc(((*countArreglo)+1)*sizeof(int));
-
-	(*arrayFull)[idNode-1][0] = (*countArreglo);
-	for (j = 1; j <= ((*arrayFull)[idNode-1])[0] ; j++)
-		(*arrayFull)[idNode-1][j] = (*arreglo)[j-1];
+	linkTable[idNode-1] = (int*) malloc((linkArraySize+1)*sizeof(int));
+	//linkArray
+	linkTable[idNode-1][0] = linkArraySize;
+	for (j = 1; j <= linkTable[idNode-1][0] ; j++)
+		linkTable[idNode-1][j] = linkArray[j-1];
 }
 
-int validateDoubleReference(int sizeNodes, int*** arrayPrecedersFull,int*** arrayFollowersFull)
+int validateDoubleReference(int sizeAllNodes, int*** precederArrayFull,int*** followerArrayFull)
 {
 	int i,j,k;
 	int isDoubleReference = TRUE;
-	for (i = 0; i < sizeNodes; i++)
+	for (i = 0; i < sizeAllNodes; i++)
 	{
-		for (j = 1; j <= (*arrayPrecedersFull)[i][0] ; j++)
+		for (j = 1; j <= (*precederArrayFull)[i][0] ; j++)
 		{
 			isDoubleReference = FALSE;
-			for (k = 1; k <= (*arrayFollowersFull)[(*arrayPrecedersFull)[i][j]-1][0] ; k++)
+			for (k = 1; k <= (*followerArrayFull)[(*precederArrayFull)[i][j]-1][0] ; k++)
 			{
-				if ((*arrayFollowersFull)[(*arrayPrecedersFull)[i][j]-1][k]-1 == i)
+				if ((*followerArrayFull)[(*precederArrayFull)[i][j]-1][k]-1 == i)
 					isDoubleReference = TRUE;
 			}
 			if (isDoubleReference == FALSE)
@@ -432,14 +428,11 @@ int validateDoubleReference(int sizeNodes, int*** arrayPrecedersFull,int*** arra
 		}
 	}
 
-	for (i = 0; i < sizeNodes; i++)
-	{
-		for (j = 1; j <= (*arrayFollowersFull)[i][0] ; j++)
-		{
+	for (i = 0; i < sizeAllNodes; i++){
+		for (j = 1; j <= (*followerArrayFull)[i][0] ; j++){
 			isDoubleReference = FALSE;
-			for (k = 1; k <= (*arrayPrecedersFull)[(*arrayFollowersFull)[i][j]-1][0] ; k++)
-			{
-				if ((*arrayPrecedersFull)[(*arrayFollowersFull)[i][j]-1][k]-1 == i)
+			for (k = 1; k <= (*precederArrayFull)[(*followerArrayFull)[i][j]-1][0] ; k++){
+				if ((*precederArrayFull)[(*followerArrayFull)[i][j]-1][k]-1 == i)
 					isDoubleReference = TRUE;
 			}
 			if (isDoubleReference == FALSE)
@@ -453,15 +446,13 @@ int validateDoubleReference(int sizeNodes, int*** arrayPrecedersFull,int*** arra
 Arma un arreglo con los ids de un nodo X 
 y anota el largo del arreglo en sizeArray
 */
-void getArray( JSON_Object *objectJson, const char *arrayJson, const char *atributeJson, int** array, int* sizeArray ){
-	int i;
-	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectJson, arrayJson);
+void getArray( JSON_Object *objectJson, const char *arrayName, const char *atributeJson, int** array, int* sizeArray ){
+	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectJson, arrayName);
     JSON_Object *objectInArray;
     *sizeArray = json_array_get_count(arrayJsonFunction);
     *array = (int*)malloc(sizeof(int) * (*sizeArray));
 
-    for (i = 0; i < (*sizeArray); i++)
-	{
+    for (int i = 0; i < (*sizeArray); i++){
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
 	    (*array)[i] = json_object_dotget_number(objectInArray, atributeJson );
 	}
@@ -472,37 +463,37 @@ void getArray( JSON_Object *objectJson, const char *arrayJson, const char *atrib
  * Ordena los elemntos de 'p' a 'r' 
  * en el arreglo A[...,p,..,r,...]
  */
-void MergeSort(int p, int r, int** array){
-	int q;
-	 if(p < r){
-		q = (p + r)/2;
-		MergeSort(p, q,array);
-		MergeSort(q + 1, r, array);
-		Merge(p, q, r, array);
+void MergeSort(int firstElement, int lastElement, int** array){
+	int middleElement;
+	 if(firstElement < lastElement){
+		middleElement = (firstElement + lastElement)/2;
+		MergeSort(firstElement, middleElement,array);
+		MergeSort(middleElement + 1, lastElement, array);
+		Merge(firstElement, middleElement, lastElement, array);
 	}
 }
 /*
  * Mescla los elementos Desde A[p] y A[q]
  * hasta Desde A[q+1] y A[r]
  */
-void Merge(int p, int q, int r, int** array){
+void Merge(int firstElement, int middleElement, int lastElement, int** array){
 	int* A = (*array);
-	int i = p;
-	int j = q+1;
+	int i = firstElement;
+	int j = middleElement+1;
 	int k = 0;
-	int* mem = (int*) malloc((p+r+1)*sizeof(int));
+	int* mem = (int*) malloc((firstElement + lastElement + 1)*sizeof(int));
 
-	while(i<=q && j<=r){
+	while(i <= middleElement && j <= lastElement){
 		if(A[i] <= A[j])
 			mem[k++] =A[i++];
 		else
 			mem[k++] =A[j++];
 	}
-	while(i<=q) mem[k++] =A[i++];
-	while(j<=r) mem[k++] =A[j++];
+	while(i <= middleElement) mem[k++] =A[i++];
+	while(j <= lastElement) mem[k++] =A[j++];
 
-	for(i=0;i<=r-p;i++){
-		A[p+i]=mem[i];//Lleno A
+	for(i=0;i <= lastElement - firstElement ;i++){
+		A[firstElement + i]=mem[i];//Lleno A
 	}
 
 	free(mem);
@@ -513,96 +504,92 @@ Cuenta los nodos del modelo en  sizeArray
 Y arma un arreglo con todos los ids en array
 Y lo ordena para validarlo
 */
-int repeatArrays(const int *const array1 ,const int sizeArray1, const int * const array2, const int sizeArray2, const int * const array3, const int sizeArray3, const int * const array4, const int sizeArray4, const int *const array5, const int sizeArray5, int** array, int* sizeArray){
-	int i=0,j;
-	*sizeArray = sizeArray1 + sizeArray2 + sizeArray3 + sizeArray4 + sizeArray5;
-	*array = (int*)malloc(sizeof(int) * (*sizeArray));
+int repeatArrays( const int *const queues ,const int queueSize,
+				  const int *const counters, const int counterSize, 
+				  const int * const normals, const int normalSize, 
+				  const int * const functions, const int functionSize, 
+				  const int *const combis, const int combiSize, 
+				  int** allNodes, int* sizeAllNodes){
+	int i = 0;
+	*sizeAllNodes = queueSize + counterSize + normalSize + functionSize + combiSize;
+	*allNodes = (int*)malloc(sizeof(int) * (*sizeAllNodes));
 
-	for (j = 0; j < sizeArray1; i++, j++)
-		(*array)[i] = array1[j];
-	for (j = 0; j < sizeArray2; i++, j++)
-		(*array)[i] = array2[j];
-	for (j = 0; j < sizeArray3; i++, j++)
-		(*array)[i] = array3[j];
-	for (j = 0; j < sizeArray4; i++, j++)
-		(*array)[i] = array4[j];
-	for (j = 0; j < sizeArray5; i++, j++)
-		(*array)[i] = array5[j];
+	for (int j = 0; j < queueSize; i++, j++)
+		(*allNodes)[i] = queues[j];
+	for (int j = 0; j < counterSize; i++, j++)
+		(*allNodes)[i] = counters[j];
+	for (int j = 0; j < normalSize; i++, j++)
+		(*allNodes)[i] = normals[j];
+	for (int j = 0; j < functionSize; i++, j++)
+		(*allNodes)[i] = functions[j];
+	for (int j = 0; j < combiSize; i++, j++)
+		(*allNodes)[i] = combis[j];
 
-	MergeSort( 0, (*sizeArray)-1, array );
+	MergeSort( 0, (*sizeAllNodes)-1, allNodes );
 	
-	
-	
-	if((*array)[0] != 1){// primer id distinto de 1
-		printf(" (*array)[0] = %d \n", (*array)[0]);
+	if((*allNodes)[0] != 1){// primer id distinto de 1
 		return 0;
 	}
-	for ( i = 0 ; i < ((*sizeArray)-1) ; i++){
+	for ( i = 0 ; i < ((*sizeAllNodes)-1) ; i++){
 		//detecto huecos y al mismo tiempo detecto repetidos
-		if(  (*array)[i]+1 != (*array)[i+1] ){
-			printf("i:%d :    (*array)[i]+1 = %d      !=    (*array)[i+1] = %d \n", i, (*array)[i]+1 , (*array)[i+1] );
+		if(  (*allNodes)[i]+1 != (*allNodes)[i+1] ){
 			return 0;
 		}
 	}
-
-	return (*sizeArray);
+	return (*sizeAllNodes);
 }
 
 /*
 Arma un arreglo con los ids precursores o sucesores del nodo i dentro del arreglo
 y anota el largo del arreglo en sizeArray
 */
-void getArrayInArray(JSON_Object * objectJson,const char *arrayJson,int pos,const char *arrayJsonIn, int** arreglo, int* countArreglo)
+void getLink(JSON_Object * objectJson,const char *arrayName, const int pos,const char *arrayJsonIn, int** nodeLinkList, int* linkCount)
 {
-	JSON_Array *array = json_object_dotget_array(objectJson, arrayJson);
+	JSON_Array *array = json_object_dotget_array(objectJson, arrayName);
 	JSON_Object *objectInArray = json_array_get_object(array, pos);
 	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectInArray, arrayJsonIn);
 	int i;
-    *countArreglo = json_array_get_count(arrayJsonFunction);
-    if((*countArreglo))
-		*arreglo = (int*)malloc(sizeof(int) * (*countArreglo));
+    *linkCount = json_array_get_count(arrayJsonFunction);
+    if((*linkCount))
+		*nodeLinkList = (int*)malloc(sizeof(int) * (*linkCount));
 
-    for (i = 0; i < (*countArreglo); i++)
-	{
-	    (*arreglo)[i] = json_array_get_number(arrayJsonFunction, i);
+    for (i = 0; i < (*linkCount); i++){
+	    (*nodeLinkList)[i] = json_array_get_number(arrayJsonFunction, i);
 	}
 }
 
-void getArrayInArrayDouble(JSON_Object * objectJson,const char *arrayJson,int pos,const char *arrayJsonIn, double** arreglo, int* countArreglo)
+/*
+ * Obtiene la lista de probabilidad de cada rama de un nodo
+ * */   
+void getProbabilisticBranch(JSON_Object * objectJson,const char *arrayNodeName, const int pos,const char *arrayName, double** probabilisticBranchArray, int* probabilisticBranchSize)
 {
-	JSON_Array *array = json_object_dotget_array(objectJson, arrayJson);
+	JSON_Array *array = json_object_dotget_array(objectJson, arrayNodeName);
 	JSON_Object *objectInArray = json_array_get_object(array, pos);
-	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectInArray, arrayJsonIn);
-	int i;
-    *countArreglo = json_array_get_count(arrayJsonFunction);
-    if((*countArreglo))
-		*arreglo = (double*)malloc(sizeof(double) * (*countArreglo));
+	JSON_Array *arrayJsonFunction = json_object_dotget_array(objectInArray, arrayName);
+    *probabilisticBranchSize = json_array_get_count(arrayJsonFunction);
+    if((*probabilisticBranchSize))
+		*probabilisticBranchArray = (double*)malloc(sizeof(double) * (*probabilisticBranchSize));
 
-    for (i = 0; i < (*countArreglo); i++)
-	{
-	    (*arreglo)[i] = json_array_get_number(arrayJsonFunction, i);
+    for (int i = 0; i < (*probabilisticBranchSize); i++){
+	    (*probabilisticBranchArray)[i] = json_array_get_number(arrayJsonFunction, i);
 	}
 }
 
 /*
 cuenta las coincidencias dentro de un arreglo contra otro
 */
-int countArrayInclude(const int * const array, const int sizeArray, const int *const arrayFull, const int sizeArrayFull){
-	int i,j, count=0;
-    for (i = 0; i < sizeArray; i++)
-	{
-		for (j = 0; j < sizeArrayFull; j++)
-		{
-			if (array[i] == arrayFull[j])
-			{
-				count = count+1;
+int countArrayInclude(const int * const linkBag, const int linkBagSize, const int *const singleTypeNodeBag, const int nodeBagSize){
+	int count=0;
+    for (int i = 0; i < linkBagSize; i++){
+		for (int j = 0; j < nodeBagSize; j++){
+			if (linkBag[i] == singleTypeNodeBag[j]){
+				count++;
 				break;
 			}
 		}
 	}
 	return count;
 }
-
 
 int getNodesAmount( const char *filenameJson ){
 	int count = 0;
@@ -620,13 +607,7 @@ int getNodesAmount( const char *filenameJson ){
 }
 
 int* getCombiIds( const char *filenameJson ){
-	int count = 0,i;
-	int  *arrayCombis = NULL;
-	int  sizeCombis;
-	
-	UNUSEDWARNING(arrayCombis);
-	UNUSEDWARNING(sizeCombis);
-	
+	int count = 0;
 	JSON_Value* root_value = json_parse_file(filenameJson);
 	JSON_Object* object = json_value_get_object(root_value);
 	JSON_Object *objectInArray;
@@ -638,7 +619,7 @@ int* getCombiIds( const char *filenameJson ){
 	ids[0] = count+1; //combis + seed
 	ids[1] = json_object_dotget_number (object, "seed");
 
-	for (i = 0; i < count; i++){
+	for (int i = 0; i < count; i++){
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
 	    ids[i+2] = json_object_dotget_number(objectInArray, "idNode" );
 	}
@@ -663,11 +644,8 @@ int getModelSeed( const char *filenameJson ){
 }
 
 int* getTargets( const char *filenameJson ){
-	int count = 0,i;
-	int  *arrayCombis = NULL;
-	int  sizeCombis;
-	UNUSEDWARNING(arrayCombis);
-	UNUSEDWARNING(sizeCombis);
+	int count = 0;
+
 	JSON_Value* root_value = json_parse_file(filenameJson);
 	JSON_Object* object = json_value_get_object(root_value);
 	JSON_Object *objectInArray;
@@ -678,7 +656,7 @@ int* getTargets( const char *filenameJson ){
 	int* targets = (int*)malloc(sizeof(int) * (count*2+1));
 	targets[0] = count;
 	
-	for (i = 0; i < count; i++){
+	for (int i = 0; i < count; i++){
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
 	    targets[i*2+1] = json_object_dotget_number(objectInArray, "idNode" );
 	    targets[i*2+2] = json_object_dotget_number(objectInArray, "cycle" );
