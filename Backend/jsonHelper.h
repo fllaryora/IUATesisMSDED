@@ -65,4 +65,5 @@ extern int validateDoubleReference(const int ,int** ,int** );
 extern int validateAutoreference(JSON_Object*, const char *, const int , int* , const int );
 extern int validateProbabilisticBranch(const double* , const int , const int );
 extern void getProbabilisticBranch(JSON_Object * ,const char *, const int ,const char *, double** , int* );
+extern int* getNodesAmountDetail( const char * );
 #endif /* #ifndef _JSON_HELPER_H_*/

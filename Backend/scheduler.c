@@ -13,7 +13,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 	int* targetStatus = (int*) malloc (sizeof(int)  * counterNodes);
 	int  isAllFinalized = 0;
 	
-	double totalTime = 0.0;
+	double totalTime = 0.0; //TODO arreglar esto
 	UNUSEDWARNING(totalTime);
 	//TODO sacal el siguente comentario
 	//definido en la fotografia que envie por watzap y no vio chen
@@ -22,6 +22,12 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		
 		//New rafle
 		MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD);
+		
+		msg = GENERATION_PHASE;
+		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
+		MPI_Barrier( commNodes );
+		
+		
 		msg = ADVANCE_PAHSE;
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 		MPI_Barrier( commNodes );
@@ -56,11 +62,11 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		watchdog--;
 		
 		//New printer
-		//nodo comentado--->MPI_Send( &totalTime , 1 , MPI_DOUBLE , PRINTER_ID , PRINT_SIGNAL , MPI_COMM_WORLD);
+		MPI_Send( &totalTime , 1 , MPI_DOUBLE , PRINTER_ID , PRINT_SIGNAL , MPI_COMM_WORLD);
 		//todos los nodos deben reportarse al printer
 		msg = PING_REPORT;
-		//nodos no implementados aun--->MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
-		//nodo comentado--->MPI_Recv( targetStatus, counterNodes*2, MPI_INT, PRINTER_ID, COUNTER_CYCLES, , MPI_COMM_WORLD);
+		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
+		MPI_Recv( targetStatus, counterNodes*2, MPI_INT, PRINTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		isAllFinalized = 0;
 		for(int i = 0 ; i< counterNodes;i++ ){
 			for(int j = 0 ; j< counterNodes;j++ ){//FIX las colas vienen en cualquier orden
@@ -72,21 +78,17 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 			}
 		}
 		//todos los contadores cumplieron con el roll
-		if (isAllFinalized == counterNodes){
-			break;
-		}
-		
-		msg = GENERATION_PHASE;
-		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
-		MPI_Barrier( commNodes );
-		
+		//if (isAllFinalized == counterNodes){
+		//	break;
+		//}
 		printf("***********************************************************\n");
-	} while( watchdog > 0);
+	} while( watchdog > 0 && isAllFinalized != counterNodes);
 	//envio livelock al resto de los nodos
+	printf("SALIOOO del Watchdog\n");
 	msg = LIVE_LOCK;
 	MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 	MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , LIVE_LOCK , MPI_COMM_WORLD);
-	//nodos comentado--->MPI_Send(&totalTime, 1, MPI_DOUBLE, MPI_INT , PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD);
+	MPI_Send(&totalTime, 1, MPI_DOUBLE, PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD);
 
 	free(nodesStatus);
 	free(targetStatus);

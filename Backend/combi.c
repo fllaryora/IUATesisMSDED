@@ -31,6 +31,7 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
  	//double minimun = -1; //minimo de recursos
 
 	int msg = 0;
+	PrinterActivity cReport;
 	
 	if(initialStatus->countProbabilisticBranch > 0){
 		//TODO arreglar el RNG
@@ -73,6 +74,15 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
+			printf("print report----%d\n",initialStatus->idNode);
+
+			cReport.idNode = initialStatus->idNode;
+			cReport.activityInside = 0;
+			cReport.counterInput = 0 ;
+			cReport.amountDelay = 0.0;
+			cReport.maximunDrawn = 0;
+			cReport.minimunDrawn = 0;
+			MPI_Send(&cReport, sizeof(PrinterActivity), MPI_BYTE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
 			default:
 				break;
 		}

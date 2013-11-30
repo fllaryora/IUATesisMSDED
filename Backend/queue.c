@@ -18,7 +18,8 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	//unsigned long long int counterDeltaTNotEmpty = 0;//contador de delta T no vacios
 	//On the fly Porcentaje (contador de delta T no vacios / contador de delta T) *100
 	int msg = 0;
-
+	PrinterQueue qReport;
+	PrinterFinalQueue qReportFinal;
 	do {
 		
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
@@ -43,12 +44,29 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
+			printf("print report----%d\n",initialStatus->idNode);
+			qReport.idNode = initialStatus->idNode;
+			qReport.amount = 0;
+			qReport.counterInput = 0;
+			qReport.counterOutput = 0;
+			qReport.average = 0.0;
+			qReport.maximun = 0;
+			qReport.minimun = 0;
+			qReport.timesNotEmpty = 0.0;
+			qReport.percentTimesNotEmpty = 0.0;
+			
+			MPI_Send(&qReport, sizeof(PrinterQueue), MPI_BYTE, PRINTER_ID, QUEUE_REPORT , MPI_COMM_WORLD);
 			default:
 				break;
 		}
 	
 	} while (msg != LIVE_LOCK);
 
+	
+	qReportFinal.idNode = initialStatus->idNode;
+	qReportFinal.fixCost = 0.0;
+	qReportFinal.VariableCost = 0.0;
+	MPI_Send(&qReportFinal, sizeof(PrinterFinalQueue), MPI_BYTE, PRINTER_ID, QUEUE_FINAL_REPORT , MPI_COMM_WORLD);
 	return;
 }
 

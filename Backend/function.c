@@ -25,7 +25,7 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	//double maximun = -1; //maximo de recursos
 	// Minima duración sorteada
  	//double minimun = -1; //minimo de recursos
-
+	PrinterFunction fReport;
 	int msg = 0;
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
@@ -50,6 +50,10 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
+			printf("print report----%d\n",initialStatus->idNode);
+			fReport.idNode = initialStatus->idNode;
+			fReport.amount = 0;
+			MPI_Send(&fReport, sizeof(PrinterFunction), MPI_BYTE, PRINTER_ID, FUNCTION_REPORT , MPI_COMM_WORLD);
 			default:
 				break;
 		}

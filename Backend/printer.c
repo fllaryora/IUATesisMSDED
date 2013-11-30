@@ -9,14 +9,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-void printer(){
+void printer(const int* qCouNfComb){
 	int fileDescriptor;
 	double totalTime = 0.0;
 	int flag = FALSE;
 	MPI_Status result;
-	int* qCouNfComb = (int*) malloc( 5 * sizeof(int) );
+	
 	//recive del master la cantidad de nodos
-	MPI_Recv2(qCouNfComb, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	
+	//MPI_Recv2(qCouNfComb, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	
 	fileDescriptor = open ("/tmp/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	
 	//open json file
@@ -28,6 +30,7 @@ void printer(){
 			MPI_Recv6(&totalTime, 1, MPI_DOUBLE, MASTER_ID, MPI_ANY_TAG , MPI_COMM_WORLD, &result);
 			MockResult(&result);
 			if(result.MPI_TAG == PRINT_SIGNAL ){
+				printf("recivi el fucking PRINT_SIGNAL\n");
 				if(flag == TRUE){
 					separeElement(fileDescriptor);
 				} 
@@ -44,7 +47,7 @@ void printer(){
 	
 	//close json file
 	closeBrace(fileDescriptor);
-	free(qCouNfComb);
+	
 	close(fileDescriptor);
 }
 
@@ -120,6 +123,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 				//recibo todos los envios de colas
 				for(int i = 0; i < queues; i++){
 					//obtengo estructura
+					printf("recividela cola\n");
 					MPI_Recv3(&qeStruct, sizeof(PrinterQueue), MPI_BYTE, MPI_ANY_SOURCE, QUEUE_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doQueue( fileDescriptor, qeStruct.idNode, qeStruct.amount, qeStruct.counterInput, qeStruct.counterOutput, 
 							qeStruct.average, qeStruct.maximun,  qeStruct.minimun,  qeStruct.timesNotEmpty,  qeStruct.percentTimesNotEmpty);
@@ -131,6 +135,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 				//recibo todos los envios de colas
 				for(int i = 0; i < counters; i++){
 					//obtengo estructura
+					printf("recividela counters\n");
 					MPI_Recv3(&crStruct, sizeof(PrinterCounter), MPI_BYTE, MPI_ANY_SOURCE, COUNTER_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					counterCycles[i*2] =  crStruct.idNode;
 					counterCycles[i*2+1] =  crStruct.totalProductivity;

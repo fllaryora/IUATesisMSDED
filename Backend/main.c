@@ -61,7 +61,9 @@ int main(int argc, char **argv){
 		case PRINTER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
-				//printer();
+				int * qCouNfComb = getNodesAmountDetail(filenameJson);
+				printer(qCouNfComb);
+				free(qCouNfComb);
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}

@@ -128,14 +128,6 @@ typedef struct{
 //contdownWorktask y delayWorktask llegan como arreglos de double en otra llamada aparte
 
 typedef struct{
-	double totalTime;
-	double totalCost;
-	int queuesSummaryAmount;
-	int countersSummaryAmount;
-}PrinterSummary;
-//idNode, totalProductivity , idNode, fixCost y VariableCost llegan como arreglo en otra llamada
-
-typedef struct{
 	int idNode;
 	double fixCost;
 	double VariableCost;

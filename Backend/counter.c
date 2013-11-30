@@ -25,7 +25,8 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	//double maximun = -1; //maximo de recursos
 	// Minima duración sorteada
  	//double minimun = -1; //minimo de recursos
-
+	PrinterCounter cReport;
+	PrinterFinalCounter cReportFinal;
 	int msg = 0;
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
@@ -50,11 +51,24 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
+			
+			printf("print report----%d\n",initialStatus->idNode);
+			cReport.idNode = initialStatus->idNode;
+			cReport.totalProductivity = 0;
+			cReport.deltaTProductivity = 0;
+			cReport.productivityPerTime = 0,0;
+			MPI_Send(&cReport, sizeof(PrinterCounter), MPI_BYTE, PRINTER_ID, COUNTER_REPORT , MPI_COMM_WORLD);
 			default:
 				break;
 		}
 	
 	} while (msg != LIVE_LOCK);
+	
+	
+	cReportFinal.idNode = initialStatus->idNode;
+	cReportFinal.totalProductivity = 0;
+
+	MPI_Send(&cReportFinal, sizeof(PrinterFinalCounter), MPI_BYTE, PRINTER_ID, COUNTER_FINAL_REPORT , MPI_COMM_WORLD);
 	return;
 }
 

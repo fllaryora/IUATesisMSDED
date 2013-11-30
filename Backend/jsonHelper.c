@@ -668,6 +668,24 @@ int getNodesAmount( const char *filenameJson ){
 }
 
 /*
+ * Retorna detalle de la cantidad de nodos que hay en el modelo
+ * */
+int* getNodesAmountDetail( const char *filenameJson ){
+	int* count = (int*)malloc(sizeof(int)*5);
+	JSON_Value* root_value = json_parse_file(filenameJson);
+	JSON_Object* object = json_value_get_object(root_value);
+
+	count[0] = json_array_get_count( json_object_dotget_array(object, "transformation.queues") );
+	count[1] = json_array_get_count( json_object_dotget_array(object, "transformation.counters") );
+ 	count[2] = json_array_get_count( json_object_dotget_array(object, "transformation.normals") );
+	count[3] = json_array_get_count( json_object_dotget_array(object, "transformation.functions") );
+	count[5] = json_array_get_count( json_object_dotget_array(object, "transformation.combis") );
+	json_value_free(root_value);
+
+	return count;
+}
+
+/*
  * Obtiene los ids de todas las combis del modelo
  * */
 int* getCombiIds( const char *filenameJson ){

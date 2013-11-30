@@ -29,7 +29,8 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 	//double maximun = -1; //maximo de recursos
 	// Minima duración sorteada
  	//double minimun = -1; //minimo de recursos
-
+	PrinterActivity nReport;
+	
 	int msg = 0;
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
@@ -59,6 +60,15 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
+			printf("print report----%d\n",initialStatus->idNode);
+			
+			nReport.idNode = initialStatus->idNode;
+			nReport.activityInside = 0;
+			nReport.counterInput = 0 ;
+			nReport.amountDelay = 0.0;
+			nReport.maximunDrawn = 0;
+			nReport.minimunDrawn = 0;
+			MPI_Send(&nReport, sizeof(PrinterActivity), MPI_BYTE, PRINTER_ID, NORMAL_REPORT , MPI_COMM_WORLD);
 			default:
 				break;
 		}
