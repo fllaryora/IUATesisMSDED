@@ -608,14 +608,13 @@ void insertWorktask(Worktask *pointer, unsigned long long int delay){
         pointer->next = NULL;
 }
 
-
 //rebaja  los delay de los worktask en un t  y Elimina los workstask finalizados 
 int discountDelayAndDeleteFinishedWorktask(Worktask *pointer){
 	int deletedWorkTask = 0;
 	while(pointer->next!=NULL){
 		/* Go to the node for which the node next to it has to be deleted */
 		/*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
-		while(pointer->next!=NULL && (pointer->next)->currentDelay > 0){
+		while(pointer->next!=NULL && (pointer->next)->currentDelay > 1){
 			(pointer->next)->currentDelay--;
 			pointer = pointer -> next;
 		}
@@ -641,8 +640,7 @@ int deleteFinishedWorktask(Worktask *pointer){
 	while(pointer->next!=NULL){
 		/* Go to the node for which the node next to it has to be deleted */
 		/*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
-		while(pointer->next!=NULL && (pointer->next)->currentDelay > 0){
-			(pointer->next)->currentDelay--;
+		while(pointer->next!=NULL && (pointer->next)->currentDelay > 0){//Elimina los zeros
 			pointer = pointer -> next;
 		}
 

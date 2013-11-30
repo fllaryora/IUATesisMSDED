@@ -262,7 +262,6 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, const MPI_Comm 
 		break;
 
 		case DIST_UNIFORM:
-
         	for(int i = 0; i < (*inputWorktask); i++){
 				insertWorktask(workTaskList, (int)( RandomDouble(initialStatus->delay.least, initialStatus->delay.highest) * TIME_TO_DELTA_T ));
 			}
@@ -314,7 +313,11 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, const MPI_Comm 
 		
 	(*bodyResource) += (*inputWorktask);
 	(*inputWorktask) = 0;
+
+	int detZero = deleteFinishedWorktask(workTaskList);
+	(*bodyResource) -= detZero;
+	(*outputWorktask) += detZero;
+
 	//printf("espero en barrera");
 	MPI_Barrier( commNodes );
-	
 }

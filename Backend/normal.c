@@ -155,47 +155,73 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
 
 void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bodyResource ,const MPI_Comm commNodes, Worktask *workTaskList,  const Normal *initialStatus, const int isPrima){
 	//si es deterministico 0
-	if( isPrima && initialStatus->delay.distribution == DIST_DETERMINISTIC && ((int)initialStatus->delay.constant) == 0){	
-		//printf("cte en los cadod de det 0  = %d", ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
-		(*outputWorktask) += (*inputWorktask);
-		(*inputWorktask) = 0;
-	} else {
-		switch(initialStatus->delay.distribution){	
-			case DIST_DETERMINISTIC:
+
+	switch(initialStatus->delay.distribution){	
+		case DIST_DETERMINISTIC:
+			for(int i = 0; i < (*inputWorktask); i++){
+				//printf("cte = %d", ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
+				insertWorktask(workTaskList, (int)(initialStatus->delay.constant * TIME_TO_DELTA_T) );
+			}
+		break;
+
+		case DIST_UNIFORM:
+
+        	for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomDouble(initialStatus->delay.least, initialStatus->delay.highest) * TIME_TO_DELTA_T ));
+			}
+		break;
+
+		case DIST_NORMAL:
+		
+    		for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomNormal(initialStatus->delay.mean, initialStatus->delay.variance )  * TIME_TO_DELTA_T ));
+			}
+		break;
+
+		case DIST_EXPONENTIAL:
+			
+     		for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomExponential( initialStatus->delay.lambda )  * TIME_TO_DELTA_T ));
+			}
+		break;
+
+		case DIST_TRIANGULAR:
+			
+			for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomTriangular(initialStatus->delay.least, initialStatus->delay.highest, initialStatus->delay.mode) * TIME_TO_DELTA_T ));
+			}
+		break;
+
+		case DIST_LOG_NORMAL:
+			
+			for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomLogNormalWithMinimun( initialStatus->delay.escale, initialStatus->delay.shape, initialStatus->delay.least )  * TIME_TO_DELTA_T ));
+			}
+		break;
+
+		case DIST_BETA:
+			//TODO : falta completar el caso de que solo uno de los dos tiene parametro mayor a uno
+			if(initialStatus->delay.shapeAlpha < 1 && initialStatus->delay.shapeBeta < 1){
 				for(int i = 0; i < (*inputWorktask); i++){
-					//printf("cte = %d", ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
-					insertWorktask(workTaskList, ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
+					insertWorktask(workTaskList, (int)( RandomBetaWithMinimunAndMaximun( initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun )  * TIME_TO_DELTA_T ));
 				}
-			break;
-			case DIST_UNIFORM:
-
-			break;
-			case DIST_NORMAL:
-
-			break;
-			case DIST_EXPONENTIAL:
-
-			break;
-			case DIST_TRIANGULAR:
-
-			break;
-			case DIST_BETA:
-
-			break;
-			case DIST_LOG_NORMAL:
-
-			break;
-		}
-
-		//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
-		
-		(*bodyResource) += (*inputWorktask);
-		(*inputWorktask) = 0;
-		
+			} else {
+				for(int i = 0; i < (*inputWorktask); i++){
+					insertWorktask(workTaskList, (int)( RandomBetaIntegerWithMinimunAndMaximun( (int)initialStatus->delay.shapeAlpha, (int)initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun )  * TIME_TO_DELTA_T ));
+				}	
+			}
+		break;
 	}
 
 	//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
-	//printf("espero en barrera");
+	
+	(*bodyResource) += (*inputWorktask);
+	(*inputWorktask) = 0;
+	
+	int detZero = deleteFinishedWorktask(workTaskList);
+	(*bodyResource) -= detZero;
+	(*outputWorktask) += detZero;
+	
 	MPI_Barrier( commNodes );
 	//printf("Salgo barrera en barrera");
 }
