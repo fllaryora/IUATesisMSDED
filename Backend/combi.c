@@ -31,6 +31,22 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
  	//double minimun = -1; //minimo de recursos
 
 	int msg = 0;
+	
+	if(initialStatus->countProbabilisticBranch > 0){
+		//TODO arreglar el RNG
+		//if(modelSeed > -1 )
+		//	RandomInitialise(modelSeed,modelSeed);
+		//para el rng2
+		//if(initialStatus->delay.seed > -1 )
+		//		RandomInitialise( initialStatus->delay.seed, initialStatus->delay.seed);
+		int seed1, seed2;		
+		seed1 = (modelSeed != -1)? modelSeed: initialStatus->delay.seed;
+		seed2 = ( initialStatus->delay.seed != -1)? initialStatus->delay.seed:modelSeed;
+
+		if(modelSeed != -1 || initialStatus->delay.seed != -1)
+			RandomInitialise(seed1,seed2);
+	}
+	
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 	
@@ -143,20 +159,17 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 	if (initialStatus->countProbabilisticBranch > 0){
 		walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
 		hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
+		hollows[initialStatus->countProbabilisticBranch-1] = 0; //inicializo de paso
+		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
 	}
 	double acummulatedProb = 0.0;
-	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
+	for(int i = 0; i < initialStatus->countProbabilisticBranch-1; i++){
 		acummulatedProb += initialStatus->probabilisticBranch[i];
 		walls[i] = acummulatedProb;
 		printf("wall i %d= %g \n",i, acummulatedProb);
 		hollows[i] = 0; //inicializo de paso
 	}
-	//preeveo errores de redondeo
-	if(initialStatus->countProbabilisticBranch > 0){
-		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
-		if(modelSeed != -1 )
-			RandomInitialise(modelSeed,modelSeed);
-	}
+	
 	//para cada nodo sortear	
 	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
 		double hollowNumber = RandomUniform();
@@ -168,7 +181,6 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 			}
 		}
 	}
-	
 	 
     //inicializo los request de las llegadas de recursos
     MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
@@ -239,39 +251,70 @@ void setAllCommit(const Combi *initialStatus, const MPI_Comm commNodes){
 }
 
 void generationPhaseCombi(int* inputWorktask, int* bodyResource, const MPI_Comm commNodes, Worktask *workTaskList,  const Combi *initialStatus){
-		
-	switch(initialStatus->delay.distribution){	
+
+	switch(initialStatus->delay.distribution){
+
 		case DIST_DETERMINISTIC:
 			for(int i = 0; i < (*inputWorktask); i++){
 				//printf("cte = %d", ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
-				insertWorktask(workTaskList, ((int)initialStatus->delay.constant) * TIME_TO_DELTA_T);
+				insertWorktask(workTaskList, (int)(initialStatus->delay.constant * TIME_TO_DELTA_T) );
 			}
 		break;
+
 		case DIST_UNIFORM:
 
+        	for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomDouble(initialStatus->delay.least, initialStatus->delay.highest) * TIME_TO_DELTA_T ));
+			}
 		break;
+
 		case DIST_NORMAL:
-
+		
+    		for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomNormal(initialStatus->delay.mean, initialStatus->delay.variance )  * TIME_TO_DELTA_T ));
+			}
 		break;
+
 		case DIST_EXPONENTIAL:
-
+			
+     		for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomExponential( initialStatus->delay.lambda )  * TIME_TO_DELTA_T ));
+			}
 		break;
+
 		case DIST_TRIANGULAR:
-
+			
+			for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomTriangular(initialStatus->delay.least, initialStatus->delay.highest, initialStatus->delay.mode) * TIME_TO_DELTA_T ));
+			}
 		break;
-		case DIST_BETA:
 
-		break;
 		case DIST_LOG_NORMAL:
-
+			
+			for(int i = 0; i < (*inputWorktask); i++){
+				insertWorktask(workTaskList, (int)( RandomLogNormalWithMinimun( initialStatus->delay.escale, initialStatus->delay.shape, initialStatus->delay.least )  * TIME_TO_DELTA_T ));
+			}
 		break;
-	}
 
-	//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
+		case DIST_BETA:
+			//TODO : falta completar el caso de que solo uno de los dos tiene parametro mayor a uno
+			if(initialStatus->delay.shapeAlpha < 1 && initialStatus->delay.shapeBeta < 1){
+				for(int i = 0; i < (*inputWorktask); i++){
+					insertWorktask(workTaskList, (int)( RandomBetaWithMinimunAndMaximun( initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun )  * TIME_TO_DELTA_T ));
+				}
+			} else {
+				for(int i = 0; i < (*inputWorktask); i++){
+					insertWorktask(workTaskList, (int)( RandomBetaIntegerWithMinimunAndMaximun( (int)initialStatus->delay.shapeAlpha, (int)initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun )  * TIME_TO_DELTA_T ));
+				}	
+			}
+			
+		break;
+
+	}
 		
 	(*bodyResource) += (*inputWorktask);
 	(*inputWorktask) = 0;
 	//printf("espero en barrera");
 	MPI_Barrier( commNodes );
-	//printf("Salgo barrera en barrera");
+	
 }

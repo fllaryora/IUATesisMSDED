@@ -180,6 +180,11 @@ double RandomGaussian(double mean,double stddev)
     return (mean + stddev * v / u);
 }
 
+double RandomNormal(double mean,double variance){
+  //conversion varianza por desviacion estandar
+  return RandomGaussian( mean, sqrt(variance));
+}
+
 /*
   Wikipedia, using inverse formula
 */

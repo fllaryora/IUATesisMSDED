@@ -1,5 +1,5 @@
 #include "jsonHelper.h"
-
+#include <string.h>
 /* 
 limpia memoria y retorna un valor
 */
@@ -153,7 +153,7 @@ int validateJson(const char *filenameJson){
     }
     
     object = json_value_get_object(root_value);
-
+	
 	getArray(object, "transformation.queues"   , "idNode" ,&queueArray    , &queueSize);
 	getArray(object, "transformation.counters" , "idNode" ,&counterArray  , &counterSize);
 	getArray(object, "transformation.normals"  , "idNode" ,&normalArray   , &normalSize);
@@ -374,6 +374,9 @@ int validateJson(const char *filenameJson){
 	if (validateDoubleReference(sizeAllNodes,precederArrayFull,followerArrayFull) == DOUBLE_REFERENCE_FAIL)
 		return DOUBLE_REFERENCE_FAIL;
 	
+	if( VALIDATION_PASS != validateSeeds(object) )
+		return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull, INVALID_MODEL_SEED);
+		
     return freeAllAndReturn(queueArray, counterArray, normalArray, functionArray, combiArray, allNodes, root_value, sizeAllNodes, precederArrayFull, followerArrayFull,VALIDATION_PASS);
 }
 
@@ -664,6 +667,9 @@ int getNodesAmount( const char *filenameJson ){
 	return count;
 }
 
+/*
+ * Obtiene los ids de todas las combis del modelo
+ * */
 int* getCombiIds( const char *filenameJson ){
 	int count = 0;
 	JSON_Value* root_value = json_parse_file(filenameJson);
@@ -685,6 +691,9 @@ int* getCombiIds( const char *filenameJson ){
 	return ids;
 }
 
+/*
+ * Obtiene la cantidad de bucles maxima que no deberia superar el modelado
+ * */
 int getWatchdog( const char *filenameJson ){
 	JSON_Value* root_value = json_parse_file(filenameJson);
 	JSON_Object* object = json_value_get_object(root_value);
@@ -693,6 +702,9 @@ int getWatchdog( const char *filenameJson ){
 	return ret;
 }
 
+/*
+ * obtiene la semilla al principio del modelo
+ * */
 int getModelSeed( const char *filenameJson ){
 	JSON_Value* root_value = json_parse_file(filenameJson);
 	JSON_Object* object = json_value_get_object(root_value);
@@ -701,6 +713,48 @@ int getModelSeed( const char *filenameJson ){
 	return ret;
 }
 
+/*
+ * Valida que las semillas del modelo estan en el rango adecuado
+ * */
+ 
+int validateSeeds(JSON_Object* object){
+	int seed, combiSize, normalSize;
+	JSON_Object * combi, * normal;
+	JSON_Array* combiList,* normalList;
+	
+	seed = json_object_dotget_number (object, "seed");
+	if(seed < -1) 
+		return INVALID_MODEL_SEED;
+	
+	combiList = json_object_dotget_array(object, "transformation.combis");
+	combiSize = json_array_get_count( combiList);
+	
+	for (int i = 0; i < combiSize; i++){
+	    combi = json_array_get_object(combiList, i);
+	    //si no es deterministica, testeo semilla
+	    if (strcmp(json_object_dotget_string(combi,"delay.distribution"),"deterministic")!=0){
+			seed = json_object_dotget_number(combi, "delay.seed" );
+			if(seed < -1) 
+				return INVALID_MODEL_SEED;
+		}
+	}
+	normalList = json_object_dotget_array(object, "transformation.normals");
+	normalSize = json_array_get_count( normalList);
+	for (int i = 0; i < normalSize; i++){
+	    normal = json_array_get_object(normalList, i);
+	    //si no es deterministica, testeo semilla
+	    if (strcmp(json_object_dotget_string(normal,"delay.distribution"),"deterministic")!=0){
+			seed = json_object_dotget_number(normal, "delay.seed" );
+			if(seed < -1) 
+				return INVALID_MODEL_SEED;
+		}
+	}
+	return VALIDATION_PASS;
+}
+
+/*
+obtiene la cantidad de ciclos que deberia cumplir cada counter
+*/
 int* getTargets( const char *filenameJson ){
 	int count = 0;
 
