@@ -612,26 +612,50 @@ void insertWorktask(Worktask *pointer, unsigned long long int delay){
 //rebaja  los delay de los worktask en un t  y Elimina los workstask finalizados 
 int discountDelayAndDeleteFinishedWorktask(Worktask *pointer){
 	int deletedWorkTask = 0;
-	while(1){
+	while(pointer->next!=NULL){
 		/* Go to the node for which the node next to it has to be deleted */
 		/*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
-		while(pointer->next!=NULL && (pointer->next)->currentDelay != 1){
-				(pointer->next)->currentDelay--;
-				pointer = pointer -> next;
+		while(pointer->next!=NULL && (pointer->next)->currentDelay > 0){
+			(pointer->next)->currentDelay--;
+			pointer = pointer -> next;
 		}
-		if(pointer->next==NULL){
-				return deletedWorkTask;
+
+		if(pointer->next!=NULL){
+			/* Now pointer points to a node and the node next to it has to be removed */
+			Worktask *temp;
+			temp = pointer -> next;
+			/*temp points to the node which has to be removed*/
+			pointer->next = temp->next;
+			/*We removed the node which is next to the pointer (which is also temp) */
+			free(temp);
+	        deletedWorkTask++;
 		}
-		/* Now pointer points to a node and the node next to it has to be removed */
-		Worktask *temp;
-		temp = pointer -> next;
-		/*temp points to the node which has to be removed*/
-		pointer->next = temp->next;
-		/*We removed the node which is next to the pointer (which is also temp) */
-		free(temp);
-		/* Beacuse we deleted the node, we no longer require the memory used for it . 
-		   free() will deallocate the memory.
-		 */
-         deletedWorkTask++;
     }
+    return deletedWorkTask;
+}
+
+
+//rebaja  los delay de los worktask en un t  y Elimina los workstask finalizados 
+int deleteFinishedWorktask(Worktask *pointer){
+	int deletedWorkTask = 0;
+	while(pointer->next!=NULL){
+		/* Go to the node for which the node next to it has to be deleted */
+		/*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
+		while(pointer->next!=NULL && (pointer->next)->currentDelay > 0){
+			(pointer->next)->currentDelay--;
+			pointer = pointer -> next;
+		}
+
+		if(pointer->next!=NULL){
+			/* Now pointer points to a node and the node next to it has to be removed */
+			Worktask *temp;
+			temp = pointer -> next;
+			/*temp points to the node which has to be removed*/
+			pointer->next = temp->next;
+			/*We removed the node which is next to the pointer (which is also temp) */
+			free(temp);
+	        deletedWorkTask++;
+		}
+    }
+    return deletedWorkTask;
 }

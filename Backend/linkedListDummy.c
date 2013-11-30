@@ -2,8 +2,8 @@
 #include<stdlib.h>
 
 typedef struct WorkTaskType{
-        unsigned long long int  initialDelay;
-        unsigned long long int  currentDelay;
+        long long int  initialDelay;
+        long long int  currentDelay;
         struct WorkTaskType *next;
 }Worktask;
 
@@ -23,31 +23,30 @@ void insert(Worktask *pointer, unsigned long long int currentDelay,  unsigned lo
 
 int delete(Worktask *pointer){
 	int deletedWorkTask = 0;
-	while(1){
+	while( pointer->next!=NULL ){
     /* Go to the node for which the node next to it has to be deleted */
     /*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
-    while(pointer->next!=NULL && (pointer->next)->currentDelay != 1)
+    while(pointer->next!=NULL && (pointer->next)->currentDelay > 0)
     {
-			(pointer->next)->currentDelay--;
-            pointer = pointer -> next;
+		(pointer->next)->currentDelay--;
+        pointer = pointer -> next;
     }
-    if(pointer->next==NULL)
-    {
-            printf("Element 0 is not present in the list\n");
-            return deletedWorkTask;
+    if(pointer->next!=NULL){
+        /* Now pointer points to a node and the node next to it has to be removed */
+        Worktask *temp;
+        temp = pointer -> next;
+        /*temp points to the node which has to be removed*/
+        pointer->next = temp->next;
+        /*We removed the node which is next to the pointer (which is also temp) */
+        free(temp);
+        /* Beacuse we deleted the node, we no longer require the memory used for it . 
+           free() will deallocate the memory.
+         */
+         deletedWorkTask++;
     }
-    /* Now pointer points to a node and the node next to it has to be removed */
-    Worktask *temp;
-    temp = pointer -> next;
-    /*temp points to the node which has to be removed*/
-    pointer->next = temp->next;
-    /*We removed the node which is next to the pointer (which is also temp) */
-    free(temp);
-    /* Beacuse we deleted the node, we no longer require the memory used for it . 
-       free() will deallocate the memory.
-     */
-     deletedWorkTask++;
+    
     }
+    return deletedWorkTask;
 }
 
 void print(Worktask *pointer){

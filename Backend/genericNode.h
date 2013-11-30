@@ -91,9 +91,9 @@ typedef struct{
 
 
 typedef struct WorkTaskType{
-        unsigned long long int  initialDelay;
-        unsigned long long int  currentDelay;
-        struct WorkTaskType *next;
+    long long int  initialDelay;
+    long long int  currentDelay;
+    struct WorkTaskType *next;
 }Worktask;
 
 
@@ -120,7 +120,8 @@ extern void printFunction(Function );
 extern void printNormal(Normal );
 
 
-void insertWorktask(Worktask *pointer, unsigned long long int delay);
-int discountDelayAndDeleteFinishedWorktask(Worktask *pointer);
+extern void insertWorktask(Worktask *pointer, unsigned long long int delay);
+extern int discountDelayAndDeleteFinishedWorktask(Worktask *pointer);
+extern int deleteFinishedWorktask(Worktask *pointer)
 #endif /* #ifndef _GENERIC_NODE_H_*/
 
