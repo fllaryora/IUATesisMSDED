@@ -21,7 +21,7 @@ extern double RandomBetaWithMinimunAndMaximun(double  ,double ,double  ,double )
 extern double RandomBetaIntegerWithMinimunAndMaximun(int  ,int,double  ,double  );
 //extern double RandomGamma(double  ,double );
 extern double RandomGammaInteger(int  ,double );
-
+extern double RandomNormal(double ,double );
 extern int    RandomInt(int,int);
 extern double RandomDouble(double,double);
 extern int SeedGenerator(int );
