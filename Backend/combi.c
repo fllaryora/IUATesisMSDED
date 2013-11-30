@@ -31,6 +31,22 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
  	//double minimun = -1; //minimo de recursos
 
 	int msg = 0;
+	
+	if(initialStatus->countProbabilisticBranch > 0){
+		//TODO arreglar el RNG
+		//if(modelSeed > -1 )
+		//	RandomInitialise(modelSeed,modelSeed);
+		//para el rng2
+		//if(initialStatus->delay.seed > -1 )
+		//		RandomInitialise( initialStatus->delay.seed, initialStatus->delay.seed);
+		int seed1, seed2;		
+		seed1 = (modelSeed != -1)? modelSeed: initialStatus->delay.seed;
+		seed2 = ( initialStatus->delay.seed != -1)? initialStatus->delay.seed:modelSeed;
+
+		if(modelSeed != -1 || initialStatus->delay.seed != -1)
+			RandomInitialise(seed1,seed2);
+	}
+	
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 	
@@ -152,20 +168,6 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 		walls[i] = acummulatedProb;
 		printf("wall i %d= %g \n",i, acummulatedProb);
 		hollows[i] = 0; //inicializo de paso
-	}
-	if(initialStatus->countProbabilisticBranch > 0){
-		//TODO arreglar el RNG
-		//if(modelSeed > -1 )
-		//	RandomInitialise(modelSeed,modelSeed);
-		//para el rng2
-		//if(initialStatus->delay.seed > -1 )
-		//		RandomInitialise( initialStatus->delay.seed, initialStatus->delay.seed);
-		int seed1, seed2;		
-		seed1 = (modelSeed > -1)? modelSeed: initialStatus->delay.seed;
-		seed2 = ( initialStatus->delay.seed > -1)? initialStatus->delay.seed:modelSeed;
-
-		if(modelSeed > -1 || initialStatus->delay.seed > -1)
-			RandomInitialise(seed1,seed2);
 	}
 	
 	//para cada nodo sortear	
