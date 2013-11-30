@@ -161,8 +161,8 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 		//if(initialStatus->delay.seed > -1 )
 		//		RandomInitialise( initialStatus->delay.seed, initialStatus->delay.seed);
 		int seed1, seed2;		
-		seed1 = (modelSeed > -1) modelSeed: initialStatus->delay.seed;
-		seed2 = ( initialStatus->delay.seed > -1) initialStatus->delay.seed:modelSeed;
+		seed1 = (modelSeed > -1)? modelSeed: initialStatus->delay.seed;
+		seed2 = ( initialStatus->delay.seed > -1)? initialStatus->delay.seed:modelSeed;
 
 		if(modelSeed > -1 || initialStatus->delay.seed > -1)
 			RandomInitialise(seed1,seed2);
