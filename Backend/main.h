@@ -121,7 +121,7 @@ typedef struct{
 	int idNode;
 	int activityInside;
 	int counterInput;
-	double delayAverage;
+	double amountDelay; // delayAverage =  amount delay / counterInpu 
 	int maximunDrawn;
 	int minimunDrawn;
 }PrinterActivity;

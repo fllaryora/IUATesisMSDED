@@ -150,7 +150,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 					//los delay internos
 					MPI_Recv5(worktask, nlStruct.activityInside* 2, MPI_DOUBLE, oldSource, NORMAL_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doActivity(fileDescriptor, nlStruct.idNode, nlStruct.activityInside, worktask, 
-						&worktask[nlStruct.activityInside], nlStruct.counterInput, nlStruct.delayAverage, 
+						&worktask[nlStruct.activityInside], nlStruct.counterInput, nlStruct.amountDelay, 
 						nlStruct.maximunDrawn, nlStruct.minimunDrawn );
 					if (i+1 < normals ){separeElement(fileDescriptor);}
 					free(worktask);
@@ -175,7 +175,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 					//los delay internos
 					MPI_Recv5(worktask, cbStruct.activityInside* 2, MPI_DOUBLE, oldSource, COMBI_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doActivity(fileDescriptor, cbStruct.idNode, cbStruct.activityInside, worktask, 
-						&worktask[cbStruct.activityInside], cbStruct.counterInput, cbStruct.delayAverage, 
+						&worktask[cbStruct.activityInside], cbStruct.counterInput, cbStruct.amountDelay, 
 						cbStruct.maximunDrawn, cbStruct.minimunDrawn );
 					if (i+1 < combis ){separeElement(fileDescriptor);}
 					free(worktask);
@@ -188,7 +188,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 }
 
 void doActivity(int fileDescriptor, const int idNode, const int activityInside, const double* contdownWorktask, 
-						const double* delayWorktask, const int counterInput, const double delayAverage, 
+						const double* delayWorktask, const int counterInput, const double amountDelay, 
 						const int maximunDrawn, const int minimunDrawn ){
 	//open one Activity
 	openBrace(fileDescriptor);
@@ -213,7 +213,7 @@ void doActivity(int fileDescriptor, const int idNode, const int activityInside, 
 		} closeBracket( fileDescriptor); separeElement(fileDescriptor);
 
 		putLabel(fileDescriptor, "counterInput");   putInteger(fileDescriptor, counterInput); separeElement(fileDescriptor);
-		putLabel(fileDescriptor, "delayAverage");   putDouble(fileDescriptor, delayAverage); separeElement(fileDescriptor);
+		putLabel(fileDescriptor, "amountDelay");   putDouble(fileDescriptor, amountDelay); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "maximunDrawn");   putInteger(fileDescriptor, maximunDrawn); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "minimunDrawn");   putInteger(fileDescriptor, minimunDrawn); 
 	//close one Activity
