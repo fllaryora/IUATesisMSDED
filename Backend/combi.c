@@ -63,7 +63,7 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
-				generationPhaseCombi( &inputWorktask, &bodyResource,  commNodes, workTaskList, initialStatus);
+				generationPhaseCombi( &inputWorktask, &bodyResource, &outputWorktask, commNodes, workTaskList, initialStatus);
 				break;
 			case CONSUME_DT:
 				deltaTCount++;
@@ -250,7 +250,7 @@ void setAllCommit(const Combi *initialStatus, const MPI_Comm commNodes){
 	return ;
 }
 
-void generationPhaseCombi(int* inputWorktask, int* bodyResource, const MPI_Comm commNodes, Worktask *workTaskList,  const Combi *initialStatus){
+void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWorktask, const MPI_Comm commNodes, Worktask *workTaskList,  const Combi *initialStatus){
 
 	switch(initialStatus->delay.distribution){
 

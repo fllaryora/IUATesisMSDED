@@ -10,8 +10,6 @@
 #endif
 #include "genericNode.h"
 
-
-
 typedef enum{
 	NOT_PROCESSESED, //estado inicial
 	PROCESSESED // sacado de la lista de nodos a enviar
@@ -24,4 +22,5 @@ extern void requestResponceCombis(const int* , const Queue *, const MPI_Comm , c
 extern void getDemandCombis(int* , const Queue *, const MPI_Comm );
 extern void getFortunatedCombis(int* , const Queue *, const MPI_Comm , int* );
 extern void generationPhaseQueue(int * , int * , const MPI_Comm );
+
 #endif /* #ifndef _QUEUE_H_*/

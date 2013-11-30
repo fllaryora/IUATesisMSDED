@@ -122,6 +122,6 @@ extern void printNormal(Normal );
 
 extern void insertWorktask(Worktask *pointer, unsigned long long int delay);
 extern int discountDelayAndDeleteFinishedWorktask(Worktask *pointer);
-extern int deleteFinishedWorktask(Worktask *pointer)
+extern int deleteFinishedWorktask(Worktask *pointer);
 #endif /* #ifndef _GENERIC_NODE_H_*/
 
