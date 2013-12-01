@@ -5,7 +5,7 @@
 		"queues": [
 			{
 				"idNode": 1,
-				"resource": 0,
+				"resource": 4,
 				"preceders": [2],
 				"followers": [2],
 				"fixedCost": 12.0,

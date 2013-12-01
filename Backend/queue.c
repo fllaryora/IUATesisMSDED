@@ -27,21 +27,23 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 		switch(msg){
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
-				printf("cola input Worktask Avance: %d\n",(inputResource));
+				printf("Avance cola : input %d body %d\n",inputResource,bodyResource);
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses);
-				printf("cola input Worktask Avance : %d\n",(inputResource));
+				printf("Avance cola : input %d body %d\n",inputResource,bodyResource);
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
-				printf("cola input Worktask Avance prima: %d\n",(inputResource));
+				printf("AvanceP cola : input %d body %d\n",inputResource,bodyResource);
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses);
-				printf("cola input Worktask Avance prima: %d\n",(inputResource));
+				printf("AvanceP cola : input %d body %d\n",inputResource,bodyResource);
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
+			printf("GEneracion cola : input %d body %d\n",inputResource,bodyResource);
 				generationPhaseQueue(&inputResource, &bodyResource, commNodes);
+				printf("GEneracion cola : input %d body %d\n",inputResource,bodyResource);
 				break;
 			case CONSUME_DT:
 				deltaTCount++;

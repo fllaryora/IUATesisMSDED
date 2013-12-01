@@ -44,21 +44,23 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				printf("Acance Combi = input %d, body = %d , output %d\n",inputWorktask,bodyResource,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
-				printf("input Worktask Avance: %d\n",(inputWorktask));
+				printf("Acance Combi = input %d, body = %d , output%d\n",inputWorktask,bodyResource,outputWorktask);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
-				printf("input Worktask Avance prima: %d\n",(inputWorktask));
+				printf("Acance prima Combi = input %d, body = %d , output %d\n",inputWorktask,bodyResource,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
-				printf("input Worktask Avance prima: %d\n",(inputWorktask));
+				printf("Acance prima Combi = input %d, body = %d , output %d\n",inputWorktask,bodyResource,outputWorktask);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
+				printf("generacion Combi = input %d, body = %d , output %d\n",inputWorktask,bodyResource,outputWorktask);
 				generationPhaseCombi( &inputWorktask, &bodyResource, &outputWorktask, commNodes, workTaskList, initialStatus, &cReport);
+				printf("generacion Combi = input %d, body = %d , output %d\n",inputWorktask,bodyResource,outputWorktask);
 				break;
 			case CONSUME_DT:
 				deltaTCount++;
@@ -164,6 +166,7 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 	
 	double* walls = NULL;
 	int* hollows = NULL;
+	int coins = (*worktaskInOutput);
 	//printf("brob branch %d \n",initialStatus->countProbabilisticBranch);
 	if (initialStatus->countProbabilisticBranch > 0){
 		walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
@@ -172,7 +175,7 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
 	}
 	double acummulatedProb = 0.0;
-	for(int i = 0; i < initialStatus->countProbabilisticBranch-1; i++){
+	for(int i = 0; i < initialStatus->countProbabilisticBranch-1; i++){ 
 		acummulatedProb += initialStatus->probabilisticBranch[i];
 		walls[i] = acummulatedProb;
 		//printf("wall i %d= %g \n",i, acummulatedProb);
@@ -181,14 +184,20 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 	
 	//para cada nodo sortear	
 	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
-		double hollowNumber = RandomUniform();
-		//defino donde cae la moneda
-		for(int j = 0; j < initialStatus->countProbabilisticBranch; j++){
-			if( hollowNumber <= walls[j] ){
-				hollows[j]++;
-				break;
+		if( coins ){
+			double hollowNumber = RandomUniform();
+			//defino donde cae la moneda
+			for(int j = 0; j < initialStatus->countProbabilisticBranch; j++){
+				if( hollowNumber <= walls[j] ){
+					hollows[j]++;
+					coins--;
+					break;
+				}
 			}
+		} else {
+			break;
 		}
+		
 	}
 	 
     //inicializo los request de las llegadas de recursos

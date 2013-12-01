@@ -65,6 +65,7 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 void advancePhaseFunction(int * inputResource, int* outputResource, const Function *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed){ 
 	double* walls = NULL;
 	int* hollows = NULL;
+	int coins = (*inputResource);
 	if (initialStatus->countProbabilisticBranch > 0){
 		walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
 		hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
@@ -83,13 +84,18 @@ void advancePhaseFunction(int * inputResource, int* outputResource, const Functi
 	}
 	//para cada nodo sortear	
 	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
-		double hollowNumber = RandomUniform();
-		//defino donde cae la moneda
-		for(int j = 0; j < initialStatus->countProbabilisticBranch; j++){
-			if( hollowNumber <= walls[j] ){
-				hollows[j]++;
-				break;
+		if( coins ){
+			double hollowNumber = RandomUniform();
+			//defino donde cae la moneda
+			for(int j = 0; j < initialStatus->countProbabilisticBranch; j++){
+				if( hollowNumber <= walls[j] ){
+					hollows[j]++;
+					coins--;
+					break;
+				}
 			}
+		} else {
+			break;
 		}
 	}
 	
