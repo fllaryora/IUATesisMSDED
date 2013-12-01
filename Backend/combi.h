@@ -22,5 +22,5 @@ extern int allTransactionBegin(const MPI_Comm  ,const Combi *);
 extern void setAllRollback(const Combi *, const MPI_Comm );
 extern void setAllCommit(const Combi *, const MPI_Comm );
 
-extern void generationPhaseCombi(int* , int* ,int*, const MPI_Comm , Worktask *,  const Combi *);
+extern void generationPhaseCombi(int* , int* ,int*, const MPI_Comm , Worktask *,  const Combi *,, PrinterActivity* );
 #endif /* #ifndef _COMBI_H_*/

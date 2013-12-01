@@ -657,3 +657,18 @@ int deleteFinishedWorktask(Worktask *pointer){
     }
     return deletedWorkTask;
 }
+
+double* delayOfWorktask(Worktask *pointer, const int bodyResource){
+	Worktask * pointerTemp = pointer;
+	int deletedWorkTask = 0;
+	double* humanDelay = (double*) malloc(sizeof(double)* bodyResource*2);
+	int  currentDelay = 0;
+	//count doun
+	while(pointer->next!=NULL){
+		humanDelay[currentDelay] = (double)pointer->currentDelay/ (double)TIME_TO_DELTA_T ;
+		humanDelay[currentDelay + bodyResource] = (double)pointer->initialDelay /(double)TIME_TO_DELTA_T;
+		currentDelay++;
+		pointer = pointer -> next;
+    }
+    return humanDelay;
+}
