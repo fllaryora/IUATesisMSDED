@@ -150,15 +150,25 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 				for(int i = 0; i < normals; i++){
 					//obtengo estructura
 					MPI_Recv4(&nlStruct, sizeof(PrinterActivity), MPI_BYTE, MPI_ANY_SOURCE, NORMAL_REPORT , MPI_COMM_WORLD, &result);
+					
 					oldSource = result.MPI_SOURCE;
-					double* worktask = (double*) malloc( nlStruct.activityInside* 2 * sizeof(double) );
-					//los delay internos
-					MPI_Recv5(worktask, nlStruct.activityInside* 2, MPI_DOUBLE, oldSource, NORMAL_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					doActivity(fileDescriptor, nlStruct.idNode, nlStruct.activityInside, worktask, 
-						&worktask[nlStruct.activityInside], nlStruct.counterInput, nlStruct.amountDelay, 
-						nlStruct.maximunDrawn, nlStruct.minimunDrawn );
+					double* worktask = NULL;
+					double* worktaskDelay = NULL;
+					if(nlStruct.activityInside > 0 ){
+						worktask = (double*) malloc( nlStruct.activityInside* 2 * sizeof(double) );
+						//los delay internos
+						MPI_Recv5(worktask, nlStruct.activityInside* 2, MPI_DOUBLE, oldSource, NORMAL_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+						worktaskDelay = &worktask[nlStruct.activityInside];
+					}
+					doActivity(fileDescriptor, nlStruct.idNode, nlStruct.activityInside, worktask, 	worktaskDelay, nlStruct.counterInput, nlStruct.amountDelay,  nlStruct.maximunDrawn, nlStruct.minimunDrawn );
+					if(nlStruct.activityInside > 0 ){
+						free(worktask);
+						worktask = NULL;
+					}
+					
+					
 					if (i+1 < normals ){separeElement(fileDescriptor);}
-					free(worktask);
+					
 				}
 			closeBracket( fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "functions"); openBracket( fileDescriptor);
@@ -174,16 +184,25 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 				//recibo todos los envios de colas
 				for(int i = 0; i < combis; i++){
 					//obtengo estructura
+					printf("HHHHHHHHHHHHHHHHHHH %d\n",combis );
 					MPI_Recv4(&cbStruct, sizeof(PrinterActivity), MPI_BYTE, MPI_ANY_SOURCE, COMBI_REPORT , MPI_COMM_WORLD, &result);
 					oldSource = result.MPI_SOURCE;
-					double* worktask = (double*) malloc( cbStruct.activityInside* 2 * sizeof(double) );
-					//los delay internos
-					MPI_Recv5(worktask, cbStruct.activityInside* 2, MPI_DOUBLE, oldSource, COMBI_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					doActivity(fileDescriptor, cbStruct.idNode, cbStruct.activityInside, worktask, 
-						&worktask[cbStruct.activityInside], cbStruct.counterInput, cbStruct.amountDelay, 
-						cbStruct.maximunDrawn, cbStruct.minimunDrawn );
+					double* worktask = NULL;
+					double * worktaskDelay = NULL;
+					if(cbStruct.activityInside > 0){
+						worktask = (double*) malloc( cbStruct.activityInside* 2 * sizeof(double) );
+						//los delay internos
+						
+						MPI_Recv5(worktask, cbStruct.activityInside* 2, MPI_DOUBLE, oldSource, COMBI_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+						worktaskDelay = &worktask[nlStruct.activityInside];
+					}
+					doActivity(fileDescriptor, cbStruct.idNode, cbStruct.activityInside, worktask, worktaskDelay, cbStruct.counterInput, cbStruct.amountDelay, cbStruct.maximunDrawn, cbStruct.minimunDrawn );
+					if(cbStruct.activityInside > 0){
+						free(worktask);
+						worktask = NULL;
+					}
 					if (i+1 < combis ){separeElement(fileDescriptor);}
-					free(worktask);
+						
 				}
 			closeBracket( fileDescriptor);
 		//close nodestatus

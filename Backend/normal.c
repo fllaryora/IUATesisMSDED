@@ -69,6 +69,7 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 			nReport.maximunDrawn = 0;
 			nReport.minimunDrawn = 0;
 			MPI_Send(&nReport, sizeof(PrinterActivity), MPI_BYTE, PRINTER_ID, NORMAL_REPORT , MPI_COMM_WORLD);
+			
 			default:
 				break;
 		}

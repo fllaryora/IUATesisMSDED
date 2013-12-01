@@ -31,7 +31,7 @@
 //TAG is a label of MPI comunication
 typedef enum{
 	
-	BAD_JSON,
+	BAD_JSON =1,
 	GOOD_JSON,
 	
 	LIVE_LOCK,               /*when is reached the live-lock condition or
@@ -40,27 +40,27 @@ typedef enum{
 	NEW_RAFFLE,			   /*when dT end, and the jackpot of combi's Id 
 						   must change*/
 	RAFFLE_DONE,
-	SEED_AND_COMBI_LIST,   /* cuando el scheduler le manda la lista de combis al raffer*/
+	SEED_AND_COMBI_LIST,   /* 6 cuando el scheduler le manda la lista de combis al raffer*/
 	GET_RAFFLE,			   /*when dT end, i need the jackpot of combi's
 						   Id*/	
 	INIT_NODES,		/*cuantos nodos de cada uno hay en el modelo*/
 
 	COUNTER_REPORT,            /*when dT end, all nodes must report your 
 							status*/
-	FUNCTION_REPORT,
+	FUNCTION_REPORT,   //10
 	NORMAL_REPORT,
 	COMBI_REPORT,
 	QUEUE_REPORT,
 	QUEUE_FINAL_REPORT,
 	COUNTER_FINAL_REPORT,
-	PRINT_SIGNAL, 		   /*when scheduler send to printer must write another 
+	PRINT_SIGNAL, 		   /* 16 when scheduler send to printer must write another 
 						   dT story or give up it */
 	COUNTER_CYCLES,    /* cuando el printer envia al scheduler los ciclos de las combis*/
 
 
 	ADVANCE_PAHSE,			/* the resources only can out*/
 	GENERATION_PHASE,		/* the resources only can in and procese*/
-	GENERATION_PHASE_PRIMA,	/* the resources only can in but can't
+	GENERATION_PHASE_PRIMA,	/* 20 the resources only can in but can't
 							procese*/
 
 	ADVANCE_PAHSE_PRIMA,	/* the resources only can out and tell to 
@@ -73,7 +73,7 @@ typedef enum{
 	RESOURCE_SEND,          /*warns when one node has sent a resource to
 							another*/
 	
-	RESOURCE_REQUEST,       /*when a combi want to know about the amount
+	RESOURCE_REQUEST,       /* 25when a combi want to know about the amount
 							of resources containing at a queue.*/
 	RESOURCE_RESPONSE,      /*when a queue reply about the amount of 
 							your resources.+amount*/
@@ -82,7 +82,7 @@ typedef enum{
 							demand the resource.+ID*/
 	TRANSACTION_BEGIN,      /*warns when a queue has sent a resource to 
 							a combi*/
-	TRANSACTION_CANCELLED,  /*warns when a queue can't send a resource 
+	TRANSACTION_CANCELLED,  /* 30 warns when a queue can't send a resource 
 							to a combi*/						
 	TRANSACTION_COMMIT,      /*when a combi accept queue's resource.*/
 	TRANSACTION_ROLLBACK,   /*when a combi refuses queue's resource.*/

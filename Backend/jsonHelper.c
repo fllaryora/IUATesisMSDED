@@ -679,7 +679,7 @@ int* getNodesAmountDetail( const char *filenameJson ){
 	count[1] = json_array_get_count( json_object_dotget_array(object, "transformation.counters") );
  	count[2] = json_array_get_count( json_object_dotget_array(object, "transformation.normals") );
 	count[3] = json_array_get_count( json_object_dotget_array(object, "transformation.functions") );
-	count[5] = json_array_get_count( json_object_dotget_array(object, "transformation.combis") );
+	count[4] = json_array_get_count( json_object_dotget_array(object, "transformation.combis") );
 	json_value_free(root_value);
 
 	return count;
