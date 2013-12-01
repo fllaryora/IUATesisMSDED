@@ -53,7 +53,7 @@
 					"seed": 5,
 					"least": 0.5,
 					"mode": 1.4,
-					"highest": 2
+					"highest": 4
 				},
 				"probabilisticBranch": [0.5, 0.5]
 			}	

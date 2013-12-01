@@ -662,11 +662,12 @@ double* delayOfWorktask(Worktask *pointer, const int bodyResource){
 	double* humanDelay = (double*) malloc(sizeof(double)* bodyResource*2);
 	int  currentDelay = 0;
 	//count doun
-	while(pointer->next!=NULL){
+	do{
+		pointer = pointer -> next; //me envian el dummy
 		humanDelay[currentDelay] = (double)pointer->currentDelay/ (double)TIME_TO_DELTA_T ;
 		humanDelay[currentDelay + bodyResource] = (double)pointer->initialDelay /(double)TIME_TO_DELTA_T;
 		currentDelay++;
-		pointer = pointer -> next;
-    }
+		
+    }while(pointer->next!=NULL)
     return humanDelay;
 }
