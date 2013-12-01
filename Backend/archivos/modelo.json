@@ -29,7 +29,7 @@
 				"followers": [4],
 				"delay" : {
 					"distribution": "deterministic",
-					"constant" : 0
+					"constant" : 4567
 				}
 			}
 		],

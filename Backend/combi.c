@@ -32,6 +32,7 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 		if(modelSeed != -1 || initialStatus->delay.seed != -1)
 			RandomInitialise(seed1,seed2);
 	}
+	
 	cReport.idNode = initialStatus->idNode;
 	cReport.counterInput = 0 ;
 	cReport.amountDelay = 0.0;
@@ -384,6 +385,7 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
 		break;
 
 	}
+	
 	printf("body INICIO GEN: %d\n",(*bodyResource));
 
 	(*bodyResource) += (*inputWorktask);
