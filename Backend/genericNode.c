@@ -668,6 +668,6 @@ double* delayOfWorktask(Worktask *pointer, const int bodyResource){
 		humanDelay[currentDelay + bodyResource] = (double)pointer->initialDelay /(double)TIME_TO_DELTA_T;
 		currentDelay++;
 		
-    }while(pointer->next!=NULL)
+    }while(pointer->next!=NULL);
     return humanDelay;
 }

@@ -27,12 +27,16 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 		switch(msg){
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
+				printf("cola input Worktask Avance: %d\n",(inputResource));
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses);
+				printf("cola input Worktask Avance : %d\n",(inputResource));
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
+				printf("cola input Worktask Avance prima: %d\n",(inputResource));
 				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses);
+				printf("cola input Worktask Avance prima: %d\n",(inputResource));
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo

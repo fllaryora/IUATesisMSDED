@@ -18,25 +18,6 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	//???
 	unsigned long long int deltaTCount = 0; //cantidad de deltaT que pasaron en este tiempo
 
-
-	//Un array con el tiempo le falta a cada elemento para terminar (Cantidad de trabajos esta implícito dentro ) (no recursos, porque confundiría)
-	//int* cantDeltaTQFalta = NULL;
-	//int counterWorkTask = 0;
-	//2. Otro array con el tiempo inicial sorteado.
-	//int* initialRafflerTime = NULL;
-	//int counterRafflerTime = 0;
-	//3. Número de recursos que entraron, hasta este delta T.
-	//unsigned long long int input = 0;
-
-	//On the fly: Promedio de las duraciones sorteadas.
-	//TODO:Sumatoria de delay / cant worktask    (la primera vez)
-	//(TODO:Sumatoria de delay anterior + Sumatoria de delayde este delta T) / (cant worktask anteriores + cant worktask de este delta T)
-
-	// Máxima duración sorteada
-	//double maximun = -1; //maximo de recursos
-	// Minima duración sorteada
- 	//double minimun = -1; //minimo de recursos
-
 	if(initialStatus->countProbabilisticBranch > 0){
 		//TODO arreglar el RNG
 		//if(modelSeed > -1 )
@@ -65,11 +46,14 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
+				printf("input Worktask Avance: %d\n",(inputWorktask));
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
+				printf("input Worktask Avance prima: %d\n",(inputWorktask));
 				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
+				printf("input Worktask Avance prima: %d\n",(inputWorktask));
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
@@ -92,11 +76,12 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 				//printf("print report----%d\n",initialStatus->idNode);
 
 				MPI_Send(&cReport, sizeof(PrinterActivity), MPI_BYTE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
-				double* worktask = delayOfWorktask(workTaskList, bodyResource);
-
-				MPI_Send(worktask, cReport.activityInside* 2, MPI_DOUBLE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
-
-				free(worktask);
+				if(bodyResource > 0){
+					double* worktask = delayOfWorktask(workTaskList, bodyResource);
+					MPI_Send(worktask, cReport.activityInside* 2, MPI_DOUBLE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
+					free(worktask);
+				}
+				
 			default:
 				break;
 		}
@@ -275,8 +260,8 @@ void setAllCommit(const Combi *initialStatus, const MPI_Comm commNodes){
 }
 
 void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWorktask, const MPI_Comm commNodes, Worktask *workTaskList,  const Combi *initialStatus, PrinterActivity* cReport){
-
-	cReport-> counterInput = (*inputWorktask);
+	printf("input Worktask INICIO GEN: %d\n",(*inputWorktask));
+	cReport-> counterInput += (*inputWorktask);
 	//ARmar wraper de generador que recibe daly como unico argumento y llamar a un puntero a funcion
 	switch(initialStatus->delay.distribution){
 		case DIST_DETERMINISTIC:
