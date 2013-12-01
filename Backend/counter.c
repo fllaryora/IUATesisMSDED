@@ -90,7 +90,6 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
 		 MPI_Isend( outputResource, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
 	}
 
-
 	if( isPrima )printf("5: Espero followrs\n");
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){

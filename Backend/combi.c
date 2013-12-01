@@ -90,9 +90,9 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 				printf("print report----%d\n",initialStatus->idNode);
 
 				MPI_Send(&cReport, sizeof(PrinterActivity), MPI_BYTE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
-				double* worktask = delayOfWorktask(Worktask *pointer, const int bodyResource);
+				double* worktask = delayOfWorktask(workTaskList, bodyResource);
 
-				MPI_Send(worktask, cbStruct.activityInside* 2, MPI_DOUBLE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
+				MPI_Send(worktask, cReport.activityInside* 2, MPI_DOUBLE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
 
 				free(worktask);
 			default:
@@ -282,11 +282,11 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
 				double humanDelay = initialStatus->delay.constant;
 				int drawnDelay = (int)(humanDelay * TIME_TO_DELTA_T);
 				insertWorktask(workTaskList, drawnDelay );
-				if ( cReport.maximunDrawn  < drawnDelay)
-					cReport.maximunDrawn = drawnDelay;
-				if(  cReport.minimunDrawn >  drawnDelay || cReport.minimunDrawn == -1 )
-				 	cReport.minimunDrawn = drawnDelay;
-				cReport.amountDelay += humanDelay;
+				if ( cReport->maximunDrawn  < drawnDelay)
+					cReport->maximunDrawn = drawnDelay;
+				if(  cReport->minimunDrawn >  drawnDelay || cReport->minimunDrawn == -1 )
+				 	cReport->minimunDrawn = drawnDelay;
+				cReport->amountDelay += humanDelay;
 			}
 		break;
 
@@ -295,11 +295,11 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
         		double humanDelay = RandomDouble(initialStatus->delay.least, initialStatus->delay.highest);
         		int drawnDelay = (int)( humanDelay * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
-				if ( cReport.maximunDrawn  < drawnDelay)
-					cReport.maximunDrawn = drawnDelay;
-				if(  cReport.minimunDrawn >  drawnDelay || cReport.minimunDrawn == -1 )
-				 	cReport.minimunDrawn = drawnDelay;
-				cReport.amountDelay += humanDelay;
+				if ( cReport->maximunDrawn  < drawnDelay)
+					cReport->maximunDrawn = drawnDelay;
+				if(  cReport->minimunDrawn >  drawnDelay || cReport->minimunDrawn == -1 )
+				 	cReport->minimunDrawn = drawnDelay;
+				cReport->amountDelay += humanDelay;
 			}
 		break;
 
@@ -309,11 +309,11 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
     			double humanDelay = RandomNormal(initialStatus->delay.mean, initialStatus->delay.variance );
     			int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
-				if ( cReport.maximunDrawn  < drawnDelay)
-					cReport.maximunDrawn = drawnDelay;
-				if(  cReport.minimunDrawn >  drawnDelay || cReport.minimunDrawn == -1 )
-				 	cReport.minimunDrawn = drawnDelay;
-				cReport.amountDelay += humanDelay;
+				if ( cReport->maximunDrawn  < drawnDelay)
+					cReport->maximunDrawn = drawnDelay;
+				if(  cReport->minimunDrawn >  drawnDelay || cReport->minimunDrawn == -1 )
+				 	cReport->minimunDrawn = drawnDelay;
+				cReport->amountDelay += humanDelay;
 			}
 		break;
 
@@ -323,39 +323,39 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
      			double humanDelay = RandomExponential( initialStatus->delay.lambda );
      			int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
-				if ( cReport.maximunDrawn  < drawnDelay)
-					cReport.maximunDrawn = drawnDelay;
-				if(  cReport.minimunDrawn >  drawnDelay || cReport.minimunDrawn == -1 )
-				 	cReport.minimunDrawn = drawnDelay;
-				cReport.amountDelay += humanDelay;
+				if ( cReport->maximunDrawn  < drawnDelay)
+					cReport->maximunDrawn = drawnDelay;
+				if(  cReport->minimunDrawn >  drawnDelay || cReport->minimunDrawn == -1 )
+				 	cReport->minimunDrawn = drawnDelay;
+				cReport->amountDelay += humanDelay;
 			}
 		break;
 
 		case DIST_TRIANGULAR:
 			
 			for(int i = 0; i < (*inputWorktask); i++){
-				double humanDelay = RandomTriangular(initialStatus->delay.least, initialStatus->delay.highest, initialStatus->delay.mode)
-				int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T )
+				double humanDelay = RandomTriangular(initialStatus->delay.least, initialStatus->delay.highest, initialStatus->delay.mode);
+				int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
-				if ( cReport.maximunDrawn  < drawnDelay)
-					cReport.maximunDrawn = drawnDelay;
-				if(  cReport.minimunDrawn >  drawnDelay || cReport.minimunDrawn == -1 )
-				 	cReport.minimunDrawn = drawnDelay;
-				cReport.amountDelay += humanDelay;
+				if ( cReport->maximunDrawn  < drawnDelay)
+					cReport->maximunDrawn = drawnDelay;
+				if(  cReport->minimunDrawn >  drawnDelay || cReport->minimunDrawn == -1 )
+				 	cReport->minimunDrawn = drawnDelay;
+				cReport->amountDelay += humanDelay;
 			}
 		break;
 
 		case DIST_LOG_NORMAL:
 			
 			for(int i = 0; i < (*inputWorktask); i++){
-				double humanDelay =  RandomLogNormalWithMinimun( initialStatus->delay.escale, initialStatus->delay.shape, initialStatus->delay.least )
+				double humanDelay =  RandomLogNormalWithMinimun( initialStatus->delay.escale, initialStatus->delay.shape, initialStatus->delay.least );
 				int drawnDelay =  (int)( humanDelay * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
-				if ( cReport.maximunDrawn  < drawnDelay)
-					cReport.maximunDrawn = drawnDelay;
-				if(  cReport.minimunDrawn >  drawnDelay || cReport.minimunDrawn == -1 )
-				 	cReport.minimunDrawn = drawnDelay;
-				cReport.amountDelay += humanDelay;
+				if ( cReport->maximunDrawn  < drawnDelay)
+					cReport->maximunDrawn = drawnDelay;
+				if(  cReport->minimunDrawn >  drawnDelay || cReport->minimunDrawn == -1 )
+				 	cReport->minimunDrawn = drawnDelay;
+				cReport->amountDelay += humanDelay;
 			}
 		break;
 
@@ -366,22 +366,22 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
 					double humanDelay =RandomBetaWithMinimunAndMaximun( initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
 					int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 					insertWorktask(workTaskList, drawnDelay );
-					if ( cReport.maximunDrawn  < drawnDelay)
-						cReport.maximunDrawn = drawnDelay;
-					if(  cReport.minimunDrawn >  drawnDelay || cReport.minimunDrawn == -1 )
-					 	cReport.minimunDrawn = drawnDelay;
-					cReport.amountDelay += humanDelay;
+					if ( cReport->maximunDrawn  < drawnDelay)
+						cReport->maximunDrawn = drawnDelay;
+					if(  cReport->minimunDrawn >  drawnDelay || cReport->minimunDrawn == -1 )
+					 	cReport->minimunDrawn = drawnDelay;
+					cReport->amountDelay += humanDelay;
 				}
 			} else {
 				for(int i = 0; i < (*inputWorktask); i++){
 					double humanDelay =RandomBetaIntegerWithMinimunAndMaximun( (int)initialStatus->delay.shapeAlpha, (int)initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
 					int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 					insertWorktask(workTaskList, drawnDelay );
-					if ( cReport.maximunDrawn  < drawnDelay)
-						cReport.maximunDrawn = drawnDelay;
-					if(  cReport.minimunDrawn >  drawnDelay || cReport.minimunDrawn == -1 )
-					 	cReport.minimunDrawn = drawnDelay;
-					cReport.amountDelay += humanDelay;
+					if ( cReport->maximunDrawn  < drawnDelay)
+						cReport->maximunDrawn = drawnDelay;
+					if(  cReport->minimunDrawn >  drawnDelay || cReport->minimunDrawn == -1 )
+					 	cReport->minimunDrawn = drawnDelay;
+					cReport->amountDelay += humanDelay;
 				}	
 			}
 			

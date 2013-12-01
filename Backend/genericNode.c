@@ -659,8 +659,6 @@ int deleteFinishedWorktask(Worktask *pointer){
 }
 
 double* delayOfWorktask(Worktask *pointer, const int bodyResource){
-	Worktask * pointerTemp = pointer;
-	int deletedWorkTask = 0;
 	double* humanDelay = (double*) malloc(sizeof(double)* bodyResource*2);
 	int  currentDelay = 0;
 	//count doun
