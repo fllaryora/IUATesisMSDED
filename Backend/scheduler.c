@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "scheduler.h"
 
+
 #define WATCHDOG_DOESNT_BITE_ME(X) (X >= 0)
 
 void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * const targets , const int mpiProcesses, const int counterNodes){
@@ -66,23 +67,27 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		//todos los nodos deben reportarse al printer
 		msg = PING_REPORT;
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
+		
 		MPI_Recv( targetStatus, counterNodes*2, MPI_INT, PRINTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		printf("targets: %d: %d\n", targets[0], targets[1]);
+		printf("targetStatus: %d: %d\n", targetStatus[0], targetStatus[1]);
 		isAllFinalized = 0;
+		
 		for(int i = 0 ; i< counterNodes;i++ ){
-			for(int j = 0 ; j< counterNodes;j++ ){//FIX las colas vienen en cualquier orden
-				//basta que uno no cumpla
+			for(int j = 0 ; j< counterNodes;j++ ){
 				if(targetStatus[i*2] == targets[j*2]){
-					if( targetStatus[i*+1] < targets[j*2+1] )  break;
-					isAllFinalized++;
+					if( targetStatus[i*2+1] >= targets[j*2+1] )
+						isAllFinalized++;
+					else{
+						j= i = counterNodes;
+						//basta que uno no cumpla para salir
+					}
 				}	
 			}
 		}
-		//todos los contadores cumplieron con el roll
-		//if (isAllFinalized == counterNodes){
-		//	break;
-		//}
+		
 		printf("***********************************************************\n");
-	} while( watchdog > 0 && isAllFinalized != counterNodes);
+	} while( watchdog > 0 && (isAllFinalized!=counterNodes));
 	//envio livelock al resto de los nodos
 	printf("SALIOOO del Watchdog\n");
 	msg = LIVE_LOCK;
