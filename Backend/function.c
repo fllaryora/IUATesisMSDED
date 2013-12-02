@@ -4,28 +4,13 @@
 
 void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, const int mpiProcesses, const int modelSeed){
 
-	//Un array con el tiempo le falta a cada elemento para terminar (Cantidad de trabajos esta implícito dentro ) (no recursos, porque confundiría)
-	//int* cantDeltaTQFalta = NULL;
-	//int counterWorkTask = 0;
-	//2. Otro array con el tiempo inicial sorteado.
-	//int* initialRafflerTime = NULL;
-	//int counterRafflerTime = 0;
-	//3. Número de recursos que entraron, hasta este delta T.
-	//unsigned long long int input = 0;
-
 	int inputResource = 0;//que estan en la entrada antes del cuerpo
 	int outputResource = 0; //que cumplieron el dalay se se pueden ir
 	int bodyResource = 0; //recources in function
 	unsigned long long int deltaTCount = 0; //cantidad de deltaT que pasaron en este tiempo
-	//On the fly: Promedio de las duraciones sorteadas.
-	//TODO:Sumatoria de delay / cant worktask    (la primera vez)
-	//(TODO:Sumatoria de delay anterior + Sumatoria de delayde este delta T) / (cant worktask anteriores + cant worktask de este delta T)
-
-	// Máxima duración sorteada
-	//double maximun = -1; //maximo de recursos
-	// Minima duración sorteada
- 	//double minimun = -1; //minimo de recursos
+	
 	PrinterFunction fReport;
+	fReport.idNode = initialStatus->idNode;
 	int msg = 0;
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
@@ -51,8 +36,8 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 				break;
 			case PING_REPORT:
 			//printf("print report----%d\n",initialStatus->idNode);
-			fReport.idNode = initialStatus->idNode;
-			fReport.amount = 0;
+			
+			fReport.amount = bodyResource;
 			MPI_Send(&fReport, sizeof(PrinterFunction), MPI_BYTE, PRINTER_ID, FUNCTION_REPORT , MPI_COMM_WORLD);
 			default:
 				break;

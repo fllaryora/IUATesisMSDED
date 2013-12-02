@@ -25,6 +25,7 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	
 	PrinterFinalQueue qReportFinal;
 	qReportFinal.idNode = initialStatus->idNode;
+	qReportFinal.fixCost = initialStatus->fixedCost;
 	
 	
 	do {
@@ -81,11 +82,8 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 		}
 	
 	} while (msg != LIVE_LOCK);
-
 	
-	
-	qReportFinal.fixCost = 0.0;
-	qReportFinal.VariableCost = 0.0;
+	qReportFinal.VariableCost = initialStatus->variableCost * qReport.counterOutput;
 	MPI_Send(&qReportFinal, sizeof(PrinterFinalQueue), MPI_BYTE, PRINTER_ID, QUEUE_FINAL_REPORT , MPI_COMM_WORLD);
 	return;
 }

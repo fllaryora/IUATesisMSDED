@@ -30,6 +30,7 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	cReport.totalProductivity = 0;
 	
 	PrinterFinalCounter cReportFinal;
+	cReportFinal.idNode = initialStatus->idNode;
 	int msg = 0;
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
@@ -63,9 +64,7 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	
 	} while (msg != LIVE_LOCK);
 	
-	
-	cReportFinal.idNode = initialStatus->idNode;
-	cReportFinal.totalProductivity = 0;
+	cReportFinal.totalProductivity = cReport.totalProductivity;
 
 	MPI_Send(&cReportFinal, sizeof(PrinterFinalCounter), MPI_BYTE, PRINTER_ID, COUNTER_FINAL_REPORT , MPI_COMM_WORLD);
 	return;
