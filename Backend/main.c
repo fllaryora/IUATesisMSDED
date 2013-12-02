@@ -31,7 +31,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenam
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
-
+	printf("----%f \n", (double)(3/2));
 	const char *filenameJson   = "archivos/modelo.json";
 	
 	int idNodo; int idNodoInterno;  int mpiProcesses; 

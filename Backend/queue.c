@@ -6,20 +6,27 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	
 	int inputResource = 0; //recursos que estan en la entrada 
 	int bodyResource = initialStatus->resource; //nivel: cantidad de recursos disponibles en el delta T
-	//unsigned long long int input = 0; //entradas: numero de recursos que entraron en la cola
-	//unsigned long long int output = 0; //salidas: numero de recursos que salieron de la cola
-	
-	//promedio de recursos en espera ON the fly// recursoss en espera acumulados / delta t
-	//int maximun = initialStatus->resource; //maximo de recursos
-	//int minimun = initialStatus->resource; //minimo de recursos
-	
+		
 	unsigned long long int deltaTCount = 0; //cantidad de deltaT que pasaron en este tiempo
-	//unsigned long long int delatedResourcesAccum = 0; //numero de recursos en espera acumulados
-	//unsigned long long int counterDeltaTNotEmpty = 0;//contador de delta T no vacios
-	//On the fly Porcentaje (contador de delta T no vacios / contador de delta T) *100
+	
 	int msg = 0;
 	PrinterQueue qReport;
+	qReport.idNode = initialStatus->idNode;
+	qReport.maximun = initialStatus->resource;
+	qReport.minimun = initialStatus->resource;
+	qReport.counterInput = 0;
+	qReport.counterOutput = 0;
+	qReport.average = 0.0;
+	qReport.timesNotEmpty = 0.0;
+	int isTimeNotEmpty;
+	int amountInput ;
+	qReport.percentTimesNotEmpty = 0.0;
+	
+	
 	PrinterFinalQueue qReportFinal;
+	qReportFinal.idNode = initialStatus->idNode;
+	
+	
 	do {
 		
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
@@ -28,38 +35,45 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				printf("Avance cola : input %d body %d\n",inputResource,bodyResource);
-				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses);
+				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses, &qReport);
 				printf("Avance cola : input %d body %d\n",inputResource,bodyResource);
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				printf("AvanceP cola : input %d body %d\n",inputResource,bodyResource);
-				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses);
+				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses, &qReport);
 				printf("AvanceP cola : input %d body %d\n",inputResource,bodyResource);
 				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
+				isTimeNotEmpty = FALSE; //de esa forma se hace ell conteo por cada delta T
+				amountInput = 0;
 			case GENERATION_PHASE_PRIMA:
 			printf("GEneracion cola : input %d body %d\n",inputResource,bodyResource);
-				generationPhaseQueue(&inputResource, &bodyResource, commNodes);
+				generationPhaseQueue(&inputResource, &bodyResource, commNodes, &isTimeNotEmpty, &amountInput, &qReport);
 				printf("GEneracion cola : input %d body %d\n",inputResource,bodyResource);
 				break;
 			case CONSUME_DT:
 				deltaTCount++;
+				qReport.amount = bodyResource;
+				qReport.average = (qReport.average*(double)(deltaTCount-1) + (double)qReport.amount) / (double)deltaTCount;
+				if( qReport.minimun > amountInput  ){
+					qReport.minimun = amountInput;
+				}
+				if( qReport.maximun < amountInput ){
+					qReport.maximun = amountInput;
+				}
+				if(isTimeNotEmpty){
+					qReport.timesNotEmpty++;
+				}
+				qReport.percentTimesNotEmpty = qReport.timesNotEmpty / (double)deltaTCount;
+				
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
 			//printf("print report----%d\n",initialStatus->idNode);
-			qReport.idNode = initialStatus->idNode;
-			qReport.amount = 0;
-			qReport.counterInput = 0;
-			qReport.counterOutput = 0;
-			qReport.average = 0.0;
-			qReport.maximun = 0;
-			qReport.minimun = 0;
-			qReport.timesNotEmpty = 0.0;
-			qReport.percentTimesNotEmpty = 0.0;
+			
 			
 			MPI_Send(&qReport, sizeof(PrinterQueue), MPI_BYTE, PRINTER_ID, QUEUE_REPORT , MPI_COMM_WORLD);
 			default:
@@ -69,14 +83,14 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	} while (msg != LIVE_LOCK);
 
 	
-	qReportFinal.idNode = initialStatus->idNode;
+	
 	qReportFinal.fixCost = 0.0;
 	qReportFinal.VariableCost = 0.0;
 	MPI_Send(&qReportFinal, sizeof(PrinterFinalQueue), MPI_BYTE, PRINTER_ID, QUEUE_FINAL_REPORT , MPI_COMM_WORLD);
 	return;
 }
 
-void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm commNodes, int isPrima, const Queue *initialStatus, const int mpiProcesses){ 
+void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm commNodes, int isPrima, const Queue *initialStatus, const int mpiProcesses, PrinterQueue* qReport){ 
     int* bufferReceiver = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
     int receiverCount = 1;
     int msg;
@@ -101,7 +115,7 @@ void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm co
 		//if( isPrima )printf("%d: request responces\n", initialStatus->idNode);
 		getDemandCombis(currentFollowerListStatus, initialStatus, commNodes);
 		//if( isPrima )printf("%d: fortunated\n", initialStatus->idNode);
-		getFortunatedCombis( currentFollowerListStatus, initialStatus, commNodes, bodyResource);
+		getFortunatedCombis( currentFollowerListStatus, initialStatus, commNodes, bodyResource, qReport);
 	}
 	//if( isPrima )printf("%d: Envios pendientes\n", initialStatus->idNode);
 	//espero a que todas la operaciones allan terminado
@@ -177,7 +191,7 @@ int getAvailableCombisNumber(const int* currentFollowerListStatus, const Queue *
 	return counter;
 }
 
-void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, int* bodyResource){
+void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, int* bodyResource,  PrinterQueue* qReport){
 	//Lista de combis afortunadas
 	int* prioritaryCombis = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
 	int msg;
@@ -216,6 +230,7 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 				currentTag = infoComm.MPI_TAG;
 				if(currentTag == TRANSACTION_COMMIT){
 					//printf("%d: recibo el ok\n", initialStatus->idNode);
+					qReport->counterOutput++;
 					--(*bodyResource);
 				} else {
 					//printf("%d: recibo el no ok\n", initialStatus->idNode);
@@ -243,7 +258,9 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 				currentTag = infoComm.MPI_TAG;
 				if(currentTag == TRANSACTION_COMMIT){
 					//printf("%d: recibo el ok\n", initialStatus->idNode);
+					qReport->counterOutput++;
 					--(*bodyResource);
+					
 				} else {
 					//printf("%d: recibo el no ok\n", initialStatus->idNode);
 					currentFollowerListStatus[i] = PROCESSESED;
@@ -256,10 +273,17 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 	return;
 }
 
-void generationPhaseQueue(int* inputResource, int* bodyResource, const MPI_Comm commNodes){
-		(*bodyResource) += (*inputResource);
-		(*inputResource) = 0;
-		//printf("espero en barrera");
-	    MPI_Barrier( commNodes );
-	    //printf("Salgo barrera en barrera");
+void generationPhaseQueue(int* inputResource, int* bodyResource, const MPI_Comm commNodes, int *isTimeNotEmpty, int* amountInput, PrinterQueue* qReport){
+	if( (*inputResource) > 0){
+		(*isTimeNotEmpty) = TRUE;
+		(*amountInput) += (*inputResource);
+		qReport->counterInput += (*inputResource);
+	}
+	
+	(*bodyResource) += (*inputResource);
+	(*inputResource) = 0;
+	//printf("espero en barrera");
+	
+	MPI_Barrier( commNodes );
+	//printf("Salgo barrera en barrera");
 }
