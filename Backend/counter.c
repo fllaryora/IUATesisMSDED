@@ -26,6 +26,9 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	// Minima duración sorteada
  	//double minimun = -1; //minimo de recursos
 	PrinterCounter cReport;
+	cReport.idNode = initialStatus->idNode;
+	cReport.totalProductivity = 0;
+	
 	PrinterFinalCounter cReportFinal;
 	int msg = 0;
 	do {
@@ -34,12 +37,13 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 		switch(msg){
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
-				advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE);
+				advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE, &cReport);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
-				advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE);
+				advancePhaseCounter( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE, &cReport);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
@@ -51,13 +55,8 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 				MPI_Barrier( commNodes );
 				break;
 			case PING_REPORT:
-			
-			//printf("print report----%d\n",initialStatus->idNode);
-			cReport.idNode = initialStatus->idNode;
-			cReport.totalProductivity = 0;
-			cReport.deltaTProductivity = 0;
-			cReport.productivityPerTime = 0,0;
-			MPI_Send(&cReport, sizeof(PrinterCounter), MPI_BYTE, PRINTER_ID, COUNTER_REPORT , MPI_COMM_WORLD);
+				cReport.productivityPerTime =  cReport.totalProductivity /(double)deltaTCount;			
+				MPI_Send(&cReport, sizeof(PrinterCounter), MPI_BYTE, PRINTER_ID, COUNTER_REPORT , MPI_COMM_WORLD);
 			default:
 				break;
 		}
@@ -72,7 +71,7 @@ void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, cons
 	return;
 }
 
-void advancePhaseCounter(int * inputResource, int* outputResource, const Counter *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima){ 
+void advancePhaseCounter(int * inputResource, int* outputResource, const Counter *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, PrinterCounter *cReport){ 
 	int* bufferReceiver = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
     int receiverCount = 1;
     int msg;
@@ -100,17 +99,17 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
 	//if( isPrima )printf("5: Espero predecesor\n");
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
-		(*inputResource) += bufferReceiver[i];
+		(*inputResource) += bufferReceiver[i];	
 	}
    
-	
-	
+	cReport->totalProductivity += (*inputResource);
 	if( !isPrima ){
-		
+		cReport->deltaTProductivity = (*inputResource);
 		MPI_Barrier( commNodes );
 		
 	} else {
 		int * nodesStatus = NULL;
+		cReport->deltaTProductivity += (*inputResource);
 		msg = (*inputResource)? FALSE: TRUE;
 		//printf("me quede en la barrera5\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
