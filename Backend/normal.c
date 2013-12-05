@@ -14,19 +14,17 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
     workTaskList -> next = NULL;
    
 
-	if(initialStatus->countProbabilisticBranch > 0){
-		//TODO arreglar el RNG
-		//if(modelSeed > -1 )
-		//	RandomInitialise(modelSeed,modelSeed);
-		//para el rng2
-		//if(initialStatus->delay.seed > -1 )
-		//		RandomInitialise( initialStatus->delay.seed, initialStatus->delay.seed);
-		int seed1, seed2;		
-		seed1 = (modelSeed != -1)? modelSeed: initialStatus->delay.seed;
-		seed2 = ( initialStatus->delay.seed != -1)? initialStatus->delay.seed:modelSeed;
+	RngInstance rngProbabilisticBranch;
+	rngProbabilisticBranch.isInitialise = FALSE;
+	RngInstance rngDrawn;
+	rngDrawn.isInitialise = FALSE;
 
-		if(modelSeed != -1 || initialStatus->delay.seed != -1)
-			RandomInitialise(seed1,seed2);
+	if(initialStatus->delay.distribution ! = DIST_DETERMINISTIC && &rngProbabilisticBranch, initialStatus->delay.seed =! -1){
+		RandomInitialise(&rngDrawn, initialStatus->delay.seed, initialStatus->delay.seed);
+	}
+
+	if(initialStatus->countProbabilisticBranch > 0 && modelSeed > -1){
+		RandomInitialise(&rngProbabilisticBranch, modelSeed,modelSeed);
 	}
 
 	nReport.idNode = initialStatus->idNode;
@@ -90,24 +88,20 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
 	if (initialStatus->countProbabilisticBranch > 0){
 		walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
 		hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
+		walls[ initialStatus->countProbabilisticBranch -1] = 1.0;
+		hollows[initialStatus->countProbabilisticBranch -1] = 0;
 	}
 	double acummulatedProb = 0.0;
-	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
+	for(int i = 0; i < initialStatus->countProbabilisticBranch-1; i++){
 		acummulatedProb += initialStatus->probabilisticBranch[i];
 		walls[i] = acummulatedProb;
 		hollows[i] = 0; //inicializo de paso
-	}
-	//preeveo errores de redondeo
-	if(initialStatus->countProbabilisticBranch > 0){
-		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
-		if(modelSeed != -1 )
-			RandomInitialise(modelSeed,modelSeed);
 	}
 	
 	//para cada nodo sortear	
 	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
 		if( coins ){
-			double hollowNumber = RandomUniform();
+			double hollowNumber = RandomUniform(rngProbabilisticBranch);
 			//defino donde cae la moneda
 			for(int j = 0; j < initialStatus->countProbabilisticBranch; j++){
 				if( hollowNumber <= walls[j] ){
