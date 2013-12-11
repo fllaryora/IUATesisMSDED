@@ -3,7 +3,7 @@
 
 
 void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const int mpiProcesses){
-	
+	int fileDescriptor = open ("/tmp/queue.log",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	int inputResource = 0; //recursos que estan en la entrada 
 	int bodyResource = initialStatus->resource; //nivel: cantidad de recursos disponibles en el delta T
 		
@@ -27,35 +27,32 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	qReportFinal.idNode = initialStatus->idNode;
 	qReportFinal.fixCost = initialStatus->fixedCost;
 	
-	
+	loger( fileDescriptor, "-- Inicio --\n");
 	do {
 		
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
-				printf("Avance cola : input %d body %d\n",inputResource,bodyResource);
-				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses, &qReport);
-				printf("Avance cola : input %d body %d\n",inputResource,bodyResource);
-				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
+				logPhase(fileDescriptor,"Avance Phase input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
+				advancePhaseQueue(&inputResource, &bodyResource, commNodes, FALSE, initialStatus, mpiProcesses, &qReport, fileDescriptor);
+				logPhase(fileDescriptor,"End Avance Phase input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
-				printf("AvanceP cola : input %d body %d\n",inputResource,bodyResource);
-				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses, &qReport);
-				printf("AvanceP cola : input %d body %d\n",inputResource,bodyResource);
-				//printf("%d: entrada: %d, cuerpo %d\n", initialStatus->idNode,inputResource,bodyResource);
+				logPhase(fileDescriptor,"Avance Phase Prima input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
+				advancePhaseQueue(&inputResource, &bodyResource, commNodes, TRUE, initialStatus,mpiProcesses, &qReport, fileDescriptor);
+				logPhase(fileDescriptor,"End Avance Phase Prima input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 				isTimeNotEmpty = FALSE; //de esa forma se hace ell conteo por cada delta T
 				amountInput = 0;
 			case GENERATION_PHASE_PRIMA:
-			printf("GEneracion cola : input %d body %d\n",inputResource,bodyResource);
+				logPhase(fileDescriptor,"Generation Phase input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				generationPhaseQueue(&inputResource, &bodyResource, commNodes, &isTimeNotEmpty, &amountInput, &qReport);
-				printf("GEneracion cola : input %d body %d\n",inputResource,bodyResource);
+				logPhase(fileDescriptor,"End generation Phase input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				break;
 			case CONSUME_DT:
+				logPhase(fileDescriptor,"Consume DT input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				deltaTCount++;
 				qReport.amount = bodyResource;
 				qReport.average = (qReport.average*(double)(deltaTCount-1) + (double)qReport.amount) / (double)deltaTCount;
@@ -71,67 +68,65 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 				qReport.percentTimesNotEmpty = qReport.timesNotEmpty / (double)deltaTCount;
 				
 				MPI_Barrier( commNodes );
+				logPhase(fileDescriptor,"End consume DT input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				break;
 			case PING_REPORT:
-			//printf("print report----%d\n",initialStatus->idNode);
-			
-			
+			logPhase(fileDescriptor,"Ping Report input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 			MPI_Send(&qReport, sizeof(PrinterQueue), MPI_BYTE, PRINTER_ID, QUEUE_REPORT , MPI_COMM_WORLD);
+			logPhase(fileDescriptor,"End ping report input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 			default:
 				break;
 		}
-	
 	} while (msg != LIVE_LOCK);
-	
+	loger( fileDescriptor, "-- LIVE_LOCK --\n");
 	qReportFinal.VariableCost = initialStatus->variableCost * qReport.counterOutput;
+	loger( fileDescriptor, "-- Sending final report --\n");
 	MPI_Send(&qReportFinal, sizeof(PrinterFinalQueue), MPI_BYTE, PRINTER_ID, QUEUE_FINAL_REPORT , MPI_COMM_WORLD);
+	loger( fileDescriptor, "--Finish Sending final report --\n");
+	close(fileDescriptor);
 	return;
 }
 
-void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm commNodes, int isPrima, const Queue *initialStatus, const int mpiProcesses, PrinterQueue* qReport){ 
+void advancePhaseQueue(int* inputResource, int * bodyResource, const MPI_Comm commNodes, int isPrima, const Queue *initialStatus, const int mpiProcesses, PrinterQueue* qReport, int fileDescriptor){ 
     int* bufferReceiver = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
     int receiverCount = 1;
     int msg;
     //inicializo los request de las llegadas de recursos
     
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
-	//if( isPrima )printf("%d: inicio\n", initialStatus->idNode);
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	//if( isPrima )printf("%d: Envios pendientes\n", initialStatus->idNode);
+	
 	//armo la lista de nodos no procesados
 	int* currentFollowerListStatus = (int*) malloc( sizeof(int)* initialStatus->countFollowers ) ;
 	for(int i = 0 ; i < initialStatus->countFollowers; i++){
 		currentFollowerListStatus[i] = NOT_PROCESSESED;
 	}
-	//if( isPrima )printf("%d: pasa los processed\n", initialStatus->idNode);
+	
 	while( hasAvailableCombis( currentFollowerListStatus, initialStatus) ){
-		//if( isPrima )printf("%d: has aviables\n", initialStatus->idNode);
-		requestResponceCombis(currentFollowerListStatus, initialStatus, commNodes, (const int *) bodyResource);
-		//if( isPrima )printf("%d: request responces\n", initialStatus->idNode);
-		getDemandCombis(currentFollowerListStatus, initialStatus, commNodes);
-		//if( isPrima )printf("%d: fortunated\n", initialStatus->idNode);
-		getFortunatedCombis( currentFollowerListStatus, initialStatus, commNodes, bodyResource, qReport);
+		
+		requestResponceCombis(currentFollowerListStatus, initialStatus, commNodes, (const int *) bodyResource,fileDescriptor);
+		
+		getDemandCombis(currentFollowerListStatus, initialStatus, commNodes,fileDescriptor);
+		
+		getFortunatedCombis( currentFollowerListStatus, initialStatus, commNodes, bodyResource, qReport,fileDescriptor);
 	}
-	//if( isPrima )printf("%d: Envios pendientes\n", initialStatus->idNode);
+	
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
+		logPhase(fileDescriptor,"<<< RESOURCE_SEND = %d <<< N%d=%d \n", bufferReceiver[i] , i,  initialStatus->preceders[i]);
 		(*inputResource) += bufferReceiver[i];
 	}
-	//if( isPrima )printf("%d: SALi Envios pendientes\n", initialStatus->idNode);
-	if( !isPrima ){
-		
+	
+	if( !isPrima ){	
 		MPI_Barrier( commNodes );
-		
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;
-		//printf("me quede en la barrera1\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
-		//printf(" sale de la barrera\n");
 	}
 
 	free(bufferReceiver);
@@ -150,20 +145,22 @@ int hasAvailableCombis(const int* currentFollowerListStatus, const Queue *initia
 }
 
 //Espero a que todas las combis me manden resource request
-void requestResponceCombis(const int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, const int* bodyResource){
+void requestResponceCombis(const int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, const int* bodyResource, int fileDescriptor){
 	int msg;
 	for(int i = 0 ; i < initialStatus->countFollowers; i++){
 		if( currentFollowerListStatus[i] == NOT_PROCESSESED ){
 			MPI_Recv( &msg, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_REQUEST, commNodes, MPI_STATUS_IGNORE);
+			loger( fileDescriptor, "<<< RESOURCE_REQUEST <<<\n");
 			msg = (*bodyResource);
 			MPI_Send( &msg, 1, MPI_INT, initialStatus->followers[i], RESOURCE_RESPONSE, commNodes);
+			
 		}
 	}
 }
 
 //Espero la respuesta si es un resource demand o no demand por parte de la combi
 //La combi que tiene una cola sin recurso no demandara
-void getDemandCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes){
+void getDemandCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, int fileDescriptor){
 	int msg;
 	int currentTag;
 	MPI_Status infoComm;
@@ -172,8 +169,10 @@ void getDemandCombis(int* currentFollowerListStatus, const Queue *initialStatus,
 			MPI_Recv( &msg, 1, MPI_INT,  initialStatus->followers[i], MPI_ANY_TAG, commNodes, &infoComm);
 			currentTag = infoComm.MPI_TAG;
 			if(currentTag == RESOURCE_NO_DEMAND){
-				//printf("%d: recibi resource no demand\n", initialStatus->idNode);
+				logPhase(fileDescriptor,"%d <<< RESOURCE_NO_DEMAND <<< C%d = %d \n",0,i,initialStatus->followers[i]);
 				currentFollowerListStatus[i] = 	PROCESSESED;
+			} else {
+				logPhase(fileDescriptor,"%d <<< RESOURCE_DEMAND <<< C%d = %d \n",0,i,initialStatus->followers[i]);
 			}
 		}
 	}
@@ -189,7 +188,7 @@ int getAvailableCombisNumber(const int* currentFollowerListStatus, const Queue *
 	return counter;
 }
 
-void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, int* bodyResource,  PrinterQueue* qReport){
+void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialStatus, const MPI_Comm commNodes, int* bodyResource,  PrinterQueue* qReport, int fileDescriptor){
 	//Lista de combis afortunadas
 	int* prioritaryCombis = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
 	int msg;
@@ -197,14 +196,13 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 	int currentIndexStts = 0;
 	int currentTag;
 	MPI_Status infoComm;
-	//printf("%d: dentro del fortunated\n", initialStatus->idNode);
+	//tengo mas combis que recursos?
 	if( (*bodyResource) < getAvailableCombisNumber( currentFollowerListStatus, initialStatus) ){
-		//printf("%d: tengo mas combis que recursos\n", initialStatus->idNode);
 		//obtengo la lista de prioridades
 		MPI_Send(initialStatus->followers, initialStatus->countFollowers, MPI_INT, RAFFLER_ID, GET_RAFFLE, MPI_COMM_WORLD);
-		//printf("%d: Envio listade prioridades\n", initialStatus->idNode);
+		loger( fileDescriptor, ">>> GET_RAFFLE >>>\n");
 		MPI_Recv( prioritaryCombis, initialStatus->countFollowers, MPI_INT, RAFFLER_ID, RAFFLE_DONE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		//printf("%d: recibo listade prioridades\n", initialStatus->idNode);
+		loger( fileDescriptor, "<<< RAFFLE_DONE <<< Lista de prioridades\n");
 		//por cada id de combi afortunada no procesadda, enviarle un recurso
 		//ya al resto de combis no afortunadas y no pricesadas cancelar y procesarla
 		for(int i = 0 ; i < initialStatus->countFollowers; i++){ //prioritaryCombis
@@ -221,46 +219,45 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 				continue;
 
 			if(*bodyResource){
-				//printf("%d: Envio recurso, a %d\n", initialStatus->idNode, initialStatus->followers[currentIndexStts]);
+				
 				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[currentIndexStts] , TRANSACTION_BEGIN, commNodes);
-				//printf("%d: Envio recurso\n", initialStatus->idNode);
+				logPhase(fileDescriptor,">>> C%d = %d >>> TRANSACTION_BEGIN >>> %d\n",currentIndexStts,initialStatus->followers[currentIndexStts],0);
 				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[currentIndexStts], MPI_ANY_TAG, commNodes, &infoComm);
 				currentTag = infoComm.MPI_TAG;
 				if(currentTag == TRANSACTION_COMMIT){
-					//printf("%d: recibo el ok\n", initialStatus->idNode);
+					logPhase(fileDescriptor,"%d <<< TRANSACTION_COMMIT <<< C%d = %d \n",0,currentIndexStts,initialStatus->followers[currentIndexStts]);
 					qReport->counterOutput++;
 					--(*bodyResource);
 				} else {
-					//printf("%d: recibo el no ok\n", initialStatus->idNode);
+					logPhase(fileDescriptor,"%d <<< TRANSACTION_ROLLBACK <<< C%d = %d \n",0,currentIndexStts,initialStatus->followers[currentIndexStts]);
 					currentFollowerListStatus[currentIndexStts] = PROCESSESED;
 				}
 			} else {
-				//printf("%d: Envio la cancelada\n", initialStatus->idNode);
+				
 				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[currentIndexStts] , TRANSACTION_CANCELLED, commNodes);
-				//printf("%d: Envio la cancelada\n", initialStatus->idNode);
+				logPhase(fileDescriptor,">>> C%d = %d >>> TRANSACTION_CANCELLED >>> %d\n",currentIndexStts,initialStatus->followers[currentIndexStts],0);
 				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[currentIndexStts], TRANSACTION_ROLLBACK, commNodes, MPI_STATUS_IGNORE);
-				//printf("%d: recibo el ok de la cancelada\n", initialStatus->idNode);
+				logPhase(fileDescriptor,"%d <<< TRANSACTION_ROLLBACK <<< C%d = %d \n",0,currentIndexStts,initialStatus->followers[currentIndexStts]);
 				currentFollowerListStatus[currentIndexStts] = PROCESSESED;
 			}
 		}
 	} else {
-		//printf("%d: tengo mas o igial recursos que combis\n", initialStatus->idNode);
+		//tengo mas o igual recursos que combis
 		//envio a los no procesados el recurso
 		for(int i = 0 ; i < initialStatus->countFollowers; i++){
 			
 			if( currentFollowerListStatus[i] == NOT_PROCESSESED ){
-				//printf("%d: Envio recurso, a %d\n", initialStatus->idNode, initialStatus->followers[i]);
 				MPI_Send( NULL, 0, MPI_INT, initialStatus->followers[i], TRANSACTION_BEGIN, commNodes);
-				//printf("%d: Envio recurso\n", initialStatus->idNode);
+				logPhase(fileDescriptor,">>> C%d = %d >>> TRANSACTION_BEGIN >>> %d\n",i,initialStatus->followers[i],0);
 				MPI_Recv( &msg, 1, MPI_INT, initialStatus->followers[i], MPI_ANY_TAG, commNodes, &infoComm);
 				currentTag = infoComm.MPI_TAG;
 				if(currentTag == TRANSACTION_COMMIT){
-					//printf("%d: recibo el ok\n", initialStatus->idNode);
+					logPhase(fileDescriptor,"%d <<< TRANSACTION_COMMIT <<< C%d = %d \n",0,i,initialStatus->followers[i]);
 					qReport->counterOutput++;
 					--(*bodyResource);
 					
 				} else {
-					//printf("%d: recibo el no ok\n", initialStatus->idNode);
+					logPhase(fileDescriptor,"%d <<< TRANSACTION_ROLLBACK <<< C%d = %d \n",0,i,initialStatus->followers[i]);
 					currentFollowerListStatus[i] = PROCESSESED;
 				}
 			}
@@ -277,11 +274,7 @@ void generationPhaseQueue(int* inputResource, int* bodyResource, const MPI_Comm 
 		(*amountInput) += (*inputResource);
 		qReport->counterInput += (*inputResource);
 	}
-	
 	(*bodyResource) += (*inputResource);
 	(*inputResource) = 0;
-	//printf("espero en barrera");
-	
 	MPI_Barrier( commNodes );
-	//printf("Salgo barrera en barrera");
 }

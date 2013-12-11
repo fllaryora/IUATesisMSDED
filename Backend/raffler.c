@@ -52,7 +52,7 @@ void raffler(){
 	
 		if (currentTag == NEW_RAFFLE ) {
 			
-			Raffle( combiIds ,combiIdsAmount );
+			Raffle( combiIds ,combiIdsAmount , &rngCombiDrawn);
 			//printf("Orden de los ids mesclados\n");
 			//for(int i = 0; i < combiIdsAmount ; i++){
 			//	 printf("%d ",combiIds[i]);
@@ -112,7 +112,7 @@ int* pickUpOnlySelectedIds(int amountSelected, int* selectedId, int amountDrawnN
 /* 
    Revuelve la lista de combis id contra el ultimo elemento de la lista, para sortear
 */
-void Raffle(int* drawnNumbers, int stakeholderAccount){
+void Raffle(int* drawnNumbers, int stakeholderAccount, RngInstance* rngCombiDrawn){
 	int temp;
 	stakeholderAccount--;
 	while(stakeholderAccount){

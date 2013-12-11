@@ -363,7 +363,7 @@ void getFunctions(const char *filenameJson , Function **functions, int *function
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*functions)[i].countPreceders = json_array_get_count(arrayInternal);
 		if((*functions)[i].countPreceders)(*functions)[i].preceders = (int *) malloc((*functions)[i].countPreceders*sizeof(int));
-		for (j = 0; j < (*functions)[i].countPreceders; j++)
+		for (int j = 0; j < (*functions)[i].countPreceders; j++)
 			(*functions)[i].preceders[j]=json_array_get_number(arrayInternal,j);
 
 		arrayInternal = json_object_dotget_array(objectInArray, "followers");
@@ -567,10 +567,9 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 /*
 * codigo de lal ista enlazada de los worktask
 */
-void insertWorktask(Worktask *pointer, unsigned long long int delay){
+void insertWorktask(Worktask *pointer, long long int delay){
         /* Iterate through the list till we encounter the last node.*/
-        while(pointer->next!=NULL)
-        {
+        while(pointer->next!=NULL){
                 pointer = pointer -> next;
         }
         /* Allocate memory for the new node and put data in it.*/

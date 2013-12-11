@@ -23,7 +23,7 @@ extern double RandomUniform(RngInstance*);
 extern double RandomTriangular(RngInstance*, const double, const double, const double );
 extern double RandomGaussian(RngInstance*, const double, const double);
 extern double RandomLogNormal(RngInstance*, const double, const double);
-extern double RandomLogNormalWithMinimun(const double, const double, const double);
+extern double RandomLogNormalWithMinimun(RngInstance * , const double , const double , const double );
 extern double RandomExponential(RngInstance*, const double );
 extern double RandomBeta(RngInstance*, const double , const double );
 extern double RandomBetaInteger(RngInstance*, const int, const int );

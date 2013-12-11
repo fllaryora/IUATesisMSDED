@@ -18,8 +18,8 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-# define UNUSEDWARNING(x) (void)x
-
+//TODO revisar el descuente de los generadores y revisar el numero generado , que hay error de redondeo y hacer la truncada de ser necesaria
+#define TIME_TO_DELTA_T 1//10000 //admitimos hasta 4 ceros en los doubles
 
 #define MASTER_ID	0
 #define RAFFLER_ID	1

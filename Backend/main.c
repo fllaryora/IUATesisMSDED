@@ -71,8 +71,6 @@ int main(int argc, char **argv){
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
 				genericNode(idNodo, idNodoInterno, commNodes,mpiProcesses, getModelSeed( filenameJson ));
-			}else {
-				//printf("Master node has sent BAD_JSON by broadcast\n");
 			}
 			break;
 	}
@@ -96,8 +94,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			free(seedAndCombis);
 			int* targetCounter = getTargets( filenameJson);
 
-			//TODO watchdog = 0 para que lo haga una vez  cambiar por getWatchdog( filenameJson); despues
-			scheduler( 10, commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]);
+			scheduler( getWatchdog( filenameJson), commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]);
 			free(targetCounter);
 
 			/* Shut down MPI */

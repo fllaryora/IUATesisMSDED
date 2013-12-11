@@ -8,8 +8,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define TIME_TO_DELTA_T 1//10000 //admitimos hasta 4 ceros en los doubles
-
 extern void genericNode(const int , const int ,const MPI_Comm, const int , const int);
 
 typedef enum{

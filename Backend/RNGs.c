@@ -137,7 +137,7 @@ double RandomUniform(RngInstance * rng)
    rng->coeficient -= rng->coeficientD;
    if (rng->coeficient < 0.0)
       rng->coeficient += rng->coeficientM;
-   uni -= rng->c;
+   uni -= rng->coeficient;
    if (uni < 0.0)
       uni++;
 

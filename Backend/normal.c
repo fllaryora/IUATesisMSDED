@@ -19,7 +19,7 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 	RngInstance rngDrawn;
 	rngDrawn.isInitialise = FALSE;
 
-	if(initialStatus->delay.distribution ! = DIST_DETERMINISTIC && &rngProbabilisticBranch, initialStatus->delay.seed =! -1){
+	if( initialStatus->delay.distribution != DIST_DETERMINISTIC && initialStatus->delay.seed != -1){
 		RandomInitialise(&rngDrawn, initialStatus->delay.seed, initialStatus->delay.seed);
 	}
 
@@ -41,19 +41,19 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 		switch(msg){
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
-				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
+				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed, &rngProbabilisticBranch);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
-				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
+				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed, &rngProbabilisticBranch);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case GENERATION_PHASE:
-				generationPhaseNormalPrima(&inputWorktask, &outputWorktask, &bodyResource ,commNodes, workTaskList,  initialStatus, FALSE, &nReport);
+				generationPhaseNormalPrima(&inputWorktask, &outputWorktask, &bodyResource ,commNodes, workTaskList,  initialStatus, FALSE, &nReport, &rngDrawn);
 			break;
 			case GENERATION_PHASE_PRIMA:
-				generationPhaseNormalPrima(&inputWorktask, &outputWorktask, &bodyResource ,commNodes, workTaskList,  initialStatus, TRUE, &nReport);
+				generationPhaseNormalPrima(&inputWorktask, &outputWorktask, &bodyResource ,commNodes, workTaskList,  initialStatus, TRUE, &nReport, &rngDrawn);
 				break;
 			case CONSUME_DT:
 				deltaTCount++;
@@ -81,7 +81,7 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 	return;
 }
 
-void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed){ 
+void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed, RngInstance* rngProbabilisticBranch){ 
 	double* walls = NULL;
 	int* hollows = NULL;
 	int coins = (*inputWorktask);
@@ -169,7 +169,7 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
 	return;
 }
 
-void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bodyResource ,const MPI_Comm commNodes, Worktask *workTaskList,  const Normal *initialStatus, const int isPrima,  PrinterActivity* nReport){
+void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bodyResource ,const MPI_Comm commNodes, Worktask *workTaskList,  const Normal *initialStatus, const int isPrima,  PrinterActivity* nReport, RngInstance* rngDrawn){
 	//si es deterministico 0
 	nReport-> counterInput += (*inputWorktask);
 	switch(initialStatus->delay.distribution){
@@ -188,7 +188,7 @@ void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bo
 
 		case DIST_UNIFORM:
         	for(int i = 0; i < (*inputWorktask); i++){
-        		double humanDelay = RandomDouble(initialStatus->delay.least, initialStatus->delay.highest);
+        		double humanDelay = RandomDouble(rngDrawn,initialStatus->delay.least, initialStatus->delay.highest);
         		int drawnDelay = (int)( humanDelay * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
 				if ( nReport->maximunDrawn  < drawnDelay)
@@ -202,7 +202,7 @@ void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bo
 		case DIST_NORMAL:
 		
     		for(int i = 0; i < (*inputWorktask); i++){
-    			double humanDelay = RandomNormal(initialStatus->delay.mean, initialStatus->delay.variance );
+    			double humanDelay = RandomNormal(rngDrawn,initialStatus->delay.mean, initialStatus->delay.variance );
     			int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
 				if ( nReport->maximunDrawn  < drawnDelay)
@@ -216,7 +216,7 @@ void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bo
 		case DIST_EXPONENTIAL:
 			
      		for(int i = 0; i < (*inputWorktask); i++){
-     			double humanDelay = RandomExponential( initialStatus->delay.lambda );
+     			double humanDelay = RandomExponential(rngDrawn, initialStatus->delay.lambda );
      			int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
 				if ( nReport->maximunDrawn  < drawnDelay)
@@ -230,7 +230,7 @@ void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bo
 		case DIST_TRIANGULAR:
 			
 			for(int i = 0; i < (*inputWorktask); i++){
-				double humanDelay = RandomTriangular(initialStatus->delay.least, initialStatus->delay.highest, initialStatus->delay.mode);
+				double humanDelay = RandomTriangular(rngDrawn,initialStatus->delay.least, initialStatus->delay.highest, initialStatus->delay.mode);
 				int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
 				if ( nReport->maximunDrawn  < drawnDelay)
@@ -244,7 +244,7 @@ void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bo
 		case DIST_LOG_NORMAL:
 			
 			for(int i = 0; i < (*inputWorktask); i++){
-				double humanDelay =  RandomLogNormalWithMinimun( initialStatus->delay.escale, initialStatus->delay.shape, initialStatus->delay.least );
+				double humanDelay =  RandomLogNormalWithMinimun(rngDrawn, initialStatus->delay.escale, initialStatus->delay.shape, initialStatus->delay.least );
 				int drawnDelay =  (int)( humanDelay * TIME_TO_DELTA_T );
 				insertWorktask(workTaskList, drawnDelay );
 				if ( nReport->maximunDrawn  < drawnDelay)
@@ -259,7 +259,7 @@ void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bo
 			//TODO : falta completar el caso de que solo uno de los dos tiene parametro mayor a uno
 			if(initialStatus->delay.shapeAlpha < 1 && initialStatus->delay.shapeBeta < 1){
 				for(int i = 0; i < (*inputWorktask); i++){
-					double humanDelay =RandomBetaWithMinimunAndMaximun( initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
+					double humanDelay = RandomBetaWithMinimunAndMaximun(rngDrawn, initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
 					int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 					insertWorktask(workTaskList, drawnDelay );
 					if ( nReport->maximunDrawn  < drawnDelay)
@@ -270,7 +270,7 @@ void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bo
 				}
 			} else {
 				for(int i = 0; i < (*inputWorktask); i++){
-					double humanDelay =RandomBetaIntegerWithMinimunAndMaximun( (int)initialStatus->delay.shapeAlpha, (int)initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
+					double humanDelay =RandomBetaIntegerWithMinimunAndMaximun(rngDrawn, (int)initialStatus->delay.shapeAlpha, (int)initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
 					int drawnDelay = (int)( humanDelay  * TIME_TO_DELTA_T );
 					insertWorktask(workTaskList, drawnDelay );
 					if ( nReport->maximunDrawn  < drawnDelay)
