@@ -80,7 +80,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		}
 		
 	printf("-- FIN DELTA T --\n");
-	totalTime += 1.0/(double)TIME_TO_DELTA_T;
+	totalTime += TIME_ONE_STEP;
 	} while( watchdog > 0 && (isAllFinalized!=counterNodes));
 	//envio livelock al resto de los nodos
 	printf("SALIOOO del Watchdog\n");
