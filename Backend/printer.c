@@ -213,7 +213,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 
 void doActivity(int fileDescriptor, const int idNode, const int activityInside, const double* contdownWorktask, 
 						const double* delayWorktask, const int counterInput, const double amountDelay, 
-						const int maximunDrawn, const int minimunDrawn ){
+						const double maximunDrawn, const double minimunDrawn ){
 	//open one Activity
 	openBrace(fileDescriptor);
 		putLabel(fileDescriptor, "idNode");   putInteger(fileDescriptor, idNode); separeElement(fileDescriptor);
@@ -238,8 +238,11 @@ void doActivity(int fileDescriptor, const int idNode, const int activityInside, 
 
 		putLabel(fileDescriptor, "counterInput");   putInteger(fileDescriptor, counterInput); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "amountDelay");   putDouble(fileDescriptor, amountDelay); separeElement(fileDescriptor);
-		putLabel(fileDescriptor, "maximunDrawn");   putInteger(fileDescriptor, maximunDrawn); separeElement(fileDescriptor);
-		putLabel(fileDescriptor, "minimunDrawn");   putInteger(fileDescriptor, minimunDrawn); 
+		putLabel(fileDescriptor, "maximunDrawn");
+		putDouble(fileDescriptor, maximunDrawn);
+		separeElement(fileDescriptor);
+		putLabel(fileDescriptor, "minimunDrawn");
+		putDouble(fileDescriptor, minimunDrawn);
 	//close one Activity
 	closeBrace(fileDescriptor);
 }

@@ -37,9 +37,6 @@
 */
 
 #include "RNGs.h"
-#include <time.h>
-#include <stdio.h>
-#include <math.h>
 
 /*
  Retorna una semilla creada por tiempo+pseudoruido

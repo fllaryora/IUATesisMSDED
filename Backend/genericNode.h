@@ -94,8 +94,8 @@ typedef struct{
 }Combi;
 
 typedef struct WorkTaskType{
-    long long int  initialDelay;
-    long long int  currentDelay;
+    double  initialDelay;
+    double  currentDelay;
     struct WorkTaskType *next;
 }Worktask;
 
@@ -117,10 +117,11 @@ extern void getNormals(const char * , Normal **, int *);
 extern void getCombis(const char * , Combi **, int *);
 
 //worktask list handler
-extern void insertWorktask(Worktask *pointer, long long int );
+extern void insertWorktask(Worktask *, double );
 extern int discountDelayAndDeleteFinishedWorktask(Worktask *);
 extern int deleteFinishedWorktask(Worktask *);
 extern double* delayOfWorktask(Worktask *, const int );
+extern void setNewWorktask(Worktask *pointer, double delay, PrinterActivity* report);
 
 //funciones de loguer
 void loger(const int , const char* );

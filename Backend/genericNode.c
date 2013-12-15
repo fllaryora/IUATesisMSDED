@@ -567,7 +567,7 @@ void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
 /*
 * codigo de lal ista enlazada de los worktask
 */
-void insertWorktask(Worktask *pointer, long long int delay){
+void insertWorktask(Worktask *pointer, double delay){
         /* Iterate through the list till we encounter the last node.*/
         while(pointer->next!=NULL){
                 pointer = pointer -> next;
@@ -586,8 +586,8 @@ int discountDelayAndDeleteFinishedWorktask(Worktask *pointer){
 	while(pointer->next!=NULL){
 		/* Go to the node for which the node next to it has to be deleted */
 		/*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
-		while(pointer->next!=NULL && (pointer->next)->currentDelay > 1){
-			(pointer->next)->currentDelay--;
+		while(pointer->next!=NULL && (pointer->next)->currentDelay > (TIME_ONE_STEP) ){
+			(pointer->next)->currentDelay -= (TIME_ONE_STEP);
 			pointer = pointer -> next;
 		}
 
@@ -611,7 +611,7 @@ int deleteFinishedWorktask(Worktask *pointer){
 	while(pointer->next!=NULL){
 		/* Go to the node for which the node next to it has to be deleted */
 		/*la logica no es borrar donde estoy parado, sino que del anterior borras el siguiente, uso el dummy */
-		while(pointer->next!=NULL && (pointer->next)->currentDelay > 0){//Elimina los zeros
+		while(pointer->next!=NULL && (pointer->next)->currentDelay > 0.0 ){//Elimina los zeros
 			pointer = pointer -> next;
 		}
 
@@ -635,19 +635,32 @@ double* delayOfWorktask(Worktask *pointer, const int bodyResource){
 	//count doun
 	do{
 		pointer = pointer -> next; //me envian el dummy
-		humanDelay[currentDelay] = (double)pointer->currentDelay/ (double)TIME_TO_DELTA_T ;
-		humanDelay[currentDelay + bodyResource] = (double)pointer->initialDelay /(double)TIME_TO_DELTA_T;
+		humanDelay[currentDelay] = pointer->currentDelay;
+		humanDelay[currentDelay + bodyResource] = pointer->initialDelay;
 		currentDelay++;
 		
     }while(pointer->next!=NULL);
     return humanDelay;
 }
+
+void setNewWorktask(Worktask *pointer, double delay, PrinterActivity* report){
+	insertWorktask(pointer, delay );
+	if( isnan(report->maximunDrawn) ){
+		report->maximunDrawn = delay;
+		report->minimunDrawn = delay;
+	}
+		
+	if ( report->maximunDrawn  < delay)
+		report->maximunDrawn = delay;
+	if(  report->minimunDrawn >  delay)
+		report->minimunDrawn = delay;
+		
+	report->amountDelay += delay;
+}
 /********************************************************************************************************************************************/
 //funciones de loguer
 void loger(const int fileDescriptor, const char* label){
-	write(fileDescriptor,"\"",1);
 	write(fileDescriptor, label, strlen(label) );
-	write(fileDescriptor,"\" : ",4);
 }
 
 void logPhase(const int fileDescriptor, const char* label, const int in, const int body, const int out){

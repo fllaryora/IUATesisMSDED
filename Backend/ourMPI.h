@@ -137,6 +137,9 @@ typedef struct {
 //dice al master que ya sorteo
 #define SendRaffleDoneToMaster()        (void)0
 
+//forzar sincronizacion
+//#define MPI_Send	MPI_Ssend
+
 // FUNCIONES del MASTER
 
 // FUNCIONES del PRINTER

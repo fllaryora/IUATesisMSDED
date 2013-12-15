@@ -1,6 +1,10 @@
 #ifndef _RNG_S_H_
 #define _RNG_S_H_
 
+#include <time.h>
+#include <stdio.h>
+#include <math.h>
+
 #ifndef FALSE
 #define FALSE 0
 #endif

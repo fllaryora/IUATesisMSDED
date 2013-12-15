@@ -29,6 +29,6 @@ extern void doFinalQueue(int , const int , const double , const double );
 extern void doCounter(int , const int , const int , const int , const double  );
 extern void doFinalCounter(int , const int , const int );
 extern void doFunction(int , const int , const int );
-extern void doActivity(int , const int , const int , const double* , const double* , const int , const double , const int , const int  );
+extern void doActivity(int , const int , const int , const double* , const double* , const int , const double , const double , const double  );
 
 #endif /* #ifndef _PRINTER_H_*/

@@ -3,7 +3,12 @@
 
 
 void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const int mpiProcesses){
-	int fileDescriptor = open ("/tmp/queue.log",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	char* fileName = NULL;
+	int len = snprintf(NULL, 0, "/tmp/queue.%d.log",initialStatus->idNode);
+	fileName = (char*) malloc( (len + 1) * sizeof(char) );
+	snprintf(fileName, (len + 1), "/tmp/queue.%d.log",initialStatus->idNode);
+	
+	int fileDescriptor = open (fileName, O_WRONLY|O_CREAT|O_TRUNC, 00660);
 	int inputResource = 0; //recursos que estan en la entrada 
 	int bodyResource = initialStatus->resource; //nivel: cantidad de recursos disponibles en el delta T
 		

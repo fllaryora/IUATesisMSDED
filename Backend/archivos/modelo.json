@@ -1,6 +1,6 @@
 {
- "length": 1000,
- "seed": 333,
+ "length": 10,
+ "seed": -1,
  "transformation": {
 		"queues": [
 			{
