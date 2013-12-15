@@ -20,7 +20,7 @@
 
 //TODO revisar el descuente de los generadores y revisar el numero generado , que hay error de redondeo y hacer la truncada de ser necesaria
 #define TIME_TO_DELTA_T 1//10000 //admitimos hasta 4 ceros en los doubles
-#define TIME_ONE_STEP 1.0/(double)TIME_TO_DELTA_T
+#define TIME_ONE_STEP 1.0
 
 #define MASTER_ID	0
 #define RAFFLER_ID	1
