@@ -60,7 +60,8 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 				logPhase(fileDescriptor,"Consume DT input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				deltaTCount++;
 				qReport.amount = bodyResource;
-				qReport.average = (qReport.average*(double)(deltaTCount-1) + (double)qReport.amount) / (double)deltaTCount;
+				int stepsDones = 1;//TODO fixear para paso variable
+				qReport.average = (qReport.average * (double)(deltaTCount - stepsDones) + (double)qReport.amount) / (double)deltaTCount;
 				if( qReport.minimun > amountInput  ){
 					qReport.minimun = amountInput;
 				}

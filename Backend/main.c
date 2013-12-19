@@ -60,6 +60,7 @@ int main(int argc, char **argv){
 		case PRINTER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
+				//TODO : recibirlo por mpi send
 				int * qCouNfComb = getNodesAmountDetail(filenameJson);
 				printer(qCouNfComb);
 				free(qCouNfComb);
@@ -70,6 +71,7 @@ int main(int argc, char **argv){
 		default :
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
+				//TODO: pasar el model seed por nodo generico
 				genericNode(idNodo, idNodoInterno, commNodes,mpiProcesses, getModelSeed( filenameJson ));
 			}
 			break;
@@ -84,20 +86,19 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 	int jsonResult;
 	if ( validateJsonInput(filenameJson) == VALIDATION_PASS ) {		
 		if ( getNodesAmount(filenameJson) + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
-			sendStructToNodes(filenameJson, commNodes);
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			//envio estructuras
+			sendStructToNodes(filenameJson, commNodes);
 			//enviar lo combisIds al raffler
 			int* seedAndCombis = getCombiIds( filenameJson);
 			MPI_Send( &seedAndCombis[1] ,  seedAndCombis[0]  , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			free(seedAndCombis);
+			//TODOaca enviar counts al printer
 			int* targetCounter = getTargets( filenameJson);
-
 			scheduler( getWatchdog( filenameJson), commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]);
 			free(targetCounter);
-
-			/* Shut down MPI */
 			return;
 		}
 		else {

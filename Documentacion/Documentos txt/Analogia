@@ -1,0 +1,55 @@
+Analogía:
+Hay 8 personas en 8 piesas y cada persona para comunicarse con la otra tiene un celular de la compania de Movistar.
+Los celulares pueden hacer llamadas entre 2 individuos o entre los 8.
+Todo celular solo pertenece a una compania telefonica y tiene un unico número.
+Para que una persona tenga 2 números tiene que tener 2 celulares de dos companias telefonicas diferentes.
+Un celular de la compania Movistar solo puede comunicarse con otro celular de Movistar.
+Un celular de la compania Claro solo puede comunicarse con otro celular de Claro.
+Cada persona conoce su número telefonico y el número telefonico de las otras 7 personas gracias a un registro telefonico de la compania telefonica.
+Supongamos que 4 de las 8 personas quieren tener una llamada grupal, en la cual no puedan participar las otras 4 personas.
+Para ello las 4 personas compran otro celular, pero de la compania de Claro. Donde solo los de la compania claro pueden participar de esa llamada grupal.
+
+
+En MPI al principo se inician una cantidad determinada de procesos, todos ellos estan registrados a un mismo grupo asocaido a un comunicador global, cada proceso dentro del comunicador esta númerado, ese número se llama rango.
+
+Haciendo incapie en la analogía cada persona es un proceso, el comunicador global es la compania telefonica movistar, el grupo es el registro telefonico de movistar y el celular con un unico número es el rango.
+
+Todos proceso se comunica a traves de un comunicador. Los procesos de un comunicador numerados del 0 al n-1, donde n es la cantidad de procesos que posee ese comunicador. Un group es un conjunto ordenado de procesos. Cada proceso en el grupo esta asociado con su rango.
+En MPI, un grupo es representado mediante un objeto accesible. Todo grupo tiene comunicador que es otro objeto. Un comunicador engloba a un grupo de procesos para que se puedan comunicar uno con el otro. Los grupos y los comunicadores se crean y destruyen en forma dinamica (en tiempo de ejecución). Los procesos pueden estar en más de un grupo/comunicador. 
+
+----->Al inicio todos los nodos "son iguales" e  inician en la función main del programa. 
+
+Todos ellos averiguan  su número de rango dentro del comunicador global.
+Los rangos 0 y los superiores a 2 (3,4,....n-1) crearan un comunicador para hablar entre ellos en privado.
+
+Antes de poder comenzar a trabajar, todos los rangos esperaran a que el maestro, rango 0, le diga el resultado de la validación de las instrucciónes de entrada.
+El rango 0 validará si el modelo es correcto:
+-El archivo es un json valido.
+-El json posee variables y valores en los ordenes requeridos.
+-Las variables y valores en el orden correcto "dibujan un modelo", y ese modelo respeta las reglas del modelo precursor. 
+-La cantidad procesos con rango superiores a 2 (3,4,...n-1) es igual a la cantidad de nodos dentro del modelo.
+De cumplirse las condiciones se puede continuar. y se avisara a todos que pueden continuar.
+
+Mientras que ahora los rangos superiores a 2 (3,4,....n-1) esperan que el maestro por su comunicador privado, les pase a cada uno la funcion y datos que deberan asumir, el raffler (rango 1) estara esperando a que el maestro le pase la lista de combis y el printer (rango 2) a que le lleven la cantidad de cada elemento que existe en el modelo.
+
+El siguiente paso para el maestro es la carga de datos de cada uno de los nodos en memoria y el envio de estos a cada uno por separado.
+Se envia la lista de combis al raffler y la cantidad de cada uno de ellos al printer.
+
+En este momento cada elemento cuenta con los datos necesarios para asumir su rol. Cada elemento esta a la espera de recibir ordenes del scheduler.
+
+Los pasos de cada ciclo del scheduler son:
+-Le pido al raffler que sortee las prioridades de todas las combis.
+-Le digo a solo los elementos del modelo que ejecuten su face de generacion.
+-Le digo a solo los elementos del modelo que ejecuten su face de avance.
+-Seteo un watchdog para frenar en caso de que no termine las faces primas
+Hacer las faces primas hasta que todos los elementos se finalizaron o el watchdog me halla mordido.
+Faces primas:
+	-Le digo a solo los elementos del modelo que ejecuten su face de generacion prima.
+	-Le digo a solo los elementos del modelo que ejecuten su face de avance prima.
+-Le digo a solo los elementos del modelo que ejecuten su face de consumo de deltaT.
+-Le digo solo al printer que los elementos estan por reportarce.
+-Le digo a solo los elementos del modelo que ejecuten su face de reporte.
+-El printer me pasa el reporte de los contadores.
+Si algun contador no cumplio con el valor objetivo a alconzar y el watchdog no me mordio ir al siguiente ciclo.
+
+
