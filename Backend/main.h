@@ -18,7 +18,6 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-//TODO revisar el descuente de los generadores y revisar el numero generado , que hay error de redondeo y hacer la truncada de ser necesaria
 #define TIME_ONE_STEP 1.0
 
 #define MASTER_ID	0
