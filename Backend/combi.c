@@ -3,7 +3,7 @@
 #include "RNGs.h"
 
 
-void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const int mpiProcesses, const int modelSeed){
+void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const int mpiProcesses){
 	char* fileName = NULL;
 	int len = snprintf(NULL, 0, "/tmp/combi.%d.log",initialStatus->idNode);
 	fileName = (char*) malloc( (len + 1) * sizeof(char) );
@@ -33,8 +33,8 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 		RandomInitialise(&rngDrawn, initialStatus->delay.seed, initialStatus->delay.seed);
 	}
 
-	if(initialStatus->countProbabilisticBranch > 0 && modelSeed > -1){
-		RandomInitialise(&rngProbabilisticBranch, modelSeed,modelSeed);
+	if(initialStatus->countProbabilisticBranch > 0 && initialStatus->modelSeed > -1){
+		RandomInitialise(&rngProbabilisticBranch, initialStatus->modelSeed,initialStatus->modelSeed);
 	}
 	
 	cReport.idNode = initialStatus->idNode;
@@ -50,12 +50,12 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 		switch(msg){
 			case ADVANCE_PAHSE:
 				logPhase(fileDescriptor,"Avance Phase input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
-				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed,&rngProbabilisticBranch,fileDescriptor);
+				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, &rngProbabilisticBranch,fileDescriptor);
 				logPhase(fileDescriptor,"End Avance Phase input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				logPhase(fileDescriptor,"Avance Phase Prima input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
-				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed, &rngProbabilisticBranch,fileDescriptor);
+				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, &rngProbabilisticBranch,fileDescriptor);
 				logPhase(fileDescriptor,"End Avance Phase Prima input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
@@ -92,11 +92,11 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	return;
 }
 
-void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed, RngInstance* rngProbabilisticBranch, const int fileDescriptor){ 
+void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, RngInstance* rngProbabilisticBranch, const int fileDescriptor){ 
     for(;;){
     	if(!hasQueueResources( initialStatus, commNodes,fileDescriptor)){
 	    	resourcesNoDemand( initialStatus, commNodes,fileDescriptor);
-	    	resourcesSend( initialStatus, commNodes, outputWorktask, modelSeed, rngProbabilisticBranch,fileDescriptor);
+	    	resourcesSend( initialStatus, commNodes, outputWorktask, rngProbabilisticBranch,fileDescriptor);
 	    	finishCombi( isPrima, commNodes , inputWorktask, mpiProcesses,fileDescriptor);
 	    	break;
     	}else{
@@ -106,7 +106,7 @@ void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *in
 	    		(*inputWorktask)++;
 	    	} else {
 	    		setAllRollback( initialStatus, commNodes,fileDescriptor);
-	    		resourcesSend( initialStatus, commNodes, outputWorktask, modelSeed,rngProbabilisticBranch, fileDescriptor);
+	    		resourcesSend( initialStatus, commNodes, outputWorktask,rngProbabilisticBranch, fileDescriptor);
 	    		finishCombi( isPrima,  commNodes , inputWorktask, mpiProcesses,fileDescriptor);
 	    		break;
 	    	}
@@ -148,7 +148,7 @@ void resourcesDemand( const Combi *initialStatus, const MPI_Comm commNodes, cons
 }
 
 //envio resource send a los followers
-void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* worktaskInOutput, const int modelSeed, RngInstance* rngProbabilisticBranch , const int fileDescriptor){
+void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* worktaskInOutput, RngInstance* rngProbabilisticBranch , const int fileDescriptor){
 	
 	double* walls = NULL;
 	int* hollows = NULL;
@@ -308,17 +308,10 @@ void generationPhaseCombi(int* inputWorktask, int* bodyResource, int* outputWork
 		break;
 
 		case DIST_BETA:
-			//TODO : falta completar el caso de que solo uno de los dos tiene parametro mayor a uno
-			if(initialStatus->delay.shapeAlpha < 1 && initialStatus->delay.shapeBeta < 1){
-				for(int i = 0; i < (*inputWorktask); i++){
-					humanDelay = RandomBetaWithMinimunAndMaximun( rngDrawn, initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
-					setNewWorktask(workTaskList, humanDelay, cReport);
-				}
-			} else {
-				for(int i = 0; i < (*inputWorktask); i++){
-					humanDelay = RandomBetaIntegerWithMinimunAndMaximun( rngDrawn, (int)initialStatus->delay.shapeAlpha, (int)initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
-					setNewWorktask(workTaskList, humanDelay, cReport);
-				}	
+		
+			for(int i = 0; i < (*inputWorktask); i++){
+				humanDelay = RandomBeta( rngDrawn, initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
+				setNewWorktask(workTaskList, humanDelay, cReport);
 			}
 			
 		break;

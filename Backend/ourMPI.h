@@ -138,7 +138,7 @@ typedef struct {
 #define SendRaffleDoneToMaster()        (void)0
 
 //forzar sincronizacion
-//#define MPI_Send	MPI_Ssend
+#define MPI_Send	MPI_Ssend
 
 // FUNCIONES del MASTER
 

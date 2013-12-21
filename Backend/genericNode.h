@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-extern void genericNode(const int , const int ,const MPI_Comm, const int , const int);
+extern void genericNode(const int , const int ,const MPI_Comm, const int);
 
 typedef enum{
 	DIST_UNIFORM,
@@ -61,6 +61,7 @@ typedef struct{
 
 typedef struct{
 	int idNode;
+	int modelSeed;
     int input;
 	int output;
     int countPreceders;
@@ -73,6 +74,7 @@ typedef struct{
 
 typedef struct{
     int idNode;
+    int modelSeed;
     int countPreceders;
     int *preceders;
     int countFollowers;
@@ -84,6 +86,7 @@ typedef struct{
 
 typedef struct{
 	int idNode;
+	int modelSeed;
     int countPreceders;
     int *preceders;
     int countFollowers;

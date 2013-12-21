@@ -84,50 +84,52 @@ void sendStructToNodes( const char *filenameJson ,const MPI_Comm commNodes)
 /*
 Los nodos que no son el scheduler, printer o raffler llaman a esta funcion para realizar la division de tarea a nivel funcional
 */
-void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm commNodes, const int mpiProcesses, const int modelSeed){
+void genericNode(const int myIdNodo,const int  idNodoInterno,const MPI_Comm commNodes, const int mpiProcesses){
 	MPI_Status status;
-	Queue queue;
-	Counter counter;
-	Function function;
-	Normal normal;
-	Combi combi;
-
 	// RECIBO ESTRUCTURA PARTICULAR, DEJO DE SER NODO_GENERICO
 	MPI_Probe( 0, MPI_ANY_TAG, commNodes, &status);
 	if (status.MPI_TAG == QUEUE){
-		receiveQueue(commNodes, &queue);
-		queueNode(  commNodes, &queue, mpiProcesses);
-		
-		if(queue.countPreceders > 0) free( queue.preceders );
-		if(queue.countFollowers > 0) free( queue.followers );
+		Queue* queue = (Queue*) malloc(sizeof(Queue));
+		receiveQueue(commNodes, queue);
+		queueNode(  commNodes, queue, mpiProcesses);
+		if(queue->countPreceders > 0) free( queue->preceders );
+		if(queue->countFollowers > 0) free( queue->followers );
+		free(queue);
 	}
 	else if (status.MPI_TAG == COUNTER){
-		receiveCounter(commNodes, &counter);
-		counterNode( commNodes, &counter, mpiProcesses);
-		if(counter.countPreceders > 0) free( counter.preceders );
-		if(counter.countFollowers > 0) free( counter.followers );
-		
+		Counter* counter = (Counter*)malloc(sizeof(Counter));
+		receiveCounter(commNodes, counter);
+		counterNode( commNodes, counter, mpiProcesses);
+		if(counter->countPreceders > 0) free( counter->preceders );
+		if(counter->countFollowers > 0) free( counter->followers );
+		free(counter);
 	}
 	else if (status.MPI_TAG == NORMAL){
-		receiveNormal(commNodes, &normal);
-		normalNode( commNodes,  &normal,  mpiProcesses, modelSeed);
-		if(normal.countPreceders > 0) free( normal.preceders);
-		if(normal.countFollowers > 0) free(normal.followers);
-		if(normal.countProbabilisticBranch > 0) free(normal.probabilisticBranch);
+		Normal* normal = (Normal*)malloc(sizeof(Normal));
+		receiveNormal(commNodes, normal);
+		normalNode( commNodes,  normal,  mpiProcesses);
+		if(normal->countPreceders > 0) free( normal->preceders);
+		if(normal->countFollowers > 0) free(normal->followers);
+		if(normal->countProbabilisticBranch > 0) free(normal->probabilisticBranch);
+		free(normal);
 	}
 	else if (status.MPI_TAG == FUNCTION){
-		receiveFunction(commNodes, &function);
-		functionNode( commNodes,   &function, mpiProcesses, modelSeed);
-		if(function.countPreceders > 0) free( function.preceders );
-		if(function.countFollowers > 0) free( function.followers );
-		if(function.countProbabilisticBranch > 0) free(function.probabilisticBranch );
+		Function* function = (Function*) malloc (sizeof(Function));
+		receiveFunction(commNodes, function);
+		functionNode( commNodes,   function, mpiProcesses);
+		if(function->countPreceders > 0) free( function->preceders );
+		if(function->countFollowers > 0) free( function->followers );
+		if(function->countProbabilisticBranch > 0) free(function->probabilisticBranch );
+		free(function);
 	}
 	else if (status.MPI_TAG == COMBI){
-		receiveCombi(commNodes, &combi);
-		combiNode(commNodes, &combi, mpiProcesses , modelSeed);
-		if(combi.countPreceders > 0) free( combi.preceders);
-		if(combi.countFollowers > 0) free(combi.followers);
-		if(combi.countProbabilisticBranch > 0) free(combi.probabilisticBranch);
+		Combi* combi = (Combi*)malloc(sizeof(Combi));
+		receiveCombi(commNodes, combi);
+		combiNode(commNodes, combi, mpiProcesses);
+		if(combi->countPreceders > 0) free( combi->preceders);
+		if(combi->countFollowers > 0) free(combi->followers);
+		if(combi->countProbabilisticBranch > 0) free(combi->probabilisticBranch);
+		free(combi);
 	}
 	
 }
@@ -348,15 +350,16 @@ void getFunctions(const char *filenameJson , Function **functions, int *function
 
     root_value = json_parse_file(filenameJson);
     object = json_value_get_object(root_value);
+    int modelSeed = json_object_dotget_number (object, "seed");
 	array = json_object_dotget_array(object, "transformation.functions");
 
 	*functionCount = json_array_get_count(array);
 	*functions = (Function *) malloc((*functionCount)*sizeof(Function));
 
-    for (int i = 0; i < json_array_get_count(array); i++)
-	{
+    for (int i = 0; i < json_array_get_count(array); i++){
 	    objectInArray = json_array_get_object(array, i);
 	    (*functions)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
+	    (*functions)[i].modelSeed = modelSeed;
 	   	(*functions)[i].input = (int)json_object_dotget_number(objectInArray, "input" );
 	   	(*functions)[i].output = (int)json_object_dotget_number(objectInArray, "output" );
 
@@ -392,16 +395,16 @@ void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
 
     root_value = json_parse_file(filenameJson);
     object = json_value_get_object(root_value);
+    int modelSeed = json_object_dotget_number (object, "seed");
 	array = json_object_dotget_array(object, "transformation.normals");
 
 	*normalCount = json_array_get_count(array);
 	*normals = (Normal *) malloc((*normalCount)*sizeof(Normal));
 
-	for (int i = 0; i < json_array_get_count(array); i++)
-	{
+	for (int i = 0; i < json_array_get_count(array); i++){
 	    objectInArray = json_array_get_object(array, i);
 	    (*normals)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
-
+		(*normals)[i].modelSeed = modelSeed;
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*normals)[i].countPreceders = json_array_get_count(arrayInternal);
 		if((*normals)[i].countPreceders)(*normals)[i].preceders = (int *) malloc((*normals)[i].countPreceders*sizeof(int));
@@ -476,24 +479,23 @@ void getNormals(const char *filenameJson , Normal **normals, int *normalCount)
 	json_value_free(root_value);
 }
 
-void getCombis(const char *filenameJson , Combi **combis, int *combiCount)
-{
+void getCombis(const char *filenameJson , Combi **combis, int *combiCount){
 	JSON_Value  *root_value;
     JSON_Object *object,*objectInArray, *objectDelay;
     JSON_Array  *array,*arrayInternal;
 
     root_value = json_parse_file(filenameJson);
     object = json_value_get_object(root_value);
+    int modelSeed = json_object_dotget_number (object, "seed");
 	array = json_object_dotget_array(object, "transformation.combis");
 
 	*combiCount = json_array_get_count(array);
 	*combis = (Combi *) malloc((*combiCount)*sizeof(Combi));
 
-	for (int i = 0; i < json_array_get_count(array); i++)
-	{
+	for (int i = 0; i < json_array_get_count(array); i++){
 	    objectInArray = json_array_get_object(array, i);
 	    (*combis)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
-
+		(*combis)[i].modelSeed = modelSeed;
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*combis)[i].countPreceders = json_array_get_count(arrayInternal);
 		if((*combis)[i].countPreceders)(*combis)[i].preceders = (int *) malloc((*combis)[i].countPreceders*sizeof(int));

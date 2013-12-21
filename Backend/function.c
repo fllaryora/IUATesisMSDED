@@ -2,7 +2,7 @@
 #include "genericNode.h"
 #include "RNGs.h"
 
-void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, const int mpiProcesses, const int modelSeed){
+void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, const int mpiProcesses){
 
 	int inputResource = 0;//que estan en la entrada antes del cuerpo
 	int outputResource = 0; //que cumplieron el dalay se se pueden ir
@@ -14,8 +14,8 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 
 	RngInstance rngProbabilisticBranch;
 	rngProbabilisticBranch.isInitialise = FALSE;
-	if(initialStatus->countProbabilisticBranch > 0 && modelSeed > -1){
-		RandomInitialise(&rngProbabilisticBranch, modelSeed,modelSeed);
+	if(initialStatus->countProbabilisticBranch > 0 && initialStatus->modelSeed > -1){
+		RandomInitialise(&rngProbabilisticBranch, initialStatus->modelSeed,initialStatus->modelSeed);
 	}
 
 	int msg = 0;
@@ -25,12 +25,12 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 		switch(msg){
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
-				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed, &rngProbabilisticBranch);
+				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE, &rngProbabilisticBranch);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
-				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed , &rngProbabilisticBranch);
+				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE, &rngProbabilisticBranch);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 			break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
@@ -54,7 +54,7 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	return;
 }
 
-void advancePhaseFunction(int * inputResource, int* outputResource, const Function *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed, RngInstance* rngProbabilisticBranch){ 
+void advancePhaseFunction(int * inputResource, int* outputResource, const Function *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, RngInstance* rngProbabilisticBranch){ 
 	double* walls = NULL;
 	int* hollows = NULL;
 	int coins = (*inputResource);

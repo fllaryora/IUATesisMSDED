@@ -11,8 +11,8 @@
 #include "genericNode.h"
 #include "RNGs.h"
 
-extern void normalNode( const MPI_Comm ,  const  Normal *, const int, const int );
-extern void advancePhaseNormal(int * , int* , const Normal *, const MPI_Comm , const int ,const int , const int , RngInstance *);
+extern void normalNode( const MPI_Comm ,  const  Normal *, const int );
+extern void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, RngInstance* rngProbabilisticBranch );
 extern void generationPhaseNormalPrima(int* , int* , int*  ,const MPI_Comm , Worktask *,  const Normal *, const int , PrinterActivity* ,RngInstance *);
 
 #endif /* #ifndef _NORMAL_H_*/

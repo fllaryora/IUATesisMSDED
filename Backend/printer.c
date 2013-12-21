@@ -9,15 +9,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-void printer(const int* qCouNfComb){
+void printer(){
 	int fileDescriptor;
 	double totalTime = 0.0;
 	int flag = FALSE;
 	MPI_Status result;
 	
-	//recive del master la cantidad de nodos
 	
-	//MPI_Recv2(qCouNfComb, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	//recive del master la cantidad de nodos
+	int* qCouNfComb = (int*)malloc(sizeof(int)*5);
+	MPI_Recv(qCouNfComb, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
 	fileDescriptor = open ("/tmp/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	
@@ -49,6 +50,7 @@ void printer(const int* qCouNfComb){
 	closeBrace(fileDescriptor);
 	
 	close(fileDescriptor);
+	free(qCouNfComb);
 }
 
 void doSummaryReport(int fileDescriptor, const double totalTime, const int queues, const int counters){

@@ -2,7 +2,7 @@
 #include "genericNode.h"
 #include "RNGs.h"
 
-void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const int mpiProcesses, const int modelSeed){
+void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const int mpiProcesses){
 	PrinterActivity nReport;
 
 	int inputWorktask = 0;//que estan en la entrada antes del cuerpo
@@ -23,8 +23,8 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 		RandomInitialise(&rngDrawn, initialStatus->delay.seed, initialStatus->delay.seed);
 	}
 
-	if(initialStatus->countProbabilisticBranch > 0 && modelSeed > -1){
-		RandomInitialise(&rngProbabilisticBranch, modelSeed,modelSeed);
+	if(initialStatus->countProbabilisticBranch > 0 && initialStatus->modelSeed > -1){
+		RandomInitialise(&rngProbabilisticBranch, initialStatus->modelSeed, initialStatus->modelSeed);
 	}
 
 	nReport.idNode = initialStatus->idNode;
@@ -41,12 +41,12 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 		switch(msg){
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
-				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed, &rngProbabilisticBranch);
+				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, &rngProbabilisticBranch);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
-				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed, &rngProbabilisticBranch);
+				advancePhaseNormal( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, &rngProbabilisticBranch);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputWorktask,outputWorktask);
 				break;
 			case GENERATION_PHASE:
@@ -81,7 +81,7 @@ void normalNode( const MPI_Comm commNodes,  const  Normal *initialStatus, const 
 	return;
 }
 
-void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed, RngInstance* rngProbabilisticBranch){ 
+void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, RngInstance* rngProbabilisticBranch){ 
 	double* walls = NULL;
 	int* hollows = NULL;
 	int coins = (*inputWorktask);
@@ -114,7 +114,6 @@ void advancePhaseNormal(int * inputWorktask, int* outputWorktask, const Normal *
 			break;
 		}
 	}
-	
 	
 	int* bufferReceiver = (int*) malloc( sizeof(int)* initialStatus->countPreceders);
     int receiverCount = 1;
@@ -221,24 +220,14 @@ void generationPhaseNormalPrima(int* inputWorktask, int* outputWorktask, int* bo
 		break;
 
 		case DIST_BETA:
-			//TODO : falta completar el caso de que solo uno de los dos tiene parametro mayor a uno
-			if(initialStatus->delay.shapeAlpha < 1 && initialStatus->delay.shapeBeta < 1){
-				for(int i = 0; i < (*inputWorktask); i++){
-					humanDelay = RandomBetaWithMinimunAndMaximun(rngDrawn, initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
-					setNewWorktask(workTaskList, humanDelay, nReport);
-				}
-			} else {
-				for(int i = 0; i < (*inputWorktask); i++){
-					humanDelay = RandomBetaIntegerWithMinimunAndMaximun(rngDrawn, (int)initialStatus->delay.shapeAlpha, (int)initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
-					setNewWorktask(workTaskList, humanDelay, nReport);
-				}	
+
+			for(int i = 0; i < (*inputWorktask); i++){
+				humanDelay = RandomBeta(rngDrawn, initialStatus->delay.shapeAlpha, initialStatus->delay.shapeBeta, initialStatus->delay.minimun, initialStatus->delay.maximun );
+				setNewWorktask(workTaskList, humanDelay, nReport);
 			}
-			
 		break;
 
 	}
-
-	//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
 	
 	(*bodyResource) += (*inputWorktask);
 	(*inputWorktask) = 0;

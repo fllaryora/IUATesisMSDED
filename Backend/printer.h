@@ -10,7 +10,7 @@
 #define TRUE (!FALSE)
 #endif
 
-extern void printer(const int*);
+extern void printer(void);
 extern void openBrace(int );
 extern void closeBrace(int );
 extern void openBracket(int );

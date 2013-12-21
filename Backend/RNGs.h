@@ -22,22 +22,26 @@ typedef struct{
   int jinteger97;
 }RngInstance;
 
+extern int SeedGenerator(const int );
 extern void   RandomInitialise(RngInstance*, int, int);
 extern double RandomUniform(RngInstance*);
-extern double RandomTriangular(RngInstance*, const double, const double, const double );
-extern double RandomGaussian(RngInstance*, const double, const double);
-extern double RandomLogNormal(RngInstance*, const double, const double);
-extern double RandomLogNormalWithMinimun(RngInstance * , const double , const double , const double );
-extern double RandomExponential(RngInstance*, const double );
-extern double RandomBeta(RngInstance*, const double , const double );
-extern double RandomBetaInteger(RngInstance*, const int, const int );
-extern double RandomBetaWithMinimunAndMaximun(RngInstance*, const double, const double, const double, const double );
-extern double RandomBetaIntegerWithMinimunAndMaximun(RngInstance*, const int, const int, const double, const double );
-//extern double RandomGamma(double  ,double );
-extern double RandomGammaInteger(RngInstance*, const int, const double );
-extern double RandomNormal(RngInstance*,const double, const double );
+
 extern int    RandomInt(RngInstance*, const int, const int);
 extern double RandomDouble(RngInstance*, const double, const double);
-extern int SeedGenerator(const int );
 
+extern double RandomTriangular(RngInstance*, const double, const double, const double );
+
+extern double RandomGaussian(RngInstance*, const double, const double);
+
+extern double RandomLogNormal(RngInstance*, const double, const double);
+
+extern double RandomLogNormalWithMinimun(RngInstance * , const double , const double , const double );
+
+extern double RandomExponential(RngInstance*, const double );
+
+extern double RandomNormal(RngInstance*,const double, const double );
+
+extern double RandomGamma(RngInstance * , double , double , double );
+
+extern double RandomBeta(RngInstance * , double  ,double , double  ,double  );
 #endif /* #ifndef _RNG_S_H_*/
