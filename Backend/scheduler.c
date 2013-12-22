@@ -5,8 +5,6 @@
 #include "scheduler.h"
 
 
-#define WATCHDOG_DOESNT_BITE_ME(X) (X >= 0)
-
 void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * const targets , const int mpiProcesses, const int counterNodes){
 	int msg = 0;
 	int watchdog2 = 0;
@@ -14,27 +12,23 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 	int* targetStatus = (int*) malloc (sizeof(int)  * counterNodes);
 	int  isAllFinalized = 0;
 	
-	double totalTime = 0.0; //TODO arreglar esto
-	UNUSEDWARNING(totalTime);
-	//TODO sacal el siguente comentario
-	//definido en la fotografia que envie por watzap y no vio chen
+	double totalTime = 0.0;
 	
 	do{//comienza las faces de nuevo
-		
+
 		//New rafle
 		MPI_Send( NULL , 0 , MPI_INT , RAFFLER_ID , NEW_RAFFLE , MPI_COMM_WORLD);
-		
+
 		msg = GENERATION_PHASE;
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 		MPI_Barrier( commNodes );
-		
-		
+
 		msg = ADVANCE_PAHSE;
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID,commNodes);
 		MPI_Barrier( commNodes );
 		
 		//heuristica anti bucles infinitos en el modelo
-		watchdog2 = 1;//(int) (1.4 *  (mpiProcesses -MASTER_RAFFLER_PRINTER));
+		watchdog2 = (int) (1.4 *  (mpiProcesses -MASTER_RAFFLER_PRINTER));
 
 		do{
 			
@@ -69,8 +63,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 		
 		MPI_Recv( targetStatus, counterNodes*2, MPI_INT, PRINTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		//printf("targets: %d: %d\n", targets[0], targets[1]);
-		//printf("targetStatus: %d: %d\n", targetStatus[0], targetStatus[1]);
+		
 		isAllFinalized = 0;
 		
 		for(int i = 0 ; i< counterNodes;i++ ){
@@ -86,7 +79,8 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 			}
 		}
 		
-		printf("-- FIN DELTA T --\n");
+	printf("-- FIN DELTA T --\n");
+	totalTime += TIME_ONE_STEP;
 	} while( watchdog > 0 && (isAllFinalized!=counterNodes));
 	//envio livelock al resto de los nodos
 	printf("SALIOOO del Watchdog\n");
@@ -99,5 +93,3 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 	free(targetStatus);
 
 }
-
-

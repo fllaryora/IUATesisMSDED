@@ -37,9 +37,22 @@
 */
 
 #include "RNGs.h"
-#include <time.h>
-#include <stdio.h>
-#include <math.h>
+
+/*
+ Retorna una semilla creada por tiempo+pseudoruido
+*/
+int SeedGenerator(const int maxSeed ){
+	int seed = -1;
+	FILE* urandom = fopen("/dev/urandom", "r");
+
+	while(seed < 0 || seed > maxSeed) {
+		fread(&seed, sizeof(int), 1, urandom);
+		seed  ^= (unsigned)time(NULL);
+	}
+	fclose(urandom);
+	return seed;
+}
+
 /*
    This is the initialization routine for the random number generator.
    NOTE: The seed variables can have values between:    0 <= IJ <= 31328
@@ -52,87 +65,95 @@
    number generator can create 900 million different subsequences -- with
    each subsequence having a length of approximately 10^30.
 */
-
-/* Globals */
-double u[97],c,cd,cm;
-int i97,j97;
-int test = FALSE;
-
-void RandomInitialise(int ij,int kl)
-{
-   double s,t;
-   int ii,i,j,k,l,jj,m;
+void RandomInitialise(RngInstance * rng, int ij,int kl ){
+	double s,t;
+	int ii,i,j,k,l,jj,m;
 
    /*
       Handle the seed range errors
          First random number seed must be between 0 and 31328
          Second seed must have a value between 0 and 30081
    */
-   if (ij < 0 || ij > 31328 || kl < 0 || kl > 30081) {
+	if (ij < 0 || ij > 31328 || kl < 0 || kl > 30081) {
 		ij = 1802;
 		kl = 9373;
-   }
+	}
 
-   i = (ij / 177) % 177 + 2;
-   j = (ij % 177)       + 2;
-   k = (kl / 169) % 178 + 1;
-   l = (kl % 169);
+	i = (ij / 177) % 177 + 2;
+	j = (ij % 177)       + 2;
+	k = (kl / 169) % 178 + 1;
+	l = (kl % 169);
 
-   for (ii=0; ii<97; ii++) {
-      s = 0.0;
-      t = 0.5;
-      for (jj=0; jj<24; jj++) {
-         m = (((i * j) % 179) * k) % 179;
-         i = j;
-         j = k;
-         k = m;
-         l = (53 * l + 1) % 169;
-         if (((l * m % 64)) >= 32)
-            s += t;
-         t *= 0.5;
-      }
-      u[ii] = s;
-   }
+	for (ii=0; ii<97; ii++) {
+		s = 0.0;
+		t = 0.5;
+		for (jj=0; jj<24; jj++) {
+			m = (((i * j) % 179) * k) % 179;
+			i = j;
+			j = k;
+			k = m;
+			l = (53 * l + 1) % 169;
+			if (((l * m % 64)) >= 32)
+				s += t;
+			t *= 0.5;
+		}
+		rng->uList[ii] = s;
+	}
 
-   c    = 362436.0 / 16777216.0;
-   cd   = 7654321.0 / 16777216.0;
-   cm   = 16777213.0 / 16777216.0;
-   i97  = 97;
-   j97  = 33;
-   test = TRUE;
+	rng->coeficient = 362436.0 / 16777216.0;
+	rng->coeficientD = 7654321.0 / 16777216.0;
+	rng->coeficientM = 16777213.0 / 16777216.0;
+	rng->integer97 = 97;
+	rng->jinteger97 = 33;
+	rng->isInitialise = TRUE;
 }
 
 /* 
    This is the random number generator proposed by George Marsaglia in
    Florida State University Report: FSU-SCRI-87-50
 */
-double RandomUniform(void)
-{
-   double uni;
+double RandomUniform(RngInstance * rng){
+	double uni;
 
-   /* Make sure the initialisation routine has been called */
-   if (!test){
-   	RandomInitialise(SeedGenerator(31328 ),SeedGenerator(30081));
-   }
+	/* Make sure the initialisation routine has been called */
+	if (!rng->isInitialise){
+		RandomInitialise(rng, SeedGenerator(31328 ),SeedGenerator(30081));
+	}
 
-   uni = u[i97-1] - u[j97-1];
-   if (uni <= 0.0)
-      uni++;
-   u[i97-1] = uni;
-   i97--;
-   if (i97 == 0)
-      i97 = 97;
-   j97--;
-   if (j97 == 0)
-      j97 = 97;
-   c -= cd;
-   if (c < 0.0)
-      c += cm;
-   uni -= c;
-   if (uni < 0.0)
-      uni++;
+	uni = rng->uList[rng->integer97-1] - rng->uList[rng->jinteger97-1];
+	if (uni <= 0.0)
+		uni++;
+	rng->uList[rng->integer97-1] = uni;
+	(rng->integer97)--;
+	if (rng->integer97 == 0)
+		rng->integer97 = 97;
+	(rng->jinteger97)--;
+	if (rng->jinteger97 == 0)
+		rng->jinteger97 = 97;
+	rng->coeficient -= rng->coeficientD;
+	if (rng->coeficient < 0.0)
+		rng->coeficient += rng->coeficientM;
+	uni -= rng->coeficient;
+	if (uni < 0.0)
+		uni++;
 
-   return(uni);
+	return(uni);
+}
+
+/*
+   Return random integer within a range, lower -> upper INCLUSIVE
+*/
+int RandomInt(RngInstance * rng, const int lower, const int upper){
+	return((int)(RandomUniform(rng) * (upper - lower + 1)) + lower);
+}
+
+/*
+ * uniforme en modelo precursor
+ * "least" "highest"
+   Return random float within a range, lower -> upper
+*/
+double RandomDouble(RngInstance * rng, const double lower, const double upper){
+	return((upper - lower) * RandomUniform(rng) + lower);
 }
 
 /*
@@ -146,51 +167,49 @@ double RandomUniform(void)
   The algorithm uses the ratio of uniforms method of A.J. Kinderman
   and J.F. Monahan augmented with quadratic bounding curves.
 */
-double RandomGaussian(double mean,double stddev)
-{
-   double  q,u,v,x,y;
-
+double RandomGaussian(RngInstance * rng, const double mean, const double stddev){
+	double  q,u,v,x,y;
 	/*  
 		Generate P = (u,v) uniform in rect. enclosing acceptance region 
       Make sure that any random numbers <= 0 are rejected, since
       gaussian() requires uniforms > 0, but RandomUniform() delivers >= 0.
 	*/
-   do {
-      u = RandomUniform();
-      v = RandomUniform();
-   	if (u <= 0.0 || v <= 0.0) {
-       	u = 1.0;
-       	v = 1.0;
-   	}
-      v = 1.7156 * (v - 0.5);
+	do {
+		u = RandomUniform(rng);
+		v = RandomUniform(rng);
+		if (u <= 0.0 || v <= 0.0) {
+			u = 1.0;
+			v = 1.0;
+		}
+		v = 1.7156 * (v - 0.5);
 
-      /*  Evaluate the quadratic form */
-      x = u - 0.449871;
-   	y = fabs(v) + 0.386595;
-      q = x * x + y * (0.19600 * y - 0.25472 * x);
+		/*  Evaluate the quadratic form */
+		x = u - 0.449871;
+		y = fabs(v) + 0.386595;
+		q = x * x + y * (0.19600 * y - 0.25472 * x);
 
-      /* Accept P if inside inner ellipse */
-      if (q < 0.27597)
+		/* Accept P if inside inner ellipse */
+		if (q < 0.27597)
 			break;
 
-      /*  Reject P if outside outer ellipse, or outside acceptance region */
-    } while ((q > 0.27846) || (v * v > -4.0 * log(u) * u * u));
+		/*  Reject P if outside outer ellipse, or outside acceptance region */
+	} while ((q > 0.27846) || (v * v > -4.0 * log(u) * u * u));
 
-    /*  Return ratio of P's coordinates as the normal deviate */
-    return (mean + stddev * v / u);
+	/*  Return ratio of P's coordinates as the normal deviate */
+	return (mean + stddev * v / u);
 }
 
-double RandomNormal(double mean,double variance){
-  //conversion varianza por desviacion estandar
-  return RandomGaussian( mean, sqrt(variance));
+double RandomNormal(RngInstance * rng, const double mean, const double variance){
+	//conversion varianza por desviacion estandar
+	return RandomGaussian(rng, mean, sqrt(variance));
 }
 
 /*
   Wikipedia, using inverse formula
 */
-double RandomExponential(double lambda){
-	 double u = RandomUniform(); 
-	 return -log(u)/lambda;
+double RandomExponential(RngInstance * rng, const double lambda){
+	double u = RandomUniform(rng); 
+	return -log(u)/lambda;
 }
 
 /*
@@ -213,77 +232,13 @@ double RandomExponential(double lambda){
  * Random number x is generated by inverse function method,
  *  which is for uniform random U, 
  * */
-double RandomTriangular(double min,double max,double moda){
-	double U = RandomUniform(); 
+double RandomTriangular(RngInstance * rng, const double min, const double max, const double moda){
+	double U = RandomUniform(rng); 
 	double beta = (moda - min) / (max - min);
-   if (U <= beta)
-      return min + sqrt(U * (max - min) * (moda - min));
-   else
-      return max - sqrt((1 - U) * (max - min) * (max - moda));
-}
-
-/*
- * ED : rama ,Simulacion: metodos y aplicaciones
- * Generador de Distribucion beta.
- * para alfa y beta entre 0 y uno
- * */
-double RandomBeta(double shapeAlpha ,double shapeBeta){
-	double U, U1;
-	double adentro, afuera;
-	double a = pow(shapeAlpha -1.0, shapeAlpha -1.0) * pow(shapeBeta -1.0, shapeBeta -1.0) / pow(shapeAlpha + shapeBeta -2.0, shapeAlpha + shapeBeta -2.0);
-	do{
-		U = RandomUniform(); 
-		U1 = RandomUniform(); 
-		afuera = a*U;
-		adentro = pow(U1, shapeAlpha -1.0)* pow(1.0 - U1, shapeBeta -1.0);
-	}while(afuera > adentro );
-	return U1;
-}
-
-/*
- * ED : rama ,Simulacion: metodos y aplicaciones
- * Generador de Distribucion beta.
- * para shapeAlpha y shapeBeta entros mayores a uno y menores a 50
- * */
-double RandomBetaInteger(int shapeAlpha ,int shapeBeta){
-	double X1 = RandomGammaInteger(shapeAlpha , 1.0);
-	double X2 = RandomGammaInteger(shapeBeta , 1.0);
-	return X1/(X1+X2);
-}
-
-/*
- * Generador de Distribucion beta. con minimo y maximo
- * para alfa y beta entre 0 y uno
- * */
-double RandomBetaWithMinimunAndMaximun(double shapeAlpha ,double shapeBeta, double minimun ,double maximun  ){
-		return((maximun - minimun) * RandomBeta( shapeAlpha , shapeBeta) + minimun);
-}
-
-/*
- * Generador de Distribucion beta. con minimo y maximo
- * para shapeAlpha y shapeBeta entros mayores a uno y menores a 50
- * */
-double RandomBetaIntegerWithMinimunAndMaximun(int shapeAlpha ,int shapeBeta, double minimun ,double maximun ){
-	return((maximun - minimun) * RandomBetaInteger( shapeAlpha , shapeBeta) + minimun);
-}
-
-
-/*
- * ED : rama ,Simulacion: metodos y aplicaciones
- * Generador de Distribucion beta.
- * para alfa entro mayor a uno y menor a 50
- * */
-double RandomGammaInteger(int alpha ,double beta){
-	int i;
-	double U;
-
-	double gammaValue = 0.0;
-
-	for(i = 0; i <= alpha ;i++){
-		U = RandomUniform();
-		gammaValue -= log(U);
-	}
-	return gammaValue / beta;
+	if (U <= beta)
+		return min + sqrt(U * (max - min) * (moda - min));
+	//ELSE	
+	return max - sqrt((1 - U) * (max - min) * (max - moda));
 }
 	
 /*
@@ -292,47 +247,81 @@ double RandomGammaInteger(int alpha ,double beta){
  * shape = stddev = sigma = desviacion estandar
  * sigma cuadrado es la varianza
  * */
-double RandomLogNormal(double scale, double shape){
-	double Z = RandomGaussian(0.0 , 1.0);
+double RandomLogNormal(RngInstance * rng, const double scale, const double shape){
+	double Z = RandomGaussian(rng, 0.0 , 1.0);
 	return exp(scale + shape * Z);
 }
 
 /*
  * Generador de Distribucion lognormal. con minimo
  * */
-double RandomLogNormalWithMinimun(double scale, double shape,double minimun){
-	return RandomLogNormal( scale,  shape) + minimun;
+double RandomLogNormalWithMinimun(RngInstance * rng, const double scale, const double shape, const double minimun){
+	return RandomLogNormal(rng, scale,  shape) + minimun;
 }
 
 /*
-   Return random integer within a range, lower -> upper INCLUSIVE
-*/
-int RandomInt(int lower,int upper)
-{
-   return((int)(RandomUniform() * (upper - lower + 1)) + lower);
+ * Computer Generation of Statistical Distributions
+ * by Richard Saucier ed. 2000
+ * */
+double RandomGamma(RngInstance * rng, double a, double b, double c ){
+	if ( b <= 0.0 && c <= 0.0 )
+		return 0.0;
+	const double A = 1.0 / sqrt( 2.0 * c - 1.0 );
+	const double B = c - log( 4.0 );
+	const double Q = c + 1.0 / A;
+	const double T = 4.5;
+	const double D = 1.0 + log( T );
+	const double C = 1.0 + c / 2.71828182845904523536;
+	
+	//CASE c < 1
+	if ( c < 1.0 ) {
+		while ( 1 ) {
+			double p = C * RandomUniform(rng);
+			if ( p > 1.0 ) {
+				double y = -log( ( C - p ) / c );
+				if ( RandomUniform(rng) <= pow( y, c - 1.0 ) )
+				return a + b * y;
+			}
+			else {
+				double y = pow( p, 1.0 / c );
+				if ( RandomUniform(rng) <= exp( -y ) )
+					return a + b * y;
+			}
+		}
+	}
+	
+	//CASE c = 1
+	if ( c == 1.0 )
+		return ( a - b * log( RandomUniform(rng) ) );
+	
+	//CASE c > 1	
+	while ( 1 ) {
+		double p1 = RandomUniform(rng);
+		double p2 = RandomUniform(rng);
+		double v = A * log( p1 / ( 1. - p1 ) );
+		double y = c * exp( v );
+		double z = p1 * p1 * p2;
+		double w = B + Q * v - y;
+		if ( w + D - T * z >= 0.0 || w >= log( z ) )
+			return a + b * y;
+	}
+	
 }
 
 /*
- * uniforme en modelo precursor
- * "least" "highest"
-   Return random float within a range, lower -> upper
+* Generador de Distribucion beta. con minimo y maximo
+* Computer Generation of Statistical Distributions
+* by Richard Saucier 
+* alpha = v; beta = w;
 */
-double RandomDouble(double lower,double upper)
-{
-   return((upper - lower) * RandomUniform() + lower);
+double RandomBeta(RngInstance * rng, double shapeAlpha ,double shapeBeta, double minimun ,double maximun  ){
+	double X1,X2;
+	X1 = RandomGamma(rng, 0.0, 1.0, shapeAlpha);
+	X2 = RandomGamma(rng, 0.0, 1.0, shapeBeta );
+	
+	if (shapeAlpha < shapeBeta) {
+		return maximun - (maximun - minimun) * X2/(X1+X2);
+	}
+	
+	return((maximun - minimun) * X1/(X1+X2) + minimun);
 }
-
-
-
-int SeedGenerator(int maxSeed ){
-	int seed = -1;
-	FILE* urandom = fopen("/dev/urandom", "r");
- 
-	while(seed < 0 || seed > maxSeed) {
-		fread(&seed, sizeof(int), 1, urandom);
-		seed  ^= (unsigned)time(NULL);
-   }
-   fclose(urandom);
-   return seed;
-}
-

@@ -3,8 +3,12 @@
 #include "parson.h"
 #include "jsonHelper.h"
 
-#define TIME_TO_DELTA_T 1//10000 //admitimos hasta 4 ceros en los doubles
-extern void genericNode(const int , const int ,const MPI_Comm, const int , const int);
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+extern void genericNode(const int , const int ,const MPI_Comm, const int);
 
 typedef enum{
 	DIST_UNIFORM,
@@ -57,6 +61,7 @@ typedef struct{
 
 typedef struct{
 	int idNode;
+	int modelSeed;
     int input;
 	int output;
     int countPreceders;
@@ -69,6 +74,7 @@ typedef struct{
 
 typedef struct{
     int idNode;
+    int modelSeed;
     int countPreceders;
     int *preceders;
     int countFollowers;
@@ -80,6 +86,7 @@ typedef struct{
 
 typedef struct{
 	int idNode;
+	int modelSeed;
     int countPreceders;
     int *preceders;
     int countFollowers;
@@ -89,13 +96,11 @@ typedef struct{
 	Delay delay;
 }Combi;
 
-
 typedef struct WorkTaskType{
-    long long int  initialDelay;
-    long long int  currentDelay;
+    double  initialDelay;
+    double  currentDelay;
     struct WorkTaskType *next;
 }Worktask;
-
 
 
 extern void receiveQueue(const MPI_Comm ,Queue *queue);
@@ -107,22 +112,23 @@ extern void receiveCombi(const MPI_Comm ,Combi *combis);
 extern void sendStructToNodes( const char * ,const MPI_Comm commNodes);
 extern void sendStruct( const MPI_Comm commNodes , Queue *,const int ,  Counter *,const  int , Function *, const int , Normal *, const int , Combi *, const int );
 
+// LECTURA DE ESTRUCTURAS sobre el archivo json
 extern void getQueues(const char * , Queue **, int *);
 extern void getCounters(const char * , Counter **, int *);
 extern void getFunctions(const char * , Function **, int *);
 extern void getNormals(const char * , Normal **, int *);
 extern void getCombis(const char * , Combi **, int *);
 
-extern void printQueue(Queue );
-extern void printCombi(Combi );
-extern void printCounter(Counter );
-extern void printFunction(Function );
-extern void printNormal(Normal );
-
-
-extern void insertWorktask(Worktask *pointer, unsigned long long int );
+//worktask list handler
+extern void insertWorktask(Worktask *, double );
 extern int discountDelayAndDeleteFinishedWorktask(Worktask *);
 extern int deleteFinishedWorktask(Worktask *);
 extern double* delayOfWorktask(Worktask *, const int );
+extern void setNewWorktask(Worktask *pointer, double delay, PrinterActivity* report);
+
+//funciones de loguer
+void loger(const int , const char* );
+void logPhase(const int , const char* , const int , const int , const int );
+//delay generator conciliators
 #endif /* #ifndef _GENERIC_NODE_H_*/
 

@@ -18,8 +18,7 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-# define UNUSEDWARNING(x) (void)x
-
+#define TIME_ONE_STEP 1.0
 
 #define MASTER_ID	0
 #define RAFFLER_ID	1
@@ -122,8 +121,8 @@ typedef struct{
 	int activityInside;
 	int counterInput;
 	double amountDelay; // delayAverage =  amount delay / counterInpu 
-	int maximunDrawn;
-	int minimunDrawn;
+	double maximunDrawn;
+	double minimunDrawn;
 }PrinterActivity;
 //contdownWorktask y delayWorktask llegan como arreglos de double en otra llamada aparte
 

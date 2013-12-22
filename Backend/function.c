@@ -2,7 +2,7 @@
 #include "genericNode.h"
 #include "RNGs.h"
 
-void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, const int mpiProcesses, const int modelSeed){
+void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, const int mpiProcesses){
 
 	int inputResource = 0;//que estan en la entrada antes del cuerpo
 	int outputResource = 0; //que cumplieron el dalay se se pueden ir
@@ -11,6 +11,13 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	
 	PrinterFunction fReport;
 	fReport.idNode = initialStatus->idNode;
+
+	RngInstance rngProbabilisticBranch;
+	rngProbabilisticBranch.isInitialise = FALSE;
+	if(initialStatus->countProbabilisticBranch > 0 && initialStatus->modelSeed > -1){
+		RandomInitialise(&rngProbabilisticBranch, initialStatus->modelSeed,initialStatus->modelSeed);
+	}
+
 	int msg = 0;
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
@@ -18,12 +25,12 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 		switch(msg){
 			case ADVANCE_PAHSE:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
-				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE, modelSeed);
+				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE, &rngProbabilisticBranch);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
-				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE, modelSeed);
+				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE, &rngProbabilisticBranch);
 				//printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 			break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
@@ -47,30 +54,27 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	return;
 }
 
-void advancePhaseFunction(int * inputResource, int* outputResource, const Function *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, const int modelSeed){ 
+void advancePhaseFunction(int * inputResource, int* outputResource, const Function *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, RngInstance* rngProbabilisticBranch){ 
 	double* walls = NULL;
 	int* hollows = NULL;
 	int coins = (*inputResource);
 	if (initialStatus->countProbabilisticBranch > 0){
 		walls = (double*) malloc(initialStatus->countProbabilisticBranch * sizeof(double));
 		hollows = (int*) malloc(initialStatus->countProbabilisticBranch * sizeof(int)) ;
+		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; //preveo errores de redondeo
+		hollows[initialStatus->countProbabilisticBranch -1] = 0; //inicializo de paso
 	}
 	double acummulatedProb = 0.0;
-	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
+	for(int i = 0; i < initialStatus->countProbabilisticBranch-1; i++){
 		acummulatedProb += initialStatus->probabilisticBranch[i];
 		walls[i] = acummulatedProb;
-		hollows[i] = 0; //inicializo de paso
+		hollows[i] = 0;	
 	}
-	//preeveo errores de redondeo
-	if(initialStatus->countProbabilisticBranch > 0){
-		walls[ initialStatus->countProbabilisticBranch -1] = 1.0; 
-		if(modelSeed != -1 )
-			RandomInitialise(modelSeed,modelSeed);
-	}
+
 	//para cada nodo sortear	
 	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
 		if( coins ){
-			double hollowNumber = RandomUniform();
+			double hollowNumber = RandomUniform(rngProbabilisticBranch);
 			//defino donde cae la moneda
 			for(int j = 0; j < initialStatus->countProbabilisticBranch; j++){
 				if( hollowNumber <= walls[j] ){

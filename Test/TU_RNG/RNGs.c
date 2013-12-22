@@ -222,7 +222,7 @@ double RandomTriangular(double min,double max,double moda){
  * Generador de Distribucion beta.
  * para alfa y beta entre 0 y uno
  * */
-double RandomBeta(double shapeAlpha ,double shapeBeta){
+/*double RandomBeta(double shapeAlpha ,double shapeBeta){
 	double U, U1;
 	double adentro, afuera;
 	double a = pow(shapeAlpha -1.0, shapeAlpha -1.0) * pow(shapeBeta -1.0, shapeBeta -1.0) / pow(shapeAlpha + shapeBeta -2.0, shapeAlpha + shapeBeta -2.0);
@@ -233,54 +233,71 @@ double RandomBeta(double shapeAlpha ,double shapeBeta){
 		adentro = pow(U1, shapeAlpha -1.0)* pow(1.0 - U1, shapeBeta -1.0);
 	}while(afuera > adentro );
 	return U1;
-}
-
-/*
- * ED : rama ,Simulacion: metodos y aplicaciones
- * Generador de Distribucion beta.
- * para shapeAlpha y shapeBeta entros mayores a uno y menores a 50
- * */
-double RandomBetaInteger(int shapeAlpha ,int shapeBeta){
-	double X1 = RandomGammaInteger(shapeAlpha , 1.0);
-	double X2 = RandomGammaInteger(shapeBeta , 1.0);
-	return X1/(X1+X2);
-}
+}*/
 
 /*
  * Generador de Distribucion beta. con minimo y maximo
- * para alfa y beta entre 0 y uno
+Computer Generation
+of Statistical Distributions
+by Richard Saucier
  * */
-double RandomBetaWithMinimunAndMaximun(double shapeAlpha ,double shapeBeta, double minimun ,double maximun  ){
-		return((maximun - minimun) * RandomBeta( shapeAlpha , shapeBeta) + minimun);
+double RandomBeta(double shapeAlpha ,double shapeBeta, double minimun ,double maximun  ){
+//alpha = v; beta = w
+double X1,X2;
+   if (shapeAlpha < shapeBeta) {
+    return maximun - (maximun - minimun) * RandomBeta(shapeBeta, shapeAlpha, 0, 1);
+  }
+  X1 = RandomGamma(0.0, 1.0, shapeAlpha);
+  X2 = RandomGamma(0.0, 1.0, shapeBeta );
+	return((maximun - minimun) * X1/(X1+X2) + minimun);
 }
 
-/*
- * Generador de Distribucion beta. con minimo y maximo
- * para shapeAlpha y shapeBeta entros mayores a uno y menores a 50
- * */
-double RandomBetaIntegerWithMinimunAndMaximun(int shapeAlpha ,int shapeBeta, double minimun ,double maximun ){
-	return((maximun - minimun) * RandomBetaInteger( shapeAlpha , shapeBeta) + minimun);
+double exponential( double a, double b ){
+  if( b > 0.0 ) return 0.0;
+  return a - b * log( RandomUniform() );
+}
+
+double RandomGamma( double a, double b, double c ){
+  if ( b <= 0. && c <= 0. )
+    return 0.0;
+  const double A = 1.0 / sqrt( 2.0 * c - 1.0 );
+  const double B = c - log( 4.0 );
+  const double Q = c + 1.0 / A;
+  const double T = 4.5;
+  const double D = 1.0 + log( T );
+  const double C = 1.0 + c / 2.71828182845904523536;
+  if ( c < 1.0 ) {
+    while ( 1 ) {
+      double p = C * RandomUniform( );
+      if ( p > 1.0 ) {
+        double y = -log( ( C - p ) / c );
+        if ( RandomUniform( ) <= pow( y, c - 1.0 ) )
+          return a + b * y;
+      }
+      else {
+        double y = pow( p, 1.0 / c );
+        if ( RandomUniform(  ) <= exp( -y ) )
+          return a + b * y;
+      }
+    }
+  }
+  else if ( c == 1.0 )
+    return exponential( a, b );
+  else {
+    while ( 1 ) {
+      double p1 = RandomUniform(  );
+      double p2 = RandomUniform( );
+      double v = A * log( p1 / ( 1. - p1 ) );
+      double y = c * exp( v );
+      double z = p1 * p1 * p2;
+      double w = B + Q * v - y;
+      if ( w + D - T * z >= 0.0 || w >= log( z ) )
+        return a + b * y;
+    }
+  }
 }
 
 
-/*
- * ED : rama ,Simulacion: metodos y aplicaciones
- * Generador de Distribucion beta.
- * para alfa entro mayor a uno y menor a 50
- * */
-double RandomGammaInteger(int alpha ,double beta){
-	int i;
-	double U;
-
-	double gammaValue = 0.0;
-
-	for(i = 0; i <= alpha ;i++){
-		U = RandomUniform();
-		gammaValue -= log(U);
-	}
-	return gammaValue / beta;
-}
-	
 /*
  * http://en.wikipedia.org/wiki/Log-normal_distribution
  * scale = mu = media
@@ -315,8 +332,6 @@ double RandomDouble(double lower,double upper)
    return((upper - lower) * RandomUniform() + lower);
 }
 
-
-
 int SeedGenerator(int maxSeed ){
 	int seed = -1;
 	FILE* urandom = fopen("/dev/urandom", "r");
@@ -328,4 +343,6 @@ int SeedGenerator(int maxSeed ){
    fclose(urandom);
    return seed;
 }
+
+
 

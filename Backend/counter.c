@@ -4,27 +4,10 @@
 
 void counterNode( const MPI_Comm commNodes,  const  Counter *initialStatus, const int mpiProcesses){
 
-	//Un array con el tiempo le falta a cada elemento para terminar (Cantidad de trabajos esta implícito dentro ) (no recursos, porque confundiría)
-	//int* cantDeltaTQFalta = NULL;
-	//int counterWorkTask = 0;
-	//2. Otro array con el tiempo inicial sorteado.
-	//int* initialRafflerTime = NULL;
-	//int counterRafflerTime = 0;
-	//3. Número de recursos que entraron, hasta este delta T.
-	//unsigned long long int input = 0;
-
 	int inputResource = 0;//que estan en la entrada antes del cuerpo
 	int outputResource = 0; //que cumplieron el dalay se se pueden ir
 	unsigned long long int deltaTCount = 0; //cantidad de deltaT que pasaron en este tiempo
 
-	//On the fly: Promedio de las duraciones sorteadas.
-	//TODO:Sumatoria de delay / cant worktask    (la primera vez)
-	//(TODO:Sumatoria de delay anterior + Sumatoria de delayde este delta T) / (cant worktask anteriores + cant worktask de este delta T)
-
-	// Máxima duración sorteada
-	//double maximun = -1; //maximo de recursos
-	// Minima duración sorteada
- 	//double minimun = -1; //minimo de recursos
 	PrinterCounter cReport;
 	cReport.idNode = initialStatus->idNode;
 	cReport.totalProductivity = 0;
@@ -78,26 +61,23 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
     MPI_Request* requestPreceders = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countPreceders);
 	MPI_Request* requestFollowers = (MPI_Request*) malloc( sizeof(MPI_Request)* initialStatus->countFollowers);
     
-	//if( isPrima )printf("5: reciviendo los inputs\n");
 	//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		 MPI_Irecv( &bufferReceiver[i], receiverCount, MPI_INT,  initialStatus->preceders[i], RESOURCE_SEND, commNodes, &requestPreceders[i]);
 	}
-	//if( isPrima )printf("5: enviando los outpus\n");
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		 MPI_Isend( outputResource, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
 	}
 
-	//if( isPrima )printf("5: Espero followrs\n");
 	//espero a que todas la operaciones allan terminado
 	for (int i = 0 ; i < initialStatus->countFollowers; i++){
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*outputResource) = 0;
 	}
 	
-	//if( isPrima )printf("5: Espero predecesor\n");
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
+		//TODO quantiti (y decimal) solo para 1, agrandarlo, y armar 2 imput, uno para cuerpo y otro para reporte
 		(*inputResource) += bufferReceiver[i];	
 	}
    
@@ -110,9 +90,7 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
 		int * nodesStatus = NULL;
 		cReport->deltaTProductivity += (*inputResource);
 		msg = (*inputResource)? FALSE: TRUE;
-		//printf("me quede en la barrera5\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
-		//printf(" sale de la barrera5\n");
 	}
 
 	free(bufferReceiver);
@@ -124,9 +102,5 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
 void generationPhaseCounter(int* inputResource, int* outputResource ,  const MPI_Comm commNodes ){
 	(*outputResource) += (*inputResource);
 	(*inputResource) = 0;
-	
-	//insertWorktask(workTaskList, unsigned long long int currentDelay,  unsigned long long int  initialDelay);
-	//printf("espero en barrera generacion contador");
 	MPI_Barrier( commNodes );
-	//printf("Salgo barrera en barrera");
 }

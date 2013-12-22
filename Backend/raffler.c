@@ -16,6 +16,9 @@ void raffler(){
 	int* bufferReceiver = NULL;
 	int* bufferSender = NULL;
 	
+	RngInstance rngCombiDrawn;
+	rngCombiDrawn.isInitialise = FALSE;
+
 	//obtengo los id de todas las combis del modelo
 	MPI_Probe( MASTER_ID, SEED_AND_COMBI_LIST, MPI_COMM_WORLD,  &infoComm );
 	//"el sizeof" de lo que viene
@@ -26,7 +29,7 @@ void raffler(){
 	//seteo la semilla en caso de que se requiera
 	//el primer elemento indica si se quiere tener reusabilidad.
 	if(combiIds[0] >= 0){
-		RandomInitialise(combiIds[0],combiIds[0]);
+		RandomInitialise(&rngCombiDrawn,combiIds[0],combiIds[0]);
 	}
 	combiIdsAmount--;
 	combiIds++;
@@ -49,7 +52,7 @@ void raffler(){
 	
 		if (currentTag == NEW_RAFFLE ) {
 			
-			Raffle( combiIds ,combiIdsAmount );
+			Raffle( combiIds ,combiIdsAmount , &rngCombiDrawn);
 			//printf("Orden de los ids mesclados\n");
 			//for(int i = 0; i < combiIdsAmount ; i++){
 			//	 printf("%d ",combiIds[i]);
@@ -109,11 +112,11 @@ int* pickUpOnlySelectedIds(int amountSelected, int* selectedId, int amountDrawnN
 /* 
    Revuelve la lista de combis id contra el ultimo elemento de la lista, para sortear
 */
-void Raffle(int* drawnNumbers, int stakeholderAccount){
+void Raffle(int* drawnNumbers, int stakeholderAccount, RngInstance* rngCombiDrawn){
 	int temp;
 	stakeholderAccount--;
 	while(stakeholderAccount){
-		int newPos =  RandomInt(0, stakeholderAccount);
+		int newPos =  RandomInt(rngCombiDrawn,0, stakeholderAccount);
 		//swap drawnNumbers[stakeholderAccount] with drawnNumbers[newPos]
 		temp =  drawnNumbers[newPos];
 		drawnNumbers[newPos]  =  drawnNumbers[stakeholderAccount];

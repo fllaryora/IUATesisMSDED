@@ -60,9 +60,7 @@ int main(int argc, char **argv){
 		case PRINTER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
-				int * qCouNfComb = getNodesAmountDetail(filenameJson);
-				printer(qCouNfComb);
-				free(qCouNfComb);
+				printer();
 			}else {
 				printf("Master node has sent BAD_JSON by broadcast\n");
 			}
@@ -70,9 +68,7 @@ int main(int argc, char **argv){
 		default :
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			if ( jsonResult == GOOD_JSON ) {
-				genericNode(idNodo, idNodoInterno, commNodes,mpiProcesses, getModelSeed( filenameJson ));
-			}else {
-				//printf("Master node has sent BAD_JSON by broadcast\n");
+				genericNode(idNodo, idNodoInterno, commNodes,mpiProcesses);
 			}
 			break;
 	}
@@ -86,21 +82,22 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 	int jsonResult;
 	if ( validateJsonInput(filenameJson) == VALIDATION_PASS ) {		
 		if ( getNodesAmount(filenameJson) + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
-			sendStructToNodes(filenameJson, commNodes);
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			//envio estructuras
+			sendStructToNodes(filenameJson, commNodes);
 			//enviar lo combisIds al raffler
 			int* seedAndCombis = getCombiIds( filenameJson);
 			MPI_Send( &seedAndCombis[1] ,  seedAndCombis[0]  , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			free(seedAndCombis);
+			//envio counts de los elementos.
+			int * qCouNfComb = getNodesAmountDetail(filenameJson);
+			MPI_Send( qCouNfComb , 5 , MPI_INT , PRINTER_ID , INIT_NODES , MPI_COMM_WORLD);
+			free(qCouNfComb);
 			int* targetCounter = getTargets( filenameJson);
-
-			//TODO watchdog = 0 para que lo haga una vez  cambiar por getWatchdog( filenameJson); despues
-			scheduler( 10, commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]);
+			scheduler( getWatchdog( filenameJson), commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]);
 			free(targetCounter);
-
-			/* Shut down MPI */
 			return;
 		}
 		else {
