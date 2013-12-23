@@ -1,0 +1,1 @@
+$wnd.com_example_testjavascriptcomponent_widgetset_TestjavascriptcomponentWidgetset.runAsyncCallback1('pFb(2653,1,uyf);_.cc=function e_d(){Djc((!yjc&&(yjc=new Fjc),yjc),this.a.d)};szf(rj)(1);\n//@ sourceURL=1.js\n')
