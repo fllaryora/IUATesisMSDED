@@ -1,0 +1,9 @@
+@import "addons.scss";
+@import "testjavascriptcomponent.scss";
+
+/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
+/* The actual styles should be defined in testjavascriptcomponent.scss */
+.testjavascriptcomponent {
+  @include addons;
+  @include testjavascriptcomponent;
+}
