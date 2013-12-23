@@ -51,7 +51,7 @@ typedef struct{
 
 typedef struct{
     int idNode;
-    int quantity;
+    double quantity;
     double cycle;
     int countPreceders;
     int *preceders;

@@ -95,9 +95,11 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			int * qCouNfComb = getNodesAmountDetail(filenameJson);
 			MPI_Send( qCouNfComb , 5 , MPI_INT , PRINTER_ID , INIT_NODES , MPI_COMM_WORLD);
 			free(qCouNfComb);
-			int* targetCounter = getTargets( filenameJson);
-			scheduler( getWatchdog( filenameJson), commNodes , &targetCounter[1] , mpiProcesses, targetCounter[0]);
-			free(targetCounter);
+			int targetCounter = getCounterAcount( filenameJson );
+			CycleValidator* targets = getTargets( filenameJson);
+			int watchdog = getWatchdog( filenameJson);
+			scheduler( watchdog, commNodes , targets , mpiProcesses, targetCounter);
+			free(targets);
 			return;
 		}
 		else {

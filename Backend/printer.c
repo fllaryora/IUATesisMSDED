@@ -133,18 +133,18 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 				}
 			closeBracket(fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);
-				int * counterCycles = (int*) malloc(sizeof (int) * counters*2);
+				CycleValidator * counterCycles = (CycleValidator*) malloc(sizeof (CycleValidator) * counters);
 				//recibo todos los envios de colas
 				for(int i = 0; i < counters; i++){
 					//obtengo estructura
 					//printf("recividela counters\n");
 					MPI_Recv3(&crStruct, sizeof(PrinterCounter), MPI_BYTE, MPI_ANY_SOURCE, COUNTER_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					counterCycles[i*2] =  crStruct.idNode;
-					counterCycles[i*2+1] =  crStruct.totalProductivity;
+					counterCycles[i].idNode =  crStruct.idNode;
+					counterCycles[i].cycle =  crStruct.totalProductivity;
 					doCounter( fileDescriptor, crStruct.idNode, crStruct.totalProductivity, crStruct.deltaTProductivity, crStruct.productivityPerTime );
 					if (i+1 < counters ){separeElement(fileDescriptor);}
 				}
-				MPI_Send(counterCycles, counters*2, MPI_INT, MASTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD);
+				MPI_Send(counterCycles, counters*sizeof(CycleValidator), MPI_BYTE, MASTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD);
 				free(counterCycles);
 			closeBracket( fileDescriptor); separeElement(fileDescriptor);
 			putLabel(fileDescriptor, "normals"); openBracket( fileDescriptor);

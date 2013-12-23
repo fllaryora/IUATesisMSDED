@@ -323,7 +323,7 @@ void getCounters(const char *filenameJson , Counter **counters, int *counterCoun
 	{
 	    objectInArray = json_array_get_object(array, i);
 	    (*counters)[i].idNode = (int)json_object_dotget_number(objectInArray, "idNode" );
-	   	(*counters)[i].quantity = (int)json_object_dotget_number(objectInArray, "quantity" );
+	   	(*counters)[i].quantity = json_object_dotget_number(objectInArray, "quantity" ); //double now
 		(*counters)[i].cycle = json_object_dotget_number(objectInArray, "cycle" );
 		arrayInternal = json_object_dotget_array(objectInArray, "preceders");
 		(*counters)[i].countPreceders = json_array_get_count(arrayInternal);

@@ -81,14 +81,14 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
 		(*inputResource) += bufferReceiver[i];	
 	}
    
-	cReport->totalProductivity += (*inputResource);
+	cReport->totalProductivity += (*inputResource)*initialStatus->quantity;
 	if( !isPrima ){
-		cReport->deltaTProductivity = (*inputResource);
+		cReport->deltaTProductivity = (*inputResource)*initialStatus->quantity;
 		MPI_Barrier( commNodes );
 		
 	} else {
 		int * nodesStatus = NULL;
-		cReport->deltaTProductivity += (*inputResource);
+		cReport->deltaTProductivity += (*inputResource)*initialStatus->quantity;
 		msg = (*inputResource)? FALSE: TRUE;
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
 	}

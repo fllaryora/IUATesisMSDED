@@ -54,7 +54,7 @@ extern int countArrayInclude(const int * const , const int , const int *const , 
 extern int repeatArrays(const int *const  ,const int , const int * const , const int , const int * const , const int , const int * const , const int , const int *const , const int , int** , int* );
 extern int getNodesAmount( const char * );
 extern int* getCombiIds( const char * );
-extern int* getTargets( const char *);
+extern CycleValidator* getTargets( const char *);
 extern int getWatchdog( const char *);
 extern int getModelSeed( const char *);
 extern void freeLinkTables(const int , int** ,int** );
@@ -66,4 +66,5 @@ extern int validateAutoreference(JSON_Object*, const char *, const int , int* , 
 extern int validateProbabilisticBranch(const double* , const int , const int );
 extern void getProbabilisticBranch(JSON_Object * ,const char *, const int ,const char *, double** , int* );
 extern int* getNodesAmountDetail( const char * );
+extern int getCounterAcount( const char *filenameJson );
 #endif /* #ifndef _JSON_HELPER_H_*/

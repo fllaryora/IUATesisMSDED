@@ -773,7 +773,7 @@ int validateSeeds(JSON_Object* object){
 /*
 obtiene la cantidad de ciclos que deberia cumplir cada counter
 */
-int* getTargets( const char *filenameJson ){
+CycleValidator* getTargets( const char *filenameJson ){
 	int count = 0;
 
 	JSON_Value* root_value = json_parse_file(filenameJson);
@@ -783,14 +783,20 @@ int* getTargets( const char *filenameJson ){
 	JSON_Array* arrayJsonFunction = json_object_dotget_array(object,"transformation.counters");
 
 	count += json_array_get_count( arrayJsonFunction);
-	int* targets = (int*)malloc(sizeof(int) * (count*2+1));
-	targets[0] = count;
+	CycleValidator* targets = (CycleValidator*)malloc(sizeof(CycleValidator) * count);
 	
 	for (int i = 0; i < count; i++){
 	    objectInArray = json_array_get_object(arrayJsonFunction, i);
-	    targets[i*2+1] = json_object_dotget_number(objectInArray, "idNode" );
-	    targets[i*2+2] = json_object_dotget_number(objectInArray, "cycle" );
+	    targets[i].idNode = json_object_dotget_number(objectInArray, "idNode" );
+	    targets[i].cycle = json_object_dotget_number(objectInArray, "cycle" );
 	}
 	json_value_free(root_value);
 	return targets;
+}
+
+int getCounterAcount( const char *filenameJson ){
+	JSON_Value* root_value = json_parse_file(filenameJson);
+	JSON_Object* object = json_value_get_object(root_value);
+	JSON_Array* arrayJsonCounter = json_object_dotget_array(object,"transformation.counters");
+	return json_array_get_count( arrayJsonCounter);
 }

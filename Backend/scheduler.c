@@ -5,11 +5,11 @@
 #include "scheduler.h"
 
 
-void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * const targets , const int mpiProcesses, const int counterNodes){
+void scheduler(unsigned long watchdog, const MPI_Comm commNodes , CycleValidator* targets, const int mpiProcesses, const int counterNodes){
 	int msg = 0;
 	int watchdog2 = 0;
 	int* nodesStatus = (int*) malloc (sizeof(int)  * (mpiProcesses -RAFFLER_PRINTER));
-	int* targetStatus = (int*) malloc (sizeof(int)  * counterNodes);
+	CycleValidator* currentStatusOfTargets = (CycleValidator*) malloc (sizeof(CycleValidator)  * counterNodes);
 	int  isAllFinalized = 0;
 	
 	double totalTime = 0.0;
@@ -62,14 +62,14 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 		msg = PING_REPORT;
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 		
-		MPI_Recv( targetStatus, counterNodes*2, MPI_INT, PRINTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv( currentStatusOfTargets, counterNodes*sizeof(CycleValidator), MPI_BYTE, PRINTER_ID, COUNTER_CYCLES, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		
 		isAllFinalized = 0;
 		
 		for(int i = 0 ; i< counterNodes;i++ ){
 			for(int j = 0 ; j< counterNodes;j++ ){
-				if(targetStatus[i*2] == targets[j*2]){
-					if( targetStatus[i*2+1] >= targets[j*2+1] )
+				if(currentStatusOfTargets[i].idNode == targets[j].idNode){
+					if( currentStatusOfTargets[i].cycle > targets[j].cycle )
 						isAllFinalized++;
 					else{
 						j= i = counterNodes;
@@ -90,6 +90,6 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , const int * co
 	MPI_Send(&totalTime, 1, MPI_DOUBLE, PRINTER_ID , LIVE_LOCK , MPI_COMM_WORLD);
 
 	free(nodesStatus);
-	free(targetStatus);
+	free(currentStatusOfTargets);
 
 }

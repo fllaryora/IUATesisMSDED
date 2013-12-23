@@ -106,8 +106,8 @@ typedef struct{
 			
 typedef struct{
 	int idNode;
-	int totalProductivity;
-	int deltaTProductivity;
+	double totalProductivity; 
+	double deltaTProductivity; //entradas * quantity
 	double productivityPerTime;
 }PrinterCounter;
 
@@ -134,14 +134,22 @@ typedef struct{
 			
 typedef struct{
 	int idNode;
-	int totalProductivity;
+	double totalProductivity;
 }PrinterFinalCounter;
+
+
+typedef struct{
+	int idNode;
+	double cycle;
+	//CyclesList* next;
+}CycleValidator;
 /******************************************************/
+
 typedef enum{
 	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI
 }TYPENODE;
 
-
+/*
 typedef union{
 	int productividad;
 	int recursos;
@@ -158,4 +166,6 @@ typedef struct{
 	Total enTotal;
 	EnDt enElDt;
 }Report;
+*/
+
 #endif /* #ifndef _MAIN_H_*/

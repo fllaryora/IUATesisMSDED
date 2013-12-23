@@ -9,5 +9,5 @@
 #define TRUE (!FALSE)
 #endif
 
-extern void scheduler(unsigned long , const MPI_Comm  , const int * const  , const int , const int );
+extern void scheduler(unsigned long watchdog, const MPI_Comm commNodes , CycleValidator* targets, const int mpiProcesses, const int counterNodes);
 #endif /* #ifndef _SCHEDULER_H_*/
