@@ -27,13 +27,16 @@ public class FlechaGenerica implements Flecha{
 	private final double phi = Math.toRadians(20);
 	private final int anchoFlecha = 10;
 	private Color colorActual;
-	public FlechaGenerica(){
+	private List<Nodo> nodosExternos;
+	
+	public FlechaGenerica(List<Nodo> nodosPanel ){
 		this.nodosFlecha = new ArrayList<NodoGenerico>();
 		this.hayNodoCabeza = false;
 		this.hayNodoCola = false;
+		this.nodosExternos = nodosPanel; 
 		this.empieza = null;
 		this.termina = null;
-		this.colorActual = Color.BLUE;
+		this.colorActual = Color.BLACK;
 		this.empiezaPto = SuperficieDeEnganche.CENTRO;
 		this.terminaPto = SuperficieDeEnganche.CENTRO;
 		
@@ -184,20 +187,23 @@ public class FlechaGenerica implements Flecha{
 			
 			x1 = this.empieza.getXptoEnganche(zoom, empiezaPto);
 			y1 = this.empieza.getYptoEnganche(zoom, empiezaPto);
-		
+			Graphics2D g2 =(Graphics2D) g;
 			for(Nodo nodo: nodosFlecha){
 				nodo.pintar(g, zoom);
 				x2 = nodo.getXptoEnganche(zoom, SuperficieDeEnganche.CENTRO);
 				y2 = nodo.getYptoEnganche(zoom, SuperficieDeEnganche.CENTRO);
 				g.setColor(this.colorActual);
-				g.drawLine(x1, y1, x2, y2);
+				g2.draw(new Line2D.Double(x1, y1, x2, y2));
+				//g.drawLine(x1, y1, x2, y2);
 				x1 = x2;
 				y1 = y2;
 			}
 			
 			x2 = this.termina.getXptoEnganche(zoom, terminaPto);
 			y2 = this.termina.getYptoEnganche(zoom, terminaPto);
-			g.drawLine(x1, y1, x2, y2);
+			
+			g2.draw(new Line2D.Double(x1, y1, x2, y2));
+			//g.drawLine(x1, y1, x2, y2);
 			
 			pintarCabezaFlecha(g, zoom, x1, y1, x2, y2);
 		}

@@ -1,6 +1,8 @@
 package ar.com.botquque.applet;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -18,7 +20,7 @@ public class ManejadoraEvento  extends JPanel implements MouseListener, MouseMot
 	private static final long serialVersionUID = 7L;
 	Principal padre;
 	private List<Nodo> nodos;
-	FlechaGenerica flechaGenerica = new FlechaGenerica();
+	FlechaGenerica flechaGenerica = new FlechaGenerica(nodos);
 	
 	private double zoom ;
 	//dimensiones del podio de los nodos
@@ -65,6 +67,16 @@ public class ManejadoraEvento  extends JPanel implements MouseListener, MouseMot
 		this.yPodioMin = 0;
 		this.yPodioMax = this.getHeight();
 		
+		Graphics2D g2 = (Graphics2D)g;
+		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		rh.add(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+		rh.add(new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON));
+		rh.add(new RenderingHints(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE));
+		rh.add(new RenderingHints(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC));
+		rh.add(new RenderingHints(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY));
+		rh.add(new RenderingHints(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE));
+		rh.add(new RenderingHints(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY));
+		g2.setRenderingHints(rh);
 		for(Nodo nodo: nodos){
 			nodo.pintar(g,this.zoom);
 		}
