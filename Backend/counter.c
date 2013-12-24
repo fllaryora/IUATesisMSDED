@@ -77,7 +77,6 @@ void advancePhaseCounter(int * inputResource, int* outputResource, const Counter
 	
 	for (int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Wait(&requestPreceders[i], MPI_STATUS_IGNORE);
-		//TODO quantiti (y decimal) solo para 1, agrandarlo, y armar 2 imput, uno para cuerpo y otro para reporte
 		(*inputResource) += bufferReceiver[i];	
 	}
    
