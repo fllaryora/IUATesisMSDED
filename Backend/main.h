@@ -149,23 +149,4 @@ typedef enum{
 	QUEUE, NORMAL, COUNTER, FUNCTION, COMBI
 }TYPENODE;
 
-/*
-typedef union{
-	int productividad;
-	int recursos;
-	int workTasks;
-}Total;
-
-typedef union{
-	int productividad;
-	int recursos;
-	int workTasks;
-}EnDt;
-
-typedef struct{
-	Total enTotal;
-	EnDt enElDt;
-}Report;
-*/
-
 #endif /* #ifndef _MAIN_H_*/
