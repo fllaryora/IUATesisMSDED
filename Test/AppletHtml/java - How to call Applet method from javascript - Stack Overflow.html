@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <title>java - How to call Applet method from javascript - Stack Overflow</title>
+    <link rel="shortcut icon" href="http://cdn.sstatic.net/stackoverflow/img/favicon.ico">
+    <link rel="apple-touch-icon image_src" href="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png">
+    <link rel="search" type="application/opensearchdescription+xml" title="Stack Overflow" href="http://stackoverflow.com/opensearch.xml">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:domain" content="stackoverflow.com">
+    <meta name="og:type" content="website">
+    <meta name="og:image" content="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon@2.png?v=fde65a5a78c6">
+    <meta name="og:title" content="How to call Applet method from javascript">
+    <meta name="og:description" content="I have created an Applet and I am going to access applet method from my html page on web project.
+
+Here my applet looks like:
+
+public class MessageApplet extends Applet {
+private Label m_mess;    
+...">
+    <meta name="og:url" content="http://stackoverflow.com/questions/10548558/how-to-call-applet-method-from-javascript">
+    <link rel="canonical" href="http://stackoverflow.com/questions/10548558/how-to-call-applet-method-from-javascript">
+
+    
+    
+    <script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/ados.js" async="" type="text/javascript"></script><script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/beacon.js" async=""></script><script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/ga.js" async="" type="text/javascript"></script><script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/quant.js" async="" type="text/javascript"></script><script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/ados_002.js" async="" type="text/javascript"></script><script type="text/javascript" src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/jquery.js"></script>
+    <script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/stub.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/all.css">
+    
+    <link rel="alternate" type="application/atom+xml" title="Feed for question 'How to call Applet method from javascript'" href="http://stackoverflow.com/feeds/question/10548558">
+    <script type="text/javascript">
+        
+        StackExchange.ready(function () {
+            StackExchange.using("postValidation", function () {
+                StackExchange.postValidation.initOnBlurAndSubmit($('#post-form'), 2, 'answer');
+            });
+
+            
+            StackExchange.question.init({showAnswerHelp:true,totalCommentCount:5,shownCommentCount:5,highlightColor:'#F4A83D',backgroundColor:'#FFF',questionId:10548558});
+
+            styleCode();
+
+                StackExchange.realtime.subscribeToQuestion('1', '10548558');
+            
+                    });
+    </script>
+
+
+    <script type="text/javascript">
+        StackExchange.init({"locale":"en","stackAuthUrl":"https://stackauth.com","serverTime":1388243688,"styleCode":true,"enableUserHovercards":true,"site":{"name":"Stack Overflow","description":"Q&A for professional and enthusiast programmers","isNoticesTabEnabled":true,"recaptchaPublicKey":"6LdchgIAAAAAAJwGpIzRQSOFaO0pU6s44Xt8aTwc","recaptchaAudioLang":"en","nonAsciiTags":true,"enableSocialMediaInSharePopup":true},"user":{"fkey":"c4cf78ee508632c673ef9bcf28facedb","isAnonymous":true,"ab":{"welcome_email":{"v":"a","g":2},"anonymoushero":{"v":"3","g":2}}}});
+        StackExchange.using.setCacheBreakers({"js/prettify-full.en.js":"e0bbd4760e83","js/moderator.en.js":"f24049d774be","js/full-anon.en.js":"2902a23ad46f","js/full.en.js":"c63381338a59","js/wmd.en.js":"849f408083f3","js/third-party/jquery.autocomplete.min.js":"e5f01e97f7c3","js/third-party/jquery.autocomplete.min.en.js":"","js/mobile.en.js":"d1d834ef85d2","js/help.en.js":"d3cc74d8a93a","js/tageditor.en.js":"6d51a5f8d7f3","js/tageditornew.en.js":"111b781cf314","js/inline-tag-editing.en.js":"f951bd09dc69","js/revisions.en.js":"33fd38144303","js/review.en.js":"038b38e68e1a","js/tagsuggestions.en.js":"e4e7b952fcc7","js/post-validation.en.js":"c275fe37d674","js/explore-qlist.en.js":"73825bd006fc","js/events.en.js":"6f8a95d5c039"});
+        StackExchange.using("gps", function() {
+             StackExchange.gps.init(true);
+        });
+        
+    </script>
+    
+        <script type="text/javascript">
+            StackExchange.ready(function () {
+                $('#nav-tour').click(function () {
+                    StackExchange.using("gps", function() {
+                        StackExchange.gps.track("aboutpage.click", { aboutclick_location: "headermain" }, true);
+                    });
+                });
+            });
+        </script>
+<script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/full-anon.js" type="text/javascript" async=""></script><script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/post-validation.js" type="text/javascript" async=""></script><script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/prettify-full.js" type="text/javascript" async=""></script><link rel="stylesheet" type="text/css" href="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/sidebar.css"><script src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/adFeedback.js" type="text/javascript"></script><link href="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/adFeedback.css" rel="stylesheet"></head>
+<body class="question-page new-topbar">
+    <noscript><div id="noscript-padding"></div></noscript>
+    <div id="notify-container"></div>
+    <div id="overlay-header"></div>
+    <div id="custom-header"></div>
+<div class="topbar">
+    <div class="topbar-wrapper">
+        
+        <div class="js-topbar-dialog-corral">
+
+<div class="topbar-dialog siteSwitcher-dialog dno">
+    <div class="header">
+        <h3><a href="http://stackexchange.com/sites">Explore our sites</a></h3>
+    </div>
+    <div class="modal-content">
+        <ul class="current-site">
+                <li>
+                        <a href="http://stackoverflow.com/" class="current-site-link site-link js-site-link js-gps-track" data-gps-track="site_switcher.click({ item_type:3 })">
+        <div class="site-icon favicon favicon-stackoverflow" title="Stack Overflow"></div>
+        Stack Overflow
+    </a>
+    <div class="related-links js-related-links">
+            <a href="http://chat.stackoverflow.com/" data-gps-track="site_switcher.click({ item_type:6 })">chat</a>
+                    <a href="http://blog.stackexchange.com/" data-gps-track="site_switcher.click({ item_type:7 })">blog</a>
+            </div>
+
+                </li>
+                <li class="related-site">
+                        <a href="http://meta.stackoverflow.com/" class="site-link js-site-link js-gps-track" data-gps-track="site.switch({ target_site:4, item_type:3 });site_switcher.click({ item_type:4 })">
+        <div class="site-icon favicon favicon-stackoverflowmeta" title="Meta Stack Overflow"></div>
+        Meta Stack Overflow
+    </a>
+
+                    
+                </li>
+                            <li class="related-site">
+                    <a class="site-link js-site-link" href="http://careers.stackoverflow.com/" data-gps-track="site_switcher.click({ item_type:9 })">
+                        <div class="site-icon favicon favicon-careers" title="Stack Overflow Careers"></div>
+                        Careers 2.0
+                    </a>
+                </li>
+        </ul>
+        
+
+
+        
+            <div class="child-content"></div>
+
+    </div>
+</div>        </div>
+
+        <div class="network-items">
+            
+            <a href="http://stackexchange.com/" class="topbar-icon icon-site-switcher js-site-switcher-button js-gps-track" data-gps-track="site_switcher.show" title="A list of all 114 Stack Exchange sites">
+                <span class="hidden-text">Stack Exchange</span>
+            </a>
+            
+        </div>
+
+        <div class="topbar-links">
+            
+                <div class="links-container">
+                    <span class="topbar-menu-links">
+                        <a href="http://stackoverflow.com/users/login?returnurl=%2fquestions%2f10548558%2fhow-to-call-applet-method-from-javascript" class="login-link">sign up</a>    
+                        <a href="http://stackoverflow.com/users/login?returnurl=%2fquestions%2f10548558%2fhow-to-call-applet-method-from-javascript" class="login-link">log in</a>
+                        <a href="http://stackoverflow.com/tour">tour</a>
+                        <a href="http://stackoverflow.com/help">help</a>
+                            <a href="http://careers.stackoverflow.com/">careers 2.0</a>
+                    </span>
+                </div>
+
+			<div class="search-container">
+                <form id="search" action="/search" method="get" autocomplete="off">
+                    <input name="q" placeholder="search" tabindex="1" autocomplete="off" maxlength="240" type="text">
+                </form>
+			</div>
+            	
+        </div>      
+    </div> 
+</div>
+<script>
+    StackExchange.ready(function () {
+        //topbar.init();
+        StackExchange.topbar.init();
+    });
+</script>    <div class="container">
+        <div id="header" class="headeranon">
+            <br class="cbt">
+            <div id="hlogo">
+                <a href="http://stackoverflow.com/">
+                    Stack Overflow
+                </a>
+            </div>
+            <div id="hmenus">
+                <div class="nav mainnavs mainnavsanon">
+                    <ul>
+                            <li class="youarehere"><a id="nav-questions" href="http://stackoverflow.com/questions">Questions</a></li>
+                            <li><a id="nav-tags" href="http://stackoverflow.com/tags">Tags</a></li>
+                            <li><a id="nav-tour" href="http://stackoverflow.com/about">Tour</a></li>
+                            <li><a id="nav-users" href="http://stackoverflow.com/users">Users</a></li>
+                    </ul>
+                </div>
+                <div class="nav askquestion">
+                    <ul>
+                        <li>
+                            <a id="nav-askquestion" href="http://stackoverflow.com/questions/ask">Ask Question</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+
+
+
+        <div id="content">
+            
+
+<div itemscope="" itemtype="http://schema.org/Article">
+	<link itemprop="image" href="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png">
+			<!--googleoff: all-->
+<div id="herobox-mini">
+    <div id="hero-content">
+        <span id="controls">
+            <a href="http://stackoverflow.com/about" id="tell-me-more" class="button">Take the 2-minute tour</a>
+            <span id="close"><a title="click to dismiss">×</a></span>
+        </span>
+        <div id="blurb">
+            Stack Overflow is a question and answer site for 
+professional and enthusiast programmers. It's 100% free, no registration
+ required.
+        </div>        
+    </div>
+    <script>
+        $('#tell-me-more').click(function () {
+            var clickSource = $("body").attr("class") + '-mini';
+            if ($("body").hasClass("questions-page")) {
+                clickSource = 'questionpagemini';
+            } else if ($("body").hasClass("question-page")) {
+                clickSource = 'questionpagemini';
+            } else if ($("body").hasClass("home-page")) {
+                clickSource = 'homepagemini';
+            }
+
+            StackExchange.using("gps", function () {
+                StackExchange.gps.track("aboutpage.click", { aboutclick_location: clickSource } , true);
+            });
+        });
+        $('#herobox-mini #close').click(function () {
+            StackExchange.using("gps", function () {
+                StackExchange.gps.track("hero.action", { hero_action_type: "close" }, true);
+            });
+            $.cookie("hero", "none", { path: "/" });
+            var $hero = $("#herobox-mini");
+            $hero.slideUp('fast', function () { $hero.remove(); });
+            return false;
+        });
+    </script>
+</div>
+			<!--googleon: all-->
+			<div id="question-header">
+			<h1 itemprop="name"><a href="http://stackoverflow.com/questions/10548558/how-to-call-applet-method-from-javascript" class="question-hyperlink">How to call Applet method from javascript</a></h1>
+		</div>
+			<div id="mainbar">
+
+			
+
+<div class="question" data-questionid="10548558" id="question">
+    
+    <script type="text/javascript">
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk1253120424",4).setZone(43) ; });                    
+            </script>
+            <div class="everyonelovesstackoverflow adzerk-vote" id="adzerk1253120424">
+            <iframe id="ados_frame_adzerk1253120424_115252" scrolling="no" width="728" frameborder="0" height="90"></iframe><div class="adzerk-vote-controls" style="display:none;"><div class="adzerk-vote-option adzerk-vote-up"><div class="adzerk-vote-icon"></div></div><div class="adzerk-vote-option adzerk-vote-down"><div class="adzerk-vote-icon"></div></div></div><div class="adzerk-vote-survey" style="display:none;"><form><span>No problem. We won't show you that ad again. Why didn't you like it?</span><ul><li><label><input value="12" name="downvoteReason" type="radio">Uninteresting</label></li><li><label><input value="13" name="downvoteReason" type="radio">Misleading</label></li><li><label><input value="14" name="downvoteReason" type="radio">Offensive</label></li><li><label><input value="15" name="downvoteReason" type="radio">Repetitive</label></li></ul><a href="#" class="adzerk-vote-cancel">Oops! I didn't mean to do this.</a></form></div><img src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/i_002.gif" border="0" width="0px" height="0px"></div>    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input name="_id_" value="10548558" type="hidden">
+    <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
+    <span class="vote-count-post ">0</span>
+    <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
+    
+    <a class="star-off" href="#" title="This is a favorite question (click again to undo)">favorite</a>
+    <div class="favoritecount"><b></b></div>   
+
+</div>
+
+            </td>
+            
+<td class="postcell">
+<div>
+    <div class="post-text" itemprop="description">
+
+        <p>I have created an Applet and I am going to access applet method from my html page on web project.</p>
+
+<p>Here my applet looks like:</p>
+
+<pre style="" class="lang-java prettyprint prettyprinted"><code><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">MessageApplet</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Applet</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Label</span><span class="pln"> m_mess</span><span class="pun">;</span><span class="pln">    
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> init</span><span class="pun">()</span><span class="pln"> 
+    </span><span class="pun">{</span><span class="pln">
+        setBackground</span><span class="pun">(</span><span class="typ">Color</span><span class="pun">.</span><span class="pln">lightGray</span><span class="pun">);</span><span class="pln">
+        setLayout</span><span class="pun">(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">BorderLayout</span><span class="pun">());</span><span class="pln">
+        m_mess </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Label</span><span class="pun">(</span><span class="str">"MessageApplet is Running... : No Selection Yet"</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Label</span><span class="pun">.</span><span class="pln">CENTER</span><span class="pun">);</span><span class="pln">
+        add</span><span class="pun">(</span><span class="typ">BorderLayout</span><span class="pun">.</span><span class="pln">CENTER</span><span class="pun">,</span><span class="pln"> m_mess</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">    
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> setMessage</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> message</span><span class="pun">)</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        m_mess</span><span class="pun">.</span><span class="pln">setText</span><span class="pun">(</span><span class="str">"Selection : "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> message</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln"> 
+</span><span class="pun">}</span><span class="pln"> </span></code></pre>
+
+<p>And my html page looks like:</p>
+
+<pre style="" class="lang-java prettyprint prettyprinted"><code><span class="pun">&lt;</span><span class="pln">html</span><span class="pun">&gt;&lt;</span><span class="pln">head</span><span class="pun">&gt;&lt;</span><span class="pln">meta http</span><span class="pun">-</span><span class="pln">equiv</span><span class="pun">=</span><span class="str">"Content-Type"</span><span class="pln"> content</span><span class="pun">=</span><span class="str">"text/html; charset=ISO-8859-1"</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;</span><span class="pln">title</span><span class="pun">&gt;</span><span class="typ">Insert</span><span class="pln"> title here</span><span class="pun">&lt;/</span><span class="pln">title</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;</span><span class="pln">SCRIPT LANGUAGE</span><span class="pun">=</span><span class="str">"JavaScript"</span><span class="pun">&gt;</span><span class="pln">
+function selectedCity</span><span class="pun">()</span><span class="pln"> 
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">document</span><span class="pun">.</span><span class="typ">CityChoice</span><span class="pun">.</span><span class="typ">City</span><span class="pun">[</span><span class="lit">0</span><span class="pun">].</span><span class="pln">checked </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+      </span><span class="pun">{</span><span class="pln">
+        document</span><span class="pun">.</span><span class="typ">SimpleMessageApplet</span><span class="pun">.</span><span class="pln">setMessage</span><span class="pun">(</span><span class="pln">document</span><span class="pun">.</span><span class="typ">CityChoice</span><span class="pun">.</span><span class="typ">City</span><span class="pun">[</span><span class="lit">0</span><span class="pun">].</span><span class="pln">value</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">      
+</span><span class="pun">}</span><span class="pln">
+</span><span class="pun">&lt;/</span><span class="pln">SCRIPT</span><span class="pun">&gt;&lt;/</span><span class="pln">HEAD</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;</span><span class="pln">BODY </span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;</span><span class="pln">b</span><span class="pun">&gt;</span><span class="typ">This</span><span class="pln"> is the </span><span class="typ">Applet</span><span class="pun">&lt;/</span><span class="pln">b</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;</span><span class="pln">APPLET CODE</span><span class="pun">=</span><span class="str">"MessageApplet.class"</span><span class="pln"> NAME</span><span class="pun">=</span><span class="str">"SimpleMessageApplet"</span><span class="pln"> WIDTH</span><span class="pun">=</span><span class="lit">350</span><span class="pln"> HEIGHT</span><span class="pun">=</span><span class="lit">100</span><span class="pln"> </span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;/</span><span class="pln">APPLET </span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;</span><span class="pln">FORM NAME</span><span class="pun">=</span><span class="str">"CityChoice"</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;</span><span class="pln">input type</span><span class="pun">=</span><span class="str">"radio"</span><span class="pln"> name</span><span class="pun">=</span><span class="str">"City"</span><span class="pln"> value</span><span class="pun">=</span><span class="str">"Boston"</span><span class="pln"> onClick</span><span class="pun">=</span><span class="str">"selectedCity()"</span><span class="pun">&gt;</span><span class="pln"> </span><span class="typ">Boston</span><span class="pun">&lt;</span><span class="pln">br</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;/</span><span class="pln">form</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;/</span><span class="pln">BODY </span><span class="pun">&gt;</span><span class="pln"> 
+</span><span class="pun">&lt;/</span><span class="pln">html</span><span class="pun">&gt;</span></code></pre>
+
+<p>but when I click radio button my browser get hang and I cannot access applet method ever.
+My applet class is in default directory and html is in WebContent folder.
+Please tell me what should I have change in my code?</p>
+
+    </div>
+    <div class="post-taglist">
+        <a href="http://stackoverflow.com/questions/tagged/java" class="post-tag" title="show questions tagged 'java'" rel="tag">java</a> <a href="http://stackoverflow.com/questions/tagged/javascript" class="post-tag" title="show questions tagged 'javascript'" rel="tag">javascript</a> <a href="http://stackoverflow.com/questions/tagged/java-ee" class="post-tag" title="show questions tagged 'java-ee'" rel="tag">java-ee</a> <a href="http://stackoverflow.com/questions/tagged/applet" class="post-tag" title="show questions tagged 'applet'" rel="tag">applet</a> 
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/q/10548558" title="short permalink to this question" class="short-link" id="link-post-10548558">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/10548558/edit" class="suggest-edit-post" title="">improve this question</a></div>        
+    </td>
+    <td class="post-signature owner">
+        <div class="user-info ">
+    <div class="user-action-time">
+        asked <span title="2012-05-11 09:09:21Z" class="relativetime">May 11 '12 at 9:09</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/976600/pravin"><div><img src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/5e12fcc3e3928edd29c37d24ae0e1912.png" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/976600/pravin">Pravin</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">71</span><span title="1 silver badge"><span class="badge2"></span><span class="badgecount">1</span></span><span title="8 bronze badges"><span class="badge3"></span><span class="badgecount">8</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</div>
+</td>
+        </tr>
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-10548558" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="0" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-13650028" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">is CityChoice.City[0].value a String?</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/1276759/perry-monschau" title="522 reputation" class="comment-user">Perry Monschau</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13650028_10548558"><span title="2012-05-11 09:25:09Z" class="relativetime-clean">May 11 '12 at 9:25</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13650349" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@PerryMonschau yes</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/976600/pravin" title="71 reputation" class="comment-user owner">Pravin</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13650349_10548558"><span title="2012-05-11 09:42:01Z" class="relativetime-clean">May 11 '12 at 9:42</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13650418" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@PerryMonschau when i run it on IE rather 
+than Mozilla it shown an error on java console like: load: class 
+MessageApplet.class not found.
+java.lang.ClassNotFoundException: MessageApplet.class
+	at sun.plugin2.applet.Applet2ClassLoader.findClass(Unknown Source)
+	at sun.plugin2.applet.Plugin2ClassLoader.loadClass0(Unknown Source)
+	at sun.plugin2.applet.Plugin2ClassLoader.loadClass(Unknown Source)
+	at sun.plugin2.applet.Plugin2ClassLoader.loadClass(Unknown Source)
+	at java.lang.ClassLoader.loadClass(Unknown Source)</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/976600/pravin" title="71 reputation" class="comment-user owner">Pravin</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13650418_10548558"><span title="2012-05-11 09:45:22Z" class="relativetime-clean">May 11 '12 at 9:45</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13650650" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">hmm... try putting a "/" in front of 
+MessageApplet.class. Just stabbing in the dark here, but that's what I 
+always do first when strange things like this crop up.</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/1276759/perry-monschau" title="522 reputation" class="comment-user">Perry Monschau</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13650650_10548558"><span title="2012-05-11 09:57:16Z" class="relativetime-clean">May 11 '12 at 9:57</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13650720" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@PerryMonschau No, sorry I putted "/" in front of MessageApplet.class but still same problem...</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/976600/pravin" title="71 reputation" class="comment-user owner">Pravin</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13650720_10548558"><span title="2012-05-11 10:00:18Z" class="relativetime-clean">May 11 '12 at 10:00</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-10548558" data-rep="50" data-anon="true" class="comments-link disabled-link" title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments.">add comment</a>
+    </td>
+</tr>            </tbody></table>    
+</div>
+
+
+			<div id="answers">
+
+				<a name="tab-top"></a>
+				<div id="answers-header">
+					<div class="subheader answers-subheader">
+						<h2>
+								2 Answers
+						</h2>
+						<div>
+							<div id="tabs">
+        <a href="http://stackoverflow.com/questions/10548558/how-to-call-applet-method-from-javascript?answertab=active#tab-top" title="Answers with the latest activity first">active</a>
+        <a href="http://stackoverflow.com/questions/10548558/how-to-call-applet-method-from-javascript?answertab=oldest#tab-top" title="Answers in the order they were provided">oldest</a>
+        <a class="youarehere" href="http://stackoverflow.com/questions/10548558/how-to-call-applet-method-from-javascript?answertab=votes#tab-top" title="Answers with the highest score first">votes</a>
+</div>
+						</div>
+					</div>    
+				</div>    
+
+
+
+
+  
+<a name="10549281"></a>
+<div id="answer-10549281" class="answer accepted-answer" data-answerid="10549281">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input name="_id_" value="10549281" type="hidden">
+    <a class="vote-up-off" title="This answer is useful">up vote</a>
+    <span class="vote-count-post ">3</span>
+    <a class="vote-down-off" title="This answer is not useful">down vote</a>
+    
+
+
+        <span class="vote-accepted-on load-accepted-answer-date" title="loading when this answer was accepted...">accepted</span>
+</div>
+
+            </td>
+
+
+
+<td class="answercell">
+    <div class="post-text"><p>The problem is the IF statement check:</p>
+
+<pre style="" class="lang-java prettyprint prettyprinted"><code><span class="pln">document</span><span class="pun">.</span><span class="typ">CityChoice</span><span class="pun">.</span><span class="typ">City</span><span class="pun">[</span><span class="lit">0</span><span class="pun">].</span><span class="pln">checked </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">true</span></code></pre>
+
+<p>This is not exactly how it goes with Javascript since the wrong 
+expression you have there throws an Error and it never makes it into the
+ IF statement body.</p>
+
+<p>I removed the IF statement and changed the code to something like this:</p>
+
+<pre style="" class="lang-java prettyprint prettyprinted"><code><span class="pln">function selectedCity</span><span class="pun">()</span><span class="pln"> 
+</span><span class="pun">{</span><span class="pln">
+    document</span><span class="pun">.</span><span class="typ">SimpleMessageApplet</span><span class="pun">.</span><span class="pln">setMessage</span><span class="pun">(</span><span class="str">"Hello"</span><span class="pun">);</span><span class="pln">                
+</span><span class="pun">}</span></code></pre>
+
+<p>When I click I see the Hello message fine.</p>
+
+<p>Change your HTML file content to something like:</p>
+
+<pre style="" class="lang-java prettyprint prettyprinted"><code><span class="pun">&lt;</span><span class="pln">html</span><span class="pun">&gt;&lt;</span><span class="pln">head</span><span class="pun">&gt;&lt;</span><span class="pln">meta http</span><span class="pun">-</span><span class="pln">equiv</span><span class="pun">=</span><span class="str">"Content-Type"</span><span class="pln"> content</span><span class="pun">=</span><span class="str">"text/html; charset=ISO-8859-1"</span><span class="pun">&gt;</span><span class="pln">
+        </span><span class="pun">&lt;</span><span class="pln">title</span><span class="pun">&gt;</span><span class="typ">Insert</span><span class="pln"> title here</span><span class="pun">&lt;/</span><span class="pln">title</span><span class="pun">&gt;</span><span class="pln">
+        </span><span class="pun">&lt;</span><span class="pln">SCRIPT LANGUAGE</span><span class="pun">=</span><span class="str">"JavaScript"</span><span class="pun">&gt;</span><span class="pln">
+            function selectedCity</span><span class="pun">()</span><span class="pln"> 
+            </span><span class="pun">{</span><span class="pln">
+                var elem </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">getElementById</span><span class="pun">(</span><span class="str">'cityRb'</span><span class="pun">);</span><span class="pln">
+
+                </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">elem</span><span class="pun">.</span><span class="pln">checked</span><span class="pun">)</span><span class="pln">
+                </span><span class="pun">{</span><span class="pln">
+                    document</span><span class="pun">.</span><span class="typ">SimpleMessageApplet</span><span class="pun">.</span><span class="pln">setMessage</span><span class="pun">(</span><span class="pln">elem</span><span class="pun">.</span><span class="pln">value</span><span class="pun">);</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">      
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">&lt;/</span><span class="pln">SCRIPT</span><span class="pun">&gt;&lt;/</span><span class="pln">HEAD</span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">BODY </span><span class="pun">&gt;</span><span class="pln">
+        </span><span class="pun">&lt;</span><span class="pln">b</span><span class="pun">&gt;</span><span class="typ">This</span><span class="pln"> is the </span><span class="typ">Applet</span><span class="pun">&lt;/</span><span class="pln">b</span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">APPLET CODE</span><span class="pun">=</span><span class="str">"MessageApplet.class"</span><span class="pln"> NAME</span><span class="pun">=</span><span class="str">"SimpleMessageApplet"</span><span class="pln"> WIDTH</span><span class="pun">=</span><span class="lit">350</span><span class="pln"> HEIGHT</span><span class="pun">=</span><span class="lit">100</span><span class="pln"> </span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;/</span><span class="pln">APPLET </span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">FORM NAME</span><span class="pun">=</span><span class="str">"CityChoice"</span><span class="pun">&gt;</span><span class="pln">
+        </span><span class="pun">&lt;</span><span class="pln">input type</span><span class="pun">=</span><span class="str">"radio"</span><span class="pln"> id</span><span class="pun">=</span><span class="str">"cityRb"</span><span class="pln"> name</span><span class="pun">=</span><span class="str">"City"</span><span class="pln"> value</span><span class="pun">=</span><span class="str">"Boston"</span><span class="pln"> onClick</span><span class="pun">=</span><span class="str">"selectedCity()"</span><span class="pun">&gt;</span><span class="pln"> </span><span class="typ">Boston</span><span class="pun">&lt;</span><span class="pln">br</span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;/</span><span class="pln">form</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">&lt;/</span><span class="pln">BODY </span><span class="pun">&gt;</span><span class="pln"> 
+</span><span class="pun">&lt;/</span><span class="pln">html</span><span class="pun">&gt;</span></code></pre>
+
+<p>Also adding the full class code:</p>
+
+<pre style="" class="lang-java prettyprint prettyprinted"><code><span class="kwd">import</span><span class="pln"> java</span><span class="pun">.</span><span class="pln">applet</span><span class="pun">.</span><span class="typ">Applet</span><span class="pun">;</span><span class="pln">
+</span><span class="kwd">import</span><span class="pln"> java</span><span class="pun">.</span><span class="pln">awt</span><span class="pun">.</span><span class="typ">BorderLayout</span><span class="pun">;</span><span class="pln">
+</span><span class="kwd">import</span><span class="pln"> java</span><span class="pun">.</span><span class="pln">awt</span><span class="pun">.</span><span class="typ">Color</span><span class="pun">;</span><span class="pln">
+</span><span class="kwd">import</span><span class="pln"> java</span><span class="pun">.</span><span class="pln">awt</span><span class="pun">.</span><span class="typ">Label</span><span class="pun">;</span><span class="pln">
+
+</span><span class="com">/**
+ *
+ * @author hmmmmm
+ */</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">MessageApplet</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Applet</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Label</span><span class="pln"> m_mess</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> init</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        setBackground</span><span class="pun">(</span><span class="typ">Color</span><span class="pun">.</span><span class="pln">lightGray</span><span class="pun">);</span><span class="pln">
+        setLayout</span><span class="pun">(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">BorderLayout</span><span class="pun">());</span><span class="pln">
+        m_mess </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Label</span><span class="pun">(</span><span class="str">"MessageApplet is Running... : No Selection Yet"</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Label</span><span class="pun">.</span><span class="pln">CENTER</span><span class="pun">);</span><span class="pln">
+        add</span><span class="pun">(</span><span class="typ">BorderLayout</span><span class="pun">.</span><span class="pln">CENTER</span><span class="pun">,</span><span class="pln"> m_mess</span><span class="pun">);</span><span class="pln">
+        m_mess</span><span class="pun">.</span><span class="pln">setBackground</span><span class="pun">(</span><span class="typ">Color</span><span class="pun">.</span><span class="pln">red</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> setMessage</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> message</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        m_mess</span><span class="pun">.</span><span class="pln">setText</span><span class="pun">(</span><span class="str">"Selection : "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> message</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/10549281" title="short permalink to this answer" class="short-link" id="link-post-10549281">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/10549281/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="http://stackoverflow.com/posts/10549281/revisions" title="show all edits to this post">edited <span title="2012-05-11 10:47:45Z" class="relativetime">May 11 '12 at 10:47</span></a>
+    </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        <br>
+        
+    </div>
+</div>    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2012-05-11 10:01:29Z" class="relativetime">May 11 '12 at 10:01</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/200924/datroop"><div><img src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/4467c57bed79f9847422b4d57d7ea0a8.png" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/200924/datroop">DaTroop</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">1,863</span><span title="1 gold badge"><span class="badge1"></span><span class="badgecount">1</span></span><span title="10 silver badges"><span class="badge2"></span><span class="badgecount">10</span></span><span title="22 bronze badges"><span class="badge3"></span><span class="badgecount">22</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-10549281" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="4" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-13650914" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">I replaced my code with above but my IE gets
+ hang when I click on check box and at top of the page it shows Error 
+box, when I click on that it opens java console that shows:  
+MessageApplet.class not found. java.lang.ClassNotFoundException: 
+MessageApplet.class at 
+sun.plugin2.applet.Applet2ClassLoader.findClass(Unknown Source) at 
+sun.plugin2.applet.Plugin2ClassLoader.loadClass0(Unknown Source) at 
+sun.plugin2.applet.Plugin2ClassLoader.loadClass(Unknown Source) at 
+sun.plugin2.applet.Plugin2ClassLoader.loadClass(Unknown Source) at 
+java.lang.ClassLoader.loadClass(Unknown Source)</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/976600/pravin" title="71 reputation" class="comment-user owner">Pravin</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13650914_10549281"><span title="2012-05-11 10:10:48Z" class="relativetime-clean">May 11 '12 at 10:10</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13651606" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">This is another problem. If the applet class
+ is contained in a package then also add the package 
+mypackage.MessageApplet.class before the applet class name. I would 
+suggest for now moving the class into default package, compile it and 
+have the html file in the same directory.</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/200924/datroop" title="1863 reputation" class="comment-user">DaTroop</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13651606_10549281"><span title="2012-05-11 10:43:35Z" class="relativetime-clean">May 11 '12 at 10:43</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13653413" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">Now I create a package "myPackage" under 
+which I placed MessageApplet.java and index.html but when I run, it 
+shows 404 error that: The requested resource (/SignAppletTest/) is not 
+available.</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/976600/pravin" title="71 reputation" class="comment-user owner">Pravin</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13653413_10549281"><span title="2012-05-11 12:11:53Z" class="relativetime-clean">May 11 '12 at 12:11</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13655534" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">Please use the html and Java class I sent 
+you. Create a project and put both files in src directory of your 
+project. Open bin/index.html in a browser. They work fine. Your src and 
+bin directories might have different names. I don't know what IDE you 
+are using or your project settings</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/200924/datroop" title="1863 reputation" class="comment-user">DaTroop</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13655534_10549281"><span title="2012-05-11 13:35:44Z" class="relativetime-clean">May 11 '12 at 13:35</span></a></span>
+		<span class="edited-yes" title="this comment was edited 1 time"></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13696992" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">thanks, its working, but I want to run it at
+ server side hence I create a jar file containing Java class and html 
+which you sent at same place and I want to redirect to that html from my
+ index.html file but it can't find at run time. I placed this jar file 
+in project classpath. How can i do that?</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/976600/pravin" title="71 reputation" class="comment-user owner">Pravin</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13696992_10549281"><span title="2012-05-14 05:35:45Z" class="relativetime-clean">May 14 '12 at 5:35</span></a></span>
+		<span class="edited-yes" title="this comment was edited 1 time"></span>
+				</div>
+
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-10549281" data-rep="50" data-anon="true" class="comments-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">show <b>4</b> more comments</a>
+    </td>
+</tr>
+    </tbody></table>
+</div>
+<script type="text/javascript">
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk1206411736",4).setZone(44) ; });                    
+            </script>
+            <div class="everyonelovesstackoverflow adzerk-vote" id="adzerk1206411736"><a href="http://engine.adzerk.net/r?e=eyJhdiI6NDE0LCJhdCI6NCwiY20iOjg0NywiY2giOjExNzgsImNyIjoxMDc2OSwiZGkiOiIyOWNiMzBhYTk3OWM0OTZiOTc1OGYyYzAwNzU5MDQzMCIsImRtIjoxLCJmYyI6MTY4ODYsImZsIjoyNDQ0LCJrdyI6ImphdmEsamF2YXNjcmlwdCxqYXZhLWVlLGFwcGxldCIsIm53IjoyMiwicmYiOiJodHRwOi8vd3d3Lmdvb2dsZS5jb20uYXIvdXJsP3NhPXQmcmN0PWomcT0mZXNyYz1zJnNvdXJjZT13ZWImY2Q9NCZ2ZWQ9MENFd1FGakFEJnVybD1odHRwOi8vc3RhY2tvdmVyZmxvdy5jb20vcXVlc3Rpb25zLzEwNTQ4NTU4L2hvdy10by1jYWxsLWFwcGxldC1tZXRob2QtZnJvbS1qYXZhc2NyaXB0JmVpPWZlcS1VcUNVSUttcXNBU0Itb0h3RFEmdXNnPUFGUWpDTkZnT3dyMk5HOVFPZldJN0F2WVJQNjF5eVlvR0EmYnZtPWJ2LjU4MTg3MTc4LGQuY1djJmNhZD1yamEiLCJydiI6MCwicHIiOjE1NjgsInN0Ijo4Mjc3LCJ6biI6NDQsInRzIjoxMzg4MjQzNzMxNTk4LCJ1ciI6Imh0dHA6Ly9jYXJlZXJzLnN0YWNrb3ZlcmZsb3cuY29tL2pvYnMvdGVsZWNvbW11dGUifQ&amp;s=kMh_BVIIJek0-gJoIuw4mnqn4Ig" rel="nofollow" target="_blank" title=""><img src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/d893babe671c41118c1fece177e0a21a.jpg" title="" alt="" border="0" width="728" height="90"></a><div class="adzerk-vote-controls" style="display:none;"><div class="adzerk-vote-option adzerk-vote-up"><div class="adzerk-vote-icon"></div></div><div class="adzerk-vote-option adzerk-vote-down"><div class="adzerk-vote-icon"></div></div></div><div class="adzerk-vote-survey" style="display:none;"><form><span>No problem. We won't show you that ad again. Why didn't you like it?</span><ul><li><label><input value="12" name="downvoteReason" type="radio">Uninteresting</label></li><li><label><input value="13" name="downvoteReason" type="radio">Misleading</label></li><li><label><input value="14" name="downvoteReason" type="radio">Offensive</label></li><li><label><input value="15" name="downvoteReason" type="radio">Repetitive</label></li></ul><a href="#" class="adzerk-vote-cancel">Oops! I didn't mean to do this.</a></form></div><img src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/i.gif" border="0" width="0px" height="0px"></div>
+  
+<a name="10549613"></a>
+<div id="answer-10549613" class="answer" data-answerid="10549613">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input name="_id_" value="10549613" type="hidden">
+    <a class="vote-up-off" title="This answer is useful">up vote</a>
+    <span class="vote-count-post ">1</span>
+    <a class="vote-down-off" title="This answer is not useful">down vote</a>
+    
+
+
+</div>
+
+            </td>
+
+
+
+<td class="answercell">
+    <div class="post-text"><p>The problem you get is on different 
+browsers is that they have different implementations of the outdated 
+LiveConnect (javascript&lt;-&gt;java) technology. </p>
+
+<p>As a rule of thumb, Firefox will be more cooperative when trying to do such things.</p>
+
+<p>What your problem is is that you are trying to include your applet to
+ the page in a very ancient way. Although it may and will work on some 
+browsers, it is not the recommended way to include an applet to a page. </p>
+
+<p>Java Web start is the tech stack and JNLP is the protocol you can use
+ to distribute java content in a standardized way as you can read in 
+this article:</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Java_Web_Start" rel="nofollow">http://en.wikipedia.org/wiki/Java_Web_Start</a></p>
+
+<p>A deployment jnlp descriptor is the proper way you can use to embed 
+your applet to a page. Also, it is a good idea to use Sun's 
+deployJava.js script which will save you a lot of trouble when deploying
+ your applet to a container on the page. (it's a bit restricted though 
+so feel free to add stuff to it)</p>
+
+<p><a href="http://docs.oracle.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html" rel="nofollow">http://docs.oracle.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html</a></p>
+
+<p>All in all, a jnlp/Java web start powered applet is the way to go.Below is an example of a deployment descriptor.</p>
+
+<pre style="" class="lang-java prettyprint prettyprinted"><code><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"UTF-8"</span><span class="pln"> standalone</span><span class="pun">=</span><span class="str">"no"</span><span class="pun">?&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">jnlp codebase</span><span class="pun">=</span><span class="str">"file:/C:/JavaApplication6/dist/"</span><span class="pln"> href</span><span class="pun">=</span><span class="str">"launch.jnlp"</span><span class="pln"> spec</span><span class="pun">=</span><span class="str">"1.0+"</span><span class="pun">&gt;</span><span class="pln">
+        </span><span class="pun">&lt;</span><span class="pln">information</span><span class="pun">&gt;</span><span class="pln">
+            </span><span class="pun">&lt;</span><span class="pln">title</span><span class="pun">&gt;</span><span class="typ">JavaApplication6</span><span class="pun">&lt;/</span><span class="pln">title</span><span class="pun">&gt;</span><span class="pln">
+            </span><span class="pun">&lt;</span><span class="pln">description</span><span class="pun">&gt;</span><span class="pln">blalbla</span><span class="pun">&lt;/</span><span class="pln">description</span><span class="pun">&gt;</span><span class="pln">
+            </span><span class="pun">&lt;</span><span class="pln">description kind</span><span class="pun">=</span><span class="str">"short"</span><span class="pun">&gt;</span><span class="typ">JavaApplication6</span><span class="pun">&lt;/</span><span class="pln">description</span><span class="pun">&gt;</span><span class="pln">
+
+        </span><span class="pun">&lt;/</span><span class="pln">information</span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">update check</span><span class="pun">=</span><span class="str">"background"</span><span class="pun">/&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">security</span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">all</span><span class="pun">-</span><span class="pln">permissions</span><span class="pun">/&gt;</span><span class="pln">
+    </span><span class="pun">&lt;/</span><span class="pln">security</span><span class="pun">&gt;</span><span class="pln">
+        </span><span class="pun">&lt;</span><span class="pln">resources</span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">j2se java</span><span class="pun">-</span><span class="pln">vm</span><span class="pun">-</span><span class="pln">args</span><span class="pun">=</span><span class="str">"-Djava.security.policy=applet.policy"</span><span class="pln"> version</span><span class="pun">=</span><span class="str">"1.5+"</span><span class="pun">/&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">jar href</span><span class="pun">=</span><span class="str">"JavaApplication6.jar"</span><span class="pln"> main</span><span class="pun">=</span><span class="str">"true"</span><span class="pun">/&gt;</span><span class="pln">
+
+
+        </span><span class="pun">&lt;</span><span class="pln">jar href</span><span class="pun">=</span><span class="str">"lib/jna.jar"</span><span class="pun">/&gt;</span><span class="pln">
+    </span><span class="pun">&lt;</span><span class="pln">jar href</span><span class="pun">=</span><span class="str">"lib/platform.jar"</span><span class="pun">/&gt;</span><span class="pln">
+    </span><span class="pun">&lt;/</span><span class="pln">resources</span><span class="pun">&gt;</span><span class="pln">
+        </span><span class="pun">&lt;</span><span class="pln">applet</span><span class="pun">-</span><span class="pln">desc height</span><span class="pun">=</span><span class="str">"300"</span><span class="pln"> main</span><span class="pun">-</span><span class="kwd">class</span><span class="pun">=</span><span class="str">"winToJnaApi.NewApplet"</span><span class="pln"> name</span><span class="pun">=</span><span class="str">"JavaApplication6"</span><span class="pln"> width</span><span class="pun">=</span><span class="str">"300"</span><span class="pun">&gt;</span><span class="pln">
+
+        </span><span class="pun">&lt;/</span><span class="pln">applet</span><span class="pun">-</span><span class="pln">desc</span><span class="pun">&gt;</span><span class="pln">
+    </span><span class="pun">&lt;/</span><span class="pln">jnlp</span><span class="pun">&gt;</span></code></pre>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/10549613" title="short permalink to this answer" class="short-link" id="link-post-10549613">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/10549613/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2012-05-11 10:24:53Z" class="relativetime">May 11 '12 at 10:24</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/487649/baba"><div><img src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/f88828a80fec87873237c50a45b5e7e0.jpg" alt="" width="32" height="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/487649/baba">baba</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">2,275</span><span title="2 gold badges"><span class="badge1"></span><span class="badgecount">2</span></span><span title="6 silver badges"><span class="badge2"></span><span class="badgecount">6</span></span><span title="34 bronze badges"><span class="badge3"></span><span class="badgecount">34</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-10549613" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="2" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-13651722" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">baba I added some code by mistake in your answer. please remove it. apologies...</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/200924/datroop" title="1863 reputation" class="comment-user">DaTroop</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13651722_10549613"><span title="2012-05-11 10:49:31Z" class="relativetime-clean">May 11 '12 at 10:49</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13653008" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@DaTroop, your edit has been declined.</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/626273/stema" title="30667 reputation" class="comment-user">stema</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13653008_10549613"><span title="2012-05-11 11:52:11Z" class="relativetime-clean">May 11 '12 at 11:52</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13653496" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@baba I read about JNLP from above links but
+ I am confused how to use it? can you please give me a simple "Hello 
+World" program with JNLP file that I'll understand</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/976600/pravin" title="71 reputation" class="comment-user owner">Pravin</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13653496_10549613"><span title="2012-05-11 12:15:18Z" class="relativetime-clean">May 11 '12 at 12:15</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13656480" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">thank you very much!</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/200924/datroop" title="1863 reputation" class="comment-user">DaTroop</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13656480_10549613"><span title="2012-05-11 14:08:21Z" class="relativetime-clean">May 11 '12 at 14:08</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-13657924" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@ DaTroop np. Glad I could help. @Balasaheb There are a lot of examples on the net but I will see what I can do. :)</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/487649/baba" title="2275 reputation" class="comment-user">baba</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment13657924_10549613"><span title="2012-05-11 14:58:17Z" class="relativetime-clean">May 11 '12 at 14:58</span></a></span>
+		<span class="edited-yes" title="this comment was edited 2 times"></span>
+				</div>
+
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-10549613" data-rep="50" data-anon="true" class="comments-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">show <b>2</b> more comments</a>
+    </td>
+</tr>
+    </tbody></table>
+</div>
+									<a name="new-answer"></a>
+						<form id="post-form" action="/questions/10548558/answer/submit" method="post" class="post-form">
+							<input id="post-id" value="10548558" type="hidden">
+							<h2 class="space">Your Answer</h2>
+
+
+
+    
+
+<script type="text/javascript">
+    StackExchange.ready(function() {
+        initTagRenderer("".split(" "), "".split(" "));
+         
+        prepareEditor({
+            heartbeatType: 'answer',
+            bindNavPrevention: true,
+            postfix: "",
+            onDemand: true,
+            discardSelector: ".discard-answer"
+            ,immediatelyShowMarkdownHelp:true
+        });
+        
+
+    });  
+</script>
+
+
+<div id="post-editor" class="post-editor">
+
+    <div style="position: relative;">     
+        <div class="wmd-container">
+            <div id="wmd-button-bar" class="wmd-button-bar"><ul id="wmd-button-row" class="wmd-button-row"><li style="left: 0px;" class="wmd-button" id="wmd-bold-button"><span style="background-position: 0px -20px;"></span></li><li style="left: 25px;" class="wmd-button" id="wmd-italic-button"><span style="background-position: -20px -20px;"></span></li><li style="left: 50px;" class="wmd-spacer" id="wmd-spacer1"><span style="background-position: -40px -20px;"></span></li><li style="left: 75px;" class="wmd-button" id="wmd-link-button"><span style="background-position: -40px -20px;"></span></li><li style="left: 100px;" class="wmd-button" id="wmd-quote-button"><span style="background-position: -60px -20px;"></span></li><li style="left: 125px;" class="wmd-button" id="wmd-code-button"><span style="background-position: -80px -20px;"></span></li><li style="left: 150px;" class="wmd-button" id="wmd-image-button"><span style="background-position: -100px -20px;"></span></li><li style="left: 175px;" class="wmd-spacer" id="wmd-spacer2"><span style="background-position: -120px -20px;"></span></li><li style="left: 200px;" class="wmd-button" id="wmd-olist-button"><span style="background-position: -120px -20px;"></span></li><li style="left: 225px;" class="wmd-button" id="wmd-ulist-button"><span style="background-position: -140px -20px;"></span></li><li style="left: 250px;" class="wmd-button" id="wmd-heading-button"><span style="background-position: -160px -20px;"></span></li><li style="left: 275px;" class="wmd-button" id="wmd-hr-button"><span style="background-position: -180px -20px;"></span></li><li style="left: 300px;" class="wmd-spacer" id="wmd-spacer3"><span style="background-position: -200px -20px;"></span></li><li style="left: 325px;" class="wmd-button" id="wmd-undo-button"><span style="background-position: -200px -20px;"></span></li><li style="left: 350px;" class="wmd-button" id="wmd-redo-button"><span style="background-position: -220px -20px;"></span></li></ul></div>
+            <textarea id="wmd-input" class="wmd-input" name="post-text" cols="92" rows="15" tabindex="101" data-min-length=""></textarea>
+        </div>
+    </div>
+
+    <div class="fl" style="margin-top: 8px; height:24px;">&nbsp;</div>
+    <div id="draft-saved" class="draft-saved community-option fl" style="margin-top: 8px; height:24px; display:none;">draft saved</div>
+
+    <div id="draft-discarded" class="draft-discarded community-option fl" style="margin-top: 8px; height:24px; display:none;">draft discarded</div>
+
+
+
+    <div id="wmd-preview" class="wmd-preview"></div>
+    <div></div>
+    <div class="edit-block">
+        <input id="fkey" name="fkey" value="c4cf78ee508632c673ef9bcf28facedb" type="hidden">
+        <input id="author" name="author" type="text">
+    </div>
+</div>
+							<div style="position: relative;">
+								
+            <div class="form-item new-post-login">
+        
+                <div class="new-login-form">
+                    <div class="new-login-left">
+                        <h3>Sign up or <a id="login-link" href="http://stackoverflow.com/users/login?returnurl=%2fquestions%2f10548558%2fhow-to-call-applet-method-from-javascript%23new-answer">login</a></h3>
+                        <script type="text/javascript">
+                            StackExchange.ready(function () {
+                                StackExchange.helpers.onClickDraftSave('#login-link');
+                            });
+                        </script>
+                        <div class="preferred-login google-login">
+                            <p><span class="icon"></span><span>Sign up using Google</span></p>
+                        </div>
+                        <div class="preferred-login facebook-login">
+                            <p><span class="icon"></span><span>Sign up using Facebook</span></p>
+                        </div>
+                        <div class="preferred-login stackexchange-login">
+                            <p><span class="icon"></span><span>Sign up using Stack Exchange</span></p>
+                        </div>
+                    </div>
+                    <input name="manual-openid" class="manual-openid" type="hidden">
+                    <input name="use-facebook" class="use-facebook" value="false" type="hidden">
+                    <input class="submit-openid" value="Submit" style="display:none" type="button">
+                    <div class="new-login-right">
+                                <h3>Post as a guest</h3>
+    <div class="form-item">
+        <table>
+        <tbody><tr>
+                    <script type="text/javascript">
+                StackExchange.ready(function () {
+                    StackExchange.helpers.bindHelpOverlayEvents($('.vm input'));
+                });
+            </script>
+            <td class="vm">
+                <div>
+                    <label for="display-name">Name</label>
+                    <input id="display-name" name="display-name" size="30" maxlength="30" tabindex="105" type="text">
+                </div>
+                <div>
+                    <label for="m-address">Email</label>
+                    <input id="m-address" name="m-address" size="30" maxlength="100" tabindex="106" type="text">
+                    <span class="edit-field-overlay">required, but not shown</span>
+                </div>
+            </td>
+        </tr>
+        </tbody></table>
+    </div>
+
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                StackExchange.ready(
+                    function () {
+                        StackExchange.openid.initPostLogin('.new-post-login', '%2fquestions%2f10548558%2fhow-to-call-applet-method-from-javascript%23new-answer');
+                    }
+                );
+            </script>
+            <noscript>
+                        <h3>Post as a guest</h3>
+    <div class="form-item">
+        <table>
+        <tr>
+                    <script type="text/javascript">
+                StackExchange.ready(function () {
+                    StackExchange.helpers.bindHelpOverlayEvents($('.vm input'));
+                });
+            </script>
+            <td class="vm">
+                <div>
+                    <label for="display-name">Name</label>
+                    <input id="display-name" name="display-name" type="text" size="30" maxlength="30" value="" tabindex="105">
+                </div>
+                <div>
+                    <label for="m-address">Email</label>
+                    <input id="m-address" name="m-address" type="text" size="30" maxlength="100" value="" tabindex="106">
+                    <span class="edit-field-overlay">required, but not shown</span>
+                </div>
+            </td>
+        </tr>
+        </table>
+    </div>
+
+            </noscript>
+							</div>
+           
+															<div class="form-submit cbt">
+									<input id="submit-button" value="Post Your Answer" tabindex="110" type="submit">
+									<a href="#" class="discard-answer dno">discard</a>
+
+<p class="privacy-policy-agreement">
+By posting your answer, you agree to the <a href="http://stackexchange.com/legal/privacy-policy" target="_blank">privacy policy</a> and <a href="http://stackexchange.com/legal/terms-of-service" target="_blank">terms of service</a>.</p>
+<input name="legalLinksShown" value="1" type="hidden">								</div>
+						</form>
+
+
+
+						<h2 class="bottom-notice">
+Not the answer you're looking for?							Browse other questions tagged <a href="http://stackoverflow.com/questions/tagged/java" class="post-tag" title="show questions tagged 'java'" rel="tag">java</a> <a href="http://stackoverflow.com/questions/tagged/javascript" class="post-tag" title="show questions tagged 'javascript'" rel="tag">javascript</a> <a href="http://stackoverflow.com/questions/tagged/java-ee" class="post-tag" title="show questions tagged 'java-ee'" rel="tag">java-ee</a> <a href="http://stackoverflow.com/questions/tagged/applet" class="post-tag" title="show questions tagged 'applet'" rel="tag">applet</a>  or <a href="http://stackoverflow.com/questions/ask">ask your own question</a>.						</h2>
+			</div>
+		</div>
+				<div id="sidebar" class="show-votes">
+							<div class="module question-stats">
+					<p class="label-key">tagged</p>
+					<div class="tagged"><a href="http://stackoverflow.com/questions/tagged/java" class="post-tag" title="show questions tagged 'java'" rel="tag">java</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">×</span>&nbsp;<span class="item-multiplier-count">542563</span></span><br>
+<a href="http://stackoverflow.com/questions/tagged/javascript" class="post-tag" title="show questions tagged 'javascript'" rel="tag">javascript</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">×</span>&nbsp;<span class="item-multiplier-count">509894</span></span><br>
+<a href="http://stackoverflow.com/questions/tagged/java-ee" class="post-tag" title="show questions tagged 'java-ee'" rel="tag">java-ee</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">×</span>&nbsp;<span class="item-multiplier-count">16348</span></span><br>
+<a href="http://stackoverflow.com/questions/tagged/applet" class="post-tag" title="show questions tagged 'applet'" rel="tag">applet</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">×</span>&nbsp;<span class="item-multiplier-count">5004</span></span><br>
+</div>
+					<table id="qinfo">
+						<tbody><tr>
+							<td>
+								<p class="label-key">asked</p>
+							</td>
+							<td style="padding-left: 10px">
+								<p class="label-key" title="2012-05-11 09:09:21Z"><b>1 year ago</b></p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p class="label-key">viewed</p>
+							</td>
+
+							<td style="padding-left: 10px">
+								<p class="label-key">
+									<b>8529 times</b>
+								</p>
+							</td>
+						</tr>
+							<tr>
+								<td>
+									<p class="label-key">active</p>
+								</td>
+								<td style="padding-left: 10px">
+									<p class="label-key"><b><a href="http://stackoverflow.com/questions/10548558/how-to-call-applet-method-from-javascript?lastactivity" class="lastactivity-link" title="2012-05-11 10:47:45Z">1 year ago</a></b></p>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+			<div class="module community-bulletin" data-tracker="cb=1">
+    <h4>Community Bulletin</h4>
+    <div class="related">
+            <div class="spacer"> 
+                <div class="bulletin-item-type event-date">event</div>
+                <div class="bulletin-item-content">
+                    <a href="http://meta.stackoverflow.com/questions/211850/stack-overflow-annual-user-survey-2013-edition?cb=1" class="question-hyperlink" target="_blank">Annual user survey ends - make your voice heard!</a>
+                        <span class="event-date" style="white-space: nowrap;">– <span title="2013-12-31 00:00:00Z" class="relativetime">in 2 days</span></span>
+                </div>
+                <br class="cbt">
+            </div>
+
+    </div>
+</div>			
+			<script type="text/javascript">
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk577115415",17).setZone(45) ; });                    
+            </script>
+              
+    <div id="hireme"> <a href="http://careers.stackoverflow.com/jobs?a=144" class="top" target="_blank"></a> <ul class="jobs"> <li> <a href="http://careers.stackoverflow.com/jobs/45280/customer-support-engineer-real-geeks?a=TdRocY3m" target="_blank" title="Customer Support Engineer at Real Geeks. Click to learn more."> Customer Support Engineer<br> <span class="company">Real Geeks</span> <span class="location">Kailua, HI</span> </a> </li> <li> <a href="http://careers.stackoverflow.com/jobs/45728/senior-sql-server-engineer-progressive-finance?a=TLJGeLeg" target="_blank" title="Senior SQL Server Engineer at Progressive Finance. Click to learn more."> Senior SQL Server Engineer<br> <span class="company">Progressive Finance</span> <span class="location">Draper, UT</span> </a> </li> <li> <a href="http://careers.stackoverflow.com/jobs/40406/front-end-developer-something-digital?a=NhjlOtCU" target="_blank" title="Front End Developer at Something Digital. Click to learn more."> Front End Developer<br> <span class="company">Something Digital</span> <span class="location">New York, NY</span> </a> </li> </ul> <img alt="" class="impression" src="java%20-%20How%20to%20call%20Applet%20method%20from%20javascript%20-%20Stack%20Overflow_files/TdRocY3m-TLJGeLeg-NhjlOtCU-144.gif" style="display:none"></div>
+			  
+    
+            <div class="module sidebar-linked">
+	<h4 id="h-linked">Linked</h4>
+	<div class="linked" data-tracker="lq=1">
+<div class="spacer">
+	<a href="http://stackoverflow.com/q/18073538?lq=1" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes  default">-3</div>
+	</a>
+	<a href="http://stackoverflow.com/questions/18073538/how-to-call-jar-file-function-in-javascript?lq=1" class="question-hyperlink">How to call jar file function in javascript</a>
+</div>			</div>
+</div>
+
+				<div class="module sidebar-related">
+					<h4 id="h-related">Related</h4>
+                    <div class="related js-gps-related-questions" data-tracker="rq=1">
+                        <div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/4052132?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/4052132/how-to-call-webstart-deployed-applet-functions-from-javascript?rq=1" class="question-hyperlink">How to call WebStart-deployed applet functions from javascript?</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/9677365?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/9677365/how-to-call-js-functions-from-java-applet?rq=1" class="question-hyperlink">How to call JS functions from Java Applet?</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/11252145?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">0
+    </div>
+</a><a href="http://stackoverflow.com/questions/11252145/signed-java-applet-gives-accesscontrolexception-when-calling-from-javascript?rq=1" class="question-hyperlink">Signed Java Applet gives AccessControlException when calling from JavaScript</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/11331767?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/11331767/applet-using-jna-called-by-javascript-access-denied?rq=1" class="question-hyperlink">Applet using JNA called by Javascript = Access Denied</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/12005086?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/12005086/how-to-access-sign-applet-method-from-javascript?rq=1" class="question-hyperlink">how to access sign applet method from javascript</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/12361369?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/12361369/applet-method-calling-from-javascript?rq=1" class="question-hyperlink">Applet method calling from Javascript</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/13590003?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/13590003/javascript-call-to-java-applet-method-does-not-work-only-in-chrome-browser?rq=1" class="question-hyperlink">JavaScript call to Java Applet method does not work only in Chrome browser</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/14571582?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">6
+    </div>
+</a><a href="http://stackoverflow.com/questions/14571582/cant-call-jnlp-deployed-applet-code-from-javascript?rq=1" class="question-hyperlink">Can't call JNLP-deployed applet code from JavaScript</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/15631864?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/15631864/unable-to-set-focus-on-java-applet-via-calling-requestfocus-method-from-java?rq=1" class="question-hyperlink">Unable to set focus on Java applet via calling “requestFocus()” method from java script on MAC</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/17483023?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">0
+    </div>
+</a><a href="http://stackoverflow.com/questions/17483023/call-applet-method-from-javascript?rq=1" class="question-hyperlink">call applet method from javascript</a>
+</div>
+
+                    </div>
+				</div>
+            
+<div id="hot-network-questions" class="module">
+    <h4>
+        <a href="http://stackexchange.com/questions?tab=hot" class="js-gps-track" data-gps-track="posts_hot_network.click({ item_type:1, location:11 })">
+            Hot Network Questions
+        </a>
+    </h4>
+    <ul>
+            <li>
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/16226/trolling-homework-questions-sorting" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Trolling homework questions - sorting
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-academia" title="Academia Stack Exchange"></div><a href="http://academia.stackexchange.com/questions/15136/is-it-ethical-to-profit-by-having-my-students-buy-my-textbook" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:415 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is it ethical to profit by having my students buy my textbook?
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/16327/how-do-i-longest-palindrome" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How do I longest palindrome?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-english" title="English Language &amp; Usage Stack Exchange"></div><a href="http://english.stackexchange.com/questions/143303/is-there-a-word-for-air-can-pass-through-it" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:97 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is there a word for "air can pass through it"?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-stackoverflow" title="Stack Overflow"></div><a href="http://stackoverflow.com/questions/20814336/whats-in-c" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:1 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What's "&lt;?=" in C++?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-tex" title="TeX - LaTeX Stack Exchange"></div><a href="http://tex.stackexchange.com/questions/151549/mathscr-latex-or-xelatex" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:85 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    \mathscr (LaTeX or XeLaTeX)
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/16359/file-output-help" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    File output - HELP
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="http://math.stackexchange.com/questions/617625/on-familiarity-or-how-to-avoid-going-down-the-math-rabbit-hole" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    On "familiarity" (or How to avoid "going down the Math Rabbit Hole"?)
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/16344/generate-random-sequence-of-numbers" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Generate random sequence of numbers
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-mathematica" title="Mathematica Stack Exchange"></div><a href="http://mathematica.stackexchange.com/questions/39361/how-to-generate-a-random-snowflake" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:387 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to generate a random snowflake
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-physics" title="Physics Stack Exchange"></div><a href="http://physics.stackexchange.com/questions/91501/what-keeps-mass-from-turning-into-energy" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:151 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What keeps mass from turning into energy?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-serverfault" title="Server Fault"></div><a href="http://serverfault.com/questions/563901/use-logger-in-shell-script" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:2 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Use logger in shell script
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-superuser" title="Super User"></div><a href="http://superuser.com/questions/692561/what-are-the-benefits-of-using-a-proxy" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:3 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What are the benefits of using a proxy?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/16349/write-a-function-that-tells-you-which-of-its-lines-has-been-removed" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Write a function that tells you which of its lines has been removed
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-stackoverflow" title="Stack Overflow"></div><a href="http://stackoverflow.com/questions/20808905/does-sizeof-really-evaluate-to-a-stdsize-t-can-it" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:1 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Does `sizeof` *really* evaluate to a `std::size_t`? Can it?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-tex" title="TeX - LaTeX Stack Exchange"></div><a href="http://tex.stackexchange.com/questions/151535/pstricks-drawing-with-variables-not-exact" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:85 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    PSTricks drawing with variables not exact
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-english" title="English Language &amp; Usage Stack Exchange"></div><a href="http://english.stackexchange.com/questions/143519/i-myself-naresh-as-an-introduction" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:97 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    "I myself Naresh" as an introduction
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-wordpress" title="WordPress Answers"></div><a href="http://wordpress.stackexchange.com/questions/127835/enqueue-a-stylesheet-for-login-page-and-make-it-appear-in-head-element" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:110 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Enqueue a stylesheet for login page and make it appear in head element
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-electronics" title="Electrical Engineering Stack Exchange"></div><a href="http://electronics.stackexchange.com/questions/94827/reverse-engineering-ir-check-bits-crc" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:135 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Reverse-engineering IR check bits/CRC
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-scifi" title="Science Fiction &amp; Fantasy Stack Exchange"></div><a href="http://scifi.stackexchange.com/questions/46950/who-is-this-superhero" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:186 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Who is this superhero?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-security" title="Information Security Stack Exchange"></div><a href="http://security.stackexchange.com/questions/47293/how-can-someone-go-off-web-and-anonymise-themselves-after-a-life-online" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:162 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How can someone go off-web, and anonymise themselves after a life online?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codereview" title="Code Review Stack Exchange"></div><a href="http://codereview.stackexchange.com/questions/38182/counting-number-of-1s-and-0s-from-integer-with-bitwise-operation" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:196 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Counting number of 1's and 0's from integer with bitwise operation
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-workplace" title="The Workplace Stack Exchange"></div><a href="http://workplace.stackexchange.com/questions/17643/job-ad-for-a-long-time" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:423 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Job ad for a long time
+                </a>
+
+            </li>
+    </ul>
+
+        <a href="#" class="show-more js-show-more js-gps-track" data-gps-track="posts_hot_network.click({ item_type:3, location:11 })">
+            more hot questions
+        </a>
+        <script>
+            StackExchange.ready(function () {
+                var $div = $('#hot-network-questions');
+                $div.find('.js-show-more').click(function () {
+                    $div.find('.js-hidden').show();
+                    $(this).remove();
+                    return false;
+                });
+            });
+        </script>
+</div>
+		</div>
+	
+<div id="feed-link">
+    <div id="feed-link-text"><a href="http://stackoverflow.com/feeds/question/10548558" title="feed of this question and its answers"><span class="feed-icon"></span>question feed</a></div>
+</div>
+	<script type="text/javascript">
+StackExchange.ready(function(){$.get('/posts/10548558/ivc/086d');});
+</script>
+<noscript>
+    <div><img src="/posts/10548558/ivc/086d" class="dno" alt="" width="0" height="0"></div>
+</noscript><div style="display:none" id="prettify-lang">lang-java</div></div>
+
+
+        </div>
+    </div>
+    <div id="footer" class="categories">
+        <div class="footerwrap">
+            <div id="footer-menu">
+                <div class="top-footer-links">
+                        <a href="http://stackoverflow.com/about">about</a>
+                    <a href="http://stackoverflow.com/help">help</a>
+                        <a href="http://stackoverflow.com/help/badges">badges</a>
+                    <a href="http://blog.stackexchange.com/?blb=1">blog</a>
+                        <a href="http://chat.stackoverflow.com/">chat</a>
+                    <a href="http://data.stackexchange.com/">data</a>
+                    <a href="http://stackexchange.com/legal">legal</a>
+                    <a href="http://stackexchange.com/legal/privacy-policy">privacy policy</a>
+                    <a href="http://stackexchange.com/about/hiring">jobs</a>
+                    <a href="http://engine.adzerk.net/r?e=eyJhdiI6NDE0LCJhdCI6MjAsImNtIjo5NTQsImNoIjoxMTc4LCJjciI6Mjc3NiwiZG0iOjQsImZjIjoyODYyLCJmbCI6Mjc1MSwibnciOjIyLCJydiI6MCwicHIiOjExNSwic3QiOjAsInVyIjoiaHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL2Fib3V0L2NvbnRhY3QiLCJyZSI6MX0&amp;s=hRods5B22XvRBwWIwtIMekcyNF8">advertising info</a>
+
+                    <a onclick='StackExchange.switchMobile("on")'>mobile</a>
+                    <b><a href="http://stackoverflow.com/contact">contact us</a></b>
+                        <b><a href="http://meta.stackoverflow.com/">feedback</a></b>
+                    
+                </div>
+                <div id="footer-sites">
+                    <table>
+    <tbody><tr>
+            <th colspan="3">
+                Technology
+            </th>
+            <th>
+                Life / Arts
+            </th>
+            <th>
+                Culture / Recreation
+            </th>
+            <th>
+                Science
+            </th>
+            <th>
+                Other
+            </th>
+    </tr>
+    <tr>
+            <td>
+                <ol>
+                        <li><a href="http://stackoverflow.com/" title="professional and enthusiast programmers">Stack Overflow</a></li>
+                        <li><a href="http://serverfault.com/" title="professional system and network administrators">Server Fault</a></li>
+                        <li><a href="http://superuser.com/" title="computer enthusiasts and power users">Super User</a></li>
+                        <li><a href="http://webapps.stackexchange.com/" title="power users of web applications">Web Applications</a></li>
+                        <li><a href="http://askubuntu.com/" title="Ubuntu users and developers">Ask Ubuntu</a></li>
+                        <li><a href="http://webmasters.stackexchange.com/" title="pro webmasters">Webmasters</a></li>
+                        <li><a href="http://gamedev.stackexchange.com/" title="professional and independent game developers">Game Development</a></li>
+                        <li><a href="http://tex.stackexchange.com/" title="users of TeX, LaTeX, ConTeXt, and related typesetting systems">TeX - LaTeX</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="http://programmers.stackexchange.com/" title="professional programmers interested in conceptual questions about software development">Programmers</a></li>
+                        <li><a href="http://unix.stackexchange.com/" title="users of Linux, FreeBSD and other Un*x-like operating systems.">Unix &amp; Linux</a></li>
+                        <li><a href="http://apple.stackexchange.com/" title="power users of Apple hardware and software">Ask Different (Apple)</a></li>
+                        <li><a href="http://wordpress.stackexchange.com/" title="WordPress developers and administrators">WordPress Answers</a></li>
+                        <li><a href="http://gis.stackexchange.com/" title="cartographers, geographers and GIS professionals">Geographic Information Systems</a></li>
+                        <li><a href="http://electronics.stackexchange.com/" title="electronics and electrical engineering professionals, students, and enthusiasts">Electrical Engineering</a></li>
+                        <li><a href="http://android.stackexchange.com/" title="enthusiasts and power users of the Android operating system">Android Enthusiasts</a></li>
+                        <li><a href="http://security.stackexchange.com/" title="Information security professionals">Information Security</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="http://dba.stackexchange.com/" title="database professionals who wish to improve their database skills and learn from others in the community">Database Administrators</a></li>
+                        <li><a href="http://drupal.stackexchange.com/" title="Drupal developers and administrators">Drupal Answers</a></li>
+                        <li><a href="http://sharepoint.stackexchange.com/" title="SharePoint enthusiasts">SharePoint</a></li>
+                        <li><a href="http://ux.stackexchange.com/" title="user experience researchers and experts">User Experience</a></li>
+                        <li><a href="http://mathematica.stackexchange.com/" title="users of Mathematica">Mathematica</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#technology" class="more">
+                                more (14)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://photo.stackexchange.com/" title="professional, enthusiast and amateur photographers">Photography</a></li>
+                        <li><a href="http://scifi.stackexchange.com/" title="science fiction and fantasy enthusiasts">Science Fiction &amp; Fantasy</a></li>
+                        <li><a href="http://cooking.stackexchange.com/" title="professional and amateur chefs">Seasoned Advice (cooking)</a></li>
+                        <li><a href="http://diy.stackexchange.com/" title="contractors and serious DIYers">Home Improvement</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#lifearts" class="more">
+                                more (13)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://english.stackexchange.com/" title="linguists, etymologists, and serious English language enthusiasts">English Language &amp; Usage</a></li>
+                        <li><a href="http://skeptics.stackexchange.com/" title="scientific skepticism">Skeptics</a></li>
+                        <li><a href="http://judaism.stackexchange.com/" title="those who base their lives on Jewish law and tradition and anyone interested in learning more">Mi Yodeya (Judaism)</a></li>
+                        <li><a href="http://travel.stackexchange.com/" title="road warriors and seasoned travelers">Travel</a></li>
+                        <li><a href="http://christianity.stackexchange.com/" title="committed Christians, experts in Christianity and those interested in learning more">Christianity</a></li>
+                        <li><a href="http://gaming.stackexchange.com/" title="passionate videogamers on all platforms">Arqade (gaming)</a></li>
+                        <li><a href="http://bicycles.stackexchange.com/" title="people who build and repair bicycles, people who train cycling, or commute on bicycles">Bicycles</a></li>
+                        <li><a href="http://rpg.stackexchange.com/" title="gamemasters and players of tabletop, paper-and-pencil role-playing games">Role-playing Games</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#culturerecreation" class="more">
+                                more (21)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://math.stackexchange.com/" title="people studying math at any level and professionals in related fields">Mathematics</a></li>
+                        <li><a href="http://stats.stackexchange.com/" title="statisticians, data analysts, data miners and data visualization experts">Cross Validated (stats)</a></li>
+                        <li><a href="http://cstheory.stackexchange.com/" title="theoretical computer scientists and researchers in related fields">Theoretical Computer Science</a></li>
+                        <li><a href="http://physics.stackexchange.com/" title="active researchers, academics and students of physics">Physics</a></li>
+                        <li><a href="http://mathoverflow.net/" title="professional mathematicians">MathOverflow</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#science" class="more">
+                                more (7)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://stackapps.com/" title="apps, scripts, and development with the Stack Exchange API">Stack Apps</a></li>
+                        <li><a href="http://meta.stackoverflow.com/" title="meta-discussion of the Stack Exchange family of Q&amp;A websites">Meta Stack Overflow</a></li>
+                        <li><a href="http://area51.stackexchange.com/" title="proposing new sites in the Stack Exchange network">Area 51</a></li>
+                        <li><a href="http://careers.stackoverflow.com/">Stack Overflow Careers</a></li>
+                    
+                </ol>
+            </td>
+    </tr>
+</tbody></table>
+                </div>
+            </div>
+
+            <div id="copyright">
+                site design / logo © 2013 stack exchange inc; user contributions licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license">cc-wiki</a> 
+ with <a href="http://blog.stackoverflow.com/2009/06/attribution-required/" rel="license">attribution required</a>
+            </div>
+            <div id="footer-flair">
+                <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-wiki-link"></a>
+            </div>
+            <div id="svnrev">
+                rev 2013.12.28.1269
+            </div>
+            
+        </div>
+    </div>
+    <noscript>
+        <div id="noscript-warning">Stack Overflow works best with JavaScript enabled<img src="http://pixel.quantserve.com/pixel/p-c1rF4kxgLUzNc.gif" alt="" class="dno"></div>
+    </noscript>
+<script type="text/javascript">var p = "http", d = "static"; if (document.location.protocol == "https:") { p += "s"; d = "engine"; } var z = document.createElement("script"); z.type = "text/javascript"; z.async = true; z.src = p + "://" + d + ".adzerk.net/ados.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);</script>
+<script type="text/javascript">
+    var ados = ados || {};
+    ados.run = ados.run || [];
+    ados.run.push(function () { ados_setKeywords('java,javascript,java-ee,applet');; ados_load(); });         
+</script>
+
+    <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-5620270-1']);
+        _gaq.push(['_setCustomVar', 1, 'tags', '|java|javascript|java-ee|applet|']); 
+_gaq.push(['_trackPageview']);
+    var _qevents = _qevents || [];
+    var _comscore = _comscore || [];
+    (function () {
+        var ssl='https:'==document.location.protocol,
+            s=document.getElementsByTagName('script')[0],
+            ga=document.createElement('script');
+        ga.type='text/javascript';
+        ga.async=true;
+        ga.src=(ssl?'https://ssl':'http://www')+'.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(ga,s);
+        var sc=document.createElement('script');
+        sc.type='text/javascript';
+        sc.async=true;
+        sc.src=(ssl?'https://secure':'http://edge')+'.quantserve.com/quant.js';
+        s.parentNode.insertBefore(sc, s);
+        
+        var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
+        s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+        el.parentNode.insertBefore(s, el);
+        
+    })();
+    _comscore.push({ c1: "2", c2: "17440561" });
+    _qevents.push({ qacct: "p-c1rF4kxgLUzNc" });
+    </script>
+            
+
+</body></html>
