@@ -1,13 +1,10 @@
 package ar.com.botquque.applet;
 
-import javax.swing.JApplet;
-
 import ar.com.botquque.applet.enums.NodeTypes;
 import ar.com.botquque.applet.graphic.GraphicDTO;
-
 import java.awt.*;
 
-public class Principal extends JApplet {
+public class Principal extends AbstractVaadinApplet {
 	
 	private static final long serialVersionUID = 2L;
 	private EventHandler nodeWorld;
@@ -16,10 +13,10 @@ public class Principal extends JApplet {
 	 * Se llama despues de que se procesa el tag html
 	 */
 	public void init(){
+		super.init();
 		this.setFocusable(true);
 		graphic = new GraphicDTO();
 		nodeWorld = new EventHandler(this, this.graphic);
-		this.setSize(800,600);
 		nodeWorld.setBounds(this.getBounds());
 		this.add(nodeWorld);
 		nodeWorld.setVisible(true);
@@ -30,7 +27,7 @@ public class Principal extends JApplet {
 	 * Se llama despues de que el usuario cierra el navegador
 	 */
 	public void stop(){
-		
+		super.stop();
 	}
 	
 	/**
@@ -38,6 +35,7 @@ public class Principal extends JApplet {
 	 * si ya estaba precargada la pagina
 	 */
 	public void start(){
+		super.start();
 		this.setBackground(Color.WHITE);
 		/* Lo que no aclaro el color se pone en rojo
 		 * asi me doy cuenta que no estoy pensando bien*/
@@ -51,7 +49,7 @@ public class Principal extends JApplet {
 	 * Se llama cuando el browser se cerro 
 	 */
 	public void destroy(){
-		
+		super.destroy();
 	}
 	
 	public boolean createNode(int node, String label){
@@ -121,6 +119,13 @@ public class Principal extends JApplet {
 	public void setProperties(){
 		this.graphic.setProperties();
 		return;
+	}
+
+	@Override
+	protected void doExecute(String command, Object[] params) {
+		// TODO Auto-generated method stub
+		System.out.print("Ejecuto comando");
+		createNode(1,"Ejemplo01");
 	}
 	
 }
