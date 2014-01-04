@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+ 
+  <groupId>ar.com.botQueue</groupId>
+  <artifactId>BotQueue</artifactId>
+  
+  <version>0.0.1</version>
+  
+  <packaging>jar</packaging>
+  
+  <name>BotQueue</name>
+  <description>Modelador grafico</description>
+  
+   <build>
+    <plugins>
+    	<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>2.4</version>
+			<configuration>
+			  <archive>
+			    <manifest>
+				<addClasspath>true</addClasspath>
+				<mainClass>ar.com.botquque.applet.Principal</mainClass>
+				<classpathPrefix>dependency-jars/</classpathPrefix>
+			    </manifest>
+			  </archive>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-dependency-plugin</artifactId>
+			<version>2.5.1</version>
+			<executions>
+			  <execution>
+				<id>copy-dependencies</id>
+				<phase>package</phase>
+				<goals>
+					<goal>copy-dependencies</goal>
+				</goals>
+				<configuration>
+					<outputDirectory>
+						${project.build.directory}/dependency-jars/
+					</outputDirectory>
+				</configuration>
+			    </execution>
+			</executions>
+		</plugin>
+		<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jarsigner-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <keystore>src/main/resources/keystore.jks</keystore>
+          <alias>BotQueue</alias>
+          <storepass>botqueue</storepass>
+          <keypass>botqueue</keypass>
+        </configuration>
+        <executions>
+          <execution>
+            <id>sign</id>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build> 
+</project>

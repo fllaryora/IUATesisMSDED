@@ -1,0 +1,25 @@
+Crear la firma digital
+
+ ./keytool -genkey -alias BotQueue -keyalg RSA -keystore /home/redes3/workspace/BotQ/src/resources/keystore.jks -storepass "botqueue" -validity 360
+What is your first and last name?
+  [Unknown]:  Francisco Llaryora Cristian Zerpa
+What is the name of your organizational unit?
+  [Unknown]:  IUA Tesis
+What is the name of your organization?
+  [Unknown]:  Tesis
+What is the name of your City or Locality?
+  [Unknown]:  Córdoba
+What is the name of your State or Province?
+  [Unknown]:  Córdoba
+What is the two-letter country code for this unit?
+  [Unknown]:  AR
+Is CN=Francisco Llaryora Cristian Zerpa, OU=IUA Tesis, O=Tesis, L=Córdoba, ST=Córdoba, C=AR correct?
+  [no]:  Yes
+
+Enter key password for <BotQueue>
+	(RETURN if same as keystore password):  
+[redes3@ar bin]$ 
+
+los de la firma
+/usr/java/jdk1.6.0_43/jre/../bin/jarsigner -keystore src/main/resources/keystore.jks -storepass 'botqueue' -keypass 'botqueue' /home/redes3/workspace/BotQ/target/BotQueue-0.0.1.jar BotQueue
+
