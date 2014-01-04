@@ -21,20 +21,24 @@ ValidationResults* validateJsonInput( const char* filenameJson ){
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFile(const char* label){
 	int fileDescriptor = open ("/tmp/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	write(fileDescriptor,"{\n",2);
 	write(fileDescriptor,"\"Error\" : ",10);
 	write(fileDescriptor, label, strlen(label) );
 	write(fileDescriptor,"\"",1);
+	write(fileDescriptor,"\n}",2);
 	close(fileDescriptor);
 }
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFileN(const char* label, const int N){
 	int fileDescriptor = open ("/tmp/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	write(fileDescriptor,"{\n",2);
 	write(fileDescriptor,"\"Error\" : ",10);
 	char* strNro = NULL;
 	int len = snprintf(NULL, 0, label, N);
 	strNro = (char*) malloc( (len + 1) * sizeof(char) );
 	snprintf(strNro, (len + 1),label, N);
 	write(fileDescriptor, strNro, len );
+	write(fileDescriptor,"\n}",2);
 	free(strNro);
 	write(fileDescriptor,"\"",1);
 	close(fileDescriptor);
@@ -186,7 +190,7 @@ ValidationResults*  validateJson(const char *filenameJson){
 
 	//( indice-1 == idNode)
 	if (validateDoubleReference(sizeAllNodes,precederArrayFull,followerArrayFull) == DOUBLE_REFERENCE_FAIL){
-		writeErrorInFile("No se cumple el principio de doble referencia, hay un nodo que apunta a otro nodo pero este esta recibiendo el link de otro nodo");
+		//writeErrorInFile("No se cumple el principio de doble referencia, hay un nodo que apunta a otro nodo pero este esta recibiendo el link de otro nodo");
 		validationResult->isValid = DOUBLE_REFERENCE_FAIL;
 		goto freeLinksArray;
 	}
@@ -526,8 +530,10 @@ int validateDoubleReference(const int sizeAllNodes, int** precederArrayFull,int*
 					break;
 				}
 			}
-			if (isDoubleReference == FALSE)
+			if (isDoubleReference == FALSE){
+				writeErrorInFileN("Principio de doble referencia roto en el nodo %d, nodo follow no me apunta", i+1 );
 				return DOUBLE_REFERENCE_FAIL;
+			}
 		}
 		//para cada nodo j en la listra de sucesores del nodo i
 		for (int j = 1; j <= followerArrayFull[i][0] ; j++){
@@ -540,8 +546,10 @@ int validateDoubleReference(const int sizeAllNodes, int** precederArrayFull,int*
 					break;
 				}
 			}
-			if (isDoubleReference == FALSE)
+			if (isDoubleReference == FALSE){
+				writeErrorInFileN("Principio de doble referencia roto en el nodo %d, nodo preceder no me apunta", i+1 );
 				return DOUBLE_REFERENCE_FAIL;
+			}
 		}
 	}
 	return VALIDATION_PASS;
