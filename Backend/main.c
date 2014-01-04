@@ -96,7 +96,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 
 			free(vr->targets);
 			free(vr->seedAndCombisId);
-			free(vr->targets);
+			free(vr->qCouNfComb);
 			free(vr);
 			return;
 		}

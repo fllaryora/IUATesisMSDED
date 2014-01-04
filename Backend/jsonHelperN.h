@@ -1,9 +1,6 @@
 #ifndef _JSON_HELPER_H_
 #define _JSON_HELPER_H_
-
 #include "parson.h"
-#include "ourMPI.h"
-#include "main.h"
 #include <stddef.h>
 #include <wjelement.h>
 #include <stdio.h>
@@ -12,6 +9,12 @@
 
 #define PROB_MIN 0.999
 #define PROB_MAX 1.001
+
+typedef struct{
+	int idNode;
+	double cycle;
+	//CyclesList* next;
+}CycleValidator;
 
 typedef struct{
 	int isValid;
@@ -23,6 +26,7 @@ typedef struct{
 	CycleValidator* targets;
 	int nodesAmount;
 } ValidationResults;
+
 
 typedef enum{
 	ERROR_OPEN_JSON =1,	/* json no existe */
@@ -55,8 +59,8 @@ extern void writeErrorInFile(const char* label);
 /* Valida El archivo de ingreso contra el schema */
 extern int validateSchema(const char *filenameJson);
 /* Handler de que hacer en caso de que falle la validación */
-extern void schema_error(void *client, const char *format, ...);
-extern WJElement schema_load(const char *name, void *client, const char *file, const int line);
+ void schema_error(void *client, const char *format, ...);
+ WJElement schema_load(const char *name, void *client, const char *file, const int line);
 extern ValidationResults*  validateJson(const char *filenameJson);
 extern int getIdNodeArray( JSON_Object *jsonObject, const char *arrayName, int** array );
 extern int repeatArrays( const int *const queues ,const int queueSize,

@@ -1,16 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "main.h"
-#include "jsonHelper.h"
+#include "jsonHelperN.h"
 
 int main(){
-	int jsonResult;
 	ValidationResults* vr = validateJsonInput("archivos/modelo.json");
 	if ( vr->isValid == VALIDATION_PASS ) {		
-		if ( vr->nodesAmount + MASTER_RAFFLER_PRINTER == 29 ) {
+		if ( vr->nodesAmount + 3 == 29 ) {
 			free(vr->targets);
 			free(vr->seedAndCombisId);
-			free(vr->targets);
+			free(vr->qCouNfComb);
 			free(vr);
 			return 0;
 		}

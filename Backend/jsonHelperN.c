@@ -1,6 +1,6 @@
-#include "jsonHelper.h"
+#include "jsonHelperN.h"
 #include <string.h>
-
+#include <wjelement.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -213,20 +213,20 @@ ValidationResults*  validateJson(const char *filenameJson){
 
 	    /*COLA: ANTESESOR: No pueden ser Colas.*/		
 		if (disjointSet(precederArray,precederSize,queueArray,queueSize) == FALSE){
-			writeErrorInFileN("COLA idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode+1);
+			writeErrorInFileN("COLA idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode);
 			validationResult->isValid = INVALID_QUEUE;
 			goto freeLinksArray;
 		}
 	    /*COLA: SUCESOR: Solo pueden ser combis.*/
 		if (jointSet(followerArray,followerSize,combiArray,combiSize) == FALSE){
-			writeErrorInFileN("COLA idNode %d: SUCESOR: Solo pueden ser combis.",idNode+1);
+			writeErrorInFileN("COLA idNode %d: SUCESOR: Solo pueden ser combis.",idNode);
 			validationResult->isValid = INVALID_QUEUE;
 			goto freeLinksArray;
 		}
 
 		/*COLA: Existe referencia Preceders Followers*/
-		if ( precederArrayFull[idNode][0] < 1 || followerArrayFull[idNode][0] < 1 ){
-			writeErrorInFileN("COLA idNode %d: Existe referencia Preceders Followers",idNode+1);
+		if ( precederArrayFull[idNode][0]  < 1 || followerArrayFull[idNode][0]  < 1 ){
+			writeErrorInFileN("COLA idNode %d: Existe referencia Preceders Followers",idNode);
 			validationResult->isValid = INVALID_QUEUE;
 			goto freeLinksArray;
 		}
@@ -237,19 +237,19 @@ ValidationResults*  validateJson(const char *filenameJson){
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
 	    /*COMBI: ANTESESOR: Solo pueden ser nodos Cola.*/
 		if (jointSet(precederArray,precederSize,queueArray,queueSize) == FALSE){
-			writeErrorInFileN("COMBI idNode %d:ANTESESOR: Solo pueden ser nodos Cola.",idNode+1);
+			writeErrorInFileN("COMBI idNode %d:ANTESESOR: Solo pueden ser nodos Cola.",idNode);
 			validationResult->isValid = INVALID_COMBI;
 			goto freeLinksArray;
 		}
     	/*COMBI: SUCESOR: No pueden ser Combis.*/
 		if (disjointSet(followerArray,followerSize,combiArray,combiSize) == FALSE){
-			writeErrorInFileN("COMBI idNode %d: SUCESOR: No pueden ser Combis.",idNode+1);
+			writeErrorInFileN("COMBI idNode %d: SUCESOR: No pueden ser Combis.",idNode);
 			validationResult->isValid = INVALID_COMBI;
 			goto freeLinksArray;
 		}
 		/*COMBI: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0]  < 1 || followerArrayFull[idNode][0]  < 1 ){
-			writeErrorInFileN("COMBI idNode %d: Existe referencia Preceders Followers",idNode+1);
+			writeErrorInFileN("COMBI idNode %d: Existe referencia Preceders Followers",idNode);
 			validationResult->isValid = INVALID_COMBI;
 			goto freeLinksArray;
 		}
@@ -261,7 +261,7 @@ ValidationResults*  validateJson(const char *filenameJson){
 		probabilisticBranchArray = NULL;
 		probabilisticBranchSize = 0;
 		if (error == PROBABILISTIC_BRANCH_FAIL){
-			writeErrorInFileN("COMBI idNode %d: la sumatoria del prob branch deba ser 1",idNode+1);
+			writeErrorInFileN("COMBI idNode %d: la sumatoria del prob branch deba ser 1",idNode);
 			validationResult->isValid = error;
 			goto freeLinksArray;
 		}
@@ -272,20 +272,20 @@ ValidationResults*  validateJson(const char *filenameJson){
 		precederArray = precederArrayFull[idNode]; followerArray = followerArrayFull[idNode];
 		/*NORMAL: ANTESESOR: No pueden ser colas*/
 		if (disjointSet(precederArray,precederSize,queueArray,queueSize) == FALSE){
-			writeErrorInFileN("NORMAL idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode+1);
+			writeErrorInFileN("NORMAL idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode);
 			validationResult->isValid = INVALID_NORMAL;
 			goto freeLinksArray;
 		}
     	/*NORMAL: SUCESOR: No pueden ser combis.*/
 		if (disjointSet(followerArray,followerSize,combiArray,combiSize) == FALSE){
-			writeErrorInFileN("NORMAL idNode %d: SUCESOR: No pueden ser Combis.",idNode+1);
+			writeErrorInFileN("NORMAL idNode %d: SUCESOR: No pueden ser Combis.",idNode);
 			validationResult->isValid = INVALID_NORMAL;
 			goto freeLinksArray;
 		}
 		
 		/*NORMAL: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0]  < 1 || followerArrayFull[idNode][0]  < 1 ){
-			writeErrorInFileN("NORMAL idNode %d: Existe referencia Preceders Followers",idNode+1);
+			writeErrorInFileN("NORMAL idNode %d: Existe referencia Preceders Followers",idNode);
 			validationResult->isValid = INVALID_NORMAL;
 			goto freeLinksArray;
 		}
@@ -309,19 +309,19 @@ ValidationResults*  validateJson(const char *filenameJson){
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
 		/*FUNCION: ANTESESOR: No pueden ser colas*/
 		if (disjointSet(precederArray,precederSize,queueArray,queueSize) == FALSE){
-			writeErrorInFileN("FUNCION idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode+1);
+			writeErrorInFileN("FUNCION idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode);
 			validationResult->isValid = INVALID_FUNCTION;
 			goto freeLinksArray;
 		}
     	/*FUNCION: SUCESOR: No pueden ser combis.*/
 		if (disjointSet(followerArray,followerSize,combiArray,combiSize) == FALSE){
-			writeErrorInFileN("FUNCION idNode %d: SUCESOR: No pueden ser Combis.",idNode+1);
+			writeErrorInFileN("FUNCION idNode %d: SUCESOR: No pueden ser Combis.",idNode);
 			validationResult->isValid = INVALID_FUNCTION;
 			goto freeLinksArray;
 		}
 		/*FUNCION: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0]  < 1 || followerArrayFull[idNode][0]  < 1 ){
-			writeErrorInFileN("FUNCION idNode %d: Existe referencia Preceders Followers",idNode+1);
+			writeErrorInFileN("FUNCION idNode %d: Existe referencia Preceders Followers",idNode);
 			validationResult->isValid = INVALID_FUNCTION;
 			goto freeLinksArray;
 		}
@@ -334,7 +334,7 @@ ValidationResults*  validateJson(const char *filenameJson){
 		probabilisticBranchArray = NULL;
 		probabilisticBranchSize = 0;
 		if (error == PROBABILISTIC_BRANCH_FAIL){
-			writeErrorInFileN("FUNCION idNode %d: la sumatoria del prob branch deba ser 1",idNode+1);
+			writeErrorInFileN("FUNCION idNode %d: la sumatoria del prob branch deba ser 1",idNode);
 			validationResult->isValid = error;
 			goto freeLinksArray;
 		}
@@ -345,19 +345,19 @@ ValidationResults*  validateJson(const char *filenameJson){
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
     	/*CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
 		if ( disjointSet(precederArray,precederSize,queueArray,queueSize) == FALSE || disjointSet(precederArray,precederSize,counterArray,counterSize) == FALSE ){
-			writeErrorInFileN("CONTADOR idNode %d: ANTESESOR: No pueden ser colas ni otro contador.",idNode+1);
+			writeErrorInFileN("CONTADOR idNode %d: ANTESESOR: No pueden ser colas ni otro contador.",idNode);
 			validationResult->isValid = INVALID_COUNTER;
 			goto freeLinksArray;
 		}
     	/*CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
     	if ( disjointSet(followerArray,followerSize,combiArray,combiSize) == FALSE || disjointSet(followerArray,followerSize,counterArray,counterSize) == FALSE){
-			writeErrorInFileN("CONTADOR idNode %d: SUCESOR: No pueden ser Combis ni otro contador.",idNode+1);
+			writeErrorInFileN("CONTADOR idNode %d: SUCESOR: No pueden ser Combis ni otro contador.",idNode);
 			validationResult->isValid = INVALID_COUNTER;
 			goto freeLinksArray;
 		}
 		/*CONTADOR: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0]  < 1 ){
-			writeErrorInFileN("CONTADOR idNode %d: Existe referencia Preceders",idNode+1);
+			writeErrorInFileN("CONTADOR idNode %d: Existe referencia Preceders",idNode);
 			validationResult->isValid = INVALID_COUNTER;
 			goto freeLinksArray;
 		}
@@ -573,7 +573,6 @@ int validateEachLinkIsUnique(const int sizeAllNodes, int** precederArrayFull){
 /***********************************************REGION_UNIQUE_REFERENCE*********************************************************/
 /***********************************************REGION_AUTO_REFERENCE*********************************************************/
 /* Valida que un nodo no se apunte a si mismo en las referencias */
-
 int validateAutoreference(const int sizeAllNodes, int** precederArrayFull){
 	//para cada nodo i
 	for (int i = 0; i < sizeAllNodes; i++){
