@@ -179,6 +179,7 @@ public class Principal extends AbstractVaadinApplet {
 		// TODO Auto-generated method stub
 		System.out.print("Ejecuto comando");
 		createNode(1,"Ejemplo01");
+		vaadinUpdateVariable("mydata", "somevalue", true);
 	}
 	
 }
