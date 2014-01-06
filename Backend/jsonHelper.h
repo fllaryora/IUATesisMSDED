@@ -13,6 +13,17 @@
 #define PROB_MIN 0.999
 #define PROB_MAX 1.001
 
+typedef struct{
+	int isValid;
+	int seed;
+	int watchdog;
+	int* seedAndCombisId;
+	int targetCounter;
+	int* qCouNfComb;
+	CycleValidator* targets;
+	int nodesAmount;
+} ValidationResults;
+
 typedef enum{
 	ERROR_OPEN_JSON =1,	/* json no existe */
 	ERROR_OPEN_SCHEMA ,	/* schema no existe */
@@ -36,35 +47,43 @@ typedef enum{
 	VALIDATION_PASS		/* 20 validacion correcta */
 }VALIDATE;
 
-extern void MergeSort(int , int , int** );
-extern void Merge(int , int , int , int** );
-
-extern int freeAllAndReturn(int * , int* , int * , int * , 	int * ,int * , JSON_Value  * , const int , int** ,int** ,const int );
-extern void	schema_error(void *client, const char *format, ...);
-extern WJElement	schema_load(const char *name, void *client, const char *file, const int line);
-
-extern int validateJsonInput(const char *);
-
-extern int validateSchema(const char *);
-extern int validateJson(const char *);
-
-extern void getArray(JSON_Object *, const char *,const char *,int** , int* );
-extern void getLink(JSON_Object *,const char *,const int ,const char *, int** , int* );
-extern int countArrayInclude(const int * const , const int , const int *const , const int );
-extern int repeatArrays(const int *const  ,const int , const int * const , const int , const int * const , const int , const int * const , const int , const int *const , const int , int** , int* );
-extern int getNodesAmount( const char * );
-extern int* getCombiIds( const char * );
-extern CycleValidator* getTargets( const char *);
-extern int getWatchdog( const char *);
-extern int getModelSeed( const char *);
-extern void freeLinkTables(const int , int** ,int** );
-extern int validateEachLinkIsUnique(const int * const , const int );
-extern int validateSeeds(JSON_Object* );
-extern void setLinksInTableOfLinks(JSON_Object *object, int** linkTable, const char *nodeName, const int pos, int* linkArray, const int linkArraySize);
-extern int validateDoubleReference(const int ,int** ,int** );
-extern int validateAutoreference(JSON_Object*, const char *, const int , int* , const int );
-extern int validateProbabilisticBranch(const double* , const int , const int );
-extern void getProbabilisticBranch(JSON_Object * ,const char *, const int ,const char *, double** , int* );
-extern int* getNodesAmountDetail( const char * );
-extern int getCounterAcount( const char *filenameJson );
-#endif /* #ifndef _JSON_HELPER_H_*/
+/*  //Funcion principal
+Valida El archivo de ingreso contra el schema y  luego al archivo contra las reglas misma del modelo precursor */
+extern ValidationResults* validateJsonInput( const char* filenameJson );
+/**	Escribe el porque fracazo la validacion del json */
+extern void writeErrorInFile(const char* label);
+/* Valida El archivo de ingreso contra el schema */
+extern int validateSchema(const char *filenameJson);
+/* Handler de que hacer en caso de que falle la validación */
+extern void schema_error(void *client, const char *format, ...);
+extern WJElement schema_load(const char *name, void *client, const char *file, const int line);
+extern ValidationResults*  validateJson(const char *filenameJson);
+extern int getIdNodeArray( JSON_Object *jsonObject, const char *arrayName, int** array );
+extern int repeatArrays( const int *const queues ,const int queueSize,
+				  const int *const counters, const int counterSize, 
+				  const int * const normals, const int normalSize, 
+				  const int * const functions, const int functionSize, 
+				  const int *const combis, const int combiSize, 
+				  int** allNodes, int* sizeAllNodes);
+extern void MergeSort(int firstElement, int lastElement, int** array);
+extern void Merge(int firstElement, int middleElement, int lastElement, int** array);
+/* Obtiene la lista links (arrayJsonIn= followers o proceders)  de cada nodo (nodeName) y lo pone en una pocicion de una tabla segun el id "idNode" */
+extern void getLinkTable(int** linkTable, const char *nodeName, const char *arrayJsonIn, JSON_Object *object );
+extern int validateDoubleReference(const int sizeAllNodes, int** precederArrayFull,int** followerArrayFull);
+/* cada link de unoo a otro es unico(no hace falta validar el follower)*/
+extern int validateEachLinkIsUnique(const int sizeAllNodes, int** precederArrayFull);
+/* Valida que un nodo no se apunte a si mismo en las referencias */
+extern int validateAutoreference(const int sizeAllNodes, int** precederArrayFull);
+/* Valida que las semillas del modelo estan en el rango adecuado */
+extern int validateSeeds(JSON_Object* object);
+/*El nodo X no tiene referencias */
+extern int disjointSet(const int * const linkBag, const int linkBagSize, const int *const singleTypeNodeBag, const int nodeBagSize);
+/*El nodo X solo tiene referencias justas*/
+extern int jointSet(const int * const linkBag, const int linkBagSize, const int *const singleTypeNodeBag, const int nodeBagSize);
+/*Obtiene la lista de probabilidad de cada rama de un nodo */   
+extern void getProbabilisticBranch(JSON_Object * objectJson,const char *arrayNodeName, const int pos,const char *arrayName,
+extern double** probabilisticBranchArray, int* probabilisticBranchSize);
+/* Valida la probabilidad de cada rama y todas en conjunto*/
+extern int validateProbabilisticBranch(const double* probabilisticBranch, const int probabilisticCounter, const int  followCounter);
+/* obtiene la cantidad de ciclos que deberia cumplir cada counter */
+extern CycleValidator* getTargets( JSON_Object* object);
