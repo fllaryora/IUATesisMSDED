@@ -80,32 +80,31 @@ int main(int argc, char **argv){
 
 void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filenameJson ){
 	int jsonResult;
-	if ( validateJsonInput(filenameJson) == VALIDATION_PASS ) {		
-		if ( getNodesAmount(filenameJson) + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
+	ValidationResults* vr = validateJsonInput(filenameJson);
+	if ( vr->isValid == VALIDATION_PASS ) {		
+		if ( vr->nodesAmount + MASTER_RAFFLER_PRINTER == mpiProcesses ) {
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			//envio estructuras
 			sendStructToNodes(filenameJson, commNodes);
 			//enviar lo combisIds al raffler
-			int* seedAndCombis = getCombiIds( filenameJson);
-			MPI_Send( &seedAndCombis[1] ,  seedAndCombis[0]  , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
-			free(seedAndCombis);
+			MPI_Send( &vr->seedAndCombisId[1] ,   vr->seedAndCombisId[0] , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			//envio counts de los elementos.
-			int * qCouNfComb = getNodesAmountDetail(filenameJson);
-			MPI_Send( qCouNfComb , 5 , MPI_INT , PRINTER_ID , INIT_NODES , MPI_COMM_WORLD);
-			free(qCouNfComb);
-			int targetCounter = getCounterAcount( filenameJson );
-			CycleValidator* targets = getTargets( filenameJson);
-			int watchdog = getWatchdog( filenameJson);
-			scheduler( watchdog, commNodes , targets , mpiProcesses, targetCounter);
-			free(targets);
+			MPI_Send( vr->qCouNfComb , 5 , MPI_INT , PRINTER_ID , INIT_NODES , MPI_COMM_WORLD);
+			scheduler( vr->watchdog, commNodes , vr->targets , mpiProcesses, vr->targetCounter);
+
+			free(vr->targets);
+			free(vr->seedAndCombisId);
+			free(vr->targets);
+			free(vr);
 			return;
 		}
 		else {
 			printf("Error en la cantidad de nodos contra procesos\n");
 		}
-	} 
+	}
+	free(vr); 
 	//Broadcast Json malo
 	jsonResult = BAD_JSON;
 	MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
