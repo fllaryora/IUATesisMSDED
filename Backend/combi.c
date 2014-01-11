@@ -5,9 +5,9 @@
 
 void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const int mpiProcesses){
 	char* fileName = NULL;
-	int len = snprintf(NULL, 0, "/tmp/combi.%d.log",initialStatus->idNode);
+	int len = snprintf(NULL, 0, "output/combi.%d.log",initialStatus->idNode);
 	fileName = (char*) malloc( (len + 1) * sizeof(char) );
-	snprintf(fileName, (len + 1), "/tmp/combi.%d.log",initialStatus->idNode);
+	snprintf(fileName, (len + 1), "output/combi.%d.log",initialStatus->idNode);
 	
 	int fileDescriptor = open (fileName, O_WRONLY|O_CREAT|O_TRUNC, 00660);
 	//variables a ser enviadas al printer

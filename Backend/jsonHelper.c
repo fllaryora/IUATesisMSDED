@@ -20,7 +20,7 @@ ValidationResults* validateJsonInput( const char* filenameJson ){
 
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFile(const char* label){
-	int fileDescriptor = open ("/tmp/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	int fileDescriptor = open ("output/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	write(fileDescriptor,"{\n",2);
 	write(fileDescriptor,"\"Error\" : ",10);
 	write(fileDescriptor, label, strlen(label) );
@@ -30,7 +30,7 @@ void writeErrorInFile(const char* label){
 }
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFileN(const char* label, const int N){
-	int fileDescriptor = open ("/tmp/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	int fileDescriptor = open ("output/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	write(fileDescriptor,"{\n",2);
 	write(fileDescriptor,"\"Error\" : ",10);
 	char* strNro = NULL;
