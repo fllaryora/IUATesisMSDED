@@ -67,15 +67,15 @@ void raffler(){
 			//cambio nomenclatura
 			currentCombiIds = bufferReceiver;
 			currentCombiIdsAmount = receiverCount;
-			printf("Los id de combis de la cola\n");
-			for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",currentCombiIds[i]);}
-			printf("\n");
+			//printf("Los id de combis de la cola\n");
+			//for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",currentCombiIds[i]);}
+			//printf("\n");
 			
 			//envio a la cola las prioridades del turno
 			bufferSender = pickUpOnlySelectedIds(currentCombiIdsAmount, currentCombiIds, combiIdsAmount , combiIds);
-			printf("Lo que se va ha enviar\n");
-			for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",bufferSender[i]);}
-			printf("\n");
+			//printf("Lo que se va ha enviar\n");
+			//for(int i = 0; i < currentCombiIdsAmount ; i++){ printf("%d ",bufferSender[i]);}
+			//printf("\n");
 			//Envio la priotidad a la cola
 			MPI_Send(bufferSender, currentCombiIdsAmount, MPI_INT, currentSource, RAFFLE_DONE, MPI_COMM_WORLD);
 			MockAlLive(currentTag); //currentTag=LIVE_LOCK

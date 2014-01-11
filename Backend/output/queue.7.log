@@ -67,6 +67,42 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -131,184 +167,6 @@ End Avance Phase Prima input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 1 <<< N0=5 
-End Avance Phase input = 1, body = 0 , output = 0
-Generation Phase input = 1, body = 0 , output = 0
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_DEMAND <<< C0 = 8 
->>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
-0 <<< TRANSACTION_COMMIT <<< C0 = 8 
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
@@ -592,19 +450,8 @@ End generation Phase input = 0, body = 0 , output = 0
 Avance Phase input = 0, body = 0 , output = 0
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 1 <<< N0=5 
-End Avance Phase input = 1, body = 0 , output = 0
-Generation Phase input = 1, body = 0 , output = 0
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_DEMAND <<< C0 = 8 
->>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
-0 <<< TRANSACTION_COMMIT <<< C0 = 8 
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
+End Avance Phase input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -630,104 +477,6 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 1 <<< N0=5 
-End Avance Phase input = 1, body = 0 , output = 0
-Generation Phase input = 1, body = 0 , output = 0
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_DEMAND <<< C0 = 8 
->>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
-0 <<< TRANSACTION_ROLLBACK <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 1 , output = 1
-Generation Phase input = 0, body = 1 , output = 1
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 1 , output = 1
-Consume DT input = 0, body = 1 , output = 1
-End consume DT input = 0, body = 1 , output = 1
-Ping Report input = 0, body = 1 , output = 1
-End ping report input = 0, body = 1 , output = 1
-Generation Phase input = 0, body = 1 , output = 1
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 1 , output = 1
-Generation Phase input = 0, body = 1 , output = 1
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_DEMAND <<< C0 = 8 
->>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
-0 <<< TRANSACTION_COMMIT <<< C0 = 8 
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
 Consume DT input = 0, body = 0 , output = 0
 End consume DT input = 0, body = 0 , output = 0
 Ping Report input = 0, body = 0 , output = 0
@@ -746,20 +495,6 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
 Consume DT input = 0, body = 0 , output = 0
 End consume DT input = 0, body = 0 , output = 0
 Ping Report input = 0, body = 0 , output = 0
@@ -771,137 +506,6 @@ Avance Phase input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 1 <<< N0=5 
-End Avance Phase input = 1, body = 0 , output = 0
-Generation Phase input = 1, body = 0 , output = 0
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_DEMAND <<< C0 = 8 
->>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
-0 <<< TRANSACTION_COMMIT <<< C0 = 8 
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -1002,13 +606,17 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
+End Avance Phase input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -1041,6 +649,34 @@ Avance Phase input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -1176,6 +812,42 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -1354,6 +1026,38 @@ Avance Phase Prima input = 0, body = 1 , output = 1
 0 <<< RESOURCE_DEMAND <<< C0 = 8 
 >>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
 0 <<< TRANSACTION_COMMIT <<< C0 = 8 
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
@@ -1614,20 +1318,6 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
 Consume DT input = 0, body = 0 , output = 0
 End consume DT input = 0, body = 0 , output = 0
 Ping Report input = 0, body = 0 , output = 0
@@ -1637,19 +1327,8 @@ End generation Phase input = 0, body = 0 , output = 0
 Avance Phase input = 0, body = 0 , output = 0
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 1 <<< N0=5 
-End Avance Phase input = 1, body = 0 , output = 0
-Generation Phase input = 1, body = 0 , output = 0
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_DEMAND <<< C0 = 8 
->>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
-0 <<< TRANSACTION_COMMIT <<< C0 = 8 
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
+End Avance Phase input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -1675,41 +1354,17 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
+End Avance Phase input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -1735,49 +1390,6 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 1 <<< N0=5 
-End Avance Phase input = 1, body = 0 , output = 0
-Generation Phase input = 1, body = 0 , output = 0
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_DEMAND <<< C0 = 8 
->>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
-0 <<< TRANSACTION_COMMIT <<< C0 = 8 
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
 Consume DT input = 0, body = 0 , output = 0
 End consume DT input = 0, body = 0 , output = 0
 Ping Report input = 0, body = 0 , output = 0
@@ -1789,80 +1401,6 @@ Avance Phase input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -1974,6 +1512,198 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 1 <<< N0=5 
+End Avance Phase input = 1, body = 0 , output = 0
+Generation Phase input = 1, body = 0 , output = 0
+End generation Phase input = 0, body = 1 , output = 1
+Avance Phase Prima input = 0, body = 1 , output = 1
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_DEMAND <<< C0 = 8 
+>>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
+0 <<< TRANSACTION_COMMIT <<< C0 = 8 
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0
@@ -1998,28 +1728,55 @@ Avance Phase Prima input = 0, body = 1 , output = 1
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_DEMAND <<< C0 = 8 
 >>> C0 = 8 >>> TRANSACTION_BEGIN >>> 0
-0 <<< TRANSACTION_ROLLBACK <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 1 , output = 1
-Generation Phase input = 0, body = 1 , output = 1
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase Prima input = 0, body = 1 , output = 1
+0 <<< TRANSACTION_COMMIT <<< C0 = 8 
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 1 , output = 1
-Consume DT input = 0, body = 1 , output = 1
-End consume DT input = 0, body = 1 , output = 1
-Ping Report input = 0, body = 1 , output = 1
-End ping report input = 0, body = 1 , output = 1
-Generation Phase input = 0, body = 1 , output = 1
-End generation Phase input = 0, body = 1 , output = 1
-Avance Phase input = 0, body = 1 , output = 1
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
 <<< RESOURCE_REQUEST <<<
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 1 , output = 1
-Generation Phase input = 0, body = 1 , output = 1
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase Prima input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 0 <<< N0=5 
+End Avance Phase Prima input = 0, body = 0 , output = 0
+Consume DT input = 0, body = 0 , output = 0
+End consume DT input = 0, body = 0 , output = 0
+Ping Report input = 0, body = 0 , output = 0
+End ping report input = 0, body = 0 , output = 0
+Generation Phase input = 0, body = 0 , output = 0
+End generation Phase input = 0, body = 0 , output = 0
+Avance Phase input = 0, body = 0 , output = 0
+<<< RESOURCE_REQUEST <<<
+0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
+<<< RESOURCE_SEND = 1 <<< N0=5 
+End Avance Phase input = 1, body = 0 , output = 0
+Generation Phase input = 1, body = 0 , output = 0
 End generation Phase input = 0, body = 1 , output = 1
 Avance Phase Prima input = 0, body = 1 , output = 1
 <<< RESOURCE_REQUEST <<<
@@ -2037,41 +1794,6 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
 Consume DT input = 0, body = 0 , output = 0
 End consume DT input = 0, body = 0 , output = 0
 Ping Report input = 0, body = 0 , output = 0
@@ -2090,91 +1812,6 @@ Avance Phase Prima input = 0, body = 0 , output = 0
 0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
 <<< RESOURCE_SEND = 0 <<< N0=5 
 End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase Prima input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase Prima input = 0, body = 0 , output = 0
-Consume DT input = 0, body = 0 , output = 0
-End consume DT input = 0, body = 0 , output = 0
-Ping Report input = 0, body = 0 , output = 0
-End ping report input = 0, body = 0 , output = 0
-Generation Phase input = 0, body = 0 , output = 0
-End generation Phase input = 0, body = 0 , output = 0
-Avance Phase input = 0, body = 0 , output = 0
-<<< RESOURCE_REQUEST <<<
-0 <<< RESOURCE_NO_DEMAND <<< C0 = 8 
-<<< RESOURCE_SEND = 0 <<< N0=5 
-End Avance Phase input = 0, body = 0 , output = 0
 Generation Phase input = 0, body = 0 , output = 0
 End generation Phase input = 0, body = 0 , output = 0
 Avance Phase Prima input = 0, body = 0 , output = 0

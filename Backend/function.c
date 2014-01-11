@@ -24,14 +24,14 @@ void functionNode( const MPI_Comm commNodes,  const  Function *initialStatus, co
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				if(initialStatus->idNode ==23)printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				//if(initialStatus->idNode ==23)printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, FALSE, &rngProbabilisticBranch);
-				if(initialStatus->idNode ==23)printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				//if(initialStatus->idNode ==23)printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-				if(initialStatus->idNode ==23)printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				//if(initialStatus->idNode ==23)printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 				advancePhaseFunction( &inputResource,  &outputResource, initialStatus, commNodes, mpiProcesses, TRUE, &rngProbabilisticBranch);
-				if(initialStatus->idNode ==23)printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
+				//if(initialStatus->idNode ==23)printf("%d: entrada: %d, salida %d\n", initialStatus->idNode,inputResource,outputResource);
 			break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
@@ -70,7 +70,7 @@ void advancePhaseFunction(int * inputResource, int* outputResource, const Functi
 		walls[i] = acummulatedProb;
 		hollows[i] = 0;	
 	}
-	if(initialStatus->idNode ==23)printf(" count prob branch %d\n", initialStatus->countProbabilisticBranch);
+	//if(initialStatus->idNode ==23)printf(" count prob branch %d\n", initialStatus->countProbabilisticBranch);
 
 	//para cada nodo sortear	
 	for(int i = 0; i < initialStatus->countProbabilisticBranch; i++){
@@ -109,7 +109,7 @@ void advancePhaseFunction(int * inputResource, int* outputResource, const Functi
 		}
 	} else {
 		for (int i = 0 ; i < initialStatus->countFollowers; i++){
-			if(initialStatus->idNode ==23)printf("envio  %d, al nodo %d\n", hollows[i] , initialStatus->followers[i]);
+			//if(initialStatus->idNode ==23)printf("envio  %d, al nodo %d\n", hollows[i] , initialStatus->followers[i]);
 			 MPI_Isend( &hollows[i], 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
 		}
 	}
