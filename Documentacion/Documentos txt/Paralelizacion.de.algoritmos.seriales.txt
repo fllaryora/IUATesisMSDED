@@ -1,0 +1,78 @@
+Diseño de algoritmos paralelos a partir de algoritmos seriales:
+
+Si tenemos un algoritmo serial y tenemos que convertirlo a un algoritmo paralelo, no existe un proceso mecanico a seguir
+y por lo tanto no existe una solución unica del problema.
+Para ello se usa la metodología de diseño de Ian Foster, que tiene la intención de fomentar un enfoque exploratorio de
+diseño en el que las cuestiones independientes de la máquina, tales como la concurrencia se consideran al principio y
+los aspectos específicos de la máquina de diseño se retrasan hasta el final del proceso de diseño.
+Esta metodología estructura el proceso de diseño como cuatro etapas distintas PCAM:
+- Particionamiento,
+- Comunicación,
+- Aglomeración y agregado
+- Mapeo.
+Las etapas se explican de manera secuencial, pero en la práctica se diseñan y consideran simultáneamente.
+En las dos primeras etapas, se centrá en la concurrencia y escalabilidad y trata de descubrir algoritmos con estas cualidades.
+En la tercera y cuarta etapa, la atención se desplaza a la localidad y rendimiento.
+ 
+1) Particionamiento o descomposición en tareas: 
+El cálculo que se va a realizar y los datos operados por este cálculo se descomponen en tareas pequeñas.
+Cuestiones prácticas tales como el número de procesadores en el equipo de destino se ignoran, y
+la atención se centra en el reconocimiento de las oportunidades para la ejecución en paralelo.
+
+2) Comunicación:
+Se determina qué tipo de comunicación se requieren para coordinar la ejecución de las tareas ya definidas.
+
+3) Aglomeración o agregación:
+Se combinan las tareas que precentan dependencia o alto grado de comunicación en una tarea más grandes.
+También se aprueba la combinación de tareas que en la implementación mejore el rendimiento o
+reduzca los costes de implementación.
+
+4) Mapeo o asignación: 
+Cada tarea se asigna a un procesador para maximizar el uso del procesador y minimizar la comunicación.
+A cada procesador se le asigna pone más o menos la misma cantidad de carga de trabajo, en forma estática o se balancea la carga en forma dinamica. 
+
+
+Partición:
+La etapa de partición de un diseño está pensado para exponer las oportunidades para la ejecución en paralelo.
+Cuando se puede dividir en pocas tareas de gran tamaño se dice que presenta granularidad gruesa.
+Cuando se puede dividir en muchas tareas de poco tamaño se dice que presenta granularidad fina.
+Lograr la granularidad fina es el objetivo porque proporciona la mayor flexibilidad en términos de posibles algoritmos paralelos.
+Existen varias técnicas de descomponer el calculo en partes denominadas tareas.
+
+1)Descomposición por dominio:
+- Se busca dividir los datos asociados a un problema, en pequeños trozos de aproximadamente el mismo tamaño.
+- Dividimos la computación que se va a realizar, por lo general, asignando computo a los datos que operaría.
+- Si una operación requiere datos de otra tarea, se requiere una comunicación para mover datos entre tareas (y se analiza en la comunicación).
+- Los datos a dividir pueden ser la entrada, valores intermedios o salida del programa
+
+
+2)Descomposición funcional:
+- Se identifican las partes funcionales del calculo.
+- Se asigna una tarea para la realización de cada fase identificada en el calculo.
+- Se procede a examinar los requisitos de datos de estas tareas.
+- Solo se comunicarán las tareas que precenten dependencia de datos.
+
+-------Descomposiciones dinamicas (se sale de la metodologia foster)---------
+
+3)Descomposición rerursiva: 
+-Un problema se divide en subproblemas más simples, y los subprobremas son instancias más pequeñas del problema original.
+-Se rediseña la estructura de datos, en donde se almacenan los subproblemas y resultados parciales.
+-Los subproblemas divisibles, se dividen y se insertan el la estructura de datos.
+-Si el subproblema no se puede dividir más, se aplica computo para obtener un resultado parcial y se almacena en la estructura de datos.
+-Algun planificador va procesando la estructura de datos compartida.
+-A diferencia de la division funcional, es como una misma funcion pero replicada y a un problema diferente.
+
+4)Descomposición exploratoria: 
+-Cuando las instancias problema requieren búsqueda de la solución por búsqueda en un espacio de estados.
+-Divide el espacio de búsqueda y asigna computo a las partes que sean necesarias.
+-A diferencia de la division de dominio es que un solo procesador encontrara la solución, en vez de todos los procesos contribullen a la solución.
+
+5)Descomposición especulativa:
+-El problema presenta extemada dependencia de datos y/o  el computo presenta una estructura puramente secuencial.
+-Se puede sacar como conclución que dependiendo del resultado de una etapa anterior, se toma una alternativa en la siguiente etapa.
+-Por lo tanto tenemos una probabilidad de exito si lanzamos la etapa actual y
+ las alternativas de la siguiente etapa más probables respecto al los candidatos más probables del resultado de la etapa anterior.
+-A lo sumo el tiempo de computo es igual al secuencial. 
+-También podemos lanzar en paralelo etapas de algoritmos diferentes, en el cual uno encontrara primero la solución y se cancela el resto de las 
+etapas.
+
