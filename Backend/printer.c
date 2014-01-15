@@ -24,9 +24,10 @@ void printer(){
 	
 	//open json file
 	openBrace(fileDescriptor);
+	enter(fileDescriptor);
 	putLabel(fileDescriptor, "timeLine"); 
 		openBracket(fileDescriptor);
-
+		enter(fileDescriptor);
 		do{//te llama el scheduler y te dice que se va ha consumir un delta t, por lo que todos vienen
 			MPI_Recv6(&totalTime, 1, MPI_DOUBLE, MASTER_ID, MPI_ANY_TAG , MPI_COMM_WORLD, &result);
 			MockResult(&result);
@@ -34,6 +35,7 @@ void printer(){
 				//printf("recivi el fucking PRINT_SIGNAL\n");
 				if(flag == TRUE){
 					separeElement(fileDescriptor);
+					enter(fileDescriptor);
 				} 
 				doDeltaT(fileDescriptor, totalTime, qCouNfComb[0], qCouNfComb[1], qCouNfComb[2], qCouNfComb[3], qCouNfComb[4]);
 				flag = TRUE;
@@ -42,7 +44,7 @@ void printer(){
 			MockLoop(&result);//si es test termina el bucle
 		}while(result.MPI_TAG != LIVE_LOCK);	
 
-	closeBracket(fileDescriptor); separeElement(fileDescriptor);
+	closeBracket(fileDescriptor); separeElement(fileDescriptor);enter(fileDescriptor);
 	putLabel(fileDescriptor, "summaryReport"); 
 		doSummaryReport(fileDescriptor, totalTime, qCouNfComb[0], qCouNfComb[1]);
 	
@@ -61,14 +63,14 @@ void doSummaryReport(int fileDescriptor, const double totalTime, const int queue
 	openBrace(fileDescriptor);
 		putLabel(fileDescriptor, "totalTime"); putDouble(fileDescriptor, totalTime); separeElement(fileDescriptor);
 
-		putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);
+		putLabel(fileDescriptor, "counters"); openBracket( fileDescriptor);enter(fileDescriptor);
 			//recibo todos los envios de colas
 			for(int i = 0; i < counters; i++){
 				MPI_Recv3(&crStruct, sizeof(PrinterFinalCounter), MPI_BYTE, MPI_ANY_SOURCE, COUNTER_FINAL_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 				doFinalCounter( fileDescriptor, crStruct.idNode, crStruct.totalProductivity);
-				if (i+1 < counters ){separeElement(fileDescriptor);}
+				if (i+1 < counters ){separeElement(fileDescriptor); enter(fileDescriptor);}
 			}
-		closeBracket(fileDescriptor); separeElement(fileDescriptor);
+		closeBracket(fileDescriptor); separeElement(fileDescriptor);enter(fileDescriptor);
 
 		putLabel(fileDescriptor, "queues"); openBracket( fileDescriptor);
 			//recibo todos los envios de colas
@@ -79,7 +81,7 @@ void doSummaryReport(int fileDescriptor, const double totalTime, const int queue
 				doFinalQueue( fileDescriptor, qeStruct.idNode, qeStruct.fixCost, qeStruct.VariableCost );
 				if (i+1 < queues ){separeElement(fileDescriptor);}
 			}
-		closeBracket(fileDescriptor); separeElement(fileDescriptor);
+		closeBracket(fileDescriptor); separeElement(fileDescriptor);enter(fileDescriptor);
 					
 		putLabel(fileDescriptor, "totalCost"); putDouble(fileDescriptor, totalCost);
 
@@ -304,6 +306,10 @@ void closeBracket(int fileDescriptor){
 
 void separeElement(int fileDescriptor){
 	write(fileDescriptor,", ",2);
+}
+
+void enter(int fileDescriptor){
+	write(fileDescriptor,"\n",1);
 }
 
 void putLabel(int fileDescriptor, const char* label){

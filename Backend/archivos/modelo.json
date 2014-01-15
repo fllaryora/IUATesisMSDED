@@ -21,7 +21,7 @@
                         },
                         {
                                 "idNode": 6,
-                                "resource": 0,
+                                "resource": 1,
                                 "preceders": [5,8,11,13,15,17],
                                 "followers": [5,8,11,13,15,17],
                                 "fixedCost": 0.0,

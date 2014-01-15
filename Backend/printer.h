@@ -14,6 +14,7 @@ extern void printer(void);
 extern void openBrace(int );
 extern void closeBrace(int );
 extern void openBracket(int );
+extern void enter(int );
 extern void closeBracket(int );
 extern void separeElement(int );
 extern void putLabel(int , const char* );
