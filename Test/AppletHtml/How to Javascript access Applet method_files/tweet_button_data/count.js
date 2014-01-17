@@ -1,1 +1,0 @@
-twttr.receiveCount({"count":3,"url":"http:\/\/www.mkyong.com\/applet\/how-to-javascript-access-applet-method\/"});
