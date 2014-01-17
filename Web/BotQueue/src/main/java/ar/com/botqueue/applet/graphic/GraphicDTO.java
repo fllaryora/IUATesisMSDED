@@ -24,7 +24,7 @@ public class GraphicDTO {
 	
 	public void runExample(){
 		///*****provisorio
-		Node a = NodeFactory.createNode(NodeTypes.COUNTER, 60, 60, "Contador");
+		Node a = NodeFactory.createNode(NodeTypes.COUNTER, 60, 60, "Contador Chen");
 		Node b = NodeFactory.createNode(NodeTypes.NORMAL, 180, 60, "Normal");
 		nodes.add(a);
 		nodes.add(b);

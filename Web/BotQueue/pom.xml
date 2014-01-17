@@ -4,7 +4,7 @@
   <groupId>ar.com.botQueue</groupId>
   <artifactId>BotQueue</artifactId>
   
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   
   <packaging>jar</packaging>
   
@@ -34,7 +34,7 @@
 			<executions>
 			  <execution>
 				<id>copy-dependencies</id>
-				<phase>package</phase>
+				<phase>prepare-package</phase>
 				<goals>
 					<goal>copy-dependencies</goal>
 				</goals>

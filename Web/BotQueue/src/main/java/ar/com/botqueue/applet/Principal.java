@@ -1,3 +1,4 @@
+
 package ar.com.botqueue.applet;
 
 import ar.com.botqueue.applet.enums.NodeTypes;
@@ -177,9 +178,31 @@ public class Principal extends AbstractVaadinApplet {
 	@Override
 	protected void doExecute(String command, Object[] params) {
 		// TODO Auto-generated method stub
-		System.out.print("Ejecuto comando");
-		createNode(1,"Ejemplo01");
-		vaadinUpdateVariable("mydata", "somevalue", true);
+		//System.out.print("Ejecuto comando");
+		//createNode(2,"EjemploX");
+		//vaadinUpdateVariable("mydata", "somevalue", true);
+		
+		if (command.equalsIgnoreCase("createNode"))
+        	createNode(Integer.parseInt((String)params[1]), (String)params[2]);
+		else if (command.equalsIgnoreCase("deleteNode"))
+            deleteNode();
+        else if (command.equalsIgnoreCase("createArrow")) 	
+   		 	createArrow();
+        else if (command.equalsIgnoreCase("invertArrow"))
+	   		invertArrow();
+        else if (command.equalsIgnoreCase("deleteArrow"))
+        	deleteArrow();
+        else if (command.equalsIgnoreCase("rotateHead"))
+   		 	rotateHead();
+        else if (command.equalsIgnoreCase("rotateTail"))
+   		 	rotateTail();
+        else if (command.equalsIgnoreCase("deleteDot"))
+   		 	deleteDot();
+        else if (command.equalsIgnoreCase("createNextDot"))
+   		 	createNextDot();
+        else if (command.equalsIgnoreCase("createPreviusDot"))
+   		 	createPreviusDot();
+		
 	}
 	
 }
