@@ -8,9 +8,6 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.Set;
 
-import com.example.botqueueweb.js.Flot;
-import com.example.botqueueweb.js.Gauge;
-import com.example.botqueueweb.js.GaugeState;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;

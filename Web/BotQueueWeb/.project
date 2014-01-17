@@ -3,6 +3,7 @@
 	<name>BotQueueWeb</name>
 	<comment></comment>
 	<projects>
+		<project>BotQueue</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

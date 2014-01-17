@@ -75,6 +75,8 @@ public class BotqueuewebUI extends UI {
     HashMap<String, Class<? extends View>> routes = new HashMap<String, Class<? extends View>>() {
         {
         	put("/Transformacion", Transformacion.class);//put("/dashboard", DashboardView.class);
+        	put("/Precursor", Precursor.class);//put("/dashboard", DashboardView.class);
+        	put("/Reporte", Reporte.class);//put("/dashboard", DashboardView.class);
         	/*put("/sales", SalesView.class);//put("/sales", SalesView.class);
             put("/transactions", TransactionsView.class);
             put("/reports", ReportsView.class);
@@ -89,7 +91,8 @@ public class BotqueuewebUI extends UI {
     //private HelpManager helpManager;
     
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = BotqueuewebUI.class)
+	@VaadinServletConfiguration(productionMode = false, ui = BotqueuewebUI.class, widgetset = "com.example.botqueueweb.widgetset.BotqueuewebWidgetset")
+	//@VaadinServletConfiguration(productionMode = false, ui = BotqueuewebUI.class, widgetset = "org.vaadin.applet.widgetset.AppletintegrationWidgetset")
 	public static class Servlet extends VaadinServlet {
 	}
 
