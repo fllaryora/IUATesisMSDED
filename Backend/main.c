@@ -101,7 +101,12 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			return;
 		}
 		else {
-			printf("Error en la cantidad de nodos contra procesos\n");
+			const char* label = "Error en la cantidad de nodos contra procesos\n";
+			int fileDescriptor = open ("output/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
+			write(fileDescriptor,"{\n\"Error\" : ",12);
+			write(fileDescriptor, label, strlen(label) );
+			write(fileDescriptor,"\"\n}",3);
+			close(fileDescriptor);
 		}
 	}
 	free(vr); 
@@ -109,6 +114,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 	jsonResult = BAD_JSON;
 	MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 }
+
 	
 void logError(int error_code, int my_rank){
 	if (error_code != MPI_SUCCESS) {

@@ -1,5 +1,5 @@
 {
- "length": 30,
+ "length": 90,
  "seed": -1,
  "transformation": {
                 "queues": [
@@ -12,26 +12,34 @@
                                 "variableCost": 0.0
                         },
                         {
-                                "idNode": 3,
+                                "idNode": 11,
                                 "resource": 1,
-                                "preceders": [4],
-                                "followers": [4],
+                                "preceders": [3],
+                                "followers": [3],
+                                "fixedCost": 0.0,
+                                "variableCost": 0.0
+                        },
+                        {
+                                "idNode": 4,
+                                "resource": 0,
+                                "preceders": [2],
+                                "followers": [6],
                                 "fixedCost": 0.0,
                                 "variableCost": 0.0
                         },
                         {
                                 "idNode": 5,
                                 "resource": 0,
-                                "preceders": [2],
-                                "followers": [7],
+                                "preceders": [3],
+                                "followers": [8],
                                 "fixedCost": 0.0,
                                 "variableCost": 0.0
                         },
                         {
-                                "idNode": 6,
-                                "resource": 0,
-                                "preceders": [4],
-                                "followers": [8],
+                                "idNode": 7,
+                                "resource": 3,
+                                "preceders": [6,8],
+                                "followers": [6,8],
                                 "fixedCost": 0.0,
                                 "variableCost": 0.0
                         }
@@ -40,15 +48,15 @@
                         {
                                 "idNode": 9,
                                 "quantity": 1,
-                                "cycle": 30,
-                                "preceders":[7],
+                                "cycle": 5,
+                                "preceders":[6],
                                 "followers": []
                                 
                         },
                         {
                                 "idNode": 10,
                                 "quantity": 1,
-                                "cycle": 30,
+                                "cycle": 8,
                                 "preceders":[8],
                                 "followers": []
                                 
@@ -58,49 +66,48 @@
                     
                 ],
                 "functions": [
-                   
+                       
                  ],
                 "combis": [
                         {
                                 "idNode": 2,
                                 "preceders":[1],
-                                "followers": [1,5],
+                                "followers": [1,4],
                                 "delay" : {
-                                    "distribution": "exponential",
-                                    "seed": -1,
-                                    "lambda": 0.2
+                                        "distribution": "exponential",
+                                        "seed": -1,
+                                        "lambda": 0.125
                                 }
                         },
                         {
-                                "idNode": 4,
-                                "preceders":[3],
-                                "followers": [3,6],
+                                "idNode": 3,
+                                "preceders":[11],
+                                "followers": [11,5],
                                 "delay" : {
-                                    "distribution": "exponential",
-                                    "seed": -1,
-                                    "lambda": 0.5
+                                        "distribution": "exponential",
+                                        "seed": -1,
+                                        "lambda": 0.166
                                 }
                         },
                         {
-                                "idNode": 7,
-                                "preceders":[5],
-                                "followers": [9],
+                                "idNode": 6,
+                                "preceders":[4,7],
+                                "followers": [7,9],
                                 "delay" : {
-                                      "distribution": "normal",
-                                        "mean" : 2.0,
+                                        "distribution": "normal",
+                                        "mean" : 4.0,
                                         "variance" : 1.0,
                                         "seed" : -1
                                 }
-                        }
-                        ,
+                        },
                         {
                                 "idNode": 8,
-                                "preceders":[6],
-                                "followers": [10],
+                                "preceders":[5,7],
+                                "followers": [7,10],
                                 "delay" : {
-                                      "distribution": "normal",
-                                        "mean" : 3.0,
-                                        "variance" : 1.0,
+                                        "distribution": "normal",
+                                        "mean" : 6.0,
+                                        "variance" : 3.0,
                                         "seed" : -1
                                 }
                         }

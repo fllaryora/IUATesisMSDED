@@ -1,0 +1,125 @@
+{
+ "length": 70,
+ "seed": -1,
+ "transformation": {
+                "queues": [
+                        {
+                                "idNode": 1,
+                                "resource": 1,
+                                "preceders": [2],
+                                "followers": [2],
+                                "fixedCost": 0.0,
+                                "variableCost": 0.0
+                        },
+                        {
+                                "idNode": 4,
+                                "resource": 0,
+                                "preceders": [3],
+                                "followers": [6],
+                                "fixedCost": 0.0,
+                                "variableCost": 0.0
+                        },
+                        {
+                                "idNode": 5,
+                                "resource": 1,
+                                "preceders": [3],
+                                "followers": [7],
+                                "fixedCost": 0.0,
+                                "variableCost": 0.0
+                        }
+                ],
+                "counters": [
+                        {
+                                "idNode": 8,
+                                "quantity": 1,
+                                "cycle": 0,
+                                "preceders":[6,7],
+                                "followers": []
+                                
+                        },
+                        {
+                                "idNode": 11,
+                                "quantity": 1,
+                                "cycle": 20,
+                                "preceders":[9,10],
+                                "followers": []
+                                
+                        },
+                        {
+                                "idNode": 12,
+                                "quantity": 1,
+                                "cycle": 60,
+                                "preceders":[9,10],
+                                "followers": []
+                                
+                        }
+                ],
+                "normals": [
+                        {
+                                "idNode": 3,
+                                "preceders":[2],
+                                "followers": [4,5],
+                                "delay" : {
+                                        "distribution": "deterministic",
+                                        "constant" : 4
+                                },
+                                "probabilisticBranch": [0.8, 0.2]
+
+                        }
+                ],
+                "functions": [
+                        {
+                                "idNode": 9,
+                                "input": 1,
+                                "output": 1,
+                                "preceders":[6],
+                                "followers": [11,12],
+                                "probabilisticBranch": [0.3, 0.7]
+                        },
+                        {
+                                "idNode": 10,
+                                "input": 1,
+                                "output": 1,
+                                "preceders":[7],
+                                "followers": [11,12],
+                                "probabilisticBranch": [0.3, 0.7]
+                        }
+                 ],
+                "combis": [
+                        {
+                                "idNode": 2,
+                                "preceders":[1],
+                                "followers": [1,3],
+                                "delay" : {
+                                        "distribution": "exponential",
+                                        "seed": -1,
+                                        "lambda": 0.25
+                                }
+                        },
+                        {
+                                "idNode": 6,
+                                "preceders":[4],
+                                "followers": [8,9],
+                                "delay" : {
+                                        "distribution": "normal",
+                                        "mean" : 6.0,
+                                        "variance" : 2.0,
+                                        "seed" : -1
+                                },
+                                "probabilisticBranch": [0.1, 0.9]
+                        },
+                        {
+                                "idNode": 7,
+                                "preceders":[5],
+                                "followers": [8,10],
+                                "delay" : {
+                                        "distribution": "normal",
+                                        "mean" : 7.0,
+                                        "variance" : 1.0,
+                                        "seed" : -1
+                                },
+                                "probabilisticBranch": [0.1, 0.9]
+                        }
+                ]
+        }
+}
