@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "printer.h"
 
 #include <sys/types.h>
@@ -329,9 +330,15 @@ void putInteger(int fileDescriptor, const int nro){
 
 void putDouble(int fileDescriptor, const double nro){
 	char* strNro = NULL;
-	int len = snprintf(NULL, 0, "%lf", nro);
-	strNro = (char*) malloc( (len + 1) * sizeof(char) );
-	snprintf(strNro, (len + 1), "%lf", nro);
-	write(fileDescriptor, strNro, len );
-	free(strNro);
+	if( isnan(nro) ){
+		write(fileDescriptor, "null", 4 );
+	} else {
+		int len = snprintf(NULL, 0, "%lf", nro);
+		strNro = (char*) malloc( (len + 1) * sizeof(char) );
+		snprintf(strNro, (len + 1), "%lf", nro);
+		write(fileDescriptor, strNro, len );
+		free(strNro);
+	}
+
+	
 }
