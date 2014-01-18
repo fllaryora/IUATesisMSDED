@@ -102,12 +102,12 @@ void doFinalCounter(int fileDescriptor, const int idNode, const int totalProduct
 }
 
 
-void doFinalQueue(int fileDescriptor, const int idNode, const double fixCost, const double VariableCost){
+void doFinalQueue(int fileDescriptor, const int idNode, const double fixCost, const double variableCost){
 	//open one queue
 	openBrace(fileDescriptor);
 		putLabel(fileDescriptor, "idNode");   putInteger(fileDescriptor, idNode); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "fixCost");   putDouble(fileDescriptor, fixCost); separeElement(fileDescriptor);
-		putLabel(fileDescriptor, "VariableCost");   putDouble(fileDescriptor, VariableCost);
+		putLabel(fileDescriptor, "variableCost");   putDouble(fileDescriptor, variableCost);
 	//close one queue
 	closeBrace(fileDescriptor);
 }
