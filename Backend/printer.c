@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "printer.h"
 
 #include <sys/types.h>
@@ -101,12 +102,12 @@ void doFinalCounter(int fileDescriptor, const int idNode, const int totalProduct
 }
 
 
-void doFinalQueue(int fileDescriptor, const int idNode, const double fixCost, const double VariableCost){
+void doFinalQueue(int fileDescriptor, const int idNode, const double fixCost, const double variableCost){
 	//open one queue
 	openBrace(fileDescriptor);
 		putLabel(fileDescriptor, "idNode");   putInteger(fileDescriptor, idNode); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "fixCost");   putDouble(fileDescriptor, fixCost); separeElement(fileDescriptor);
-		putLabel(fileDescriptor, "VariableCost");   putDouble(fileDescriptor, VariableCost);
+		putLabel(fileDescriptor, "variableCost");   putDouble(fileDescriptor, variableCost);
 	//close one queue
 	closeBrace(fileDescriptor);
 }
@@ -329,9 +330,15 @@ void putInteger(int fileDescriptor, const int nro){
 
 void putDouble(int fileDescriptor, const double nro){
 	char* strNro = NULL;
-	int len = snprintf(NULL, 0, "%lf", nro);
-	strNro = (char*) malloc( (len + 1) * sizeof(char) );
-	snprintf(strNro, (len + 1), "%lf", nro);
-	write(fileDescriptor, strNro, len );
-	free(strNro);
+	if( isnan(nro) ){
+		write(fileDescriptor, "null", 4 );
+	} else {
+		int len = snprintf(NULL, 0, "%lf", nro);
+		strNro = (char*) malloc( (len + 1) * sizeof(char) );
+		snprintf(strNro, (len + 1), "%lf", nro);
+		write(fileDescriptor, strNro, len );
+		free(strNro);
+	}
+
+	
 }
