@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.Set;
 
+import com.example.botqueueweb.business.ProjectBussines;
 import com.example.botqueueweb.js.Chart;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
@@ -52,6 +53,9 @@ public class Reporte extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeEvent event) {
+    	
+    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
+    	projectBussines.getProject();
     	
     	data = new QueueContainer();
     	data.addQueue(Calendar.getInstance(), "Cola 1", 1, 1.1); // TODO: hacer model queue y actualizar queuecontainer, correlacion 1 a 1 y quiza algun dato mas en container
