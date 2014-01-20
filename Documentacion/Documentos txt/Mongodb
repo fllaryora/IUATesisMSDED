@@ -1,0 +1,177 @@
+Una base de datos es un conjunto de datos pertenecientes a un mismo contexto y almacenados sistemáticamente para su posterior uso.
+Un Sistema de Gestión de Bases de Datos es un conjunto de programas que permiten el almacenamiento, modificación y extracción de la información en una base de datos, además de proporcionar herramientas para añadir, borrar, modificar y analizar los datos.
+
+Los SGDB se pueden clasificar por modelo de administración de datos en tres tipos:  Las bases de datos relacionales, las orientadas a objetos, y las relacionales orientadas a objetos. Sin embargo, en la práctica, la mayoría de los motores de bases de datos más populares se basan en la arquitectura relacional, y todos ellos utilizan el lenguaje de consultas SQL (con variaciones) para operar con los datos. Tanto es así, que SQL se convirtió con el paso de los años en un estándar "de facto", debido a su uso.
+
+Con el paso del tiempo las bases de datos relacionales fueron creciendo. Si bien los modelos relacionales se pueden adaptar para hacerlos escalar, este modelo de administración presentan problemas de eficiencia con la alta escalabilidad. Por ello aparece un nuevo modelo de administración de datos llamado NoSQL.
+Los sistemas NoSQL intentan atacar este problema proponiendo una estructura de almacenamiento más versátil, aunque sea a costa de perder ciertas funcionalidades como las transacciones que engloban operaciones en más de una colección de datos, o la incapacidad de ejecutar el producto cartesiano de dos tablas (también llamado JOIN) teniendo que recurrir a la desnormalización de datos.
+
+Diferencias principales entre DB relacionales y NoSQL: 
+Ausencia de esquema de datos relacional: Los datos no tienen una definición de atributos fija, es decir: Cada registro (o documento) puede contener una información con diferente en cada tupla, pudiendo así almacenar sólo los atributos que interesen en cada uno de ellos, facilitando el polimorfismo de datos bajo una misma colección de información. Es decir se tienen todos los datos relacionados en un mismo registro y el rendimiento aumenta por que no hay que hacer JOIN.
+Esta pensado para escalabilidad horizontal. Se aumenta el rendimiento del sistema simplemente añadiendo más nodos, indicando al sistema cuáles son los nodos disponibles. 
+
+El NoSQL abre las puetas a nuevos modelos de administración de datos: Las bases de datos documentales, etc , etc.
+
+
+Descripción y licencia
+
+MongoDB es un sistema de base de datos NoSQL orientado a documentos y es software de licencia GNU libre.
+
+Cada registro o conjunto de datos se denomina documento.
+El tamaño de un documento de MongoDB puede llegar hasta los 16 Megabytes. 
+Los documentos se pueden agrupar en colecciones, las cuales se podría decir que son el equivalente a las tablas en una base de datos relacional. Se pueden crear índices para algunos atributos de los documentos, de modo que MongoDB mantendrá una estructura interna eficiente para el acceso a la información por los contenidos de estos atributos.
+
+Los distintos documentos se almacenan en formato BSON, que guarda de forma explícita las longitudes de los campos, los índices de los arrays, y demás información útil para el escaneo de datos.Sin embargo, en la práctica, nunca veremos el formato en que verdaderamente se almacenan los datos, y trabajaremos siempre sobre un documento en JSON tanto al almacenar como al consultar información. Un ejemplo de un documento en MongoDB podría ser perfectamente éste:
+
+ {
+    "_id"          : "4da2c0e2e999fb56bf000002"
+    "title"        : "Una introducción a MongoDB",
+    "body"         : "Lorem ipsum dolor sit amet",
+    "published_at" : "2011-05-09T18:17:07-07:00",
+    "author_info"  : {
+                       "_id"  : "4dc8919331c0c00001000002"
+                       "name" : "Carlos Paramio"
+                     },
+    "tags"         : ["MongoDB", "NoSQL", "Bases de datos"]
+    "comments"     : [
+                       {
+                         "author_info" : { "name" : "Jorge Rubira", "email" : "email1@example.com" },
+                         "body"        : "Test",
+                         "created_at"  : "2011-05-10T10:14:01-07:00"
+                       },
+                       {
+                         "author_info" : { "name" : "Txema Rodríguez", "email" : "email2@example.com" },
+                         "body"        : "Otro test",
+                         "created_at"  : "2011-05-10T10:14:09-07:00"
+                       }
+                     ]
+    "liked_by"     : ["4d7cf768e999fb67c0000001", "4da34c62ba875a19d4000001"]
+  }
+
+El atributo “_id” es obligatorio y pueden tener el formato que se desee.
+Si no se especifica, MongoDB agrega el atributo y genera un valor en forma automatica. Para evitar que dos máquinas diferentes puedan generar el mismo valor para un documento, las máquinas deben tener la fecha y hora sincronizadas.
+
+El modelado del esquema de datos con MongoDB depende de la forma en que consultaremos o actualizaremos los datos que de las limitaciones del propio sistema.
+
+--------------------------------------
+
+Comandos:
+
+Llamar al cliente mongo de consola: $mongo
+report the name of the current database: > db
+display the list of databases: > show dbs
+display the list of collections: > show collections
+(No existe comando de creacion de nuevos objetos se asume que lo que no existe se debe crear)
+Switch to (a new) database named 'mydb': > use mydb 
+Create a new document named 'j' : > j = { name : "mongo" ,  "x" : 10 }
+Insert the 'j' document into the 'testData' collection: > db.testData.insert( j )
+issuing a query on the  'testData' collection using the find() method: > db.testData.find()
+count query: > db.testData.find().count()
+
+(by passing the { x : 18 } query document as a parameter to the find() method, omitir el algumento es lo mismo que poner un documento vacío {} )
+query for all documents where the x field has a value of 18 : > db.testData.find( { x : 18 } )
+retrieve only one document from the 'testData' collection: > db.testData.findOne()
+( call the limit() method on a cursor)
+specify the maximum number of documents in the result set, 3 en este caso: > db.testData.find().limit(3)
+The skip() method controls the starting point of the results set.
+skips the first 5 documents in the bios collection and returns all remaining documents: > db.bios.find().skip( 5 )
+
+
+Buscar en subdocumentos: > db.inventory.find( {  producer: {  company: 'ABC123',  address: '123 Street' } } )
+
+AND: > db.testData.find( { x : 18, y: 44 } )
+
+OR:db.inventory.find(  { $or: [ { qty: { $gt: 100 } },  { price: { $lt: 9.95 } } ]  }  )
+
+IN: > db.inventory.find( { type: { $in: [ 'food', 'snacks' ] } } )
+
+AND and OR example: > db.inventory.find( { type: 'food', $or: [ { qty: { $gt: 100 } }, { price: { $lt: 9.95 } } ]   } )
+
+
+
+
+When the field holds an array, you can query for an exact array match or for specific values in the array. If the array holds sub-documents, you can query for specific fields within the sub-documents using dot notation:
+the query matches all documents where the value of the field tags is an array that holds exactly three elements, 'fruit', 'food', and 'citrus', in this order:
+
+> db.inventory.find( { tags: [ 'fruit', 'food', 'citrus' ] } )
+
+can specify a single element in the array to match. These specifications match if the array contains at least one element with the specified value.
+
+> db.inventory.find( { tags: 'fruit' } )
+
+can specify equality matches for an element at a particular index or position of the array.
+> db.inventory.find( { 'tags.0' : 'fruit' } )
+
+
+El arreglo memos es un arreglo json de subdocumentos y este tiene el campo 'by' y pido los que tengan shopping en el primer memo
+>db.inventory.find( { 'memos.0.by': 'shipping' } )
+
+El memos es un json y tiene el elemento 'by'
+>db.inventory.find( { 'memos.by': 'shipping' } )
+
+
+El modificador sort, ordenar de menor a mayor
+> db.testData.find( { x : 18, y: 44 } ).sort({age: 1})
+DE mayor a menor
+> db.collection.find().sort( { age: -1 } );
+Ordena los apellidos y luego para cada uno los nombres
+>db.bios.find().sort( { 'name.last': 1, 'name.first': 1 } )
+retorna por orden natural en disco
+>db.collection.find().sort( { $natural: -1 } )
+
+
+Elegir los campos que va a tener el resultset:
+Que traiga solo el nombre y el email
+db.records.find( { "user_id": { $lt: 42} }, { "name": 1, "email": 1} )
+
+Que solo excluya el campo history:
+> db.records.find( { "user_id": { $lt: 42} }, { history: 0} )
+
+Return Two Fields and Exclude _id
+> db.records.find( { "user_id": { $lt: 42} }, { "_id": 0, "name": 1 , "email": 1 } )
+
+
+
+Modificacion o insercion si no existe
+
+Call the update() method with the upsert flag to create a new document if no document matches the update’s query criteria. [1]
+
+The following example creates a new document if no document in the inventory collection contains { type: "books", item : "journal" }:
+
+db.inventory.update(
+                     { type: "book", item : "journal" },
+                     { $set : { qty: 10 } },
+                     { upsert : true }
+                   )
+
+Modify Multiple Documents with update() Method
+
+By default, the update() method updates a single document that matches its selection criteria. Call the method with the multi option set to true to update multiple documents.
+
+The following example finds all documents with type equal to "book" and modifies their qty field by -1. The example uses $inc, which is one of the update operators available.
+
+db.inventory.update(
+   { type : "book" },
+   { $inc : { qty : -1 } },
+   { multi: true }
+)
+
+
+Remove All Documents: db.inventory.remove()
+
+Remove Documents that Matches a Condition: db.inventory.remove( { type : "food" } 
+
+
+Remove a Single Document that Matches a Condition: db.inventory.remove( { type : "food" }, 1 )
+
+
+Importar un archivo json (cada linea es un documento)
+$mongoimport --db test --collection docs --file example2.json
+$mongodb\bin\mongoimport --db test --collection docs < example2.json
+
+
+
+http://www.genbetadev.com/bases-de-datos/una-introduccion-a-mongodb
+http://www.4tic.com/blog/2011/06/29/mongodb-la-mysql-del-nosql/
+http://docs.mongodb.org/manual/tutorial/getting-started/
+

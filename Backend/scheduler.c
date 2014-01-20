@@ -69,7 +69,7 @@ void scheduler(unsigned long watchdog, const MPI_Comm commNodes , CycleValidator
 		for(int i = 0 ; i< counterNodes;i++ ){
 			for(int j = 0 ; j< counterNodes;j++ ){
 				if(currentStatusOfTargets[i].idNode == targets[j].idNode){
-					if( currentStatusOfTargets[i].cycle > targets[j].cycle )
+					if( currentStatusOfTargets[i].cycle >= targets[j].cycle )
 						isAllFinalized++;
 					else{
 						j= i = counterNodes;
