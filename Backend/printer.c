@@ -21,12 +21,12 @@ void printer(){
 	int* qCouNfComb = (int*)malloc(sizeof(int)*5);
 	MPI_Recv(qCouNfComb, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
-	fileDescriptor = open ("output/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	fileDescriptor = open ("output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	
 	//open json file
 	openBrace(fileDescriptor);
 	enter(fileDescriptor);
-	putLabel(fileDescriptor, "timeLine"); 
+	putLabel(fileDescriptor, "timeLines"); 
 		openBracket(fileDescriptor);
 		enter(fileDescriptor);
 		do{//te llama el scheduler y te dice que se va ha consumir un delta t, por lo que todos vienen
@@ -282,7 +282,7 @@ void doQueue(int fileDescriptor, const int idNode, const int amount, const int c
 		putLabel(fileDescriptor, "counterOutput");   putInteger(fileDescriptor, counterOutput); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "average");   putDouble(fileDescriptor, average); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "maximun");   putInteger(fileDescriptor, maximun); separeElement(fileDescriptor);
-		putLabel(fileDescriptor, "minimun");   putInteger(fileDescriptor, timesNotEmpty); separeElement(fileDescriptor);
+		putLabel(fileDescriptor, "minimun");   putInteger(fileDescriptor, minimun); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "timesNotEmpty");   putDouble(fileDescriptor, timesNotEmpty); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "percentTimesNotEmpty");   putDouble(fileDescriptor, percentTimesNotEmpty);
 	//close one queue

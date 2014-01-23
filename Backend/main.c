@@ -102,7 +102,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 		}
 		else {
 			const char* label = "Error en la cantidad de nodos contra procesos\n";
-			int fileDescriptor = open ("output/salidaDeJson.txt",O_WRONLY|O_CREAT|O_TRUNC,00660);
+			int fileDescriptor = open ("output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
 			write(fileDescriptor,"{\n\"Error\" : ",12);
 			write(fileDescriptor, label, strlen(label) );
 			write(fileDescriptor,"\"\n}",3);

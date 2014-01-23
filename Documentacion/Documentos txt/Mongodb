@@ -171,7 +171,21 @@ $mongodb\bin\mongoimport --db test --collection docs < example2.json
 
 
 
+
+
+mongoexport --db botqueuedb --collection projects --query '{"field": 1}' --out collection.json
+
+
+mongoexport --db botqueuedb --collection projects --query '{"_id": 52ddc56e70bc317461ba1424}'
+
+
+//el procs ya lo saque de otro lado
+mongoexport --db botqueuedb --collection projects --query '{"name": "lara","pendingStamp" : "1370241922691"}' -f "input" --out jojojo.json
+
+
+
+
 http://www.genbetadev.com/bases-de-datos/una-introduccion-a-mongodb
 http://www.4tic.com/blog/2011/06/29/mongodb-la-mysql-del-nosql/
 http://docs.mongodb.org/manual/tutorial/getting-started/
-
+http://www.mkyong.com/mongodb/mongodb-import-and-export-example/
