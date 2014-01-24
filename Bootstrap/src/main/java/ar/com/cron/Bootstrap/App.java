@@ -137,6 +137,7 @@ public static void main(String[] args) {
 		
 		try {
 			System.out.println("runing "+toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString()+" process" );
+			//http://docs.oracle.com/cd/E19708-01/821-1319-10/ExecutingPrograms.html
 			Process process = new ProcessBuilder("mpirun","-np", toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString() , "/home/francisco/Tesis/repo/IUATesisMSDED/Backend/Engine" ).start();
 			System.out.println("waiting....." );
 			
@@ -291,7 +292,7 @@ public static void main(String[] args) {
 					 e.printStackTrace();
 				 }
 			       
-				 if(fileData.toString().equals(ProjectsValues.BOTQUEUE_PROGRAM))
+				 if(fileData.toString().contains(ProjectsValues.BOTQUEUE_PROGRAM))
 					 return true;
 			}
 		}
