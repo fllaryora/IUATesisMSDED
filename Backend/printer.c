@@ -21,7 +21,7 @@ void printer(){
 	int* qCouNfComb = (int*)malloc(sizeof(int)*5);
 	MPI_Recv(qCouNfComb, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
-	fileDescriptor = open ("output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	fileDescriptor = open ("/home/francisco/Tesis/repo/IUATesisMSDED/Backend/output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	
 	//open json file
 	openBrace(fileDescriptor);

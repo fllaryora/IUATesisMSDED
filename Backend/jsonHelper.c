@@ -20,7 +20,7 @@ ValidationResults* validateJsonInput( const char* filenameJson ){
 
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFile(const char* label){
-	int fileDescriptor = open ("output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	int fileDescriptor = open ("/home/francisco/Tesis/repo/IUATesisMSDED/Backend/output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	write(fileDescriptor,"{\n",2);
 	write(fileDescriptor,"\"Error\" : ",10);
 	write(fileDescriptor, label, strlen(label) );
@@ -30,7 +30,7 @@ void writeErrorInFile(const char* label){
 }
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFileN(const char* label, const int N){
-	int fileDescriptor = open ("output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	int fileDescriptor = open ("/home/francisco/Tesis/repo/IUATesisMSDED/Backend/output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
 	write(fileDescriptor,"{\n",2);
 	write(fileDescriptor,"\"Error\" : ",10);
 	char* strNro = NULL;
@@ -46,7 +46,7 @@ void writeErrorInFileN(const char* label, const int N){
 /***********************************************REGION_SCHEMA*********************************************************/
 /* Valida El archivo de ingreso contra el schema */
 int validateSchema(const char *filenameJson){
-	const char* filenameSchema = "archivos/schema.json";
+	const char* filenameSchema = "/home/francisco/Tesis/repo/IUATesisMSDED/Backend/archivos/schema.json";
 	FILE *jsonfile; FILE *schemafile;
 	WJReader readjson; 	WJReader readschema;
 	WJElement json; WJElement schema; 	char *format=NULL;

@@ -52,7 +52,14 @@ public static void main(String[] args) {
 						toErrorState( documents,  toRead );
 						return;
 					}
-					DBObject toWrite = (DBObject)JSON.parse(output);
+					DBObject toWrite = null;
+					try{
+						toWrite = (DBObject)JSON.parse(output);
+					} catch(Exception e){
+						//archivo tiene texto json mal formado
+						toErrorState( documents,  toRead );
+						return;
+					}
 					/**** Update to finished ****/
 					toFinishedState( documents,  toRead,  toWrite);
 					toErrorState( documents,  toRead );
@@ -69,8 +76,10 @@ public static void main(String[] args) {
 			DBObject toRead = getPendingProject(documents);
 		
 			if(toRead != null){
-				if(!executeProject( documents,  toRead ))
+				if(!executeProject( documents,  toRead )){
+					System.out.println("pasa a eror..." );
 					toErrorState( documents,  toRead );
+				}
 			} else{
 				System.out.println("No se encontraron proyectos pendientes");
 			}
@@ -119,37 +128,54 @@ public static void main(String[] args) {
 	}
 	
 	static boolean executeProject(DBCollection documents, DBObject toRead ){
-		
+		System.out.println("Se va a ejecurat un proyecto");
 		/**** Update ****/		
 		if(!toExecuteState( documents,  toRead )) return false;
+		System.out.println("Se cambio el estado a en ejecucion...");
 		if(!writeFile( toRead )) return false;
+		System.out.println("Se escribio el archivo");
 		
-		String runForestRun = "mpirun -np "+ toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString() +" /home/francisco/Tesis/repo/IUATesisMSDED/Backend/Engine";
 		try {
-			Process process = new ProcessBuilder(runForestRun).start();
-			process.wait();
+			System.out.println("runing "+toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString()+" process" );
+			Process process = new ProcessBuilder("mpirun","-np", toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString() , "/home/francisco/Tesis/repo/IUATesisMSDED/Backend/Engine" ).start();
+			System.out.println("waiting....." );
+			
+			synchronized (process){
+				process.wait();
+			}
+			
 			String output = getOutput();
 			
 			if( output == null || output.trim().isEmpty() ){
+				System.out.println("archivo vacio");
 				return false;
 			}
-			
+			System.out.println("obtube salida" );
 			DBObject toWrite = (DBObject)JSON.parse(output);
 			/**** Update to finished ****/
 			if(!toFinishedState( documents,  toRead,  toWrite)) {
+				System.out.println("no pude finalizar" );
 				return false;
 			}
-			
-			if( output.matches(ProjectsValues.ERROR_TOKEN_IN_OUTPUT_FILE) ) {
+			System.out.println("lo finalizo..." );
+			if( output.contains(ProjectsValues.ERROR_TOKEN_IN_OUTPUT_FILE) ) {
+				System.out.println("detecto eror..." );
 				return false;
 			}
-			
+			System.out.println("no se detecto eror..." );
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			return false;
+		}catch (Exception e) {
+			//JSON Exception, etc
+			e.printStackTrace();
+			return false;
 		}
+
 	  
 		return true;
 	}
@@ -170,7 +196,7 @@ public static void main(String[] args) {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-	       
+	        newTextFile.deleteOnExit();
 	        return fileData.toString();
 		} else return null;
         
@@ -189,12 +215,14 @@ public static void main(String[] args) {
 		BasicDBObject updateOperatios = new BasicDBObject();
 		updateOperatios.put("$set", newDocument);
 		int nroFiels = documents.update(query, updateOperatios).getN();
-		if(nroFiels > 0) return false;
-		return true;
+	
+		if(nroFiels > 0) return true;
+		return false;
 	}
 	
 	private static boolean toFinishedState(DBCollection documents, DBObject toRead,   DBObject toWrite){
 		/**** Update ****/
+		System.out.println("Se pasa al estado finalizado....");
 		BasicDBObject query = new BasicDBObject();
 		query.put(ProjectsFiels.OID_FIELD, toRead.get(ProjectsFiels.OID_FIELD));
 	 
@@ -207,8 +235,8 @@ public static void main(String[] args) {
 		BasicDBObject updateOperatios = new BasicDBObject();
 		updateOperatios.put("$set", newDocument);
 		int nroFiels = documents.update(query, updateOperatios).getN();
-		if(nroFiels > 0) return false;
-		return true;
+		if(nroFiels > 0) return true;
+		return false;
 	}
 	
 	private static boolean writeFile(DBObject toRead ){
@@ -222,6 +250,7 @@ public static void main(String[] args) {
 		
 		} catch (IOException iox) {
 			//do stuff with exception
+			System.out.println("Fallo la escritura");
 			iox.printStackTrace();
 			return false;
 		}

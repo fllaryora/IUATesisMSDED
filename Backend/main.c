@@ -31,7 +31,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenam
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
-	const char *filenameJson   = "archivos/modelo.json";
+	const char *filenameJson   = "/home/francisco/Tesis/repo/IUATesisMSDED/Backend/archivos/modelo.json";
 	
 	int idNodo; int idNodoInterno;  int mpiProcesses; 
 	int* processRank = NULL; MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
@@ -102,8 +102,8 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 		}
 		else {
 			const char* label = "Error en la cantidad de nodos contra procesos\n";
-			int fileDescriptor = open ("output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
-			write(fileDescriptor,"{\n\"Error\" : ",12);
+			int fileDescriptor = open ("/home/francisco/Tesis/repo/IUATesisMSDED/Backend/output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
+			write(fileDescriptor,"{\n\"Error\" : \"",13);
 			write(fileDescriptor, label, strlen(label) );
 			write(fileDescriptor,"\"\n}",3);
 			close(fileDescriptor);
