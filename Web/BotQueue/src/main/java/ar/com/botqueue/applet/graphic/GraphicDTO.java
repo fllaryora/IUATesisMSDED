@@ -4,11 +4,17 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.com.botqueue.applet.Principal;
 import ar.com.botqueue.applet.enums.NodeTypes;
 import ar.com.botqueue.applet.graphic.arrow.GenericArrow;
+import ar.com.botqueue.applet.graphic.node.Combi;
+import ar.com.botqueue.applet.graphic.node.Counter;
 import ar.com.botqueue.applet.graphic.node.DotNode;
+import ar.com.botqueue.applet.graphic.node.Function;
 import ar.com.botqueue.applet.graphic.node.Node;
 import ar.com.botqueue.applet.graphic.node.NodeFactory;
+import ar.com.botqueue.applet.graphic.node.Normal;
+import ar.com.botqueue.applet.graphic.node.Queue;
 
 public class GraphicDTO {
 	
@@ -19,21 +25,6 @@ public class GraphicDTO {
 	public GraphicDTO(){
 		this.nodes = new ArrayList<Node>();
 		edges = new ArrayList<GenericArrow>();
-		
-	}
-	
-	public void runExample(){
-		///*****provisorio
-		Node a = NodeFactory.createNode(NodeTypes.COUNTER, 60, 60, "Contador Chen");
-		Node b = NodeFactory.createNode(NodeTypes.NORMAL, 180, 60, "Normal");
-		nodes.add(a);
-		nodes.add(b);
-		nodes.add( NodeFactory.createNode(NodeTypes.QUEUE, 60, 180, "Cola") );
-		nodes.add( NodeFactory.createNode(NodeTypes.FUNCTION, 60, 180+60, "Funcion") );
-		nodes.add( NodeFactory.createNode(NodeTypes.COMBI, 180, 180, "Combi") );
-		
-		GenericArrow fg = new GenericArrow(nodes,a,b,1.0);
-		edges.add(fg);
 		
 	}
 	
@@ -87,12 +78,6 @@ public class GraphicDTO {
 		return true;
 	}
 	
-	
-	public String getNameNode(){
-		Node nextNode = getOnlyOneSelected();
-		if (nextNode == null) return null;
-		return nextNode.getLabel();
-	}
 	
 	public boolean renameNode(String newLabel){
 		Node nextNode = getOnlyOneSelected();
@@ -463,7 +448,35 @@ public class GraphicDTO {
 		return false;
 	}
 	
-	//TODO modelo Precursor
-	public void setProperties(){}
+	public String getNodeInfo(Principal destination){
+		Node nextNode = getOnlyOneSelected();
+		if (nextNode == null)
+			return "{}";
+		int idNode = this.nodes.indexOf(nextNode);
+		List<Integer> preceders = new ArrayList<Integer>();
+		List<Integer> followers = new ArrayList<Integer>();
+		for(GenericArrow edge: this.edges){
+			if( edge.getHeadArrow().equals(edge) ){
+				followers.add( this.nodes.indexOf(edge.getTailArrow()) );
+			}
+			if( edge.getTailArrow().equals(edge) ){
+				preceders.add( this.nodes.indexOf(edge.getHeadArrow()) );
+			}
+		}
+		
+		String json = nextNode.getJson(idNode, preceders, followers);
+		if(nextNode instanceof Queue)
+			destination.vaadinUpdateVariable("editQueue", json, true);
+		if(nextNode instanceof Normal)
+			destination.vaadinUpdateVariable("editNormal", json, true);
+		if(nextNode instanceof Combi)
+			destination.vaadinUpdateVariable("editCombi", json, true);
+		if(nextNode instanceof Function)
+			destination.vaadinUpdateVariable("editFunction", json, true);
+		if(nextNode instanceof Counter)
+			destination.vaadinUpdateVariable("editCounter", json, true);
+		
+		return json; 
+	}
 	
 }

@@ -11,6 +11,7 @@ public class Principal extends AbstractVaadinApplet {
 	private static final long serialVersionUID = 2L;
 	private EventHandler nodeWorld;
 	private GraphicDTO graphic;
+	
 	/**
 	 * Se llama despues de que se procesa el tag html
 	 */
@@ -42,9 +43,6 @@ public class Principal extends AbstractVaadinApplet {
 		/* Lo que no aclaro el color se pone en rojo
 		 * asi me doy cuenta que no estoy pensando bien*/
 		this.setForeground(Color.RED);
-		
-		//TODO provisorio, sacar cuando se tenga la interface
-		runExample();
 		this.nodeWorld.forcePaint();
 	}
 	
@@ -55,6 +53,9 @@ public class Principal extends AbstractVaadinApplet {
 		super.destroy();
 	}
 	
+	/**
+	 * Crea un nodo en el modelo 
+	 */
 	public boolean createNode(int node, String label){
 		NodeTypes nodeType;
 		boolean ret; 
@@ -89,11 +90,10 @@ public class Principal extends AbstractVaadinApplet {
 		
 	}
 	
-	public void runExample(){
-		this.graphic.runExample();
-		return;
-	} 
 	
+	/**
+	 * Elimina un nodo seleccionado en el modelo 
+	 */
 	public boolean deleteNode(){
 		boolean ret; 
 		ret = this.graphic.deleteNode();
@@ -101,10 +101,6 @@ public class Principal extends AbstractVaadinApplet {
 		return ret ;
 	}
 	
-	
-	public String getNameNode(){
-		return this.graphic.getNameNode();
-	}
 	
 	public boolean renameNode(String newLabel){
 		boolean ret; 
@@ -168,22 +164,12 @@ public class Principal extends AbstractVaadinApplet {
 		this.nodeWorld.forcePaint();
 		return ret ;
 	}
-	
-	//TODO properties
-	public void setProperties(){
-		this.graphic.setProperties();
-		return;
-	}
 
 	@Override
 	protected void doExecute(String command, Object[] params) {
-		// TODO Auto-generated method stub
-		//System.out.print("Ejecuto comando");
-		//createNode(2,"EjemploX");
-		//vaadinUpdateVariable("mydata", "somevalue", true);
 		
 		if (command.equalsIgnoreCase("createNode"))
-        	createNode(Integer.parseInt((String)params[1]), (String)params[2]);
+        	createNode(Integer.parseInt((String)params[0]), (String)params[1]);
 		else if (command.equalsIgnoreCase("deleteNode"))
             deleteNode();
         else if (command.equalsIgnoreCase("createArrow")) 	
@@ -202,6 +188,22 @@ public class Principal extends AbstractVaadinApplet {
    		 	createNextDot();
         else if (command.equalsIgnoreCase("createPreviusDot"))
    		 	createPreviusDot();
+        else if (command.equalsIgnoreCase("getNodeInfo"))
+        	getNodeInfo();
+		//editNode(void)
+		//busca si ahy un solo nodo seleccionado
+		//hago un instance of del nodo
+		//cambio una variable especificia 
+		
+		
+	}
+	
+	/** 
+	 * get all data of some node
+	 * */
+	public void getNodeInfo(){
+		this.graphic.getNodeInfo(this);
+		return ;
 		
 	}
 	

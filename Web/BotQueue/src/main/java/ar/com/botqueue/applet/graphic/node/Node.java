@@ -1,6 +1,7 @@
 package ar.com.botqueue.applet.graphic.node;
 
 import java.awt.Graphics;
+import java.util.List;
 
 import ar.com.botqueue.applet.enums.BindSurface;
 
@@ -51,5 +52,7 @@ public interface Node{
 	
 	public String getLabel();
 	public void setLabel(String label);
+	
+	public String getJson(int id, List<Integer> preceders, List<Integer> followers);
 
 }

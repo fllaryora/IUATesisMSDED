@@ -2,6 +2,7 @@ package ar.com.botqueue.applet.graphic.node;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.List;
 
 import ar.com.botqueue.applet.enums.BindSurface;
 
@@ -197,4 +198,41 @@ public class GenericNode implements Node, Comparable<Node>{
 	public void setLabel(String label){
 		this.label = label;
 	}
+
+	public String getJson(int id, List<Integer> preceders, List<Integer> followers) {
+		return "{}";
+	}
+	
+	protected String putValue(String field, int value){
+		return "\""+field+"\":"+value;
+	}
+	
+	protected String putValue(String field, double value){
+		return "\""+field+"\":"+value;
+	} 
+	
+	protected String putString(String field, String value){
+		return "\""+field+"\":"+"\""+value+"\"";
+	}
+	
+	protected String putArray(String field, List<Integer> value){
+		String ret =  "\""+field+"\": [  ";
+		for(Integer element: value){
+			ret += ""+element+",";
+		}
+		ret = ret.substring(0, ret.length() - 1);
+		ret += "]";
+		return ret;
+	}
+	
+	protected String putArrayDouble(String field, List<Double> value){
+		String ret =  "\""+field+"\": [  ";
+		for(Double element: value){
+			ret += ""+element+",";
+		}
+		ret = ret.substring(0, ret.length() - 1);
+		ret += "]";
+		return ret;
+	}
+	
 }
