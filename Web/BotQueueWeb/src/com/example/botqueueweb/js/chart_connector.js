@@ -36,45 +36,41 @@ window.com_example_botqueueweb_js_Chart =
 		}
 		if (type=="Line")
 		{
-			chartData = {
-				labels : ["January","February","March","April","May","June","July"],
-				datasets : [
-					{
-						fillColor : "rgba(220,220,220,0.5)",
-						strokeColor : "rgba(220,220,220,1)",
-						pointColor : "rgba(220,220,220,1)",
-						pointStrokeColor : "#fff",
-						data : [65,59,90,81,56,55,40]
-					},
-					{
-						fillColor : "rgba(151,187,205,0.5)",
-						strokeColor : "rgba(151,187,205,1)",
-						pointColor : "rgba(151,187,205,1)",
-						pointStrokeColor : "#fff",
-						data : [28,48,40,19,96,27,100]
-					}
-				]
+			chartData = new Object();
+			chartData.labels = this.getState().labels;
+			chartData.datasets=new Array();
+			for (var i=0 ; i<this.getState().points.length ; i++)
+			{
+				var element = {
+						fillColor : this.getState().fillColors[i],
+						strokeColor : this.getState().strokeColors[i],
+						pointColor : this.getState().pointColors[i],
+						pointStrokeColor : this.getState().pointStrokeColor,
+						data : this.getState().points[i]
+					};
+				chartData.datasets.push(element);
 			}
 		}
-			
+		
+		var options = new Object();
+		options.animation = false;
 		
         var canvasElement = document.createElement('canvas');
         canvasElement.setAttribute('id', domId);
-        
-        canvasElement.setAttribute('width', "600"); // deberia ser un atributo
-        canvasElement.setAttribute('height', "300"); // deberia ser un atributo
+        canvasElement.setAttribute('width', this.getState().widthJS); // deberia ser un atributo
+        canvasElement.setAttribute('height', this.getState().heightJS); // deberia ser un atributo
         
         if (type=="Bar")
 		{
-	        var myLine = new Chart(canvasElement.getContext("2d")).Bar(chartData);
+	        var myLine = new Chart(canvasElement.getContext("2d")).Bar(chartData,options);
 		}   
         if (type=="Pie")
 		{
-        	var myLine = new Chart(canvasElement.getContext("2d")).Pie(chartData);
+        	var myLine = new Chart(canvasElement.getContext("2d")).Pie(chartData,options);
 		}
         if (type=="Line")
 		{
-        	var myLine = new Chart(canvasElement.getContext("2d")).Line(chartData);
+        	var myLine = new Chart(canvasElement.getContext("2d")).Line(chartData,options);
 		}
         
         this.getElement().appendChild(canvasElement);

@@ -2,6 +2,9 @@ package com.example.botqueueweb;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.bson.types.ObjectId;
+
+import com.example.botqueueweb.windows.UsuarioWindow;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
@@ -16,46 +19,24 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.servlet.annotation.WebServlet;
-
-import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
-import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.event.Transferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbstractSelect.AcceptItem;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DragAndDropWrapper;
-import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.MenuBar.Command;
-import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
@@ -72,8 +53,11 @@ public class BotqueuewebUI extends UI {
     CssLayout menu = new CssLayout();
     CssLayout content = new CssLayout();
 
+    //ObjectId idProject;
+    
     HashMap<String, Class<? extends View>> routes = new HashMap<String, Class<? extends View>>() {
         {
+        	put("/Home", Home.class);//put("/dashboard", DashboardView.class);
         	put("/Transformacion", Transformacion.class);//put("/dashboard", DashboardView.class);
         	put("/Precursor", Precursor.class);//put("/dashboard", DashboardView.class);
         	put("/Reporte", Reporte.class);//put("/dashboard", DashboardView.class);
@@ -158,7 +142,7 @@ public class BotqueuewebUI extends UI {
         username.focus();
         fields.addComponent(username);
 
-        final PasswordField password = new PasswordField("Contraseña");
+        final PasswordField password = new PasswordField("ContraseÃ±a");
         fields.addComponent(password);
 
         final Button signin = new Button("Entrar");
@@ -194,7 +178,7 @@ public class BotqueuewebUI extends UI {
                     }
                     // Add new error message
                     Label error = new Label(
-                            "Usuario o Contraseña incorrecto.",
+                            "Usuario o ContraseÃ±a incorrecto.",
                             ContentMode.HTML);
                     error.addStyleName("error");
                     error.setSizeUndefined();
@@ -303,7 +287,7 @@ public class BotqueuewebUI extends UI {
 
         menu.removeAllComponents();
 
-        String[] modulos = new String[] { "Transformacion","Precursor", "Reporte", };
+        String[] modulos = new String[] { "Home","Transformacion","Precursor", "Reporte", };
         for (final String view : modulos)
         {
             Button b = new NativeButton();
@@ -314,6 +298,7 @@ public class BotqueuewebUI extends UI {
                 public void buttonClick(ClickEvent event) {
                     clearMenuSelection();
                     event.getButton().addStyleName("selected");
+                    //setData(idProject);
                     if (!nav.getState().equals("/" + view))
                         nav.navigateTo("/" + view);
                 }
@@ -325,48 +310,11 @@ public class BotqueuewebUI extends UI {
         }
         menu.addStyleName("menu");
         menu.setHeight("100%");
-
-       /*viewNameToMenuButton.get("/dashboard").setHtmlContentAllowed(true);
-        viewNameToMenuButton.get("/dashboard").setCaption(
-                "Dashboard<span class=\"badge\">2</span>");
-
-        String f = Page.getCurrent().getUriFragment();
-        if (f != null && f.startsWith("!")) {
-            f = f.substring(1);
-        }
-        if (f == null || f.equals("") || f.equals("/")) {
-            nav.navigateTo("/dashboard");
-            menu.getComponent(0).addStyleName("selected");
-            //helpManager.showHelpFor(DashboardView.class);
-        } else {
-            nav.navigateTo(f);
-            helpManager.showHelpFor(routes.get(f));
-            viewNameToMenuButton.get(f).addStyleName("selected");
-        }
-
-        nav.addViewChangeListener(new ViewChangeListener() {
-
-            @Override
-            public boolean beforeViewChange(ViewChangeEvent event) {
-                helpManager.closeAll();
-                return true;
-            }
-
-            @Override
-            public void afterViewChange(ViewChangeEvent event) {
-                View newView = event.getNewView();
-                helpManager.showHelpFor(newView);
-                //if (autoCreateReport && newView instanceof ReportsView) {
-                //    ((ReportsView) newView).autoCreate(2, items, transactions);
-                //}
-                autoCreateReport = false;
-            }
-        });*/
-
     }
     
     private void clearMenuSelection() {
-        for (Iterator<Component> it = menu.getComponentIterator(); it.hasNext();) {
+        for (@SuppressWarnings("deprecation")
+		Iterator<Component> it = menu.getComponentIterator(); it.hasNext();) {
             Component next = it.next();
             if (next instanceof NativeButton) {
                 next.removeStyleName("selected");

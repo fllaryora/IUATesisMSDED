@@ -16,11 +16,18 @@ public class ChartState extends JavaScriptComponentState
 
     public List<String> fillColors = new ArrayList<String>();
     public List<String> strokeColors = new ArrayList<String>();
+    public List<String> pointColors = new ArrayList<String>();
     
     public List<List<Double>> series = new ArrayList<List<Double>>();
+    public List<List<Double>> points = new ArrayList<List<Double>>();
     
     public List<Double> percents = new ArrayList<Double>();
     public List<String> colors = new ArrayList<String>();
+    
+    public String pointStrokeColor;
+    public String widthJS;
+    public String heightJS; 
+    
     //Bar Chart
 	//Pie Chart
     //Polar Area Chart

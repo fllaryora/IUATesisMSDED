@@ -7,7 +7,7 @@
 }
 
 .v-vaadin-version:after {
-	content: "7.1.9";
+	content: "7.1.10";
 }
 
 .v-generated-body {
@@ -15,6 +15,10 @@
 	height: 100%;
 	border: 0;
 	margin: 0;
+	overflow: hidden;
+}
+
+.v-modal-window-open {
 	overflow: hidden;
 }
 
@@ -408,6 +412,10 @@
 
 .icon-cancel.v-nativebutton:before, .icon-cancel > .v-button-wrap:before, .icon-cancel.v-label:before, .v-menubar-menuitem-icon-cancel:before {
 	content: "\2715";
+}
+
+.icon-Home.v-nativebutton:before, .icon-Home > .v-button-wrap:before, .icon-Home.v-label:before, .v-menubar-menuitem-icon-Home:before {
+	content: "\2302";
 }
 
 .icon-Transformacion.v-nativebutton:before, .icon-Transformacion > .v-button-wrap:before, .icon-Transformacion.v-label:before, .v-menubar-menuitem-icon-Transformacion:before {
@@ -4438,10 +4446,8 @@ body .botqueueweb.v-app .v-app-loading {
 
 .botqueueweb .v-label.h1 {
 	font-size: 36px;
-	line-height: 1;
-	font-weight: 300;
+	font-weight: 600;
 	-webkit-font-smoothing: antialiased;
-	letter-spacing: -0.05em;
 }
 
 .botqueueweb .v-label.h2 {
@@ -4461,6 +4467,10 @@ body .botqueueweb.v-app .v-app-loading {
 	font-weight: bold;
 	text-transform: uppercase;
 	color: #349aff;
+}
+
+.botqueueweb .v-label.ticket {
+	font-weight: 600;
 }
 
 .botqueueweb .v-Notification {
@@ -4672,7 +4682,7 @@ body .botqueueweb.v-app .v-app-loading {
 }
 
 .botqueueweb .v-table-body {
-	border: 0.1em solid #d4d5d5;
+	height: auto !important;
 }
 
 .botqueueweb .v-table-row-odd {
@@ -5522,10 +5532,6 @@ body .botqueueweb.v-app .v-app-loading {
 	left: 60%;
 }
 
-.botqueueweb .transactions .h1 {
-	padding: 10px 1em 0.5em 8px;
-}
-
 .botqueueweb .transactions .borderless .v-table-header-wrap {
 	border-top: 1px solid #d4d5d5;
 }
@@ -6005,6 +6011,10 @@ body .botqueueweb.v-app .v-app-loading {
 
 .botqueueweb .botqueueweb-view .toolbar .v-spacing {
 	width: 10px;
+}
+
+.botqueueweb .botqueueweb-view .toolbar v-slot-toolbar {
+	height: 20px;
 }
 
 .botqueueweb .botqueueweb-view .v-csslayout {

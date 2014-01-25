@@ -61,4 +61,29 @@ public class Chart extends AbstractJavaScriptComponent {
     protected ChartState getState() {
         return (ChartState) super.getState();
     }
+    
+    /*LINE*/
+    
+    public void addPointColor(String pointColor) {
+        getState().pointColors.add(pointColor);
+    }
+    
+    public void setPointStrokeColor(String pointStrokeColor) {
+        getState().pointStrokeColor = pointStrokeColor;
+    }
+    
+    public void setWidthJS(String widthJS) {
+        getState().widthJS = widthJS;
+    }
+	
+    public void setHeightJS(String heightJS) {
+        getState().heightJS = heightJS;
+    }
+    
+    public void addPoints(double... points) {
+        List<Double> pointList = new ArrayList<Double>();
+        for (int i = 0; i < points.length; i++)
+            pointList.add(points[i]);
+        getState().points.add(pointList);
+    }
 }

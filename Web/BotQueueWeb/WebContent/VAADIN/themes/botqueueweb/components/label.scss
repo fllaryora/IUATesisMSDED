@@ -7,10 +7,10 @@
 	
 	.v-label.h1 {
 		font-size: 36px;
-		line-height: 1;
-		font-weight: 300;
+		/*line-height: 1;*/
+		font-weight: 600;
 		-webkit-font-smoothing: antialiased;
-		letter-spacing: -0.05em;
+		/*letter-spacing: -0.05em;*/
 	/* 	color: #404346; */
 	}
 	
@@ -31,6 +31,10 @@
 		font-weight: bold;
 		text-transform: uppercase;
 		color: #349aff;
+	}
+	
+	.v-label.ticket {
+		font-weight: 600;
 	}
 
 }
