@@ -1,10 +1,20 @@
 package com.example.botqueueweb;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Map;
 
 import org.vaadin.applet.AppletIntegration;
 
+import com.example.botqueueweb.dto.input.Combi;
+import com.example.botqueueweb.dto.input.Function;
+import com.example.botqueueweb.dto.input.Normal;
+import com.example.botqueueweb.dto.input.Queue;
+import com.example.botqueueweb.windows.QueueWindow;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+import com.mongodb.util.JSONParseException;
 import com.vaadin.data.Item;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -24,7 +34,7 @@ public class Precursor extends VerticalLayout implements View {
 
     private AppletIntegration applet;
     
-    QueueContainer data;
+    //QueueContainer data;
 
     @Override
     public void enter(ViewChangeEvent event) {
@@ -36,26 +46,20 @@ public class Precursor extends VerticalLayout implements View {
 	        @Override
 	        public void attach() {
 	        	super.attach();
-	            //setAppletArchives(Arrays.asList(new String[]{"BotQueue.jar"}));  
-	            //setCodebase("/TestApplet2/VAADIN/applet/");     
-	            //setAppletClass("ar/com/botqueue/applet/Principal.class");
 	            
 	            setAppletArchives(Arrays.asList(new String[]{"BotQueue.jar"}));  
 	            setCodebase("/BotQueueWeb/VAADIN/applet/");     
 	            setAppletClass("ar/com/botqueue/applet/Principal.class");  
 	            
-	            //executeCommand("renameNode"); // breaks here
-	            
-	            //setWidth("500px");  
-	            //setHeight("500px");
 	            setWidth("1000px");  
 	            setHeight("1000px");
 	        }
 	        
 	        @Override
             public void changeVariables(Object source, Map variables) {
-	        	
                 super.changeVariables(source, variables);
+                
+                System.out.println("changeVariables");
                 
                 if (variables.containsKey("mydata")) {                    
                     String strEstadoOk = (String) variables.get("mydata");            
@@ -65,7 +69,72 @@ public class Precursor extends VerticalLayout implements View {
                     	System.out.println("error");
                     	//applet.executeCommand("exit");    
                     }
-                }    
+                }
+                
+                if (variables.containsKey("editQueue")) { 
+                	System.out.println("editQueue");
+                    String jsonNode = (String) variables.get("editQueue");            
+                    //strEstadoOk // contiene JSON
+                    //TODO: pasar json a QUEUE, eliminar new Queue()
+        			DBObject dbObject = null;
+        			try{	
+        				dbObject = (DBObject) JSON.parse(jsonNode); //TODO: Linea de applet
+        			}catch(JSONParseException exception){
+        				exception.printStackTrace();
+        			}
+       				//queueEdit = new Queue();
+        		    
+        		    //Project pr = morphia.fromDBObject(Project.class, dbObject);
+        		    //queue = morphia.fromDBObject(Queue.class, dbObject);
+        		    
+        		    //dbObject.get(key);
+        		    //dbObject.get("idNode");
+        		    //dbObject.get("name");
+        		    //dbObject.get("resource");
+        			//private List<Integer> preceders;
+        			//private List<Integer> followers;
+        			//dbObject.get("fixedCost");
+        			//dbObject.get("variableCost");
+        			
+        			//System.out.println(dbObject.toString());
+        			//dbObject.put("fixedCost",5.6);
+        			//System.out.println(dbObject.toString());
+        			
+                    QueueWindow qWindow = new QueueWindow(dbObject,applet,true);
+                	getUI().addWindow(qWindow);
+                }
+                
+                /*if (variables.containsKey("editCombi")) {                    
+                    String jsonNode = (String) variables.get("editCombi");            
+                    //strEstadoOk // contiene JSON
+                    //TODO: pasar json a QUEUE, eliminar new Queue()
+                    CombiWindow cWindow = new CombiWindow(new Combi(),applet,true);
+                	getUI().addWindow(cWindow);
+                }
+                
+                if (variables.containsKey("editNormal")) {                    
+                    String jsonNode = (String) variables.get("editQueue");            
+                    //strEstadoOk // contiene JSON
+                    //TODO: pasar json a QUEUE, eliminar new Queue()
+                    NormalWindow nWindow = new NormalWindow(new Normal(),applet,true);
+                	getUI().addWindow(nWindow);
+                }
+                
+                if (variables.containsKey("editFunction")) {                    
+                    String jsonNode = (String) variables.get("editFunction");            
+                    //strEstadoOk // contiene JSON
+                    //TODO: pasar json a QUEUE, eliminar new Queue()
+                    FunctionWindow fWindow = new FunctionWindow(new Function(),applet,true);
+                	getUI().addWindow(fWindow);
+                }
+                
+                if (variables.containsKey("editCounter")) {                    
+                    String jsonNode = (String) variables.get("editCounter");            
+                    //strEstadoOk // contiene JSON
+                    //TODO: pasar json a QUEUE, eliminar new Queue()
+                    CounterWindow cWindow = new CounterWindow(new Queue(),applet,true);
+                	getUI().addWindow(qWindow);
+                }*/
             }
 	        
 	    };
@@ -77,34 +146,61 @@ public class Precursor extends VerticalLayout implements View {
         //addStyleName("transactions");
 
         HorizontalLayout hlBotonera = new HorizontalLayout();
+        hlBotonera.setSpacing(true);
         hlBotonera.setHeight("40px");
         hlBotonera.setMargin(true);
+        hlBotonera.setCaption("Nodos");
         
 		Button button = new Button("Cola");
 		button.addClickListener(new ClickListener() {
             @Override
 			public void buttonClick(ClickEvent event) {
-				addComponent(new Label("Thank you for clicking"));
-				String[] arrayParams = new String[2];
-			    arrayParams[0] = "1";
-			    arrayParams[1] = "Nuevo";		
-			    applet.executeCommand("createNode", arrayParams);
+            	QueueWindow qWindow = new QueueWindow((DBObject) JSON.parse("{}"),applet,false);
+            	getUI().addWindow(qWindow);
 			}
 		});
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        button = new Button("Combi");
+        /*button = new Button("Combi");
 		button.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				String[] arrayParams = new String[2];
-			    arrayParams[0] = "1";
-			    arrayParams[1] = "Nuevo";		
-			    applet.executeCommand("createNode", arrayParams);
+				CombiWindow qWindow = new CombiWindow(new Combi(),applet,true);
+            	getUI().addWindow(qWindow);
 			}
 		});
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
+        
+        button = new Button("Normal");
+		button.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				NormalWindow qWindow = new NormalWindow(new Normal(),applet,true);
+            	getUI().addWindow(qWindow);
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Function");
+		button.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				FunctionWindow qWindow = new FunctionWindow(new Function(),applet,true);
+            	getUI().addWindow(qWindow);
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Counter");
+		button.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				CounterWindow qWindow = new CounterWindow(new Counter(),applet,true);
+            	getUI().addWindow(qWindow);
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);*/
         
         button = new Button("Funcion");
 		button.addClickListener(new Button.ClickListener() {
@@ -201,6 +297,16 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
+        button = new Button("editNode");
+		button.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("getNodeInfo");
+			    System.out.println("getNodeInfo");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
         addComponent(hlBotonera);
         
 	    addComponent(applet);
@@ -234,21 +340,6 @@ public class Precursor extends VerticalLayout implements View {
             }
         });
         addComponent(b);*/
-    }
-
-    private boolean filterByProperty(String prop, Item item, String text) {
-        if (item == null || item.getItemProperty(prop) == null
-                || item.getItemProperty(prop).getValue() == null)
-            return false;
-        String val = item.getItemProperty(prop).getValue().toString().trim()
-                .toLowerCase();
-        if (val.startsWith(text.toLowerCase().trim()))
-            return true;
-        return false;
-    }
-
-    void createNewReportFromSelection() {
-       // ((BotqueuewebUI) getUI()).openReports(t);
     }
 
 }

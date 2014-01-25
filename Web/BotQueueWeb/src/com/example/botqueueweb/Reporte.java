@@ -1,228 +1,87 @@
 package com.example.botqueueweb;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Random;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bson.types.ObjectId;
 
 import com.example.botqueueweb.business.ProjectBussines;
+import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.dto.output.Combi;
+import com.example.botqueueweb.dto.output.Counter;
+import com.example.botqueueweb.dto.output.CounterFinal;
+import com.example.botqueueweb.dto.output.Function;
+import com.example.botqueueweb.dto.output.Normal;
+import com.example.botqueueweb.dto.output.Queue;
+import com.example.botqueueweb.dto.output.QueueFinal;
 import com.example.botqueueweb.js.Chart;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-//import com.vaadin.demo.dashboard.data.DataProvider;
-//import com.vaadin.demo.dashboard.data.TransactionsContainer;
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.Align;
-import com.vaadin.ui.Table.ColumnGenerator;
-import com.vaadin.ui.Table.TableDragMode;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 public class Reporte extends VerticalLayout implements View {
 
     private static final long serialVersionUID = 1L;
 
-    Table t;
-
     Object editableId = null;
 
-    QueueContainer data;
-
+    ObjectId idProject;
+    
     @Override
     public void enter(ViewChangeEvent event) {
     	
+    	/*String idProject = event.getParameters();
+    	System.out.println(idProject);*/
+    	idProject = (ObjectId) event.getNavigator().getUI().getData();
+    	
+    	//TODO: idProject==null no se selecciono proyecto
+    	//TODO: al volver a pantalla principal selecionar el proyecto al que se esta apuntando i es diferente de null
+    	
     	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
-    	projectBussines.getProject();
     	
-    	data = new QueueContainer();
-    	data.addQueue(Calendar.getInstance(), "Cola 1", 1, 1.1); // TODO: hacer model queue y actualizar queuecontainer, correlacion 1 a 1 y quiza algun dato mas en container
-    	data.addQueue(Calendar.getInstance(), "Cola 2", 2, 1.2);
+    	com.example.botqueueweb.dto.input.Queue qu = projectBussines.getQueue();
     	
-        //data = ((BotqueuewebUI) getUI()).dataProvider.getTransactions();
-
+    	Project project = projectBussines.getProject(idProject);
+    	//System.out.println(project.getName());
+    	setMargin(true);
+    	
+    	HorizontalLayout top = new HorizontalLayout();
+    	top.setWidth("100%");
+    	top.setSpacing(true);
+    	top.addStyleName("toolbar");
+    	addComponent(top);
+    	
+    	Label lTicket =  new Label("Proyecto: ");
+        lTicket.addStyleName("ticket");
+        lTicket.setSizeUndefined();
+        Label lValue = new Label(project.getName());
+        lValue.setSizeUndefined();
+        top.addComponent(lTicket);
+        top.addComponent(lValue);
+        top.setSizeUndefined();
+        top.setHeight("25px");
+    	top.setComponentAlignment(lTicket, Alignment.MIDDLE_RIGHT);
+    	top.setComponentAlignment(lValue, Alignment.MIDDLE_RIGHT);
+    	addComponent(top);
+    	    	
+    	Panel bodyPanel = new Panel();
+    	bodyPanel.setWidth("100%");
+    	bodyPanel.setHeight("100%");
+    	VerticalLayout vlPanel = new VerticalLayout();
+    	
         setSizeFull();
         addStyleName("transactions");
 
-        t = new Table() {
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId,
-                    Property<?> property) {
-                if (colId.equals("Time")) {
-                    SimpleDateFormat df = new SimpleDateFormat();
-                    df.applyPattern("MM/dd/yyyy hh:mm:ss a");
-                    return df
-                            .format(((Calendar) property.getValue()).getTime());
-                } else if (colId.equals("Price")) {
-                    if (property != null && property.getValue() != null) {
-                        String ret = new DecimalFormat("#.##").format(property
-                                .getValue());
-                        return "$" + ret;
-                    } else {
-                        return "";
-                    }
-                }
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
-        t.setSizeFull();
-        t.addStyleName("borderless");
-        t.setSelectable(true);
-        t.setColumnCollapsingAllowed(true);
-        t.setColumnReorderingAllowed(true);
-        data.removeAllContainerFilters();
-        t.setContainerDataSource(data);
-        sortTable();
-
-        t.setColumnAlignment("Seats", Align.RIGHT);
-        t.setColumnAlignment("Price", Align.RIGHT);
-
-        t.setVisibleColumns(new Object[] { "Time", "Nombre","Recursos Iniciales","Promedio" });
-
-        t.setFooterVisible(true);
-        t.setColumnFooter("Time", "Total");
-        updatePriceFooter();
-
-        // Allow dragging items to the reports menu
-        t.setDragMode(TableDragMode.MULTIROW);
-        t.setMultiSelect(true);
-
-        HorizontalLayout toolbar = new HorizontalLayout();
-        toolbar.setWidth("100%");
-        toolbar.setSpacing(true);
-        toolbar.setMargin(true);
-        toolbar.addStyleName("toolbar");
-        addComponent(toolbar);
-
-        Label title = new Label("All Transactions");
-        title.addStyleName("h1");
-        title.setSizeUndefined();
-        toolbar.addComponent(title);
-        toolbar.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
-
-        final TextField filter = new TextField();
-        filter.addTextChangeListener(new TextChangeListener() {
-            @Override
-            public void textChange(final TextChangeEvent event) {
-                data.removeAllContainerFilters();
-                data.addContainerFilter(new Filter() {
-                    @Override
-                    public boolean passesFilter(Object itemId, Item item)
-                            throws UnsupportedOperationException {
-
-                        if (event.getText() == null
-                                || event.getText().equals("")) {
-                            return true;
-                        }
-
-                        return filterByProperty("Nombre", item,
-                                event.getText())
-                                || filterByProperty("Nombre", item,
-                                        event.getText())
-                                || filterByProperty("Nombre", item,
-                                        event.getText());
-
-                    }
-
-                    @Override
-                    public boolean appliesToProperty(Object propertyId) {
-                        if (propertyId.equals("Nombre")
-                                || propertyId.equals("Nombre")
-                                || propertyId.equals("Nombre"))
-                            return true;
-                        return false;
-                    }
-                });
-            }
-        });
-
-        filter.setInputPrompt("Filter");
-        filter.addShortcutListener(new ShortcutListener("Clear",
-                KeyCode.ESCAPE, null) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                filter.setValue("");
-                data.removeAllContainerFilters();
-            }
-        });
-        toolbar.addComponent(filter);
-        toolbar.setExpandRatio(filter, 1);
-        toolbar.setComponentAlignment(filter, Alignment.MIDDLE_LEFT);
-
-        final Button newReport = new Button("Create Report From Selection");
-        newReport.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                createNewReportFromSelection();
-            }
-        });
-        newReport.setEnabled(false);
-        newReport.addStyleName("small");
-        toolbar.addComponent(newReport);
-        toolbar.setComponentAlignment(newReport, Alignment.MIDDLE_LEFT);
-
-        addComponent(t);
-        setExpandRatio(t, 1);
-
-        t.addValueChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                if (t.getValue() instanceof Set) {
-                    Set<Object> val = (Set<Object>) t.getValue();
-                    newReport.setEnabled(val.size() > 0);
-                } else {
-                }
-            }
-        });
-        t.setImmediate(true);
-        
-        /*Bar Chart*/
-        
-        final Chart chart = new Chart("Chart1");
-        
-        String labels[]= {"Cola 1","Cola 2","Cola 3","Cola 4","Cola 5","Combi 1","Combi 2"};
-        double points[]= { 0.6, 1.8, 2.8, 7.2, 10, 10.5, 8};
-        double points2[]= { 0.6, 10.2, 2.8, 7.2, 5, 1.5, 4};
-        
-        chart.setType("Bar");
-        
-        chart.setLabels(labels);
-        
-        chart.addFillColor("rgba(220,220,220,0.5)");
-        chart.addStrokeColor("rgba(220,220,220,1)");
-        chart.addSeries(points);
-        
-        chart.addFillColor("rgba(151,187,205,0.5)");
-        chart.addStrokeColor("rgba(151,187,205,1)");
-        chart.addSeries(points2);
-        
-        addComponent(chart);
-        
         /* Pie Chart*/
         
-        final Chart chart2 = new Chart("Chart2");
+        /*final Chart chart2 = new Chart("Chart2");
         
         chart2.setType("Pie");
         
@@ -235,69 +94,866 @@ public class Reporte extends VerticalLayout implements View {
         chart2.addColor("#69D2E7");
         chart2.addPercent(50.0);
         
-        addComponent(chart2);
+        addComponent(chart2);*/
         
-        final Chart chart3 = new Chart("Chart3");
+        showSummaryReport(project,vlPanel);
         
-        chart3.setType("Line");
-
-        addComponent(chart3);
+        showCounterFull(project,vlPanel);
+        showCombisFull(project,vlPanel);
+        showQueuesFull(project,vlPanel);
+        showNormalFull(project,vlPanel);
+        showFunctionFull(project,vlPanel);
         
-        /*Flot  grafico = new Flot();
-        double points[]= { 0.6, 1.8, 2.8, 1.2};
-        grafico.addSeries(points);
-        addComponent(grafico);*/
-       
-        /* GAUGE */
+        bodyPanel.setContent(vlPanel);
+        addComponent(bodyPanel);
+    }
+
+    void showSummaryReport(Project project, VerticalLayout vlPanel)
+    {
+    	vlPanel.setSpacing(true);
+    	
+    	Label title = new Label("Reporte Final");
+        title.addStyleName("h1");
+        vlPanel.addComponent(title);
+
+        HorizontalLayout hlTupla;
+        Label lTicket;
         
-        /*HorizontalLayout gaugeLayout = new HorizontalLayout();
-        final Gauge gauge = new Gauge("gauge");
-        gaugeLayout.addComponent(gauge);
-
-        final Gauge gauge2 = new Gauge("gauge2");
-        gaugeLayout.addComponent(gauge2);
-
-        addComponent(gaugeLayout);
-
-        Button b = new Button("Randomize!", new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Random ran = new Random();
-                int rand1 = ran.nextInt(100);
-                gauge.setValue(rand1);
-
-                int rand2 = ran.nextInt(100);
-                gauge2.setValue(rand2);
-
-            }
-        });
-        addComponent(b);*/
+        lTicket =  new Label("Costo Total: ");
+        lTicket.addStyleName("ticket");
+        hlTupla = new HorizontalLayout();
+        hlTupla.setSpacing(true);
+        hlTupla.addComponent(lTicket);
+        hlTupla.addComponent(new Label("$ "+project.getOutput().getSummaryReport().getTotalCost()));
+        vlPanel.addComponent(hlTupla);
+        
+        lTicket =  new Label("Tiempo Total: ");
+        lTicket.addStyleName("ticket");
+        hlTupla = new HorizontalLayout();
+        hlTupla.setSpacing(true);
+        hlTupla.addComponent(lTicket);
+        hlTupla.addComponent(new Label(project.getOutput().getSummaryReport().getTotalTime().toString()));
+    	vlPanel.addComponent(hlTupla);
+    	
+    	//vlPanel.addComponent(new Label("Counter Final"));
+    	
+    	Table t = new Table();
+        //t.setSizeFull();
+        //t.addStyleName("borderless");
+        t.setSelectable(true);
+        t.setImmediate(true);
+        t.setColumnCollapsingAllowed(true);
+        t.setColumnReorderingAllowed(true);
+        
+        t.addContainerProperty("Counter", Integer.class, null);
+        t.addContainerProperty("Productividad Total", Integer.class , null);
+        
+        int i=0;
+    	for (CounterFinal counterFinal : project.getOutput().getSummaryReport().getCounters()) {
+    		i++;
+    		t.addItem(new Object[]{counterFinal.getIdNode(),counterFinal.getTotalProductivity()},i);
+		}
+    	
+    	vlPanel.addComponent(t);
+    	//padding-top: 10px;
+    	//vlPanel.addComponent(new Label("Queues Final"));
+    	
+    	t = new Table();
+        t.setSelectable(true);
+        t.setImmediate(true);
+        t.setColumnCollapsingAllowed(true);
+        t.setColumnReorderingAllowed(true);
+        
+        t.addContainerProperty("Queue", Integer.class, null);
+        t.addContainerProperty("Costo Fijo", String.class , null);
+        t.addContainerProperty("Costo Variable", String.class , null);
+        
+        i=0;
+    	for (QueueFinal queueFinal : project.getOutput().getSummaryReport().getQueues()) {
+    		i++;
+    		t.addItem(new Object[]{queueFinal.getIdNode(),"$ "+queueFinal.getFixCost(),"$ "+queueFinal.getVariableCost()},i);
+    	}
+    	
+    	//t.setHeight("100%");
+    	vlPanel.addComponent(t);
+    	
+    	project.getOutput().getSummaryReport().getCounters();
+    	
     }
-
-    private void sortTable() {
-        t.sort(new Object[] { "timestamp" }, new boolean[] { false });
+    
+    void showCombisFull(Project project, VerticalLayout vlPanel)
+    {
+    	HorizontalLayout hlTupla;
+        Label lTicket,lValue;
+         
+        List<Integer> combisIds = new ArrayList<Integer>();
+	    for (Combi combiLocal : project.getOutput().getTimeLines().get(0).getNodesStatus().getCombis())
+	    {
+	    	combisIds.add(combiLocal.getIdNode());
+		}
+	    int timeLinesCount = project.getOutput().getTimeLines().size();
+	    
+	    
+	    for (Integer idCombi : combisIds)
+	    {
+	    	ThemeResource imgCombi = new ThemeResource("img/combi.png");
+	    	Image image = new Image(null,imgCombi);
+	    	lTicket =  new Label("Combi: ");
+	        lTicket.addStyleName("ticket");
+	        lValue = new Label(idCombi.toString());
+	        hlTupla = new HorizontalLayout();
+	        hlTupla.addComponent(image);
+	        hlTupla.addComponent(lTicket);
+	        hlTupla.addComponent(lValue);
+	        hlTupla.setComponentAlignment(lTicket,Alignment.MIDDLE_CENTER);
+	        hlTupla.setComponentAlignment(lValue,Alignment.MIDDLE_CENTER);
+	        hlTupla.setSpacing(true);
+	        
+	        //hlTupla.set
+	        vlPanel.addComponent(hlTupla);
+	        
+	    	//vlPanel.addComponent(image);	
+	    	
+	    	//BAR - COUNTER IMPUT
+	    	
+	    	vlPanel.addComponent(new Label("CounterImput"));	
+	    	final Chart chart = new Chart("ChartCombi");
+	    	chart.setType("Bar");
+	    	
+	    	String labels[]= new String[timeLinesCount];
+	    	double points[]= new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	chart.setLabels(labels);
+	    	
+	    	chart.setWidthJS("750");
+	    	chart.setHeightJS("300"); 
+	    	chart.setPointStrokeColor("#fff");
+	    	chart.addFillColor("rgba(151,187,205,0.5)");
+	    	chart.addStrokeColor("rgba(151,187,205,1)");
+	    	chart.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) { //60
+	            for (Combi combi : project.getOutput().getTimeLines().get(i).getNodesStatus().getCombis()) {
+	            	if (combi.getIdNode().equals(idCombi))
+	            	{
+	            		if (combi.getCounterInput() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) combi.getCounterInput();
+	            	}
+				}	
+			}
+	    	
+	    	chart.addSeries(points);
+	        
+	    	vlPanel.addComponent(chart);
+	    	
+	    	// CHART - AMOUNT DELAY
+	    	
+	    	vlPanel.addComponent(new Label("AmountDelay "));	
+	    	final Chart chartAmountDelay = new Chart("ChartCombi");
+	    	chartAmountDelay.setType("Line");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	double points2[] = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartAmountDelay.setLabels(labels);
+	    	
+	    	chartAmountDelay.setWidthJS("750");
+	    	chartAmountDelay.setHeightJS("300"); 
+	    	chartAmountDelay.setPointStrokeColor("#fff");
+	    	chartAmountDelay.addFillColor("rgba(151,187,205,0.5)");
+	    	chartAmountDelay.addStrokeColor("rgba(151,187,205,1)");
+	    	chartAmountDelay.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Combi combi : project.getOutput().getTimeLines().get(i).getNodesStatus().getCombis()) {
+	            	if (combi.getIdNode().equals(idCombi))
+	            	{
+	            		if (combi.getAmountDelay() == null)
+	            			points2[i] = 0;
+	        		    else
+	        		    	points2[i] = combi.getAmountDelay();
+	            	}
+				}	
+			}
+	    	
+	    	chartAmountDelay.addPoints(points2);
+	        
+	    	vlPanel.addComponent(chartAmountDelay);
+	    	
+	    	// MINIMA Y MINIMA DURACION SORTEADA
+	    	
+	    	vlPanel.addComponent(new Label("Minimo / Maximo  "));	
+	    	final Chart chartMM = new Chart("ChartCombi");
+	    	chartMM.setType("Bar");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	points = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartMM.setLabels(labels);
+	    	
+	    	chartMM.setWidthJS("750");
+	    	chartMM.setHeightJS("300"); 
+	    	chartMM.setPointStrokeColor("#fff");
+	    	chartMM.addFillColor("rgba(151,187,205,0.5)");
+	    	chartMM.addStrokeColor("rgba(151,187,205,1)");
+	    	chartMM.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Combi combi : project.getOutput().getTimeLines().get(i).getNodesStatus().getCombis()) {
+	            	if (combi.getIdNode().equals(idCombi))
+	            	{
+	            		if (combi.getMinimunDrawn() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) combi.getMinimunDrawn();
+	            	}
+				}	
+			}
+	    	
+	    	chartMM.addSeries(points);
+	        
+	    	chartMM.addFillColor("rgba(220,220,220,0.5)");
+	    	chartMM.addStrokeColor("rgba(220,220,220,1)");
+	    	chartMM.addPointColor("rgba(220,220,220,1)");
+	    	
+	    	points = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Combi combi : project.getOutput().getTimeLines().get(i).getNodesStatus().getCombis()) {
+	            	if (combi.getIdNode().equals(idCombi))
+	            	{
+	            		if (combi.getMaximunDrawn() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) combi.getMaximunDrawn();
+	            	}
+				}	
+			}
+	    	chartMM.addSeries(points);
+	    	
+	    	vlPanel.addComponent(chartMM);
+		}
     }
-
-    private boolean filterByProperty(String prop, Item item, String text) {
-        if (item == null || item.getItemProperty(prop) == null
-                || item.getItemProperty(prop).getValue() == null)
-            return false;
-        String val = item.getItemProperty(prop).getValue().toString().trim()
-                .toLowerCase();
-        if (val.startsWith(text.toLowerCase().trim()))
-            return true;
-        return false;
+    
+    void showQueuesFull(Project project, VerticalLayout vlPanel)
+    {
+    	HorizontalLayout hlTupla;
+        Label lTicket,lValue;
+         
+        List<Integer> queuesIds = new ArrayList<Integer>();
+	    for (Queue queueLocal : project.getOutput().getTimeLines().get(0).getNodesStatus().getQueues())
+	    {
+	    	queuesIds.add(queueLocal.getIdNode());
+		}
+	    int timeLinesCount = project.getOutput().getTimeLines().size();
+	    
+	    
+	    for (Integer idQueue : queuesIds)
+	    {
+	    	ThemeResource imgQueue = new ThemeResource("img/queue.png");
+	    	Image image = new Image(null,imgQueue);
+	    	lTicket =  new Label("Queue: ");
+	        lTicket.addStyleName("ticket");
+	        lValue = new Label(idQueue.toString());
+	        hlTupla = new HorizontalLayout();
+	        hlTupla.addComponent(image);
+	        hlTupla.addComponent(lTicket);
+	        hlTupla.addComponent(lValue);
+	        hlTupla.setComponentAlignment(lTicket,Alignment.MIDDLE_CENTER);
+	        hlTupla.setComponentAlignment(lValue,Alignment.MIDDLE_CENTER);
+	        hlTupla.setSpacing(true);
+	        
+	        vlPanel.addComponent(hlTupla);
+	        
+	    	//vlPanel.addComponent(image);	
+	    	
+	    	//BAR - AMAUNT
+	    	
+	    	vlPanel.addComponent(new Label("Amaunt"));	
+	    	final Chart chart = new Chart("ChartQueue");
+	    	chart.setType("Bar");
+	    	
+	    	String labels[]= new String[timeLinesCount];
+	    	double points[]= new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	chart.setLabels(labels);
+	    	
+	    	chart.setWidthJS("750");
+	    	chart.setHeightJS("300"); 
+	    	chart.setPointStrokeColor("#fff");
+	    	chart.addFillColor("rgba(151,187,205,0.5)");
+	    	chart.addStrokeColor("rgba(151,187,205,1)");
+	    	chart.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Queue queue : project.getOutput().getTimeLines().get(i).getNodesStatus().getQueues()) {
+	            	if (queue.getIdNode().equals(idQueue))
+	            	{
+	            		if (queue.getAmount() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) queue.getAmount();
+	            	}
+				}	
+			}
+	    	
+	    	chart.addSeries(points);
+	        
+	    	vlPanel.addComponent(chart);
+	    	
+	    	// CHART - AMOUNT DELAY
+	    	
+	    	vlPanel.addComponent(new Label("Average"));	
+	    	final Chart chartAmountDelay = new Chart("ChartCombi");
+	    	chartAmountDelay.setType("Line");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	double points2[] = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartAmountDelay.setLabels(labels);
+	    	
+	    	chartAmountDelay.setWidthJS("750");
+	    	chartAmountDelay.setHeightJS("300"); 
+	    	chartAmountDelay.setPointStrokeColor("#fff");
+	    	chartAmountDelay.addFillColor("rgba(151,187,205,0.5)");
+	    	chartAmountDelay.addStrokeColor("rgba(151,187,205,1)");
+	    	chartAmountDelay.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Queue queue : project.getOutput().getTimeLines().get(i).getNodesStatus().getQueues()) {
+	            	if (queue.getIdNode().equals(idQueue))
+	            	{
+	            		if (queue.getAverage() == null)
+	            			points2[i] = 0;
+	        		    else
+	        		    	points2[i] = queue.getAverage();
+	            	}
+				}	
+			}
+	    	
+	    	chartAmountDelay.addPoints(points2);
+	        
+	    	vlPanel.addComponent(chartAmountDelay);
+	    	
+	    	//  DURACION SORTEADA
+	    	
+	    	vlPanel.addComponent(new Label("Counter Input/Output"));	
+	    	final Chart chartIO = new Chart("ChartCombi");
+	    	chartIO.setType("Bar");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	points = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartIO.setLabels(labels);
+	    	
+	    	chartIO.setWidthJS("750");
+	    	chartIO.setHeightJS("300"); 
+	    	chartIO.setPointStrokeColor("#fff");
+	    	chartIO.addFillColor("rgba(151,187,205,0.5)");
+	    	chartIO.addStrokeColor("rgba(151,187,205,1)");
+	    	chartIO.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Queue queue : project.getOutput().getTimeLines().get(i).getNodesStatus().getQueues()) {
+	            	if (queue.getIdNode().equals(idQueue))
+	            	{
+	            		if (queue.getCounterInput() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) queue.getCounterInput();
+	            	}
+				}	
+			}
+	    	
+	    	chartIO.addSeries(points);
+	        
+	    	chartIO.addFillColor("rgba(220,220,220,0.5)");
+	    	chartIO.addStrokeColor("rgba(220,220,220,1)");
+	    	chartIO.addPointColor("rgba(220,220,220,1)");
+	    	
+	    	points = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Queue queue : project.getOutput().getTimeLines().get(i).getNodesStatus().getQueues()) {
+	            	if (queue.getIdNode().equals(idQueue))
+	            	{
+	            		if (queue.getCounterOutput() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) queue.getCounterOutput();
+	            	}
+				}	
+			}
+	    	chartIO.addSeries(points);
+	    	
+	    	vlPanel.addComponent(chartIO);
+	    	
+	    	// MINIMA Y MINIMA DURACION SORTEADA
+	    	
+	    	vlPanel.addComponent(new Label("Minimo / Maximo  "));	
+	    	final Chart chartMM = new Chart("ChartCombi");
+	    	chartMM.setType("Bar");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	points = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartMM.setLabels(labels);
+	    	
+	    	chartMM.setWidthJS("750");
+	    	chartMM.setHeightJS("300"); 
+	    	chartMM.setPointStrokeColor("#fff");
+	    	chartMM.addFillColor("rgba(151,187,205,0.5)");
+	    	chartMM.addStrokeColor("rgba(151,187,205,1)");
+	    	chartMM.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Queue queue : project.getOutput().getTimeLines().get(i).getNodesStatus().getQueues()) {
+	            	if (queue.getIdNode().equals(idQueue))
+	            	{
+	            		if (queue.getMinimun() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) queue.getMinimun();
+	            	}
+				}	
+			}
+	    	
+	    	chartMM.addSeries(points);
+	        
+	    	chartMM.addFillColor("rgba(220,220,220,0.5)");
+	    	chartMM.addStrokeColor("rgba(220,220,220,1)");
+	    	chartMM.addPointColor("rgba(220,220,220,1)");
+	    	
+	    	points = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Queue queue : project.getOutput().getTimeLines().get(i).getNodesStatus().getQueues()) {
+	            	if (queue.getIdNode().equals(idQueue))
+	            	{
+	            		if (queue.getMaximun() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) queue.getMaximun();
+	            	}
+				}	
+			}
+	    	chartMM.addSeries(points);
+	    	
+	    	vlPanel.addComponent(chartMM);
+		}
     }
-
-    void createNewReportFromSelection() {
-       // ((BotqueuewebUI) getUI()).openReports(t);
+    
+    void showNormalFull(Project project, VerticalLayout vlPanel)
+    {
+    	HorizontalLayout hlTupla;
+        Label lTicket,lValue;
+         
+        List<Integer> normalsIds = new ArrayList<Integer>();
+	    for (Normal normalLocal : project.getOutput().getTimeLines().get(0).getNodesStatus().getNormals())
+	    {
+	    	normalsIds.add(normalLocal.getIdNode());
+		}
+	    int timeLinesCount = project.getOutput().getTimeLines().size();
+	    
+	    
+	    for (Integer idNormal : normalsIds)
+	    {
+	    	ThemeResource imgCombi = new ThemeResource("img/normal.png");
+	    	Image image = new Image(null,imgCombi);
+	    	lTicket =  new Label("Normal: ");
+	        lTicket.addStyleName("ticket");
+	        lValue = new Label(idNormal.toString());
+	        hlTupla = new HorizontalLayout();
+	        hlTupla.addComponent(image);
+	        hlTupla.addComponent(lTicket);
+	        hlTupla.addComponent(lValue);
+	        hlTupla.setComponentAlignment(lTicket,Alignment.MIDDLE_CENTER);
+	        hlTupla.setComponentAlignment(lValue,Alignment.MIDDLE_CENTER);
+	        hlTupla.setSpacing(true);
+	        
+	        //hlTupla.set
+	        vlPanel.addComponent(hlTupla);
+	        
+	    	//vlPanel.addComponent(image);	
+	    	
+	    	//BAR - COUNTER IMPUT
+	    	
+	    	vlPanel.addComponent(new Label("CounterImput"));	
+	    	final Chart chart = new Chart("ChartNormal");
+	    	chart.setType("Bar");
+	    	
+	    	String labels[]= new String[timeLinesCount];
+	    	double points[]= new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	chart.setLabels(labels);
+	    	
+	    	chart.setWidthJS("750");
+	    	chart.setHeightJS("300"); 
+	    	chart.setPointStrokeColor("#fff");
+	    	chart.addFillColor("rgba(151,187,205,0.5)");
+	    	chart.addStrokeColor("rgba(151,187,205,1)");
+	    	chart.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) { //60
+	            for (Normal normal : project.getOutput().getTimeLines().get(i).getNodesStatus().getNormals()) {
+	            	if (normal.getIdNode().equals(idNormal))
+	            	{
+	            		if (normal.getCounterInput() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) normal.getCounterInput();
+	            	}
+				}	
+			}
+	    	
+	    	chart.addSeries(points);
+	        
+	    	vlPanel.addComponent(chart);
+	    	
+	    	// CHART - AMOUNT DELAY
+	    	
+	    	vlPanel.addComponent(new Label("AmountDelay "));	
+	    	final Chart chartAmountDelay = new Chart("ChartCombi");
+	    	chartAmountDelay.setType("Line");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	double points2[] = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartAmountDelay.setLabels(labels);
+	    	
+	    	chartAmountDelay.setWidthJS("750");
+	    	chartAmountDelay.setHeightJS("300"); 
+	    	chartAmountDelay.setPointStrokeColor("#fff");
+	    	chartAmountDelay.addFillColor("rgba(151,187,205,0.5)");
+	    	chartAmountDelay.addStrokeColor("rgba(151,187,205,1)");
+	    	chartAmountDelay.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Normal normal : project.getOutput().getTimeLines().get(i).getNodesStatus().getNormals()) {
+	            	if (normal.getIdNode().equals(idNormal))
+	            	{
+	            		if (normal.getAmountDelay() == null)
+	            			points2[i] = 0;
+	        		    else
+	        		    	points2[i] = normal.getAmountDelay();
+	            	}
+				}	
+			}
+	    	
+	    	chartAmountDelay.addPoints(points2);
+	        
+	    	vlPanel.addComponent(chartAmountDelay);
+	    	
+	    	// MINIMA Y MINIMA DURACION SORTEADA
+	    	
+	    	vlPanel.addComponent(new Label("Minimo / Maximo  "));	
+	    	final Chart chartMM = new Chart("ChartCombi");
+	    	chartMM.setType("Bar");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	points = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartMM.setLabels(labels);
+	    	
+	    	chartMM.setWidthJS("750");
+	    	chartMM.setHeightJS("300"); 
+	    	chartMM.setPointStrokeColor("#fff");
+	    	chartMM.addFillColor("rgba(151,187,205,0.5)");
+	    	chartMM.addStrokeColor("rgba(151,187,205,1)");
+	    	chartMM.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Normal normal : project.getOutput().getTimeLines().get(i).getNodesStatus().getNormals()) {
+	            	if (normal.getIdNode().equals(idNormal))
+	            	{
+	            		if (normal.getMinimunDrawn() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) normal.getMinimunDrawn();
+	            	}
+				}	
+			}
+	    	
+	    	chartMM.addSeries(points);
+	        
+	    	chartMM.addFillColor("rgba(220,220,220,0.5)");
+	    	chartMM.addStrokeColor("rgba(220,220,220,1)");
+	    	chartMM.addPointColor("rgba(220,220,220,1)");
+	    	
+	    	points = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Normal normal : project.getOutput().getTimeLines().get(i).getNodesStatus().getNormals()) {
+	            	if (normal.getIdNode().equals(idNormal))
+	            	{
+	            		if (normal.getMaximunDrawn() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) normal.getMaximunDrawn();
+	            	}
+				}	
+			}
+	    	chartMM.addSeries(points);
+	    	
+	    	vlPanel.addComponent(chartMM);
+		}
     }
-
-    void updatePriceFooter() {
-        /*String ret = new DecimalFormat("#.##").format(DataProvider
-                .getTotalSum());*/
-        //t.setColumnFooter("Price", "$" + ret);
-
+    
+    void showFunctionFull(Project project, VerticalLayout vlPanel)
+    {
+    	HorizontalLayout hlTupla;
+        Label lTicket,lValue;
+         
+        List<Integer> functionsIds = new ArrayList<Integer>();
+	    for (Function functionLocal : project.getOutput().getTimeLines().get(0).getNodesStatus().getFunctions())
+	    {
+	    	functionsIds.add(functionLocal.getIdNode());
+		}
+	    int timeLinesCount = project.getOutput().getTimeLines().size();
+	    
+	    
+	    for (Integer idFunction : functionsIds)
+	    {
+	    	ThemeResource imgFunction = new ThemeResource("img/function.png");
+	    	Image image = new Image(null,imgFunction);
+	    	lTicket =  new Label("Function: ");
+	        lTicket.addStyleName("ticket");
+	        lValue = new Label(idFunction.toString());
+	        hlTupla = new HorizontalLayout();
+	        hlTupla.addComponent(image);
+	        hlTupla.addComponent(lTicket);
+	        hlTupla.addComponent(lValue);
+	        hlTupla.setComponentAlignment(lTicket,Alignment.MIDDLE_CENTER);
+	        hlTupla.setComponentAlignment(lValue,Alignment.MIDDLE_CENTER);
+	        hlTupla.setSpacing(true);
+	        
+	        //hlTupla.set
+	        vlPanel.addComponent(hlTupla);
+	        
+	    	//vlPanel.addComponent(image);	
+	    	
+	    	//BAR - COUNTER IMPUT
+	    	
+	    	vlPanel.addComponent(new Label("Amount"));	
+	    	final Chart chart = new Chart("ChartFunction");
+	    	chart.setType("Bar");
+	    	
+	    	String labels[]= new String[timeLinesCount];
+	    	double points[]= new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	chart.setLabels(labels);
+	    	
+	    	chart.setWidthJS("750");
+	    	chart.setHeightJS("300"); 
+	    	chart.setPointStrokeColor("#fff");
+	    	chart.addFillColor("rgba(151,187,205,0.5)");
+	    	chart.addStrokeColor("rgba(151,187,205,1)");
+	    	chart.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) { //60
+	            for (Function function : project.getOutput().getTimeLines().get(i).getNodesStatus().getFunctions()) {
+	            	if (function.getIdNode().equals(idFunction))
+	            	{
+	            		if (function.getAmount() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) function.getAmount();
+	            	}
+				}	
+			}
+	    	
+	    	chart.addSeries(points);
+	        
+	    	vlPanel.addComponent(chart);
+		}
     }
-
+    
+    void showCounterFull(Project project, VerticalLayout vlPanel)
+    {
+    	HorizontalLayout hlTupla;
+        Label lTicket,lValue;
+         
+        List<Integer> countersIds = new ArrayList<Integer>();
+	    for (Counter counterLocal : project.getOutput().getTimeLines().get(0).getNodesStatus().getCounters())
+	    {
+	    	countersIds.add(counterLocal.getIdNode());
+		}
+	    int timeLinesCount = project.getOutput().getTimeLines().size();
+	    
+	    
+	    for (Integer idCounter : countersIds)
+	    {
+	    	ThemeResource imgCounter = new ThemeResource("img/counter.png");
+	    	Image image = new Image(null,imgCounter);
+	    	lTicket =  new Label("Counter: ");
+	        lTicket.addStyleName("ticket");
+	        lValue = new Label(idCounter.toString());
+	        hlTupla = new HorizontalLayout();
+	        hlTupla.addComponent(image);
+	        hlTupla.addComponent(lTicket);
+	        hlTupla.addComponent(lValue);
+	        hlTupla.setComponentAlignment(lTicket,Alignment.MIDDLE_CENTER);
+	        hlTupla.setComponentAlignment(lValue,Alignment.MIDDLE_CENTER);
+	        hlTupla.setSpacing(true);
+	        
+	        //hlTupla.set
+	        vlPanel.addComponent(hlTupla);
+	        
+	    	//vlPanel.addComponent(image);	
+	    	
+	    	//BAR - COUNTER IMPUT
+	    	
+	    	vlPanel.addComponent(new Label("DeltaTProductivity"));	
+	    	final Chart chart = new Chart("ChartFunction");
+	    	chart.setType("Bar");
+	    	
+	    	String labels[]= new String[timeLinesCount];
+	    	double points[]= new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	chart.setLabels(labels);
+	    	
+	    	chart.setWidthJS("750");
+	    	chart.setHeightJS("300"); 
+	    	chart.setPointStrokeColor("#fff");
+	    	chart.addFillColor("rgba(151,187,205,0.5)");
+	    	chart.addStrokeColor("rgba(151,187,205,1)");
+	    	chart.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) { //60
+	            for (Counter counter : project.getOutput().getTimeLines().get(i).getNodesStatus().getCounters()) {
+	            	if (counter.getIdNode().equals(idCounter))
+	            	{
+	            		if (counter.getDeltaTProductivity() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) counter.getDeltaTProductivity();
+	            	}
+				}	
+			}
+	    	
+	    	chart.addSeries(points);
+	        
+	    	vlPanel.addComponent(chart);
+	    	
+	    	//BAR - COUNTER IMPUT
+	    	
+	    	vlPanel.addComponent(new Label("TotalProductivity"));	
+	    	final Chart chart2 = new Chart("ChartFunction");
+	    	chart2.setType("Bar");
+	    	
+	    	labels= new String[timeLinesCount];
+	    	points= new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	chart2.setLabels(labels);
+	    	
+	    	chart2.setWidthJS("750");
+	    	chart2.setHeightJS("300"); 
+	    	chart2.setPointStrokeColor("#fff");
+	    	chart2.addFillColor("rgba(151,187,205,0.5)");
+	    	chart2.addStrokeColor("rgba(151,187,205,1)");
+	    	chart2.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) { //60
+	            for (Counter counter : project.getOutput().getTimeLines().get(i).getNodesStatus().getCounters()) {
+	            	if (counter.getIdNode().equals(idCounter))
+	            	{
+	            		if (counter.getTotalProductivity() == null)
+	        		    	points[i] = 0;
+	        		    else
+	        		    	points[i] = (double) counter.getTotalProductivity();
+	            	}
+				}	
+			}
+	    	
+	    	chart2.addSeries(points);
+	        
+	    	vlPanel.addComponent(chart2);
+	    	
+	    	// CHART - AMOUNT DELAY
+	    	
+	    	vlPanel.addComponent(new Label("ProductivityPerTime"));	
+	    	final Chart chartAmountDelay = new Chart("ChartCounter");
+	    	chartAmountDelay.setType("Line");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	double points2[] = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartAmountDelay.setLabels(labels);
+	    	
+	    	chartAmountDelay.setWidthJS("750");
+	    	chartAmountDelay.setHeightJS("300"); 
+	    	chartAmountDelay.setPointStrokeColor("#fff");
+	    	chartAmountDelay.addFillColor("rgba(151,187,205,0.5)");
+	    	chartAmountDelay.addStrokeColor("rgba(151,187,205,1)");
+	    	chartAmountDelay.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Counter counter : project.getOutput().getTimeLines().get(i).getNodesStatus().getCounters()) {
+	            	if (counter.getIdNode().equals(idCounter))
+	            	{
+	            		if (counter.getProductivityPerTime() == null)
+	            			points2[i] = 0;
+	        		    else
+	        		    	points2[i] = counter.getProductivityPerTime();
+	            	}
+				}	
+			}
+	    	
+	    	chartAmountDelay.addPoints(points2);
+	        
+	    	vlPanel.addComponent(chartAmountDelay);
+		}
+    }
 }
