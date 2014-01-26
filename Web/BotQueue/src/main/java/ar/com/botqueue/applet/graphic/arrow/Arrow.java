@@ -18,5 +18,7 @@ public interface Arrow {
 	
 	public Node addDotBeforeFrom(Node thisDotInArrow, double zoom);
 	public Node addDotNextTo(Node thisDotInArrow, double zoom);
+	
+	public double getProbabilisticBranch();
 		
 }

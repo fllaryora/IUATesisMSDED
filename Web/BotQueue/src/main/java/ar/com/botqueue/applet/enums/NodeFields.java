@@ -1,10 +1,10 @@
-package ar.com.botqueue.applet.graphic.node.fields;
+package ar.com.botqueue.applet.enums;
 
 public class NodeFields {
 	
 	/** node names */
 	public static final String QUEUES = "queues";
-	public static final String NORMAL = "normals";
+	public static final String NORMALS = "normals";
 	public static final String COMBIS = "combis";
 	public static final String FUNCTIONS = "functions";
 	public static final String COUNTERS = "counters";
@@ -31,38 +31,33 @@ public class NodeFields {
 	
 	/** distribution types */
 	public static final String UNIFORM = "uniform";
-	/*public static final String NORMAL = "normals";
-	public static final String COMBIS = "combis";
-	public static final String FUNCTIONS = "functions";
-	public static final String COUNTERS = "counters";
+	public static final String NORMAL = "normal";
+	public static final String DETERMINISTIC = "deterministic";
+	public static final String EXPONENTIAL = "exponential";
+	public static final String TRIANGULAR = "triangular";
+	public static final String BETA = "beta";
+	public static final String LOG_NORMAL = "log-normal";
+	 
+	public static final String LEAST = "least";
+	public static final String HIGHEST = "highest";
 	
+	public static final String CONSTANT = "constant";
 	
-	/*
-	 * 
-
-    "uniform"
+	public static final String MEAN = "mean";
+	public static final String VARIANCE = "variance";
 	
-						"least"
-						"highest"
-"deterministic"
-"constant"
-"normal"
-						"mean"
-						"variance"
-						 "exponential"
-						 
-						"lambda"
-						 "triangular"
-						"least"
-						"highest"
-						"mode"
-						"beta"
-						"minimun"
-						"maximun"
-						"shapeAlpha"
-						"shapeBeta"
-						"escale"
-						"shape"
-						"minimun"*/
-
+	public static final String LAMBDA = "lambda";
+	
+	//least highest
+	public static final String MODE = "mode";
+	
+	public static final String MINIMUN = "minimun";
+	public static final String MAXIMUN = "maximun";
+	public static final String SHAPE_ALPHA = "shapeAlpha";
+	public static final String SHAPE_BETA = "shapeBeta";
+	
+	//minimun
+	public static final String SHAPE = "shape";
+	public static final String ESCALE = "escale";
+	
 }

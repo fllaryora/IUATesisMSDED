@@ -21,6 +21,8 @@ public class Principal extends AbstractVaadinApplet {
 		graphic = new GraphicDTO();
 		nodeWorld = new EventHandler(this, this.graphic);
 		nodeWorld.setBounds(this.getBounds());
+		//this.setSize(800, 600);
+		
 		this.add(nodeWorld);
 		nodeWorld.setVisible(true);
 		//no se puede escribir sobre algo que no tiene foco.
@@ -43,6 +45,7 @@ public class Principal extends AbstractVaadinApplet {
 		/* Lo que no aclaro el color se pone en rojo
 		 * asi me doy cuenta que no estoy pensando bien*/
 		this.setForeground(Color.RED);
+		this.graphic.testFastExample(this);
 		this.nodeWorld.forcePaint();
 	}
 	
@@ -190,12 +193,12 @@ public class Principal extends AbstractVaadinApplet {
    		 	createPreviusDot();
         else if (command.equalsIgnoreCase("getNodeInfo"))
         	getNodeInfo();
-		//editNode(void)
-		//busca si ahy un solo nodo seleccionado
-		//hago un instance of del nodo
-		//cambio una variable especificia 
-		
-		
+        else if (command.equalsIgnoreCase("editNode"))
+        	editNode(params);
+        else if (command.equalsIgnoreCase("getModelInfo"))//length y modelSeed
+        	getModelInfo(params);
+        else if (command.equalsIgnoreCase("getModelConstructInfo"))//length y modelSeed
+		getModelConstructInfo( params);
 	}
 	
 	/** 
@@ -205,6 +208,25 @@ public class Principal extends AbstractVaadinApplet {
 		this.graphic.getNodeInfo(this);
 		return ;
 		
+	}
+	
+	/** 
+	 * set all data of some node
+	 * */
+	public void editNode(Object[] params){
+		this.graphic.editNode(params);
+		return ;
+		
+	}
+	
+	public void getModelInfo(Object[] params){
+		this.graphic.getModelInfo(this, params);
+		return ;
+	}
+	
+	public void getModelConstructInfo(Object[] params){
+		this.graphic.getModelConstructInfo(this, params);
+		return ;
 	}
 	
 }

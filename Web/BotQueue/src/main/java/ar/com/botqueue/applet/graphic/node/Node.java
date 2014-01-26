@@ -53,6 +53,6 @@ public interface Node{
 	public String getLabel();
 	public void setLabel(String label);
 	
-	public String getJson(int id, List<Integer> preceders, List<Integer> followers);
-
+	public String getJson(int id, List<Integer> preceders, List<Integer> followers ,  List<Double> probabilisticBranch);
+	public String getJsonConstruct(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch); 
 }

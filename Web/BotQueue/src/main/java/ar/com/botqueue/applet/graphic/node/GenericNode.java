@@ -199,7 +199,7 @@ public class GenericNode implements Node, Comparable<Node>{
 		this.label = label;
 	}
 
-	public String getJson(int id, List<Integer> preceders, List<Integer> followers) {
+	public String getJson(int id, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch) {
 		return "{}";
 	}
 	
@@ -235,4 +235,7 @@ public class GenericNode implements Node, Comparable<Node>{
 		return ret;
 	}
 	
+	public String getJsonConstruct(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch){
+		return "{}";
+	} 
 }

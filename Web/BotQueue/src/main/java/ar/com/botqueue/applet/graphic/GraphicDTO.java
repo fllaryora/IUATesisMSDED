@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.com.botqueue.applet.Principal;
+import ar.com.botqueue.applet.enums.NodeFields;
 import ar.com.botqueue.applet.enums.NodeTypes;
 import ar.com.botqueue.applet.graphic.arrow.GenericArrow;
 import ar.com.botqueue.applet.graphic.node.Combi;
@@ -448,23 +449,92 @@ public class GraphicDTO {
 		return false;
 	}
 	
+	public void getModelInfo(Principal destination,Object[] params){	
+		getModelInfo(destination,gi(params[0]),gi(params[1]));
+	}
+	
+
+	public String getModelInfo(Principal destination,int length, int seedModel){
+		//clasifico
+		String queues = "\""+NodeFields.QUEUES+"\":[  ";
+		String combis = "\""+NodeFields.COMBIS+"\":[  ";
+		String normals = "\""+NodeFields.NORMALS+"\":[  ";
+		String functions = "\""+NodeFields.FUNCTIONS+"\":[ ";
+		String counters = "\""+NodeFields.COUNTERS+"\":[  ";
+		for(Node nextNode:this.nodes){
+			String jsonArrayElement = getNodeJson(nextNode)+",";
+			if(nextNode instanceof Queue)
+				queues += jsonArrayElement;
+			if(nextNode instanceof Normal)
+				normals += jsonArrayElement;
+			if(nextNode instanceof Combi)
+				combis += jsonArrayElement;
+			if(nextNode instanceof Function)
+				functions += jsonArrayElement;
+			if(nextNode instanceof Counter)
+				counters += jsonArrayElement;
+		}
+		queues = queues.substring(0, queues.length() - 1)+" ]";
+		combis = combis.substring(0, combis.length() - 1)+" ]";
+		normals = normals.substring(0, normals.length() - 1)+" ]";
+		functions = functions.substring(0, functions.length() - 1)+" ]";
+		counters = counters.substring(0, counters.length() - 1)+" ]";
+		
+		
+		String model = "{ \"length\":"+ length +
+				", \"seed\":"+seedModel+
+				", \"transformation\": {"+
+				queues+","+combis+","+normals+","+functions+","+counters+"} }";
+		destination.vaadinUpdateVariable("editModel", model, true);
+		return model;
+		
+	}
+	
+	public String getModelConstructInfo(Principal destination, Object[] p){
+		return getModelConstructInfo( destination, gi(p[0]), gi(p[1]));
+	}
+	public String getModelConstructInfo(Principal destination,int length, int seedModel){
+		//clasifico
+		String queues = "\""+NodeFields.QUEUES+"\":[  ";
+		String combis = "\""+NodeFields.COMBIS+"\":[  ";
+		String normals = "\""+NodeFields.NORMALS+"\":[  ";
+		String functions = "\""+NodeFields.FUNCTIONS+"\":[ ";
+		String counters = "\""+NodeFields.COUNTERS+"\":[  ";
+		for(Node nextNode:this.nodes){
+			String jsonArrayElement = getNodeConstructJson(nextNode)+",";
+			if(nextNode instanceof Queue)
+				queues += jsonArrayElement;
+			if(nextNode instanceof Normal)
+				normals += jsonArrayElement;
+			if(nextNode instanceof Combi)
+				combis += jsonArrayElement;
+			if(nextNode instanceof Function)
+				functions += jsonArrayElement;
+			if(nextNode instanceof Counter)
+				counters += jsonArrayElement;
+		}
+		queues = queues.substring(0, queues.length() - 1)+" ]";
+		combis = combis.substring(0, combis.length() - 1)+" ]";
+		normals = normals.substring(0, normals.length() - 1)+" ]";
+		functions = functions.substring(0, functions.length() - 1)+" ]";
+		counters = counters.substring(0, counters.length() - 1)+" ]";
+		
+		
+		String model = "{ \"length\":"+ length +
+				", \"seed\":"+seedModel+
+				", \"transformation\": {"+
+				queues+","+combis+","+normals+","+functions+","+counters+"} }";
+		destination.vaadinUpdateVariable("editModelConstruct", model, true);
+		return model;
+		
+	}
+
+	
 	public String getNodeInfo(Principal destination){
 		Node nextNode = getOnlyOneSelected();
 		if (nextNode == null)
 			return "{}";
-		int idNode = this.nodes.indexOf(nextNode);
-		List<Integer> preceders = new ArrayList<Integer>();
-		List<Integer> followers = new ArrayList<Integer>();
-		for(GenericArrow edge: this.edges){
-			if( edge.getHeadArrow().equals(edge) ){
-				followers.add( this.nodes.indexOf(edge.getTailArrow()) );
-			}
-			if( edge.getTailArrow().equals(edge) ){
-				preceders.add( this.nodes.indexOf(edge.getHeadArrow()) );
-			}
-		}
-		
-		String json = nextNode.getJson(idNode, preceders, followers);
+		String json = getNodeJson(nextNode);
 		if(nextNode instanceof Queue)
 			destination.vaadinUpdateVariable("editQueue", json, true);
 		if(nextNode instanceof Normal)
@@ -478,5 +548,135 @@ public class GraphicDTO {
 		
 		return json; 
 	}
+
+	private String getNodeJson(Node nextNode) {
+		int idNode = this.nodes.indexOf(nextNode)+1;
+		List<Integer> preceders = new ArrayList<Integer>();
+		List<Integer> followers = new ArrayList<Integer>();
+		List<Double> probabilisticBranch = new ArrayList<Double>();
+		for(GenericArrow edge: this.edges){
+			if( edge.getHeadArrow().equals(nextNode) ){
+				preceders.add( this.nodes.indexOf(edge.getTailArrow()) +1);				
+			}
+			if( edge.getTailArrow().equals(nextNode) ){
+				probabilisticBranch.add(edge.getProbabilisticBranch());
+				followers.add( this.nodes.indexOf(edge.getHeadArrow()) +1);
+
+			}
+		}
+		return nextNode.getJson(idNode, preceders, followers, probabilisticBranch);
+	}
+	
+	
+	private String getNodeConstructJson(Node nextNode) {
+		//TODO puntos y prob del las flechas
+		int idNode = this.nodes.indexOf(nextNode)+1;
+		List<Integer> preceders = new ArrayList<Integer>();
+		List<Integer> followers = new ArrayList<Integer>();
+		List<Double> probabilisticBranch = new ArrayList<Double>();
+		for(GenericArrow edge: this.edges){
+			if( edge.getHeadArrow().equals(nextNode) ){
+				preceders.add( this.nodes.indexOf(edge.getTailArrow()) +1);				
+			}
+			if( edge.getTailArrow().equals(nextNode) ){
+				probabilisticBranch.add(edge.getProbabilisticBranch());
+				followers.add( this.nodes.indexOf(edge.getHeadArrow()) +1);
+
+			}
+		}
+		return nextNode.getJsonConstruct(idNode, preceders, followers, probabilisticBranch);
+	}
+	
+	public void editNode(Object[] p){
+		
+		//(String)params[0]), (String)params[1]
+				
+		Node nextNode = getOnlyOneSelected();
+		if (nextNode == null)
+			return;
+		if(nextNode instanceof Queue)
+			//resource, fixedCost, variableCost
+			((Queue)nextNode).editQueue(gi(p[0]), gd(p[1]), gd(p[2]),(String)p[3]);
+		if(nextNode instanceof Normal)
+			//distribution, seed, least, highest, constant, mean, variance, lambda, mode, minimun, maximun, shapeAlpha, shapeBeta, shape, escale, probBranch
+			((Normal)nextNode).editNormal( (String)p[0], gi(p[1]), gd(p[2]), gd(p[3]), gd(p[4]),gd(p[5]), gd(p[6]), gd(p[7]), gd(p[8]), gd(p[9]), gd(p[10]),gd(p[11]), gd(p[12]), gd(p[13]), gd(p[14]), gb(p[15]),(String)p[16]);
+		if(nextNode instanceof Combi)
+			//distribution, seed, least, highest, constant, mean, variance, lambda, mode, minimun, maximun, shapeAlpha, shapeBeta, shape, escale, probBranch
+			((Combi)nextNode).editCombi((String)p[0], gi(p[1]), gd(p[2]), gd(p[3]), gd(p[4]),gd(p[5]), gd(p[6]), gd(p[7]), gd(p[8]), gd(p[9]), gd(p[10]),gd(p[11]), gd(p[12]), gd(p[13]), gd(p[14]), gb(p[15]),(String)p[16]);
+		if(nextNode instanceof Function)
+			//input, output, probBranch
+			((Function)nextNode).editFunction(gi(p[0]), gi(p[1]), gb(p[2]),(String)p[3]);
+		if(nextNode instanceof Counter)
+			//quantity, cycle
+			((Counter)nextNode).editCounter(gi(p[0]),gi(p[1]),(String)p[2]);
+		return ;
+		
+	}
+	
+	private int gi(Object value){
+     try  
+     {  
+         return Integer.parseInt((String)value);  
+         
+      } catch(NumberFormatException nfe)  
+      {  
+          return 0;  
+      }  
+		
+	}
+	
+	private double gd(Object value){
+	     try  
+	     {  
+	         return Double.parseDouble((String)value);  
+	         
+	      } catch(NumberFormatException nfe)  
+	      {  
+	          return 0.0;  
+	      }  
+			
+	}
+	
+	private boolean gb(Object value){
+		if( ((String)value).equalsIgnoreCase("yes")) return true;
+		else return false;
+	}
+	
+
+	public void testFastExample(Principal destination){
+		Node panadero = NodeFactory.createNode(NodeTypes.QUEUE, 70+40, 20+10, "Panadero");
+	    Node amazar = NodeFactory.createNode(NodeTypes.COMBI, 70+26, 20+112, "Amazar");
+	    Node cocinar = NodeFactory.createNode(NodeTypes.NORMAL, 70+170, 20+112, "Cocinar");
+	    Node cortar = NodeFactory.createNode(NodeTypes.FUNCTION, 70+314, 20+112, "Cortar");
+	    Node servir = NodeFactory.createNode(NodeTypes.COUNTER, 70+458, 20+112, "Servir"); 
+	    
+	    nodes.add(servir);
+	    nodes.add(cortar);
+	    nodes.add(cocinar);
+	    nodes.add( amazar );
+	    nodes.add(panadero);
+	    
+	   
+	    GenericArrow toAmazar = new GenericArrow(nodes,panadero,amazar,1.0);
+	    toAmazar.headRotate();
+	    toAmazar.tailRotate();toAmazar.tailRotate();toAmazar.tailRotate();
+	    GenericArrow toPanadero = new GenericArrow(nodes,amazar,panadero,1.0);
+	    toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();
+	    toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();
+	    
+	    GenericArrow toCocinar = new GenericArrow(nodes,amazar,cocinar,1.0);
+	    GenericArrow toCortar = new GenericArrow(nodes,cocinar,cortar,1.0);
+	    GenericArrow toServir = new GenericArrow(nodes,cortar,servir,1.0);
+	    
+	    
+	    
+	    edges.add( toServir );
+	    edges.add( toCortar );
+	    edges.add( toCocinar );
+	    edges.add( toAmazar );
+	    edges.add( toPanadero );
+	    
+	    System.out.println( this.getModelInfo(destination, 600 , -1) );
+	  }
 	
 }

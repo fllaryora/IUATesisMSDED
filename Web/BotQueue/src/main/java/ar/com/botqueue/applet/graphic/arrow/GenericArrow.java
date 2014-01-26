@@ -27,6 +27,9 @@ public class GenericArrow implements Arrow{
 	private BindSurface tailSurface;
 	private BindSurface headSurface;
 	
+	private double probabilisticBranch; 
+	private boolean enableProb;
+	
 	//constantes
 	private final double phi = Math.toRadians(20);
 	private final int widthArrow = 10;
@@ -34,6 +37,8 @@ public class GenericArrow implements Arrow{
 	public GenericArrow(List<Node> modelNodes, Node tail,Node head, double zoom){
 		this.handleredNodes = modelNodes;
 		this.arrowNodes = new ArrayList<DotNode>();
+		this.probabilisticBranch = 0.0;
+		enableProb = false;
 		this.currentColor = Color.BLACK;
 		
 		this.tailArrow = tail;
@@ -255,5 +260,16 @@ public class GenericArrow implements Arrow{
 		}
 		return false;
 	}
+
+	public double getProbabilisticBranch() {
+		return probabilisticBranch;
+	}
+
+	public void setProbabilisticBranch(double probabilisticBranch, boolean enable) {
+		this.probabilisticBranch = probabilisticBranch;
+		this.enableProb = enable;
+		//TODO activar y desactivar mostrar el prob en el primer punto de la flecha
+	}
+	
 	
 }
