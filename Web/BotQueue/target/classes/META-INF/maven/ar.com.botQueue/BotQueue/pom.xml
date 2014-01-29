@@ -4,12 +4,22 @@
   <groupId>ar.com.botQueue</groupId>
   <artifactId>BotQueue</artifactId>
   
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   
   <packaging>jar</packaging>
   
   <name>BotQueue</name>
   <description>Modelador grafico</description>
+  
+  <dependencies>
+  <dependency>
+	<groupId>org.json</groupId>
+	<artifactId>json</artifactId>
+	<version>20131018</version>
+</dependency>
+  </dependencies>
+  
+            
   
    <build>
     <plugins>

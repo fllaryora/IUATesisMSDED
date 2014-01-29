@@ -1,6 +1,7 @@
 package ar.com.botqueue.applet.graphic;
 
 import java.awt.Graphics;
+import java.io.ObjectOutputStream.PutField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -248,8 +249,11 @@ public class GraphicDTO {
 		if(nodeA instanceof DotNode || nodeA instanceof DotNode){
 			return false;
 		}
-		edges.add(new GenericArrow(nodes , nodeA, nodeB, zoom));
+		GenericArrow ga= new GenericArrow(nodes , nodeA, nodeB, zoom);
+		edges.add(ga);
+		ga.setProbabilisticBranch(0.0, nodeA.isProbBranch());
 		return true;
+		
 	}
 	
 	/**
@@ -263,6 +267,7 @@ public class GraphicDTO {
 			ga = getArrowByDotArrow();
 		return ga;
 	}
+	
 	
 	private GenericArrow getArrowByTwoNodes(){
 		Node nodeA = null;
@@ -333,6 +338,7 @@ public class GraphicDTO {
 		GenericArrow ga = getArrow();
 		if(ga != null){
 			ga.invertArrow();
+			ga.setProbabilisticBranch(ga.getProbabilisticBranch(), ga.isEnableProb());
 			return true;
 		}
 		return false;
@@ -387,6 +393,7 @@ public class GraphicDTO {
 				if(ga.isOwnDot(dotNode)){
 					//la saca de la flecha y del modelo
 					ga.quitDotArrow(dotNode);
+					ga.setProbabilisticBranch(ga.getProbabilisticBranch(), ga.isEnableProb());
 					return true;
 				}
 			}
@@ -414,6 +421,7 @@ public class GraphicDTO {
 				if(ga.isOwnDot(dotNode)){
 					//la saca de la flecha y del modelo
 					ga.addDotNextTo(dotNode, zoom);
+					ga.setProbabilisticBranch(ga.getProbabilisticBranch(), ga.isEnableProb());
 					return true;
 				}
 			}
@@ -441,6 +449,7 @@ public class GraphicDTO {
 				if(ga.isOwnDot(dotNode)){
 					//la saca de la flecha y del modelo
 					ga.addDotBeforeFrom(dotNode, zoom);
+					ga.setProbabilisticBranch(ga.getProbabilisticBranch(), ga.isEnableProb());
 					return true;
 				}
 			}
@@ -529,6 +538,19 @@ public class GraphicDTO {
 		
 	}
 
+	private String getNameList(Node nextNode){
+		List<GenericArrow> nodeEdges = this.getEdges(nextNode);
+		String json2 = "{ \"nameList\":[  ";
+		for(GenericArrow currentEdge : nodeEdges){
+			int idNode = this.nodes.indexOf(currentEdge.getHeadArrow()) +1;
+			String name = currentEdge.getHeadArrow().getLabel();
+			json2 += "{\"id\" : "+idNode+", \"name\": \""+name+"\"} ,";
+			
+		}
+		json2 = json2.substring(0, json2.length()-1);
+		json2 += " ] }";
+		return json2;
+	} 
 	
 	public String getNodeInfo(Principal destination){
 		Node nextNode = getOnlyOneSelected();
@@ -537,12 +559,20 @@ public class GraphicDTO {
 		String json = getNodeJson(nextNode);
 		if(nextNode instanceof Queue)
 			destination.vaadinUpdateVariable("editQueue", json, true);
-		if(nextNode instanceof Normal)
+		if(nextNode instanceof Normal){
+			json = getNameList(nextNode)+ "***"+json;
 			destination.vaadinUpdateVariable("editNormal", json, true);
-		if(nextNode instanceof Combi)
+		}
+			
+		if(nextNode instanceof Combi){
+			json = getNameList(nextNode)+ "***"+json;
 			destination.vaadinUpdateVariable("editCombi", json, true);
-		if(nextNode instanceof Function)
+		}
+		if(nextNode instanceof Function){
+			json = getNameList(nextNode)+ "***"+json;
 			destination.vaadinUpdateVariable("editFunction", json, true);
+		}
+		
 		if(nextNode instanceof Counter)
 			destination.vaadinUpdateVariable("editCounter", json, true);
 		
@@ -587,25 +617,91 @@ public class GraphicDTO {
 		return nextNode.getJsonConstruct(idNode, preceders, followers, probabilisticBranch);
 	}
 	
-	public void editNode(Object[] p){
+	private List<GenericArrow> getEdges(Node nextNode) {
+		List<GenericArrow> ret = new ArrayList<GenericArrow>();
 		
+		for(GenericArrow edge: this.edges){
+			
+			if( edge.getTailArrow().equals(nextNode) ){
+				ret.add(edge);
+			}
+		}
+		return ret;
+	}
+	
+	public void editNode(Object[] p){
+		String[] numers = null;
 		//(String)params[0]), (String)params[1]
-				
+		String probabilistics;
 		Node nextNode = getOnlyOneSelected();
 		if (nextNode == null)
 			return;
 		if(nextNode instanceof Queue)
 			//resource, fixedCost, variableCost
 			((Queue)nextNode).editQueue(gi(p[0]), gd(p[1]), gd(p[2]),(String)p[3]);
-		if(nextNode instanceof Normal)
+		if(nextNode instanceof Normal){
 			//distribution, seed, least, highest, constant, mean, variance, lambda, mode, minimun, maximun, shapeAlpha, shapeBeta, shape, escale, probBranch
+			 probabilistics = (String)p[17];
+			 if(probabilistics != null &&  probabilistics.trim().isEmpty() == false)
+				 numers = probabilistics.split(",");
 			((Normal)nextNode).editNormal( (String)p[0], gi(p[1]), gd(p[2]), gd(p[3]), gd(p[4]),gd(p[5]), gd(p[6]), gd(p[7]), gd(p[8]), gd(p[9]), gd(p[10]),gd(p[11]), gd(p[12]), gd(p[13]), gd(p[14]), gb(p[15]),(String)p[16]);
-		if(nextNode instanceof Combi)
+			List<GenericArrow> nodeEdges = getEdges(nextNode);
+			for(GenericArrow edge: nodeEdges){
+				if(gb(p[15])){
+					for (int i = 0; i < numers.length/2 ; i++){
+						int idNode = gi(numers[i*2]);
+						int currentIdNode = this.nodes.indexOf(edge.getTailArrow()) +1;
+						if(idNode == currentIdNode)
+							edge.setProbabilisticBranch(gd(numers[i*2+1]), true);
+					}
+				}
+				else
+					edge.setProbabilisticBranch(0.0, false);
+			}
+			
+			}
+		if(nextNode instanceof Combi){
+			 probabilistics = (String)p[17];
+			 if(probabilistics != null &&  probabilistics.trim().isEmpty() == false)
+				 numers = probabilistics.split(",");
 			//distribution, seed, least, highest, constant, mean, variance, lambda, mode, minimun, maximun, shapeAlpha, shapeBeta, shape, escale, probBranch
 			((Combi)nextNode).editCombi((String)p[0], gi(p[1]), gd(p[2]), gd(p[3]), gd(p[4]),gd(p[5]), gd(p[6]), gd(p[7]), gd(p[8]), gd(p[9]), gd(p[10]),gd(p[11]), gd(p[12]), gd(p[13]), gd(p[14]), gb(p[15]),(String)p[16]);
-		if(nextNode instanceof Function)
+			List<GenericArrow> nodeEdges = getEdges(nextNode);
+			for(GenericArrow edge: nodeEdges){
+				if(gb(p[15])){
+					for (int i = 0; i < numers.length/2 ; i++){
+						int idNode = gi(numers[i*2]);
+						int currentIdNode = this.nodes.indexOf(edge.getTailArrow()) +1;
+						if(idNode == currentIdNode)
+							edge.setProbabilisticBranch(gd(numers[i*2+1]), true);
+					}
+				}
+				else
+					edge.setProbabilisticBranch(0.0, false);
+			}
+		}
+
+		if(nextNode instanceof Function){
+			 probabilistics = (String)p[4];
+			 if(probabilistics != null &&  probabilistics.trim().isEmpty() == false)
+				 numers = probabilistics.split(",");
 			//input, output, probBranch
 			((Function)nextNode).editFunction(gi(p[0]), gi(p[1]), gb(p[2]),(String)p[3]);
+			List<GenericArrow> nodeEdges = getEdges(nextNode);
+			for(GenericArrow edge: nodeEdges){
+				if(gb(p[2])){
+					for (int i = 0; i < numers.length/2 ; i++){
+						int idNode = gi(numers[i*2]);
+						int currentIdNode = this.nodes.indexOf(edge.getTailArrow()) +1;
+						if(idNode == currentIdNode)
+							edge.setProbabilisticBranch(gd(numers[i*2+1]), true);
+					}
+				}
+				else
+					edge.setProbabilisticBranch(0.0, false);
+			}
+		}
+
 		if(nextNode instanceof Counter)
 			//quantity, cycle
 			((Counter)nextNode).editCounter(gi(p[0]),gi(p[1]),(String)p[2]);

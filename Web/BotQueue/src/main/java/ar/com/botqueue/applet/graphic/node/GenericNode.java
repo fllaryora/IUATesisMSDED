@@ -237,5 +237,10 @@ public class GenericNode implements Node, Comparable<Node>{
 	
 	public String getJsonConstruct(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch){
 		return "{}";
+	}
+
+	@Override
+	public boolean isProbBranch() {
+		return false;
 	} 
 }

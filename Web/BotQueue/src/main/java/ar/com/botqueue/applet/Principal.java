@@ -199,6 +199,8 @@ public class Principal extends AbstractVaadinApplet {
         	getModelInfo(params);
         else if (command.equalsIgnoreCase("getModelConstructInfo"))//length y modelSeed
 		getModelConstructInfo( params);
+		
+		this.nodeWorld.forcePaint();
 	}
 	
 	/** 

@@ -115,8 +115,8 @@ public class Combi extends GenericNode{
 		}
 		else if (this.distribution.equalsIgnoreCase(NodeFields.TRIANGULAR)){
 			ret += super.putString(NodeFields.DISTRIBUTION, NodeFields.TRIANGULAR)+","+
-					super.putValue(NodeFields.MAXIMUN , this.maximun)+","+
-					super.putValue(NodeFields.MINIMUN, this.minimun)+","+
+					super.putValue(NodeFields.HIGHEST , this.highest)+","+
+					super.putValue(NodeFields.LEAST, this.least)+","+
 					super.putValue(NodeFields.MODE, this.mode)+","+
 					super.putValue(NodeFields.SEED, this.seed);
 		
@@ -202,8 +202,8 @@ public class Combi extends GenericNode{
 		}
 		else if (this.distribution.equalsIgnoreCase(NodeFields.TRIANGULAR)){
 			ret += super.putString(NodeFields.DISTRIBUTION, NodeFields.TRIANGULAR)+","+
-					super.putValue(NodeFields.MAXIMUN , this.maximun)+","+
-					super.putValue(NodeFields.MINIMUN, this.minimun)+","+
+					super.putValue(NodeFields.HIGHEST , this.highest)+","+
+					super.putValue(NodeFields.LEAST, this.least)+","+
 					super.putValue(NodeFields.MODE, this.mode)+","+
 					super.putValue(NodeFields.SEED, this.seed);
 		
@@ -239,5 +239,10 @@ public class Combi extends GenericNode{
 		ret += "}";
 		return ret;
 		
+	}
+	
+	@Override
+	public boolean isProbBranch() {
+		return this.probBranch;
 	}
 }

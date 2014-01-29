@@ -268,7 +268,17 @@ public class GenericArrow implements Arrow{
 	public void setProbabilisticBranch(double probabilisticBranch, boolean enable) {
 		this.probabilisticBranch = probabilisticBranch;
 		this.enableProb = enable;
-		//TODO activar y desactivar mostrar el prob en el primer punto de la flecha
+		DotNode point = arrowNodes.get(0);
+		if(this.enableProb){
+			point.enableProbabilisticBranch(""+this.probabilisticBranch);
+		} else {
+			point.disableProbabilisticBranch();
+		}
+		
+	}
+
+	public boolean isEnableProb() {
+		return enableProb;
 	}
 	
 	

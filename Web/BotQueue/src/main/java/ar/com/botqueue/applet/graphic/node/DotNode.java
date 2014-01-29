@@ -23,14 +23,14 @@ public class DotNode extends GenericCircularNode {
 		}
 	}
 	
-	public void ponerMensaje(String msg){
+	public void enableProbabilisticBranch(String msg){
 		if(msg.length() > 0){
 			this.labelEnabled = true;
 			this.label = msg;
 		}
 	}
 	
-	public void quitarMensaje(){
+	public void disableProbabilisticBranch(){
 		this.labelEnabled = false;
 	}
 	

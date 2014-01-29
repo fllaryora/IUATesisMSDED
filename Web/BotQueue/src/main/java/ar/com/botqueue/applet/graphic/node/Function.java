@@ -79,4 +79,9 @@ public class Function extends GenericCircularNode{
 			return ret;
 	}
 	
+	@Override
+	public boolean isProbBranch() {
+		return this.probBranch;
+	}
+	
 }
