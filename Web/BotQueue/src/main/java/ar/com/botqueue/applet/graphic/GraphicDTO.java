@@ -668,13 +668,18 @@ public class GraphicDTO {
 			//distribution, seed, least, highest, constant, mean, variance, lambda, mode, minimun, maximun, shapeAlpha, shapeBeta, shape, escale, probBranch
 			((Combi)nextNode).editCombi((String)p[0], gi(p[1]), gd(p[2]), gd(p[3]), gd(p[4]),gd(p[5]), gd(p[6]), gd(p[7]), gd(p[8]), gd(p[9]), gd(p[10]),gd(p[11]), gd(p[12]), gd(p[13]), gd(p[14]), gb(p[15]),(String)p[16]);
 			List<GenericArrow> nodeEdges = getEdges(nextNode);
+			
 			for(GenericArrow edge: nodeEdges){
 				if(gb(p[15])){
+					System.out.println(" leng"+ numers.length);
 					for (int i = 0; i < numers.length/2 ; i++){
 						int idNode = gi(numers[i*2]);
-						int currentIdNode = this.nodes.indexOf(edge.getTailArrow()) +1;
-						if(idNode == currentIdNode)
+						System.out.println("id node " + idNode);
+						int currentIdNode = this.nodes.indexOf(edge.getHeadArrow()) +1;
+						if(idNode == currentIdNode){
+							System.out.println("hacia el nodo "+idNode+" la probabilidad"+gd(numers[i*2+1]));
 							edge.setProbabilisticBranch(gd(numers[i*2+1]), true);
+						}
 					}
 				}
 				else
@@ -727,7 +732,6 @@ public class GraphicDTO {
 		if(value == null) return 0.0;
 	     try  
 	     {  
-	    	 System.out.println("aaaaaaa"+(String)value);
 	         return Double.parseDouble((String)value);  
 	         
 	      } catch(NumberFormatException nfe)  
