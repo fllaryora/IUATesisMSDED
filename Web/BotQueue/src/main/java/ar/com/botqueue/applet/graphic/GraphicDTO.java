@@ -629,6 +629,7 @@ public class GraphicDTO {
 		return ret;
 	}
 	
+	
 	public void editNode(Object[] p){
 		String[] numers = null;
 		//(String)params[0]), (String)params[1]
@@ -710,6 +711,7 @@ public class GraphicDTO {
 	}
 	
 	private int gi(Object value){
+		if(value == null) return 0;
      try  
      {  
          return Integer.parseInt((String)value);  
@@ -722,8 +724,10 @@ public class GraphicDTO {
 	}
 	
 	private double gd(Object value){
+		if(value == null) return 0.0;
 	     try  
 	     {  
+	    	 System.out.println("aaaaaaa"+(String)value);
 	         return Double.parseDouble((String)value);  
 	         
 	      } catch(NumberFormatException nfe)  
@@ -734,6 +738,7 @@ public class GraphicDTO {
 	}
 	
 	private boolean gb(Object value){
+		if(value == null) return false;
 		if( ((String)value).equalsIgnoreCase("yes")) return true;
 		else return false;
 	}
@@ -771,8 +776,9 @@ public class GraphicDTO {
 	    edges.add( toCocinar );
 	    edges.add( toAmazar );
 	    edges.add( toPanadero );
-	    
+	    amazar.select();
 	    System.out.println( this.getModelInfo(destination, 600 , -1) );
+	    
 	  }
 	
 }

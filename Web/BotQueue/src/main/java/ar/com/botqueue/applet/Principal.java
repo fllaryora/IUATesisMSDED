@@ -46,6 +46,14 @@ public class Principal extends AbstractVaadinApplet {
 		 * asi me doy cuenta que no estoy pensando bien*/
 		this.setForeground(Color.RED);
 		this.graphic.testFastExample(this);
+		Object[] params = new Object[18]; 
+		String probabilistics = "3,0.9,5,0.1";
+		params[17]= probabilistics;
+		params[0]= "deterministic";
+		params[4]= "10.0";
+		params[15]= "yes";
+		params[16]= "Amazar";
+		doExecute("editNode", params);
 		this.nodeWorld.forcePaint();
 	}
 	
