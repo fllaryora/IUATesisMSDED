@@ -671,7 +671,6 @@ public class GraphicDTO {
 			
 			for(GenericArrow edge: nodeEdges){
 				if(gb(p[15])){
-					System.out.println(" leng"+ numers.length);
 					for (int i = 0; i < numers.length/2 ; i++){
 						int idNode = gi(numers[i*2]);
 						System.out.println("id node " + idNode);
