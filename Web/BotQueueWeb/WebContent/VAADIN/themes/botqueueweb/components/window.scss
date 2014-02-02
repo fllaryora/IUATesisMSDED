@@ -3,6 +3,7 @@
 	.v-window {
 		@include fade-in;
 		@include box-shadow(0 4px 20px rgba(0,0,0,.5));
+	    border-style: solid;
 	}
 	
 	.v-shadow-window {

@@ -4951,6 +4951,7 @@ body .botqueueweb.v-app .v-app-loading {
 	-webkit-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+	border-style: solid;
 }
 
 .botqueueweb .v-shadow-window {

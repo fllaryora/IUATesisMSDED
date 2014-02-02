@@ -1,0 +1,35 @@
+BotQueue según marketing:
+
+¿Qué es el sistema BotQueue?
+Es una Herramienta de planificación, comparación, investigación y prueba de organizaciones con cadenas de producción, servucción y/o montaje.
+
+¿Cuándo usar BotQueue?
+Cuando se quiere empezar o reconfigurar la cadena de producción, servucción y/o montaje.
+
+¿Quienes son los usuarios?
+Todos los interesados en la cadena de producción, servucción y/o montaje de su organización, como ser el gerente de producción.
+
+¿Por qué usar BotQueue en una organización si ya se conozce el tiempo, el costo y la cantidad de producción actual?
+Si bien puedo simular el tiempo, el costo y la cantidad de producción con la configuración actual, se puede además simular dificultades, retrasos o cambios de la configuracion de los empleados obteniendo así una mejor idea de la eficiencia, capacidad y potencial de la cadena de producción, servucción y/o montaje.
+
+¿Dónde puedo usar BotQueue?
+En cualquier lugar donde se tenga acceso a internet, BotQueue es un servicio.
+
+¿Cuáles son los veneficios que ofrece usar BotQueue?
+Usandolo se obtiene resultados de la simulación para esa configuración. El tiempo, el costo y la cantidad de producción pueden variar de simulación en simulación.
+Al obtener las varios resultados planificados por este y otro posible software se entiende mejor la posible desviación que se puede tener a futuro para la realidad.
+
+¿Qué tan cerca estan los resultados de la realidad al usar BotQueue?
+------
+
+¿Cuáles son los aspectos que no cubre BotQueue?
+Encontramos dos desventajas. 
+La primera es que el gerente debe realizar una estadistica de producción sobre cada tarea en forma previa, para así conocer la distribución de cada tarea de la cadena y poder simular. Cronometrar a los empleados puede no gustarle.
+La segunda es que no responde en forma directa preguntas sobre la ganancia en cada periodo en el mercado de la producción total.
+Eso es porque no sabemos que porcentaje de la producción se vendera en cada periodo, tampoco conocemos el valor de las variables macro y micro economicas y su evolución de periodo en periodo, y por todo eso no podemos decirle a que costo debe fijar el producto en el mercado. El gerente deberia de contar con un sistema que le responda esas preguntas teniendo como entrada la produccion en cada periodo.
+
+¿Cómo funciona  BotQueue?
+BotQueue es un modelador de eventos discretos de tipo manual. El cual contabiliza en que lugar y en que momento estan los recursos mediante simulación.
+
+¿Cómo usar BotQueue?
+------------------------------------------

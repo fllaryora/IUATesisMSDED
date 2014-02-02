@@ -46,31 +46,12 @@ public class Reporte extends VerticalLayout implements View {
     	
     	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
     	
-    	com.example.botqueueweb.dto.input.Queue qu = projectBussines.getQueue();
+    	//com.example.botqueueweb.dto.input.Queue qu = projectBussines.getQueue();
     	
     	Project project = projectBussines.getProject(idProject);
     	//System.out.println(project.getName());
     	setMargin(true);
     	
-    	HorizontalLayout top = new HorizontalLayout();
-    	top.setWidth("100%");
-    	top.setSpacing(true);
-    	top.addStyleName("toolbar");
-    	addComponent(top);
-    	
-    	Label lTicket =  new Label("Proyecto: ");
-        lTicket.addStyleName("ticket");
-        lTicket.setSizeUndefined();
-        Label lValue = new Label(project.getName());
-        lValue.setSizeUndefined();
-        top.addComponent(lTicket);
-        top.addComponent(lValue);
-        top.setSizeUndefined();
-        top.setHeight("25px");
-    	top.setComponentAlignment(lTicket, Alignment.MIDDLE_RIGHT);
-    	top.setComponentAlignment(lValue, Alignment.MIDDLE_RIGHT);
-    	addComponent(top);
-    	    	
     	Panel bodyPanel = new Panel();
     	bodyPanel.setWidth("100%");
     	bodyPanel.setHeight("100%");
@@ -96,6 +77,8 @@ public class Reporte extends VerticalLayout implements View {
         
         addComponent(chart2);*/
         
+        showTop(project,vlPanel);
+        
         showSummaryReport(project,vlPanel);
         
         showCounterFull(project,vlPanel);
@@ -108,6 +91,37 @@ public class Reporte extends VerticalLayout implements View {
         addComponent(bodyPanel);
     }
 
+    void showTop(Project project, VerticalLayout vlPanel)
+    {
+    	HorizontalLayout top = new HorizontalLayout();
+    	top.setWidth("100%");
+    	//top.setHeight("30px");
+    	top.setSpacing(true);
+    	top.addStyleName("toolbar");
+    	//addComponent(top);
+    	
+    	Label lTicket =  new Label("Proyecto: ");
+        lTicket.addStyleName("ticket");
+        lTicket.setSizeUndefined();
+        Label lValue = new Label(project.getName());
+        lValue.setSizeUndefined();
+        
+        ThemeResource imgBot = new ThemeResource("img/bot.png");
+    	Image image = new Image(null,imgBot);
+    	
+        top.addComponent(image);
+        top.addComponent(lTicket);
+        top.addComponent(lValue);
+        top.addComponent(new Label(" "));
+        top.setSizeUndefined();
+        //top.setHeight("25px");
+        
+    	top.setComponentAlignment(lTicket, Alignment.MIDDLE_CENTER);
+    	top.setComponentAlignment(lValue, Alignment.MIDDLE_CENTER);
+    	vlPanel.addComponent(top);
+    	vlPanel.setComponentAlignment(top, Alignment.MIDDLE_RIGHT);
+    }
+    
     void showSummaryReport(Project project, VerticalLayout vlPanel)
     {
     	vlPanel.setSpacing(true);

@@ -8,6 +8,7 @@ import com.google.code.morphia.annotations.Embedded;
 public class Function {
 
 	private Integer idNode;
+	private String name;
 	private Integer input;
 	private Integer output;
 	private List<Integer> preceders;
@@ -49,6 +50,12 @@ public class Function {
 	}
 	public void setProbabilisticBranch(List<Double> probabilisticBranch) {
 		this.probabilisticBranch = probabilisticBranch;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
