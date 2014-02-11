@@ -1,6 +1,8 @@
 package ar.com.botqueue.applet.enums;
 
 public class NodeFields {
+	public static final String TRANSFORMATION = "transformation";
+	public static final String ARROWS = "arrows";
 	
 	/** node names */
 	public static final String QUEUES = "queues";
@@ -12,6 +14,11 @@ public class NodeFields {
 	/** node fiels */
 	public static final String ID_NODE = "idNode";
 	public static final String NAME = "name";
+	public static final String POS_X = "posX";
+	public static final String POS_Y = "posY";
+	public static final String PROBAB_BRANCH = "probBranch";
+	
+	
 	public static final String PROCEDERS = "preceders";
 	public static final String FOLLOWERS = "followers";
 	

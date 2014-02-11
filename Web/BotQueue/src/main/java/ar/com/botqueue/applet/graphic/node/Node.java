@@ -56,5 +56,7 @@ public interface Node{
 	public boolean isProbBranch();
 	
 	public String getJson(int id, List<Integer> preceders, List<Integer> followers ,  List<Double> probabilisticBranch);
-	public String getJsonConstruct(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch); 
+	public String getJsonSaveFile(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch);
+
+	public String getJsonSaveFile(); 
 }

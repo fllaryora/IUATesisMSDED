@@ -211,6 +211,10 @@ public class GenericNode implements Node, Comparable<Node>{
 		return "\""+field+"\":"+value;
 	} 
 	
+	protected String putValue(String field, boolean value){
+		return "\""+field+"\":"+(value?"true":"false");
+	} 
+	
 	protected String putString(String field, String value){
 		return "\""+field+"\":"+"\""+value+"\"";
 	}
@@ -235,12 +239,16 @@ public class GenericNode implements Node, Comparable<Node>{
 		return ret;
 	}
 	
-	public String getJsonConstruct(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch){
+	public String getJsonSaveFile(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch){
 		return "{}";
 	}
 
 	@Override
 	public boolean isProbBranch() {
 		return false;
-	} 
+	}
+	
+	public String getJsonSaveFile(){
+		return "{}";
+	}
 }

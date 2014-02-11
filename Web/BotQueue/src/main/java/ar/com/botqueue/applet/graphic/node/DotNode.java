@@ -2,7 +2,9 @@ package ar.com.botqueue.applet.graphic.node;
 
 import java.awt.Font;
 import java.awt.Graphics;
+import java.util.List;
 
+import ar.com.botqueue.applet.enums.NodeFields;
 import ar.com.botqueue.applet.graphic.label.Label;
 
 public class DotNode extends GenericCircularNode {
@@ -48,6 +50,13 @@ public class DotNode extends GenericCircularNode {
 		//eq pinto adentro circulo=  R'ala'2 < (x-x1)ala2 + (y-y2)ala2
 		if(rmouse > 0.0) return false;
 		return true;
+	}
+	
+	@Override
+	public String getJsonSaveFile(){
+		return "{"+super.putValue("posX" , this.posX)+","+
+				super.putValue("posY" , this.posY)+","+
+				super.putValue("order" , this.order)+"}";
 	}
 	
 }

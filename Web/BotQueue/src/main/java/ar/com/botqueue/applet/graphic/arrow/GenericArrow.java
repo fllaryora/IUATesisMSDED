@@ -34,6 +34,17 @@ public class GenericArrow implements Arrow{
 	private final double phi = Math.toRadians(20);
 	private final int widthArrow = 10;
 	
+	public GenericArrow( List<Node> modelNodes,Node tail,Node head, List<DotNode> arrowNodes, boolean enableProb, double probabilisticBranch, BindSurface tailSurface, BindSurface headSurface){
+		this.handleredNodes = modelNodes;
+		this.enableProb = enableProb;
+		this.probabilisticBranch = probabilisticBranch;
+		this.arrowNodes = arrowNodes;
+		this.tailArrow = tail;
+		this.tailSurface = tailSurface;
+		this.headArrow = head;
+		this.headSurface = headSurface;
+	}
+	
 	public GenericArrow(List<Node> modelNodes, Node tail,Node head, double zoom){
 		this.handleredNodes = modelNodes;
 		this.arrowNodes = new ArrayList<DotNode>();
@@ -281,5 +292,69 @@ public class GenericArrow implements Arrow{
 		return enableProb;
 	}
 	
+	/////////////*******************obtener json****************************************
+	public String getArrowJson( List<Node> nodes) {
+		String arrowJson = "{";
+		
+		int tail = nodes.indexOf(this.getTailArrow())+1;
+		int head = nodes.indexOf(this.getHeadArrow())+1;
+		
+		arrowJson += putValue("tail",tail)+",";
+		arrowJson += putValue("head",head)+",";
+		arrowJson += putValue("tailSurface",this.tailSurface)+",";
+		arrowJson += putValue("headSurface",this.headSurface)+",";
+		arrowJson += putValue("enableProb",this.enableProb)+",";
+		arrowJson += putValue("probabilisticBranch",this.probabilisticBranch)+",";
+		arrowJson += "\"middlePoints\": [";
+		for(DotNode dotN : this.arrowNodes){
+			arrowJson += dotN.getJsonSaveFile() + " ,";
+		}
+		arrowJson = arrowJson.substring(0, arrowJson.length() - 1);
+		arrowJson += "]}";
+		return arrowJson;
+	}
+	
+	protected String putValue(String field, int value){
+		return "\""+field+"\":"+value;
+	}
+	
+	protected String putValue(String field, boolean value){
+		return "\""+field+"\":"+(value?"true":"false");
+	}
+	
+	protected String putValue(String field, double value){
+		return "\""+field+"\":"+value;
+	} 
+	
+	protected String putValue(String field, BindSurface value){
+		int val = 0;
+		switch(this.headSurface){
+			case NORTH: val = 9;  
+			break;
+			case NORTH_EAST:  val = 1;
+			break;
+			case EAST:  val = 2;
+			break;
+			case SOUTH_EAST:  val = 3;
+			break;
+			case SOUTH:  val = 4;
+			break;
+			case SOUTH_WEST:  val = 5;
+			break;
+			case WEST:  val = 6;
+			break;
+			case NORTH_WEST:  val = 7;
+			break;
+			case CENTER:   val = 8;
+			break;
+		}
+		return "\""+field+"\":"+val;
+	}
+	
+	
+	protected String putString(String field, String value){
+		return "\""+field+"\":"+"\""+value+"\"";
+	}
+		
 	
 }

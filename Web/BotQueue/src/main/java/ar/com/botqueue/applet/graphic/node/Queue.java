@@ -57,12 +57,12 @@ public class Queue extends GenericCircularNode{
 	}
 	
 	@Override
-	public String getJsonConstruct(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch) {
+	public String getJsonSaveFile(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch) {
 		return "{"+
-				super.putValue("posX" , this.posX)+","+
-				super.putValue("posY" , this.posY)+","+
 				super.putValue(NodeFields.ID_NODE , idNode)+","+
 				super.putString(NodeFields.NAME, this.label)+","+
+				super.putValue(NodeFields.POS_X , this.posX)+","+
+				super.putValue(NodeFields.POS_Y , this.posY)+","+
 				super.putValue(NodeFields.RESOURCE,this.resource)+","+
 				super.putValue(NodeFields.FIXED_COST,this.fixedCost)+","+
 				super.putValue(NodeFields.VARIABLE_COST,this.variableCost)+","+

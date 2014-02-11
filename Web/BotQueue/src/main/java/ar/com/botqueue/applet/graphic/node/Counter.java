@@ -67,12 +67,12 @@ public class Counter extends GenericCircularNode{
 	    this.label = label;
 	}
 	@Override
-	public String getJsonConstruct(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch) {
+	public String getJsonSaveFile(int idNode, List<Integer> preceders, List<Integer> followers,  List<Double> probabilisticBranch) {
 		return "{"+
-				super.putValue("posX" , this.posX)+","+
-				super.putValue("posY" , this.posY)+","+
 				super.putValue(NodeFields.ID_NODE , idNode)+","+
 				super.putString(NodeFields.NAME, this.label)+","+
+				super.putValue(NodeFields.POS_X , this.posX)+","+
+				super.putValue(NodeFields.POS_Y , this.posY)+","+
 				super.putValue(NodeFields.QUANTITY,this.quantity)+","+
 				super.putValue(NodeFields.CYCLE,this.cycle)+","+
 				super.putArray(NodeFields.PROCEDERS, preceders)+","+
