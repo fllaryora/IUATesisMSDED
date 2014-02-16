@@ -65,7 +65,22 @@ public class Principal extends AbstractVaadinApplet {
 	
 	@Deprecated
 	private void runSimpleTest(){
-		this.graphic.testFastExample();
+		Object[] params = new Object[1];
+		params[0]= "{ \"length\":600, \"seed\":-1, "
+				+ "\"transformation\": {"
+				+ "\"queues\":[  {\"idNode\":5,\"name\":\"Panadero\",\"posX\":110,\"posY\":30,\"resource\":0,\"fixedCost\":0.0,\"variableCost\":0.0,\"preceders\": [  4],\"followers\": [  4]} ],"
+				+ "\"combis\":[  {\"idNode\":4,\"name\":\"Amazar\",\"posX\":96,\"posY\":132,\"probBranch\":true,\"delay\" : {\"distribution\":\"deterministic\",\"constant\":10.0},\"preceders\": [  5],\"followers\": [  3,5],\"probabilisticBranch\": [  0.9,0.1]} ],"
+				+ "\"normals\":[  {\"idNode\":3,\"name\":\"Cocinar\",\"posX\":240,\"posY\":132,\"probBranch\":false,\"delay\" : {\"distribution\":\"deterministic\",\"constant\":0.0},\"preceders\": [  4],\"followers\": [  2]} ],"
+				+ "\"functions\":[ {\"idNode\":2,\"name\":\"Cortar\",\"posX\":384,\"posY\":132,\"probBranch\":false,\"input\":0,\"output\":0,\"preceders\": [  3],\"followers\": [  1]} ],"
+				+ "\"counters\":[  {\"idNode\":1,\"name\":\"Servir\",\"posX\":528,\"posY\":132,\"quantity\":0,\"cycle\":0,\"preceders\": [  2],\"followers\": [ ]} ]}, "
+				+ "\"arrows\": [{\"tail\":2,\"head\":1,\"tailSurface\":2,\"headSurface\":6,\"enableProb\":false,\"probabilisticBranch\":0.0,\"middlePoints\": [{\"posX\":478,\"posY\":154,\"order\":0} ]} ,"
+				+ "{\"tail\":3,\"head\":2,\"tailSurface\":2,\"headSurface\":6,\"enableProb\":false,\"probabilisticBranch\":0.0,\"middlePoints\": [{\"posX\":347,\"posY\":154,\"order\":0} ]} ,"
+				+ "{\"tail\":4,\"head\":3,\"tailSurface\":2,\"headSurface\":6,\"enableProb\":true,\"probabilisticBranch\":0.9,\"middlePoints\": [{\"posX\":203,\"posY\":154,\"order\":0} ]} ,"
+				+ "{\"tail\":5,\"head\":4,\"tailSurface\":5,\"headSurface\":7,\"enableProb\":false,\"probabilisticBranch\":0.0,\"middlePoints\": [{\"posX\":125,\"posY\":103,\"order\":0} ]} ,"
+				+ "{\"tail\":4,\"head\":5,\"tailSurface\":1,\"headSurface\":3,\"enableProb\":true,\"probabilisticBranch\":0.1,\"middlePoints\": [{\"posX\":138,\"posY\":103,\"order\":0} ]} ] }";
+		doExecute("setAllModelFile", params);
+		
+		/*this.graphic.testFastExample();
 		Object[] params = new Object[18]; 
 		String probabilistics = "3,0.9,5,0.1";
 		params[17]= probabilistics;
@@ -74,8 +89,8 @@ public class Principal extends AbstractVaadinApplet {
 		params[15]= "yes";
 		params[16]= "Amazar";
 		doExecute("editNode", params);
-		System.out.println( this.graphic.getModelInfo(this, 600 , -1) );
-		System.out.println( this.graphic.getAllModelFile(this, 600 , -1) );
+		//System.out.println( this.graphic.getModelInfo(this, 600 , -1) );
+		System.out.println( this.graphic.getAllModelFile(this, 600 , -1) );*/
 	}
 	
 }

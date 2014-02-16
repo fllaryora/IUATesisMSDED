@@ -66,7 +66,7 @@ public class Function extends GenericCircularNode{
 			super.putString(NodeFields.NAME, this.label)+","+
 			super.putValue(NodeFields.POS_X , this.posX)+","+
 			super.putValue(NodeFields.POS_Y , this.posY)+","+
-			super.putValue(NodeFields.PROBAB_BRANCH , this.probBranch)+
+			super.putValue(NodeFields.PROBAB_BRANCH , this.probBranch)+","+
 			super.putValue(NodeFields.INPUT,this.input)+","+
 			super.putValue(NodeFields.OUT_PUT,this.output)+","+
 			super.putArray(NodeFields.PROCEDERS, preceders)+","+

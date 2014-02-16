@@ -15,6 +15,7 @@ import ar.com.botqueue.applet.graphic.GraphicDTO;
 import ar.com.botqueue.applet.graphic.arrow.GenericArrow;
 import ar.com.botqueue.applet.graphic.node.Combi;
 import ar.com.botqueue.applet.graphic.node.Counter;
+import ar.com.botqueue.applet.graphic.node.DotNode;
 import ar.com.botqueue.applet.graphic.node.Function;
 import ar.com.botqueue.applet.graphic.node.Node;
 import ar.com.botqueue.applet.graphic.node.NodeFactory;
@@ -68,7 +69,8 @@ public class VaadinFacade {
         	getAllModelFile(params);
         else if (command.equalsIgnoreCase("getAllModelFile"))
         	getAllModelFile(params);
-		
+        else if (command.equalsIgnoreCase("setAllModelFile"))
+        	setAllModelFile(params);
 		this.nodeWorld.forcePaint();
 	}
 	
@@ -354,140 +356,246 @@ public class VaadinFacade {
 	 * */
 	public void setAllModelFile(Object[] params){
 		Map<Integer, Node> nodeMap = new HashMap<Integer, Node>();
-		if(params.length == 1){
-			String oldModelJson = (String)params[0];
-			
-			JSONObject model = new JSONObject(oldModelJson);
-			
-			JSONObject transformation = model.getJSONObject(NodeFields.TRANSFORMATION);
-			JSONArray arrows = model.getJSONArray(NodeFields.ARROWS);
-			
-			JSONArray queues = transformation.getJSONArray(NodeFields.QUEUES);
-			JSONArray normals = transformation.getJSONArray(NodeFields.NORMALS);
-			JSONArray combis = transformation.getJSONArray(NodeFields.COMBIS);
-			JSONArray counters = transformation.getJSONArray(NodeFields.COUNTERS);
-			JSONArray functions = transformation.getJSONArray(NodeFields.FUNCTIONS);
-			
-			for(int i = 0; i < queues.length(); i++){
-				JSONObject queue = queues.getJSONObject(i);
-				Node queueNode = NodeFactory.createCompleteNode(NodeTypes.QUEUE,
-						queue.getInt(NodeFields.POS_X), queue.getInt(NodeFields.POS_Y),
-						queue.getString(NodeFields.NAME), false, null, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0,
-						queue.getInt(NodeFields.RESOURCE),
-						queue.getDouble(NodeFields.FIXED_COST),
-						queue.getDouble(NodeFields.VARIABLE_COST), 0, 0);
-				nodeMap.put(queue.getInt(NodeFields.ID_NODE), queueNode);
-			}
-			
-			for(int i = 0; i < counters.length(); i++){
-				JSONObject counter = queues.getJSONObject(i);
-				Node counterNode = NodeFactory.createCompleteNode(NodeTypes.COUNTER,
-						counter.getInt(NodeFields.POS_X), counter.getInt(NodeFields.POS_Y),
-						counter.getString(NodeFields.NAME),
-						false, null, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-						counter.getInt(NodeFields.QUANTITY), counter.getInt(NodeFields.CYCLE), 0, 0.0, 0.0, 0, 0);
-				nodeMap.put(counter.getInt(NodeFields.ID_NODE), counterNode);
-			}
-			
-			for(int i = 0; i < functions.length(); i++){
-				JSONObject function = queues.getJSONObject(i);
-				Node functionNode = NodeFactory.createCompleteNode(NodeTypes.FUNCTION,
-						function.getInt(NodeFields.POS_X), function.getInt(NodeFields.POS_Y),
-						function.getString(NodeFields.NAME), 
-						function.getBoolean(NodeFields.PROBAB_BRANCH),
-						null, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0.0, 0.0,
-						function.getInt(NodeFields.INPUT), function.getInt(NodeFields.OUT_PUT));
-				nodeMap.put(function.getInt(NodeFields.ID_NODE), functionNode);
-			}
-			
-			for(int i = 0; i < normals.length(); i++){
-				JSONObject normal = queues.getJSONObject(i);
-				Node normalNode = NodeFactory.createCompleteNode(NodeTypes.NORMAL,
-						normal.getInt(NodeFields.POS_X), normal.getInt(NodeFields.POS_Y),
-						normal.getString(NodeFields.NAME), 
-						normal.getBoolean(NodeFields.PROBAB_BRANCH),
-						normal.getString(NodeFields.DISTRIBUTION),
-						normal.getInt(NodeFields.SEED),
-						normal.getDouble(NodeFields.LEAST),
-						normal.getDouble(NodeFields.HIGHEST),
-						normal.getDouble(NodeFields.CONSTANT),
-						normal.getDouble(NodeFields.MEAN),
-						normal.getDouble(NodeFields.VARIANCE),
-						normal.getDouble(NodeFields.LAMBDA),
-						normal.getDouble(NodeFields.MODE),
-						normal.getDouble(NodeFields.MINIMUN),
-						normal.getDouble(NodeFields.MAXIMUN),
-						normal.getDouble(NodeFields.SHAPE_ALPHA),
-						normal.getDouble(NodeFields.SHAPE_BETA),
-						normal.getDouble(NodeFields.SHAPE),
-						normal.getDouble(NodeFields.ESCALE),
-						0, 0, 0, 0.0, 0.0, 0, 0);
-				nodeMap.put(normal.getInt(NodeFields.ID_NODE), normalNode);
-			}
-			
-			for(int i = 0; i < combis.length(); i++){
-				JSONObject combi = queues.getJSONObject(i);
-				Node combiNode = NodeFactory.createCompleteNode(NodeTypes.COMBI,
-						combi.getInt(NodeFields.POS_X), combi.getInt(NodeFields.POS_Y),
-						combi.getString(NodeFields.NAME), 
-						combi.getBoolean(NodeFields.PROBAB_BRANCH),
-						combi.getString(NodeFields.DISTRIBUTION),
-						combi.getInt(NodeFields.SEED),
-						combi.getDouble(NodeFields.LEAST),
-						combi.getDouble(NodeFields.HIGHEST),
-						combi.getDouble(NodeFields.CONSTANT),
-						combi.getDouble(NodeFields.MEAN),
-						combi.getDouble(NodeFields.VARIANCE),
-						combi.getDouble(NodeFields.LAMBDA),
-						combi.getDouble(NodeFields.MODE),
-						combi.getDouble(NodeFields.MINIMUN),
-						combi.getDouble(NodeFields.MAXIMUN),
-						combi.getDouble(NodeFields.SHAPE_ALPHA),
-						combi.getDouble(NodeFields.SHAPE_BETA),
-						combi.getDouble(NodeFields.SHAPE),
-						combi.getDouble(NodeFields.ESCALE),
-						0, 0, 0, 0.0, 0.0, 0, 0);
-				nodeMap.put(combi.getInt(NodeFields.ID_NODE), combiNode);
-			}
-			
-			int max = nodeMap.size();
-			for(int i = 0; i< max;i++){
-				Node current = nodeMap.get(new Integer(i+1));
-				this.graphic.appendNode(i, current);
-			}
-			
-			//TODO proces json
-			
-			for(int i = 0; i < arrows.length(); i++){
-				JSONObject arrow = queues.getJSONObject(i);
-				JSONArray middlePoints = arrow.getJSONArray("middlePoints");
-				List<Node> dotList = new ArrayList<Node>();
-				for(int j = 0; j < middlePoints.length(); j++){
-					JSONObject point = middlePoints.getJSONObject(i);
-					int order = point.getInt("order");
-					int posX = point.getInt(NodeFields.POS_X);
-					int posY = point.getInt(NodeFields.POS_Y);
-					Node dot = NodeFactory.createNode(NodeTypes.ARROW_DOT, posX, posY, null, order);
-					dotList.add(dot);
+		if(params.length == 1){//tiene que tener el json
+			try{
+				//string to json....
+				String oldModelJson = (String)params[0];
+				JSONObject model = new JSONObject(oldModelJson);
+				JSONObject transformation = model.getJSONObject(NodeFields.TRANSFORMATION);
+				JSONArray arrows = model.getJSONArray(NodeFields.ARROWS);
+				JSONArray queues = transformation.getJSONArray(NodeFields.QUEUES);
+				JSONArray normals = transformation.getJSONArray(NodeFields.NORMALS);
+				JSONArray combis = transformation.getJSONArray(NodeFields.COMBIS);
+				JSONArray counters = transformation.getJSONArray(NodeFields.COUNTERS);
+				JSONArray functions = transformation.getJSONArray(NodeFields.FUNCTIONS);
+				
+				//jsonObject to nodes in map
+				nodeMap.putAll(queueMap(queues));
+				nodeMap.putAll(counterMap(counters));
+				nodeMap.putAll(functionMap(functions));
+				nodeMap.putAll(normalMap(normals));
+				nodeMap.putAll(combiMap(combis));
+				
+				//add all nodes to model 
+				int max = nodeMap.size();
+				for(int i = 0; i< max;i++){
+					Node current = nodeMap.get(new Integer(i+1));
+					this.graphic.appendNode(i, current);
 				}
 				
-				int tail = arrow.getInt("tail");
-				int head = arrow.getInt("head");
-				
-				BindSurface tailSurface = toBindSurface(arrow.getInt("tailSurface"));
-				BindSurface headSurface = toBindSurface(arrow.getInt("headSurface"));
-				
-				boolean enableProb = arrow.getBoolean("enableProb");
-				double probabilisticBranch = arrow.getDouble("probabilisticBranch");
-				//TODO insert arrows
-				
+				//process json of arrows to object
+				List<Node> modelNodes = this.graphic.getModelNode();
+				for(int i = 0; i < arrows.length(); i++){
+					GenericArrow ga = getGA( arrows.getJSONObject(i), nodeMap, modelNodes);
+					this.graphic.appendArrow(ga);
+				}
+			} catch(Exception e){
+				System.err.println("error con "+e.getMessage());
+				e.printStackTrace();
 			}
-			
-		}
+		}//end if params
 		
 	}
 
+	///********************To Mapper***************************************/
+	private Map<Integer, Node> queueMap(JSONArray queues){
+		Map<Integer, Node>  qMap = new HashMap<Integer, Node>();
+		for(int i = 0; i < queues.length(); i++){
+			JSONObject queue = queues.getJSONObject(i);
+			Node queueNode = NodeFactory.createCompleteNode(NodeTypes.QUEUE,
+					queue.getInt(NodeFields.POS_X), queue.getInt(NodeFields.POS_Y),
+					queue.getString(NodeFields.NAME), false, null, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0,
+					queue.getInt(NodeFields.RESOURCE),
+					queue.getDouble(NodeFields.FIXED_COST),
+					queue.getDouble(NodeFields.VARIABLE_COST), 0, 0);
+			qMap.put(queue.getInt(NodeFields.ID_NODE), queueNode);
+		}
+		return qMap;
+	}
 	
+	private Map<Integer, Node> counterMap(JSONArray counters){
+		Map<Integer, Node>  cMap = new HashMap<Integer, Node>();
+		for(int i = 0; i < counters.length(); i++){
+			JSONObject counter = counters.getJSONObject(i);
+			Node counterNode = NodeFactory.createCompleteNode(NodeTypes.COUNTER,
+					counter.getInt(NodeFields.POS_X), counter.getInt(NodeFields.POS_Y),
+					counter.getString(NodeFields.NAME),
+					false, null, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					counter.getInt(NodeFields.QUANTITY), counter.getInt(NodeFields.CYCLE), 0, 0.0, 0.0, 0, 0);
+			cMap.put(counter.getInt(NodeFields.ID_NODE), counterNode);
+		}
+		return cMap;
+	}
+	
+	private Map<Integer, Node> functionMap(JSONArray functions){
+		Map<Integer, Node>  fMap = new HashMap<Integer, Node>();
+		for(int i = 0; i < functions.length(); i++){
+			JSONObject function = functions.getJSONObject(i);
+			Node functionNode = NodeFactory.createCompleteNode(NodeTypes.FUNCTION,
+					function.getInt(NodeFields.POS_X), function.getInt(NodeFields.POS_Y),
+					function.getString(NodeFields.NAME), 
+					function.getBoolean(NodeFields.PROBAB_BRANCH),
+					null, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0.0, 0.0,
+					function.getInt(NodeFields.INPUT), function.getInt(NodeFields.OUT_PUT));
+			fMap.put(function.getInt(NodeFields.ID_NODE), functionNode);
+		}
+		return fMap;
+	}
+	
+	private Map<Integer, Node> normalMap(JSONArray normals){
+		Map<Integer, Node>  nMap = new HashMap<Integer, Node>();
+		for(int i = 0; i < normals.length(); i++){
+			JSONObject normal = normals.getJSONObject(i);
+			Map<String, Object> delay = delayMap( normal.getJSONObject(NodeFields.DELAY) );
+			Node normalNode = NodeFactory.createCompleteNode(NodeTypes.NORMAL,
+					normal.getInt(NodeFields.POS_X), normal.getInt(NodeFields.POS_Y),
+					normal.getString(NodeFields.NAME), 
+					normal.getBoolean(NodeFields.PROBAB_BRANCH),
+					(String)delay.get(NodeFields.DISTRIBUTION),
+					(int)delay.get(NodeFields.SEED),
+					(double)delay.get(NodeFields.LEAST),
+					(double)delay.get(NodeFields.HIGHEST),
+					(double)delay.get(NodeFields.CONSTANT),
+					(double)delay.get(NodeFields.MEAN),
+					(double)delay.get(NodeFields.VARIANCE),
+					(double)delay.get(NodeFields.LAMBDA),
+					(double)delay.get(NodeFields.MODE),
+					(double)delay.get(NodeFields.MINIMUN),
+					(double)delay.get(NodeFields.MAXIMUN),
+					(double)delay.get(NodeFields.SHAPE_ALPHA),
+					(double)delay.get(NodeFields.SHAPE_BETA),
+					(double)delay.get(NodeFields.SHAPE),
+					(double)delay.get(NodeFields.ESCALE),
+					0, 0, 0, 0.0, 0.0, 0, 0);
+			nMap.put(normal.getInt(NodeFields.ID_NODE), normalNode);
+		}
+		return nMap;
+	}
+	
+	private Map<Integer, Node> combiMap(JSONArray combis){
+		Map<Integer, Node>  cMap = new HashMap<Integer, Node>();
+		for(int i = 0; i < combis.length(); i++){
+			JSONObject combi = combis.getJSONObject(i);
+			Map<String, Object> delay = delayMap( combi.getJSONObject(NodeFields.DELAY) );
+			Node combiNode = NodeFactory.createCompleteNode(NodeTypes.COMBI,
+					combi.getInt(NodeFields.POS_X), combi.getInt(NodeFields.POS_Y),
+					combi.getString(NodeFields.NAME), 
+					combi.getBoolean(NodeFields.PROBAB_BRANCH),
+					(String)delay.get(NodeFields.DISTRIBUTION),
+					(int)delay.get(NodeFields.SEED),
+					(double)delay.get(NodeFields.LEAST),
+					(double)delay.get(NodeFields.HIGHEST),
+					(double)delay.get(NodeFields.CONSTANT),
+					(double)delay.get(NodeFields.MEAN),
+					(double)delay.get(NodeFields.VARIANCE),
+					(double)delay.get(NodeFields.LAMBDA),
+					(double)delay.get(NodeFields.MODE),
+					(double)delay.get(NodeFields.MINIMUN),
+					(double)delay.get(NodeFields.MAXIMUN),
+					(double)delay.get(NodeFields.SHAPE_ALPHA),
+					(double)delay.get(NodeFields.SHAPE_BETA),
+					(double)delay.get(NodeFields.SHAPE),
+					(double)delay.get(NodeFields.ESCALE),
+					0, 0, 0, 0.0, 0.0, 0, 0);
+			cMap.put(combi.getInt(NodeFields.ID_NODE), combiNode);
+		}
+		return cMap;
+	}
+	
+	private List<DotNode> getDotNodeList(JSONArray middlePoints){
+		List<DotNode> dotList = new ArrayList<DotNode>();
+		for(int j = 0; j < middlePoints.length(); j++){
+			JSONObject point = middlePoints.getJSONObject(j);
+			int order = point.getInt("order");
+			int posX = point.getInt(NodeFields.POS_X);
+			int posY = point.getInt(NodeFields.POS_Y);
+			Node dot = NodeFactory.createNode(NodeTypes.ARROW_DOT, posX, posY, null, order);
+			dotList.add((DotNode)dot);
+		}
+		return dotList;
+	}
+	
+	private GenericArrow getGA(JSONObject arrow, Map<Integer, Node> nodeMap, List<Node> modelNodes){
+		JSONArray middlePoints = arrow.getJSONArray("middlePoints");
+		List<DotNode> dotList =  getDotNodeList(middlePoints);
+		int tailNumber = arrow.getInt("tail");
+		Node tail = nodeMap.get( new Integer(tailNumber));
+		int headNumber = arrow.getInt("head");
+		Node head = nodeMap.get( new Integer(headNumber));
+		BindSurface tailSurface = toBindSurface(arrow.getInt("tailSurface"));
+		BindSurface headSurface = toBindSurface(arrow.getInt("headSurface"));
+		boolean enableProb = arrow.getBoolean("enableProb");
+		double probabilisticBranch = arrow.getDouble("probabilisticBranch");
+		GenericArrow ga = new GenericArrow( modelNodes, tail, head, dotList, enableProb, probabilisticBranch, tailSurface, headSurface);
+		return ga;
+	}
+	
+	private Map<String, Object> delayMap( JSONObject delay ){
+		Map<String, Object> delayMap = new HashMap<String, Object>();
+		
+		String distribution = delay.getString(NodeFields.DISTRIBUTION);
+		
+		delayMap.put(NodeFields.DISTRIBUTION,  distribution);
+		delayMap.put(NodeFields.CONSTANT, 0.0);
+		delayMap.put(NodeFields.SEED, 0);
+		delayMap.put(NodeFields.LEAST, 0.0);
+		delayMap.put(NodeFields.HIGHEST, 0.0);
+		delayMap.put(NodeFields.MEAN, 0.0);
+		delayMap.put(NodeFields.VARIANCE, 0.0);
+		delayMap.put(NodeFields.LAMBDA, 0.0);
+		delayMap.put(NodeFields.MODE, 0.0);
+		delayMap.put(NodeFields.MINIMUN, 0.0);
+		delayMap.put(NodeFields.MAXIMUN, 0.0);
+		delayMap.put(NodeFields.SHAPE_ALPHA, 0.0);
+		delayMap.put(NodeFields.SHAPE_BETA, 0.0);
+		delayMap.put(NodeFields.SHAPE, 0.0);
+		delayMap.put(NodeFields.ESCALE, 0.0);
+		
+		if (distribution.equalsIgnoreCase(NodeFields.DETERMINISTIC)){
+			delayMap.put(NodeFields.CONSTANT,  delay.getDouble(NodeFields.CONSTANT));
+		}
+		
+		else if (distribution.equalsIgnoreCase(NodeFields.UNIFORM)){
+			delayMap.put(NodeFields.SEED, delay.getInt(NodeFields.SEED));
+			delayMap.put(NodeFields.LEAST, delay.getDouble(NodeFields.LEAST));
+			delayMap.put(NodeFields.HIGHEST, delay.getDouble(NodeFields.HIGHEST));
+		}
+		
+		else if (distribution.equalsIgnoreCase(NodeFields.NORMAL)){
+			delayMap.put(NodeFields.SEED, delay.getInt(NodeFields.SEED));
+			delayMap.put(NodeFields.MEAN, delay.getDouble(NodeFields.MEAN));
+			delayMap.put(NodeFields.VARIANCE, delay.getDouble(NodeFields.VARIANCE));
+		}
+		
+		else if (distribution.equalsIgnoreCase(NodeFields.TRIANGULAR)){
+				delayMap.put(NodeFields.SEED, delay.getInt(NodeFields.SEED));
+				delayMap.put(NodeFields.LEAST, delay.getDouble(NodeFields.LEAST));
+				delayMap.put(NodeFields.HIGHEST, delay.getDouble(NodeFields.HIGHEST));
+				delayMap.put(NodeFields.MODE, delay.getDouble(NodeFields.MODE));
+		
+		}
+		
+		else if (distribution.equalsIgnoreCase(NodeFields.EXPONENTIAL)){
+			delayMap.put(NodeFields.SEED, delay.getInt(NodeFields.SEED));
+			delayMap.put(NodeFields.LAMBDA, delay.getDouble(NodeFields.LAMBDA));
+		}
+		
+		else if (distribution.equalsIgnoreCase(NodeFields.BETA)){
+			delayMap.put(NodeFields.SEED, delay.getInt(NodeFields.SEED));
+			delayMap.put(NodeFields.MINIMUN, delay.getDouble(NodeFields.MINIMUN));
+			delayMap.put(NodeFields.MAXIMUN, delay.getDouble(NodeFields.MAXIMUN));
+			delayMap.put(NodeFields.SHAPE_ALPHA, delay.getDouble(NodeFields.SHAPE_ALPHA));
+			delayMap.put(NodeFields.SHAPE_BETA, delay.getDouble(NodeFields.SHAPE_BETA));
+		}
+		
+		else if (distribution.equalsIgnoreCase(NodeFields.LOG_NORMAL)){
+			delayMap.put(NodeFields.SEED, delay.getInt(NodeFields.SEED));
+			delayMap.put(NodeFields.MINIMUN, delay.getDouble(NodeFields.MINIMUN));
+			delayMap.put(NodeFields.SHAPE, delay.getDouble(NodeFields.SHAPE));
+			delayMap.put(NodeFields.ESCALE, delay.getDouble(NodeFields.ESCALE));
+		}
+		return delayMap;
+	}  
 	///********************Parcers***************************************/
 	private List<Integer> getIdNodes(String[] numers){
 		List<Integer> list = new ArrayList<Integer>();

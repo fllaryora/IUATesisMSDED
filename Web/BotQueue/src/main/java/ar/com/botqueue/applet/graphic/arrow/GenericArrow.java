@@ -43,6 +43,9 @@ public class GenericArrow implements Arrow{
 		this.tailSurface = tailSurface;
 		this.headArrow = head;
 		this.headSurface = headSurface;
+		modelNodes.addAll(arrowNodes);
+		Collections.sort(this.arrowNodes);
+		this.setProbabilisticBranch(this.probabilisticBranch, this.enableProb);
 	}
 	
 	public GenericArrow(List<Node> modelNodes, Node tail,Node head, double zoom){
@@ -301,6 +304,10 @@ public class GenericArrow implements Arrow{
 		
 		arrowJson += putValue("tail",tail)+",";
 		arrowJson += putValue("head",head)+",";
+		
+		System.out.println("tail "+ this.tailSurface +putValue("tailSurface",this.tailSurface));
+		System.out.println("head "+ this.headSurface +putValue("headSurface",this.headSurface));
+		
 		arrowJson += putValue("tailSurface",this.tailSurface)+",";
 		arrowJson += putValue("headSurface",this.headSurface)+",";
 		arrowJson += putValue("enableProb",this.enableProb)+",";
@@ -328,7 +335,7 @@ public class GenericArrow implements Arrow{
 	
 	protected String putValue(String field, BindSurface value){
 		int val = 0;
-		switch(this.headSurface){
+		switch(value){
 			case NORTH: val = 9;  
 			break;
 			case NORTH_EAST:  val = 1;

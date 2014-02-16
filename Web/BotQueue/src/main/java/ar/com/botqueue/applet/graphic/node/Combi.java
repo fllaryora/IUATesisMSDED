@@ -183,7 +183,7 @@ public class Combi extends GenericNode{
 		super.putString(NodeFields.NAME, this.label)+","+
 		super.putValue(NodeFields.POS_X , this.posX)+","+
 		super.putValue(NodeFields.POS_Y , this.posY)+","+
-		super.putValue(NodeFields.PROBAB_BRANCH , this.probBranch);
+		super.putValue(NodeFields.PROBAB_BRANCH , this.probBranch)+",";
 		ret += "\"delay\" : {";
 		
 		if (this.distribution.equalsIgnoreCase(NodeFields.DETERMINISTIC)){

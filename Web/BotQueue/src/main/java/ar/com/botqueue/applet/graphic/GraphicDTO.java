@@ -482,7 +482,6 @@ public class GraphicDTO {
 		 * @return
 		 */
 		public String getAllModelFile(Principal destination,int length, int seedModel){
-			//clasifico//TODO puntos y prob del las flechas
 			String queues = "\""+NodeFields.QUEUES+"\":[  ";
 			String combis = "\""+NodeFields.COMBIS+"\":[  ";
 			String normals = "\""+NodeFields.NORMALS+"\":[  ";
@@ -736,13 +735,18 @@ public class GraphicDTO {
 			this.nodes.add(index, newNode);
 		}
 		
+		/**
+		 * retorna lista de nodos
+		 */
+		public List<Node> getModelNode(){
+			return this.nodes;
+		}
+		
 		/** 
 		 * mete de un modelo ya hecho una flecha
 		 */
-		public void appendArrow(){
-			//this.nodes...model nodes 
-			//GenericArrow e = new GenericArrow( List<Node> modelNodes,Node tail,Node head, List<DotNode> arrowNodes, boolean enableProb, double probabilisticBranch, BindSurface tailSurface, BindSurface headSurface);
-			//this.edges.add(e);
+		public void appendArrow(GenericArrow e ){
+			this.edges.add(e);
 		}
 	//************************************ movimientos************************
 	/**
