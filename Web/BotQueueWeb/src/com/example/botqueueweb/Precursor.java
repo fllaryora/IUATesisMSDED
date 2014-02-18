@@ -241,7 +241,8 @@ public class Precursor extends VerticalLayout implements View {
 			public void buttonClick(ClickEvent event) {
 				CombiWindow cWindow = new CombiWindow((DBObject) JSON.parse("{}"),null,applet,false);
 				cWindow.setHeight("145px");
-				cWindow.setWidth("450px");
+				//cWindow.setWidth("450px");
+				cWindow.setWidth("458px");
             	getUI().addWindow(cWindow);
 			}
 		});
