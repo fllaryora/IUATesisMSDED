@@ -1,5 +1,6 @@
 package com.example.botqueueweb.windows;
 
+import com.example.botqueueweb.enums.WebConstantMessages;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -14,7 +15,7 @@ public class UsuarioWindow extends Window {
 
     public UsuarioWindow() {
     	
-    	this.setCaption("Formulario Usuario");
+    	this.setCaption(WebConstantMessages.USER_FORM);
     	this.setModal(true);
     	//subWindow.setStyleName("body-style");
     	setResizable(false);
@@ -24,28 +25,28 @@ public class UsuarioWindow extends Window {
         setContent(subContent);
                 
         HorizontalLayout hlNombre = new HorizontalLayout();
-        Label lNombre = new Label("Nombre: ");
+        Label lNombre = new Label(WebConstantMessages.NAME);
         lNombre.setWidth("90");
         hlNombre.addComponent(lNombre);
         hlNombre.addComponent(new TextField());
         subContent.addComponent(hlNombre);
         
         HorizontalLayout hlApellido = new HorizontalLayout();
-        Label lApellido = new Label("Apellido: ");
+        Label lApellido = new Label(WebConstantMessages.LASTNAME);
         lApellido.setWidth("90");
         hlApellido.addComponent(lApellido);
         hlApellido.addComponent(new TextField());
         subContent.addComponent(hlApellido);
         
         HorizontalLayout hlUsuario = new HorizontalLayout();
-        Label lUsuario = new Label("Usuario: ");
+        Label lUsuario = new Label(WebConstantMessages.USER);
         lUsuario.setWidth("90");
         hlUsuario.addComponent(lUsuario);
         hlUsuario.addComponent(new TextField());
         subContent.addComponent(hlUsuario);
         
         HorizontalLayout hlPass = new HorizontalLayout();
-        Label lPass = new Label("Contraseña: ");
+        Label lPass = new Label(WebConstantMessages.PASS);
         lPass.setWidth("90");
         hlPass.addComponent(lPass);
         PasswordField pfPass = new PasswordField();
@@ -56,8 +57,8 @@ public class UsuarioWindow extends Window {
         
         HorizontalLayout hlBotones = new HorizontalLayout();
         hlBotones.setSpacing(true);
-        Button bAceptar = new Button("Aceptar");
-        Button bCancelar = new Button("Cancelar");
+        Button bAceptar = new Button(WebConstantMessages.ACEPT);
+        Button bCancelar = new Button(WebConstantMessages.CANCEL);
         bAceptar.setWidth("100");
         bCancelar.setWidth("100");
         hlBotones.addComponent(bAceptar);

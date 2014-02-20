@@ -1,9 +1,9 @@
 package com.example.botqueueweb;
-
+	/** 
+	 * Representa un marco del nabegador, se cea uno por cada request
+	 */
 import javax.servlet.annotation.WebServlet;
-
-import org.bson.types.ObjectId;
-
+import com.example.botqueueweb.enums.WebConstantMessages;
 import com.example.botqueueweb.windows.UsuarioWindow;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -14,11 +14,9 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
-
 import com.vaadin.annotations.Title;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
@@ -45,16 +43,11 @@ import com.vaadin.ui.Window;
 public class BotqueuewebUI extends UI {
 
     private static final long serialVersionUID = 1L;
-
     CssLayout root = new CssLayout();
-
     VerticalLayout loginLayout;
-
     CssLayout menu = new CssLayout();
     CssLayout content = new CssLayout();
 
-    //ObjectId idProject;
-    
     HashMap<String, Class<? extends View>> routes = new HashMap<String, Class<? extends View>>() {
         {
         	put("/Home", Home.class);//put("/dashboard", DashboardView.class);
@@ -71,31 +64,24 @@ public class BotqueuewebUI extends UI {
     HashMap<String, Button> viewNameToMenuButton = new HashMap<String, Button>();
 
     private Navigator nav;
-
-    //private HelpManager helpManager;
+    boolean autoCreateReport = false;
+    Table transactions;
     
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = BotqueuewebUI.class, widgetset = "com.example.botqueueweb.widgetset.BotqueuewebWidgetset")
-	//@VaadinServletConfiguration(productionMode = false, ui = BotqueuewebUI.class, widgetset = "org.vaadin.applet.widgetset.AppletintegrationWidgetset")
 	public static class Servlet extends VaadinServlet {
 	}
-
+	
 	@Override
 	protected void init(VaadinRequest request) {
-		
-        //helpManager = new HelpManager(this);
-
-        setLocale(Locale.US);
-
+        setLocale(request.getLocale());
         setContent(root);
         root.addStyleName("root");
         root.setSizeFull();
-
         Label bg = new Label();
         bg.setSizeUndefined();
         bg.addStyleName("login-bg");
         root.addComponent(bg);
-
         buildLoginView(false);
 	}
 	
@@ -120,13 +106,13 @@ public class BotqueuewebUI extends UI {
         labels.addStyleName("labels");
         loginPanel.addComponent(labels);
 
-        Label welcome = new Label("Acceso");
+        Label welcome = new Label(WebConstantMessages.ACCES);
         welcome.setSizeUndefined();
         welcome.addStyleName("h4");
         labels.addComponent(welcome);
         labels.setComponentAlignment(welcome, Alignment.MIDDLE_LEFT);
 
-        Label title = new Label("BotQueue");
+        Label title = new Label(WebConstantMessages.BOTQUEUE);
         title.setSizeUndefined();
         title.addStyleName("h2");
         title.addStyleName("light");
@@ -138,19 +124,19 @@ public class BotqueuewebUI extends UI {
         fields.setMargin(true);
         fields.addStyleName("fields");
 
-        final TextField username = new TextField("Usuario");
+        final TextField username = new TextField(WebConstantMessages.USER);
         username.focus();
         fields.addComponent(username);
 
-        final PasswordField password = new PasswordField("Contraseña");
+        final PasswordField password = new PasswordField(WebConstantMessages.PASS);
         fields.addComponent(password);
 
-        final Button signin = new Button("Entrar");
+        final Button signin = new Button(WebConstantMessages.SIG_IN);
         signin.addStyleName("default");
         fields.addComponent(signin);
         fields.setComponentAlignment(signin, Alignment.BOTTOM_LEFT);
 
-        final ShortcutListener enter = new ShortcutListener("Entrar",
+        final ShortcutListener enter = new ShortcutListener(WebConstantMessages.SIG_IN,
                 KeyCode.ENTER, null) {
             @Override
             public void handleAction(Object sender, Object target) {
@@ -178,7 +164,7 @@ public class BotqueuewebUI extends UI {
                     }
                     // Add new error message
                     Label error = new Label(
-                            "Usuario o Contraseña incorrecto.",
+                    		WebConstantMessages.BAD_LOGGIN,
                             ContentMode.HTML);
                     error.addStyleName("error");
                     error.setSizeUndefined();
@@ -227,7 +213,7 @@ public class BotqueuewebUI extends UI {
                             {
                                 addStyleName("branding");
                                 Label logo = new Label(
-                                        "<span>Tesis</span> BotQueue",
+                                		WebConstantMessages.LOGO_HTML,
                                         ContentMode.HTML);
                                 logo.setSizeUndefined();
                                 addComponent(logo);
@@ -242,13 +228,14 @@ public class BotqueuewebUI extends UI {
                         VerticalLayout vmUserMenu = new VerticalLayout();
                         vmUserMenu.setSizeUndefined();
                         vmUserMenu.addStyleName("user");
+                        //TODO Buscar pic usuer
                         Image profilePic = new Image(null, new ThemeResource("img/profile-pic.png"));
                         profilePic.setWidth("34px");
                         vmUserMenu.addComponent(profilePic);
+                        //TODO Buscar full name
                         Label userName = new Label("Cristian Zerpa");
                         userName.setSizeUndefined();
                         vmUserMenu.addComponent(userName);
-                        
                         Button settings = new NativeButton("Edit");
                         settings.setStyleName("icon-cog");
                         vmUserMenu.addComponent(settings);
@@ -256,14 +243,13 @@ public class BotqueuewebUI extends UI {
                             @Override
                             public void buttonClick(ClickEvent event) {
                             	Window subWindow = new UsuarioWindow();
-                            	//Notification.show("Hola");
                                 addWindow(subWindow);
                             }
                         });
                         
                         Button exit = new NativeButton("Exit");
                         exit.addStyleName("icon-cancel");
-                        exit.setDescription("Salir");
+                        exit.setDescription(WebConstantMessages.EXIT);
                         vmUserMenu.addComponent(exit);
                         exit.addClickListener(new ClickListener() {
                             @Override
@@ -288,8 +274,7 @@ public class BotqueuewebUI extends UI {
         menu.removeAllComponents();
 
         String[] modulos = new String[] { "Home","Transformacion","Precursor", "Reporte", };
-        for (final String view : modulos)
-        {
+        for (final String view : modulos){
             Button b = new NativeButton();
             b.setCaption(view);
             b.addStyleName("icon-" + view);
@@ -312,6 +297,9 @@ public class BotqueuewebUI extends UI {
         menu.setHeight("100%");
     }
     
+    /** 
+     * No se que hace esta funcion :(
+     */
     private void clearMenuSelection() {
         for (@SuppressWarnings("deprecation")
 		Iterator<Component> it = menu.getComponentIterator(); it.hasNext();) {
@@ -325,7 +313,4 @@ public class BotqueuewebUI extends UI {
             }
         }
     }
-    
-    boolean autoCreateReport = false;
-    Table transactions;
 }
