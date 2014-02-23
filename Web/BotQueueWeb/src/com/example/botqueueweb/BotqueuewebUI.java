@@ -4,9 +4,13 @@ package com.example.botqueueweb;
 	 */
 import javax.servlet.annotation.WebServlet;
 import com.example.botqueueweb.enums.WebConstantMessages;
+import org.bson.types.ObjectId;
+import com.example.botqueueweb.business.ProjectBussines;
+import com.example.botqueueweb.dto.Project;
 import com.example.botqueueweb.windows.UsuarioWindow;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
@@ -16,7 +20,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import com.vaadin.annotations.Title;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
@@ -32,6 +35,7 @@ import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -218,6 +222,7 @@ public class BotqueuewebUI extends UI {
                                 logo.setSizeUndefined();
                                 addComponent(logo);
                             }
+                            
                         });
 
                         // Main menu
@@ -281,9 +286,32 @@ public class BotqueuewebUI extends UI {
             b.addClickListener(new ClickListener() {
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    
+                    //setData(idProject);
+                    if (!view.equalsIgnoreCase("Home") && getData()==null)
+                    {
+                    	//showNotification("Seleccione un proyecto");
+                    	//Notification.show("Seleccione un proyecto", Notification.Type.WARNING_MESSAGE);
+                    	Notification.show("Seleccione un Proyecto", Notification.Type.WARNING_MESSAGE);
+                    	return;
+                    }
+                    else if (view.equalsIgnoreCase("Reporte") && getData()!=null)
+                    {
+                    	ObjectId idProject = (ObjectId) getData();
+                    	ProjectBussines projectBussines = new ProjectBussines();
+                    	Project project = projectBussines.getProject(idProject);
+                    	if (project.getState().equalsIgnoreCase("F"))//todo: Pasar a PENDIENTE
+                    	{
+                    		Notification.show("El Proyecto seleccionado se encuentra Pendiente", Notification.Type.WARNING_MESSAGE);
+    	                	return;
+                    	}
+	                	//showNotification("Seleccione un proyecto");
+	                	//Notification.show("Seleccione un proyecto", Notification.Type.WARNING_MESSAGE);
+	                }
+
                     clearMenuSelection();
                     event.getButton().addStyleName("selected");
-                    //setData(idProject);
+                    
                     if (!nav.getState().equals("/" + view))
                         nav.navigateTo("/" + view);
                 }
@@ -295,6 +323,15 @@ public class BotqueuewebUI extends UI {
         }
         menu.addStyleName("menu");
         menu.setHeight("100%");
+        
+        String f = Page.getCurrent().getUriFragment();
+        if (f != null && f.startsWith("!")) {
+            f = f.substring(1);
+        }
+        if (f == null || f.equals("") || f.equals("/")) {
+            nav.navigateTo("/Home");
+            menu.getComponent(0).addStyleName("selected");
+        }
     }
     
     /** 
