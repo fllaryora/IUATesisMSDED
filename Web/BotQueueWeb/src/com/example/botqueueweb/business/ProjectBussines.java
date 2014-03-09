@@ -31,6 +31,7 @@ public class ProjectBussines {
 		List<Project> projects = new ArrayList<Project>();
 		
 		try {
+			//TODO LLamar DAO
 			mongo = new Mongo("localhost", 27017);
 			Morphia morphia = new Morphia();
 			Datastore ds = morphia.createDatastore(mongo,"test");
@@ -214,6 +215,22 @@ public class ProjectBussines {
 		
 		return queue;
 		
+	}
+	
+	public void insertProject(Project project)
+	{
+		Mongo mongo;
+		List<Project> projects = new ArrayList<Project>();
+		
+		try {
+			mongo = new Mongo("localhost", 27017);
+			Morphia morphia = new Morphia();
+			Datastore ds = morphia.createDatastore(mongo,"test");
+			ds.save(project);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 }
