@@ -74,6 +74,7 @@ public class BotqueuewebUI extends UI {
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = BotqueuewebUI.class, widgetset = "com.example.botqueueweb.widgetset.BotqueuewebWidgetset")
 	public static class Servlet extends VaadinServlet {
+		
 	}
 	
 	@Override

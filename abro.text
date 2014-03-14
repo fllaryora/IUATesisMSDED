@@ -1,0 +1,1835 @@
+    Se cargan al repositorio los generadores aleatorios
+
+Date:   Wed Jul 31 00:13:55 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 031cda99d569811ea1bd478cdc67e3029c665a75
+
+    Ejemplo Java
+
+Date:   Wed Jul 31 23:20:43 2013 -0300
+Author: Zerpa Cristian <cristianzerpa89@gmail.com>
+commit 27d815e2da6a39e9893cc5ff53d4251d6bbc50d7
+
+    se agrega la biblioteca parson que valida y parsea texto json a variables y test unitarios
+
+Date:   Fri Aug 2 01:19:51 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit cb08ce9d3435be7d7b0bbc2d5b6416c2880b4ed6
+
+    comienzo de MPI
+
+Date:   Thu Jun 20 17:08:22 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 1f7d404b480154dffb75a33df52e527a61af5eed
+
+    implementcion subo avances
+
+Date:   Sat Aug 3 20:29:31 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 00dd992204f4547c5f78e32956f381a69495c828
+
+    generador lognormal  corregido ,  se agrego un lognormal con parametro min, que se usa en modelizador y generador beta con parametro min max que se usa en modelizador
+
+Date:   Sat Aug 10 16:10:32 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 275e656fa05653f9bf8e90af624a735b7dfa2568
+
+    empezamos con diagramas de actividad
+
+Date:   Sun Aug 11 13:23:19 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 297085a9fe54fccf0905529cc8975f793703deed
+
+    subo draft
+
+Date:   Sun Aug 11 18:27:11 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit f6694af54c8c362d22af437649f55cae873a2763
+
+    empezando analisis y diseño de compilador
+
+Date:   Sat Aug 17 19:21:06 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit e17190f9804dc12057e3ec10199f396ac1a8de66
+
+    diagramas y estructuras
+
+Date:   Mon Aug 19 19:33:00 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9842284d993bad0fea2351282de55ab231469f8e
+
+    agrego comunicacion de las colas con combis + diagram
+
+Date:   Tue Aug 20 23:45:03 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 6ffcfe5bbe5c979df569662f62de398e4006de23
+
+    diagrama de actividad de nodo Combi
+
+Date:   Sun Aug 25 19:14:57 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit e906f6baa796f10ec61c96fdcdb7e7b066809b4b
+
+    actualización de diagramas
+
+Date:   Sun Sep 1 00:59:23 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 34c6b7bf75053334f3003a315d94c2a21fc3a12a
+
+    actualizacion de diagramas
+
+Date:   Sun Sep 8 16:43:17 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit e3d0667fc37afd1c2936d1775c61fae118518bd9
+
+    refactor de las estructura del proyecto
+
+Date:   Wed Sep 11 21:34:27 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 332f9d08f3fb7742b79e04ea166f49228d3a3458
+
+    refactor
+
+Date:   Wed Sep 11 21:38:39 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 2903d171ba558d79ea6e5a1e9efe993f5b33f32f
+
+    java applet
+
+Date:   Sun Sep 15 04:36:34 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 64be23b5f760478910cb5a00f00a893ecd20a606
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sun Sep 15 04:38:16 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 64be23b 2903d17
+commit 2248c7e9bb2dfe8bd925822ef9b45a99910fe696
+
+    arquitectura
+
+Date:   Sun Sep 15 08:35:09 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit fb92009b6ece82678bbc51853fd492988b379e35
+
+    builder
+
+Date:   Sun Sep 15 11:08:29 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit f5281aea8fed8fad704d61c8d4a103327d52c8db
+
+    flecha
+
+Date:   Sun Sep 15 13:34:49 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit a1742e1babee906c5c2a7c6bc59b0f4157afe994
+
+    BotQueue Teclado y Mouse OK
+
+Date:   Mon Sep 16 03:21:57 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit fc438871a1013379d78e944f5d5253243bce66c2
+
+    validados 1ver.
+
+Date:   Wed Sep 25 13:01:08 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit a83ecb5069d3e4fa2d294c6c66e39bcd734c7990
+
+    mocks en arquitectura
+
+Date:   Sun Sep 29 21:20:03 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 8abe12b798c9352ce8f41ed9982adf76e11f13cc
+
+    mocks en arquitectura
+
+Date:   Sun Sep 29 21:21:47 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit eef002e4742709463c2e4b787bd099ff6143a21a
+
+    mock echos
+
+Date:   Sun Sep 29 21:42:05 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 829178d18839dc00a61652d046aca4629a3f9f16
+
+    mocks de jsonHelper
+
+Date:   Tue Oct 1 01:13:22 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9f8df5b3eeb5c30471b2bab9eff05a67ebd4feb4
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Wed Sep 25 13:13:35 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: a83ecb5 9f8df5b
+commit 429011fb5d983d61f487a4c232636d62c48c8b93
+
+    mas validaciones
+
+Date:   Wed Sep 25 14:45:28 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 1ac48624ee9daa7fcc675fab9572580c59336ed8
+
+    validacion de id diferentes
+
+Date:   Wed Sep 25 18:32:13 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit b38fac8ed1e01d940e518041f6576ca780ce8e76
+
+    schema inicial
+
+Date:   Thu Sep 26 07:54:57 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 342196e6b27955e725917ec5c959f62b9b284984
+
+    armando raffler
+
+Date:   Thu Oct 3 23:50:09 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 88a6ce1415169b0df55a1bea5b7a13f9e3f22b0c
+
+    schema
+
+Date:   Sat Oct 5 13:41:31 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 48b725de301f8fae01fdab9c222685c845765a56
+
+    raffle
+
+Date:   Sat Oct 5 14:07:45 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit e5378910786354183b03bb15af96e8f6fcf555aa
+
+    diagramas de despliegue
+
+Date:   Sat Oct 5 20:02:02 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit eae5f86eb3b375021a554dc713885960700abace
+
+    cambio a live lock
+
+Date:   Sat Oct 5 22:46:27 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit e40f2b0a4e3380fc4b76ddc6963b738dab4aa069
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Thu Sep 26 07:55:43 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: 342196e e40f2b0
+commit f72022b57f289fc55b5a8e2b1902545dda4e84e2
+
+    schemaV2
+
+Date:   Thu Sep 26 23:39:22 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 61ab0d942a681a88558a20d6f015b6df67ac09ad
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Thu Sep 26 23:39:32 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: 61ab0d9 36b168c
+commit 24130eac3a2fff4cfef9bcb9fe1ce5f2d8dc2e4a
+
+    validador para delay deterministico y uniforme. FUNCIONA
+
+Date:   Fri Sep 27 03:38:09 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit c3b3a19a110f66f637a9957e5e9639c1936af915
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Fri Sep 27 03:38:42 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: c3b3a19 c43f54f
+commit 7733bf4c4aa580c43454e4de503a586136e5afc6
+
+    objetos definidos DELAY en schema
+
+Date:   Fri Sep 27 05:17:14 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit c4dedc49307530d924a558a0def0b05bac05f7aa
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Fri Sep 27 05:17:22 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: c4dedc4 ecdae79
+commit 949ff6a0a2d4645cb38d4f6037b6b7a6231a0dee
+
+    mas validaciones con schema
+
+Date:   Fri Sep 27 09:19:13 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit e0c44e4f696c16aefcfa8854bc22e6802c88326b
+
+    mas validaciones con schema
+
+Date:   Fri Sep 27 09:52:27 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 5d4cc54e92d42bcd8cab59dab27296c365a67e2b
+
+    validaciones con schema y parson
+
+Date:   Sat Sep 28 11:56:31 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit d4bd43bae83d6ce5d1602ad851561743af62eeea
+
+    estudio de schemas y add de mocks para el raffler y modifique el  arqui(main.c) porque agregue un send al raffler de los id de los nodos combi
+
+Date:   Mon Oct 7 08:02:03 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 36b168c16ec53404b8891851b1d17e69835232d2
+
+    actualizacion del readme y algunos experimentos con schemas
+
+Date:   Wed Oct 9 01:01:41 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 1cc59e0fd8263af2f248b331062c7bf8052d3256
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Wed Oct 9 01:01:51 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 1cc59e0 24130ea
+commit c43f54f000dc2a87642e543b777fd62a0b83f3e2
+
+    mocks del raffler
+
+Date:   Thu Oct 10 01:53:41 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 577ac3987f921ac08d872eb57108011093766309
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Thu Oct 10 01:53:55 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 577ac39 7733bf4
+commit ecdae7902f31f0d9698cf829da30b4d206dfcd66
+
+    para probar en mpi produ
+
+Date:   Sat Oct 12 16:32:59 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 562b5b85efc0368d813c3d5a781cf8f15066ed19
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sat Oct 12 16:33:23 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 562b5b8 5d4cc54
+commit 1eb401bd656f36e161e9a6c49eddde7b3cd409d4
+
+    mpi_send repaired
+
+Date:   Mon Sep 30 02:15:09 2013 -0300
+Author: ZerpaAndLlaryora <redes3@ar.com.tesis>
+commit 07635b08879cc0b2cde4cd7b065c0e93d4c5f340
+
+    fuu
+
+Date:   Mon Sep 30 02:55:42 2013 -0300
+Author: ZerpaAndLlaryora <redes3@ar.com.tesis>
+commit 61e1c94a9758e60e2a5ac5e4b522f5616b1f047d
+
+    nuevo comunicador
+
+Date:   Sun Oct 13 02:10:39 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit d537d3cbb8561ac0f02625e8baff25d93ca0989a
+
+    nuevo comunicador
+
+Date:   Sun Oct 13 02:19:35 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 37089c00758751f781ad623ab25053a4ec7cfdd4
+
+    mergin
+
+Date:   Mon Sep 30 03:00:29 2013 -0300
+Author: ZerpaAndLlaryora <redes3@ar.com.tesis>
+Merge: 61e1c94 37089c0
+commit 06b64839c9bcccc86da6e5a1eee3cf42966c8c92
+
+    sabelo
+
+Date:   Mon Oct 14 00:04:27 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 609b0184c7d80f4972711d9b1dd483b2d475766a
+
+    modificado
+
+Date:   Tue Oct 15 23:50:58 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 4e20510cc8b6e2117b0c2095460dca0e7ff1fb9a
+
+    leer error
+
+Date:   Wed Oct 16 00:23:00 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 7d5edeae35cbb5dc87a54dd61939a53aa9a54239
+
+    comunicador
+
+Date:   Wed Oct 16 00:54:08 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit e8b2c6ce5be95ddf2f65b76154e5d45a827cc313
+
+    communicators
+
+Date:   Wed Oct 16 02:13:19 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 46ffeb6a527d0909977d3d2674c0a09c090f890c
+
+    resolvi el problema de las llamadas cruzadas
+
+Date:   Wed Oct 16 02:52:13 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 7ce645524f2bb38b33b10420b03d3cb70640f623
+
+    refactor mocks
+
+Date:   Sat Oct 19 19:08:11 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 5144ff06dc1751e6ab02d2b299b5a79a837e03c7
+
+    refactor mocks
+
+Date:   Wed Oct 16 04:42:46 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 851f13edd50cc57dace3fbabaa980e0d55224a71
+
+    se creo draft para el json salida y parcial printer
+
+Date:   Sun Oct 20 18:40:35 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9fd02fe25be30f13d0bbff26fbe91cc4f75582b6
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sat Sep 28 11:57:07 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: d4bd43b 9fd02fe
+commit 9e5cacfe430f7e1794d8fd621d9af33f7e29d1d8
+
+    ultimas validaciones parson
+
+Date:   Sat Sep 28 12:44:52 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 78852e024489c4f1f4333104ca23bb7653180db4
+
+    se implemetó Contador y Funcion
+
+Date:   Thu Oct 24 18:43:21 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit d3ed75df0920d7456b1fc409edcb9cef3cb4e778
+
+    se arreglaron conflictos, y se rehizo codigo borrado
+
+Date:   Thu Oct 24 19:43:44 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: d3ed75d b8e64d7
+commit a174e76c496aaab54040b989256331ccf0baf4a6
+
+    Agregar Cycles a Counter
+
+Date:   Thu Oct 24 23:00:33 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 324278bdb6c464d0959e3227855fa4be06f4947c
+
+    codereview
+
+Date:   Wed Oct 16 11:31:50 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 03ee536d1a74bbfdc158ee65444a1e45846638bd
+
+    codereview
+
+Date:   Wed Oct 16 11:31:54 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 3efa6a95bda1f57ab38c03064c05249b03542ccf
+
+    auto pull request del branch de chen al master
+
+Date:   Wed Oct 16 11:44:00 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 14f1cd5f70c09e4d652b2f217d4c9af56a673a04
+
+    constrccion printer
+
+Date:   Tue Oct 22 01:41:16 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9bc398ec30d45c3e82f7b6bfd695e5c6b99ffa17
+
+    explicacion de errores json/schema y se agregó seed al schema
+
+Date:   Wed Oct 23 06:37:40 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit a5d00452bbb89726e2dc9f091887f107871df90f
+
+    fin de harcer estructura y Llamadas mock falta probar
+
+Date:   Wed Oct 23 21:42:51 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 7ce44d111054f03e8f15f7c5c834e954aaa0feaa
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Wed Oct 23 21:43:05 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 7ce44d1 78852e0
+commit a0a1c8db410384398a22e1f12673ae54cc56aa76
+
+    Se ejecuto y corrigio con test unitario
+
+Date:   Wed Oct 23 22:27:37 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 3e747315166ac843ac61bb4a3a09e65db78fb8bc
+
+    Se ejecuto y corrigio con test unitario
+
+Date:   Wed Oct 23 22:30:05 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit fd7199497f8f8e8821e2af404e26fb4f05b0a9c3
+
+    modifico
+
+Date:   Tue Oct 29 21:47:50 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 5d83087f6eb4e2e1a32208f9045d7a2adeb7ead9
+
+    agregado de documentos
+
+Date:   Tue Oct 29 23:22:56 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 1880142bbca0749c5e2e5ac3cf3aaa8c444be830
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Wed Oct 23 06:39:25 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: a5d0045 1880142
+commit 7707bf4624b86729fda0cdbe005bbc71b40ba9e1
+
+    estructuras nodo generico
+
+Date:   Wed Oct 23 13:33:51 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 12c6b60d67fac4a5b653901fdd6bb2d06f5bdc6f
+
+    estructuras nodo generico fix
+
+Date:   Wed Oct 23 13:36:45 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 66e394f4e7e9c9702e2dbdce5db2475b84a87452
+
+    test envio estructura
+
+Date:   Wed Oct 23 17:14:15 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 4139718882b8fe0a55fa30f18a11153e6ba2f7b8
+
+    implementacion with probe
+
+Date:   Wed Oct 23 18:04:22 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 5948c7bb2aee1e5e5bf01010f9e868a115cd87c6
+
+    implementacion de envio y recepcion de colas y combis
+
+Date:   Wed Oct 23 20:33:11 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit d4de695bfa48ebc195804c6de912378f9d53ba42
+
+    implementacion en funciones
+
+Date:   Wed Oct 23 21:20:41 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 6e3c896f7f14bc7d470cbd611113d3a2fec72f74
+
+    implementacion de envio de escructura en una funcion
+
+Date:   Wed Oct 23 22:00:31 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit f73ded78ae4e46d31f105f4060ad910777cd221f
+
+    implementacion de recibir estructura en una funcion
+
+Date:   Wed Oct 23 22:16:36 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 6cdebcc23bdbc352e1ad805247046d5ecf109620
+
+    implementacion en lugar correspondiente
+
+Date:   Wed Oct 23 22:28:04 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 4a349fc3aff359e986ed6fa7d3d8e4c1562b41ca
+
+    lectura de estructura QUEUE desde json
+
+Date:   Wed Oct 23 23:51:33 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 9ca08902716bcdff76a23f000dc6c16ce0044d37
+
+    actualizacion de ourMPI
+
+Date:   Thu Oct 31 22:45:52 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit d2090d582aed9b24f0068ece145d907911d1a29c
+
+    actualizacion de ourMPI
+
+Date:   Thu Oct 31 23:20:32 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit da6a0cf07dc9a114e43018cbd53a707ba942b4c6
+
+    cambios en el mock de mpi
+
+Date:   Sat Nov 2 13:58:01 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit d39e213e71fa7bed8e5e78f6fbb15fb12b9c5a58
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED into restructuraOurMPI
+
+Date:   Sat Nov 2 15:24:01 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: d39e213 9ca0890
+commit 3b511d175d59eff9d11a39f5ea5e677232ed1e39
+
+    Restructura our mpi para mejorar la legibilidad
+    
+    Merge pull request #1 from fllaryora/restructuraOurMPI
+
+Date:   Sat Nov 2 11:35:31 2013 -0700
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+Merge: 9ca0890 3b511d1
+commit 8c3c865477e5d684f0d59331c5d722d3155d56f0
+
+    al merge
+
+Date:   Sat Nov 2 17:06:58 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit c083748f8fc70ece7e9ee31c426fd5c0a6bb4c53
+
+    se unifica con lo de el codigo de cristian el merge
+
+Date:   Thu Oct 24 06:06:16 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit a9e338c560ce5f9f14603e95e3ae59ac71f6bfe3
+
+    2do fix merge
+
+Date:   Thu Oct 24 06:26:28 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 2867d9543ed8e06cf65080111506c621a73945ef
+
+    3er fix merge
+
+Date:   Thu Oct 24 06:41:48 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 8810f9a30a223ccb623b8a158ac3bcbe7148491b
+
+    4er fix merge
+
+Date:   Thu Oct 24 06:44:37 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 775ccf82a6ff5191a8c50caa4327c206691e8b2b
+
+    fix queues
+
+Date:   Thu Oct 24 11:32:58 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 5a206b38beb215bb86d9ac1b95ae136fdf4f1e27
+
+    fix combi
+
+Date:   Thu Oct 24 12:34:13 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 36d99db70be370f3e160a2a96936dbd2bb9f0788
+
+    se implementò recepcion de probabilistic branch
+
+Date:   Thu Oct 24 13:15:17 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 64e932c1bcca5ac9e36a17d7b0045dba95ac8351
+
+    se implemetó deteccion de tipo delay, falta pasar bien los demas valores de delay
+
+Date:   Thu Oct 24 13:52:30 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit a97f0cc644b7b7e5d0173fdeaa8a92f14c877ab9
+
+    se implemetó lectura de variables de Delay en combi
+
+Date:   Thu Oct 24 17:17:16 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 68ddf7dc90c6d4a774b0e4d7f74ca90e33c724e0
+
+    se implemetó lectura y comunicacion de Normal
+
+Date:   Thu Oct 24 17:41:52 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 5701dfafeca1b91a0f68599eaff072b3e6acbbc3
+
+    agregue documentos txt y png a la documentacion
+
+Date:   Sun Nov 3 20:39:46 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 386e5167a13f567e2a0b4caac73e9d18f67d5400
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sun Nov 3 20:40:25 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 386e516 775ccf8
+commit 5c70d9f5d446448483802c0933a18cf8409c310f
+
+    nuevo branch
+
+Date:   Sun Nov 3 20:57:22 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 8702175163442e3ef4f45857ad279a2c8d824440
+
+    implementado scheduler, falta mockear
+
+Date:   Mon Nov 4 00:56:06 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 469f816f6bd217ddb9c1c99e3f4cfee4a04fbe9c
+
+    implementado scheduler, falta mockear
+
+Date:   Mon Nov 4 01:02:05 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 8efbc4b181aa9c2728bfa3c03dd21534957a0936
+
+    Se agrega free , se quitan punteros a punteros innecesarios
+
+Date:   Wed Nov 6 22:42:38 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 903ad8ff9ac11020c35ce273418840a0d5dcfa30
+
+    Se agrega free , se quitan punteros a punteros innecesarios
+
+Date:   Wed Nov 6 22:46:33 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 7142b12d61ed311623909eda5ed936b557ba444b
+
+    Agregue los getCombisIds y getNodesAmount
+
+Date:   Wed Nov 6 23:58:46 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit b8e64d7cb3dd9268a23cd3a501fcbeb17399fb21
+
+    merged
+
+Date:   Thu Nov 7 00:07:59 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 8efbc4b b8e64d7
+commit 53a7120954e8e686602a2bf1378222cc82976fcc
+
+    fix counter en orden raros
+
+Date:   Fri Nov 8 02:41:11 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 210a8bd66e40ff9c31a04b8b0d291820cd99f61e
+
+    merge with master
+
+Date:   Fri Nov 8 02:58:41 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 210a8bd 14f1cd5
+commit 1acb911db7268ee2d05fa22f9b9a69eeed8618b0
+
+    comentado todo lo del scheduler que hace contra el resto de los elementos y merge
+
+Date:   Wed Oct 16 12:23:42 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit aabe76fb8982d923d12d8b7fccfa0db8a4a981f3
+
+    los free
+
+Date:   Wed Oct 16 12:35:03 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 15535eb43a6d06ee8678089e01c98d5dffdb7e16
+
+    agregado de ordenes
+
+Date:   Sat Nov 9 13:01:28 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit e9395aa81103aa0957dfdcb8f5633421697a1dcd
+
+    cambios
+
+Date:   Wed Oct 16 12:44:30 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: 15535eb e9395aa
+commit e8df4c2e0da42aca0e7951c9574393a839c44d03
+
+    cambios
+
+Date:   Sat Nov 9 13:22:42 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 0037f4196fe1c3631190a36ff534d49b40422343
+
+    cambios
+
+Date:   Wed Oct 16 13:11:30 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 945cc9887798ff18d876554e1873b93037a670b9
+
+    0 warningsgit add -A
+
+Date:   Wed Oct 16 13:18:34 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit e81bd1a6790bc48987a10d04d4db5e940e24b82d
+
+    por hacer el queue
+
+Date:   Sat Nov 9 19:25:58 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit d9a09b8218329c42c7d56ae746aeebc8f0697780
+
+    cambios
+
+Date:   Sat Nov 9 22:49:25 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 63a5d9d92111c03feb254578bb1970d08f022ccc
+
+    remapeo y arreglo de los ids
+
+Date:   Sun Nov 10 03:01:55 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 05ea1f283b6b13eae4797e30e1cdf072dc4a7e96
+
+    remapeo y arreglo de los ids
+
+Date:   Sun Nov 10 03:16:30 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit f5cea6fe010d57cd472bbc752370c5862c49f188
+
+    cambios
+
+Date:   Sun Nov 10 02:06:05 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 63a959c2948e06224a6d8e4396b150861ee3199c
+
+    cambios
+
+Date:   Sun Nov 10 03:05:47 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 77ad2bf7f13e941b1a5927ba065595499abd7609
+
+    se resolvio el problema de los mapeos a los nodos id y ello conllebo cambiar otras cosas
+
+Date:   Sun Nov 10 03:26:06 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 9b5270a6d87bf7d5901f30bd18266eccb4b15605
+
+    auto pull request  sin conflicto de merge
+
+Date:   Sun Nov 10 03:36:39 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: 63a5d9d 9b5270a
+commit f209b87bdda8dc11147d50f72bfcc6e80206ee0f
+
+    cambio sobre queue
+
+Date:   Sun Nov 10 21:56:51 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit f25d5a2f3c1f4e680e08633f62842e4873d15323
+
+    queue sin ping report
+
+Date:   Sat Nov 16 17:06:24 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 8685f0074fe709d4b2652ff27a8c997f9ead3017
+
+    avance phase en combi
+
+Date:   Sun Nov 17 16:38:09 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit f1761a852c858ac39a79367cbf129dc6c17e347e
+
+    mini fix
+
+Date:   Sun Nov 17 16:56:30 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 489b378cc860f940990fd018a45dc29aaa503971
+
+    fix
+
+Date:   Sun Nov 10 04:08:01 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 1308cb1aa9885668d44e5a8439c6cc50e4b3d00e
+
+    fix
+
+Date:   Sun Nov 17 17:41:12 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 3823352e3cfb1970fee71af045ace5d9b12a28a2
+
+    fix
+
+Date:   Sun Nov 10 05:22:29 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 2797f950824bc62428011f5076293d4aff36380e
+
+    requered true campos
+
+Date:   Sun Nov 17 19:05:10 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 80fbb6276df5ccd89f2924dc3778d32ea482c481
+
+    fixes
+
+Date:   Sun Nov 10 07:51:35 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit c61fc9d03fbaf8f450a8e11209c3e35b7733cb94
+
+    fix colacombi fin
+
+Date:   Sun Nov 10 08:59:29 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 1bef47de4eee198228edae2a77216546122511bc
+
+    actualize Botqueue
+
+Date:   Sun Nov 10 11:32:10 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 1f3d213a5fe4b68ba559899a9c9fd024afabb6e4
+
+    se borró v3 de ambas y se agregó la v4
+    
+    Actualizacion de diagramas NodoCombi y NodoCola
+
+Date:   Thu Nov 21 02:58:59 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 5e6e248df7f45b355d95dec1d0643a41329da7ea
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sun Nov 10 11:33:42 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: 1f3d213 5e6e248
+commit e474780b591499160d8b4f5486fde33525e25b39
+
+    se agrega la fase de avance de los 3 nodos
+
+Date:   Wed Nov 20 19:18:34 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 6fcbd56f06dc0e33da63da044240807b396ebd5a
+
+    se agrega la fase de avance de los 3 nodos
+
+Date:   Wed Nov 20 19:24:09 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 761f24498da5aa2b7880e47715f8853834588348
+
+    cambios
+
+Date:   Sat Nov 23 22:18:43 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 51ffac0908be04c8f44b352910eb788e046309e9
+
+    cambios
+
+Date:   Sun Nov 24 01:08:37 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 247592c5385a5b661598962b61053b151336cb76
+
+    cambios
+
+Date:   Sun Nov 24 02:56:28 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 285ff41480d1840608fcce5b481550cac49a3614
+
+    cambios
+
+Date:   Sun Nov 10 12:02:16 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit cebc641122849dd9529ea7bc950b8416fe621a55
+
+    fix
+
+Date:   Sun Nov 10 13:18:10 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit abc364c3d02a51fb78097fb0e23f4a49f9751808
+
+    Merge branch 'normalFuncionContador' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sun Nov 10 13:19:47 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: e474780 abc364c
+commit a2263edd18e42f09ae090cce5d5cc086caa411c3
+
+    se agrega worktasks
+
+Date:   Sun Nov 24 18:38:10 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit e97ecc2df651ba1f108918e9982462845e9ab240
+
+    fix errores cambios en el schedurer y completado de esqueleto de los nodos
+
+Date:   Sun Nov 10 17:27:07 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 655cd3a89a26905d8b21a3c4e9b786f358d8d1b2
+
+    fix errores cambios en el schedurer y completado de esqueleto de los nodos
+
+Date:   Sun Nov 10 17:31:30 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit b5f5e56d07e6b6eefcfac52b1db69d849c933d73
+
+    listas
+
+Date:   Sun Nov 24 17:04:49 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 89b904ccac7d671712dc9e42b7552f05e8709dc9
+
+    VAlidacion de doble referencia preceders y followers
+
+Date:   Mon Nov 25 03:25:16 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit ee6eaccff63af6a298c5043b285036312e26aa0e
+
+    Validacion de autoreferencia
+
+Date:   Mon Nov 25 03:54:00 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 6dc85b5d783941652773b42c4daf5f2f5d2e287d
+
+    actualizacion  diagrama de actividad funcion
+
+Date:   Mon Nov 25 03:56:23 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 0c11f4e8f2b2b252daf7039f8938486b02673886
+
+    validacion de probabilisticBranch
+
+Date:   Mon Nov 25 08:31:43 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit a9343f841038c02781c1183421870d93ddb65c62
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED into ValidacionesFix
+
+Date:   Mon Nov 25 15:59:26 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 6dc85b5 0c11f4e
+commit 0786dacd4ace0b431cd6473e7b2a162bb3d095b7
+
+    merge
+
+Date:   Mon Nov 25 16:08:44 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: b5f5e56 0786dac
+commit 00704b46ec8e80daeb7e82458d7b3b126d03143c
+
+    saco printf viejos
+
+Date:   Mon Nov 25 17:16:33 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 8ab22e201b97cd1ecba5bebe0652a5935d5549b3
+
+    saco printf viejos
+
+Date:   Mon Nov 25 17:21:37 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit eeeddbe414f89d678539ee35b73133518eb2bf6f
+
+    fix avance fase
+
+Date:   Mon Nov 25 18:18:11 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 323aa453f9d4100c9c9d2928b9c9f34ec429b00e
+
+    fase de generacion gratis
+
+Date:   Mon Nov 25 18:37:47 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 93b73c09393447e4ea64c930015e02bb17dbd04c
+
+    fin consumo DeltaT
+
+Date:   Mon Nov 25 19:41:25 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 825367e1f09e054d48d4ad6fc69e76618dd3eea3
+
+    prob branch solo para el combi
+
+Date:   Mon Nov 25 21:22:35 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 239b6b41ed7b5174332b84c499fd3cc52e2db05a
+
+    fix prob branch
+
+Date:   Mon Nov 25 21:48:46 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit d7768af48ca32af30d2954d6dbdf3c40596f75cf
+
+    fix prob branch
+
+Date:   Mon Nov 25 21:55:52 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit c0c7e176a74666f0ce42b44faf0687dd8e9bf6ee
+
+    validacion de probabilisticBranch merge
+
+Date:   Mon Nov 25 08:34:33 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+Merge: a9343f8 c0c7e17
+commit a71c3d50529090d61d9acc11e0a774e6373c19e6
+
+    se fixio el validate
+
+Date:   Tue Nov 26 21:11:52 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 4106d28d723f488c4aa74554b52f79d11207209e
+
+    refactor gramaticales del ingles
+
+Date:   Wed Nov 27 00:52:36 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 82110c0061712d74cba2201e1687f25bfd219a63
+
+    fin de refactor
+
+Date:   Wed Nov 27 20:23:51 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit e967cc6e55bf385f1d1d3cb46f0021d1ca2d1e52
+
+    un poco de organizacion
+
+Date:   Thu Nov 28 01:27:43 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 306ee38d7603bd8f714447b08ba61bb73b83f8ad
+
+    documentacion
+
+Date:   Fri Nov 29 00:25:48 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit e315e2bb2d6e6229850ecb1ae025a483f4a64460
+
+    diagr de actividad
+
+Date:   Fri Nov 29 06:42:45 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit d2abffbf9c40bf8dc57057e121e660d239af1386
+
+    fix documento
+
+Date:   Fri Nov 29 06:48:21 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit f622e6eda5dd472abd61df5eac1836dceed04bff
+
+    estructura de envio para reporte combi
+
+Date:   Fri Nov 29 08:58:00 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 566fccd0922c7f529aca9a0efe32533eebe1b5bf
+
+    diseño reporte en combi
+
+Date:   Fri Nov 29 20:59:19 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 794d4be171a0a2692802ce0f491860d5da4c4553
+
+    diseño reporte cola
+
+Date:   Sat Nov 30 01:43:13 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 20eded51754fd37d1ed18bc1edbab3018c6f6e0f
+
+    diseño reporte contador y funcion
+
+Date:   Sat Nov 30 01:59:25 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 3a22f6317edfbb84120f86fa1265f4e03b3a5d4f
+
+    diseño reporte Normal y fix Combi
+
+Date:   Sat Nov 30 02:42:24 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 0e340b4965453888ac0e34e2f55f41b71edae502
+
+    se sortea las demoras
+
+Date:   Sat Nov 30 11:13:52 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit cd3c36b88fb20a0aa4efb329da6689828f6d356d
+
+    se agrego al json helper la validacion de semillas, y se modifico el generador de semilla
+
+Date:   Sat Nov 30 12:14:34 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit d9eed826e7de0e22e635f8c0a904d253823864c8
+
+    se agrego al json helper la validacion de semillas, y se modifico el generador de semilla
+
+Date:   Sat Nov 30 12:14:46 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 0a62a85662e28a523335008204a8a241253eb3b2
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED into sorteoDelay
+
+Date:   Sat Nov 30 12:15:46 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: 0a62a85 0e340b4
+commit 5e485121665d755e40114262a5884debfea74c6e
+
+    merge con master
+
+Date:   Sat Nov 30 12:16:35 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 2744e0f571da9ae1bd5380870962d98a574c1edb
+
+    modifico el discount de workstask
+
+Date:   Sat Nov 30 17:47:52 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit c34565012a934f210dbd93a04e36512891754968
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sat Nov 30 17:48:11 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: c345650 2744e0f
+commit 6ad5725d382421158b6eda5fead526e226ed17da
+
+    fix diagramas cola y normal
+
+Date:   Sat Nov 30 17:50:38 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 137cff540a0739e99e22bc220cb8daf5f2a31f15
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sat Nov 30 17:53:10 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 6ad5725 137cff5
+commit 98ba2cd4aaa64c3e538f7150133d7734450ddc55
+
+     cambio en el sorteador
+
+Date:   Sat Nov 30 18:18:00 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit d3c30ff872f5fc15f85212cbf08c47d53c35df62
+
+     cambio en el sorteador
+
+Date:   Sat Nov 30 18:38:56 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 6ba7afc07220a28ff3f7cae53909fbfcecfb59d6
+
+    fix funcion contador
+
+Date:   Sat Nov 30 18:55:31 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 01e6f3ed2dc19c04f3b6fff3b05fd6646fddf3fb
+
+    fix master
+
+Date:   Sat Nov 30 18:55:52 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit f897056bcc2fb53738b7aca2ca51a6822f1d90f7
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sat Nov 30 18:56:47 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: f897056 01e6f3e
+commit 27715849348baee59e411964519f06d884c4d716
+
+    construyendo
+
+Date:   Sat Nov 30 20:54:04 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 3fbcc8f009da1b129a5726c3df2445ae1473ea4f
+
+    construyendo
+
+Date:   Sat Nov 30 21:14:23 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 53e544088e7c5f6d712eec227253a270598210b1
+
+    fin branch de los 10 minutos
+
+Date:   Sat Nov 30 22:10:06 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 288a7123c36121533d37798d950c2597aec8802f
+
+    se agrega la parte de envio de worktask del cobi al printer
+
+Date:   Sun Dec 1 16:54:23 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 4ee7b35b7f59618e52816f0d8e0ad6fb9a00cc6b
+
+    fixiando y agregando variables
+
+Date:   Sun Dec 1 17:21:47 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 3141c08de581ac371708e72e6d93cff54b61bc88
+
+    info combi
+
+Date:   Mon Nov 25 11:28:05 2013 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit 0e46d6b260233a38636191249ff866877030e68d
+
+    fix delayOfWorktask
+
+Date:   Sun Dec 1 18:59:28 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9dbfbab730a0511237dc56d66aba2b49fdf5a0be
+
+    fixiando y agregando variables
+
+Date:   Sun Dec 1 19:37:15 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 79483db68226f00b755adac31e1ddaaa9e34c6d1
+
+    end muestra de variables combi
+
+Date:   Sun Dec 1 20:19:05 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 5bd8b66a39d3b16fa417cfaa6cbc3bffa6d42d1b
+
+    end muestra de variables normal
+
+Date:   Sun Dec 1 20:40:38 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit d5f27634aea06dd5a05b32ce9ad9829882a60ad0
+
+    end muestra de variables cola
+
+Date:   Sun Dec 1 21:28:32 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 9079b3458a0156e1de73f703775ba7cb39f4970c
+
+    end muestra de variables counter
+
+Date:   Sun Dec 1 22:14:52 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit d93fd236a64f902f6912ca966c38edf2ff8cdf65
+
+    fin logs de printer
+
+Date:   Sun Dec 1 22:31:02 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 68ba1c15343b4d90edb193f568bc3b85df98a013
+
+    arreglando los todo sobre los rng
+
+Date:   Thu Dec 5 20:08:37 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit a70c5204618018a5f9e9bc36f11dcb4c081b0b56
+
+    creando instancias para rng y armando logs
+
+Date:   Wed Dec 11 20:07:31 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 74bc7c62d4fb0c7e00b1e36c1144d979fb733179
+
+    Doc
+
+Date:   Fri Dec 13 19:15:53 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit eb92c7b1ef69fb7d281beba0cc6b3add156142ef
+
+    Documentacion
+
+Date:   Fri Dec 13 21:26:46 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 4f64fd1215bf9a1e6b9108704656f3b795731ad9
+
+    PDF
+
+Date:   Fri Dec 13 21:28:16 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 3fa0fcdd7c47a132d203d4a0b94c59b6625e9d81
+
+    fix normal
+
+Date:   Sat Dec 14 15:37:37 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit caa336f18c6598ca753fcb59eaf44570b4645227
+
+    fix generacion
+
+Date:   Sun Dec 15 17:49:54 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 72ac6056a0c3f793e52d42860b68872ae295ccf1
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED into rngInstancia
+
+Date:   Sun Dec 15 17:51:41 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: 72ac605 3fa0fcd
+commit b102d3e438dd78d294098f0172a09fcb8a9c9ffe
+
+    merges
+
+Date:   Sun Dec 15 18:06:02 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 8bc349bb5431986631090704f8da916e1eff5de0
+
+    nuevos modelos de prueba
+
+Date:   Sun Dec 15 18:11:31 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9f3ed4166ddc6a800559f1c7ec2ba4290fbf6a67
+
+    merges con rngInstancia
+
+Date:   Sun Dec 15 18:11:32 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 0bde0c6fc932c05bc90768bedb771fa70aa63ca8
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sun Dec 15 18:12:21 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: 0bde0c6 9f3ed41
+commit f418bcaa62da6da8285c7e5c5b746ad66c32786a
+
+    saco time al pedo
+
+Date:   Sun Dec 15 18:17:51 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 1c13810f6fb884153f82deb96beb37c296f2af26
+
+    branch sincrono
+
+Date:   Wed Dec 18 21:26:39 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 73a855a102a8c02f9d3359b7090a94eb2c26f558
+
+    se arreglo beta
+
+Date:   Sat Dec 21 02:10:24 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 3e0787ced52c70ef7689a6159f24a9e5fcd351a2
+
+    se agrego un generador gamma que remplaza a lo anterior
+
+Date:   Sat Dec 21 14:03:10 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit e8f3585199508737c1924f8058f0098e5811cb68
+
+    merge de sincrono con master
+
+Date:   Sat Dec 21 14:35:29 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 3218250564c5b2dc31e03771f44297d7e8de1747
+
+    merge
+
+Date:   Sat Dec 21 14:37:27 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 7d19a569c3c1a0d1980a5fbe9731ca1a6b3c8015
+
+    al applet se la paso de applet a japplet y se paso el canvas a un Jpanel  y a la flecha se le muestra el punto intermedio y el quiebre al mover
+
+Date:   Sat Dec 21 17:32:24 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 9d150e2a218928bc4c9f996c462b683d99770530
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sun Dec 22 17:18:40 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+Merge: caa336f 9d150e2
+commit db5f42b69f8c905db64b30b285861ab7c0357b97
+
+    doc
+    
+    doc
+
+Date:   Sun Dec 22 17:19:36 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit fe22a0c02fe3b4adbfbdf0f99f0c058a3bc93241
+
+    largo
+    del test dos archivos no se copiaron porque el nombre era demaciado
+    
+    Proyectos web
+
+Date:   Sun Dec 22 21:24:20 2013 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 00d03d4a01c54c0fdf9dfd248de62bfd26b00473
+
+    al applet se pone el graphics en maxima calidad
+
+Date:   Mon Dec 23 00:11:28 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit eec30cfb9017ef58209a3e9fd25c0bd50e2470fc
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Mon Dec 23 00:15:49 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+Merge: eec30cf 00d03d4
+commit 3d62d13d7613699517435aa7898cb0131c165d8c
+
+    se arreglo barra agrego quantity a los contadores, ahora sale antes
+
+Date:   Mon Dec 23 02:54:10 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit a3a179707392014ac6790a6723c1da4bf4646d89
+
+    merge
+
+Date:   Tue Dec 24 14:51:46 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit c18aa9175f5403fb1d561f08fb27beccf343be0b
+
+    merge
+
+Date:   Tue Dec 24 14:53:16 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 23e147cff43b48b89fd3e45526cf20ffe4d13c86
+
+    casi fin de botqueue web
+
+Date:   Wed Dec 25 18:01:47 2013 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 05a9424e13011c061dfc88c126f32ba8181bec1f
+
+    html applet examples
+
+Date:   Sat Dec 28 18:50:17 2013 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 4ea3b16c98d54e6640c4d3a2168d60d1abb0c023
+
+    agrego proyecto de bpr ingenieria multi tasking
+
+Date:   Sat Jan 4 13:20:30 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 4864950d937ddb5c935d8541ec70b365eb04c61c
+
+    update pom.xml del applet
+
+Date:   Sat Jan 4 14:57:24 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 87cc8b1ff9f0628caff1b8f8f98e23de8e897449
+
+    pom con jar firmado
+
+Date:   Sat Jan 4 15:42:16 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 75e0f03ea6f04e828db565b02ef034716d118893
+
+    repaint en el applet
+
+Date:   Sat Jan 4 16:26:24 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 3004b83a81c7bfe3af8eeb4ad0e0bd7521ec04bf
+
+    modifico applet
+
+Date:   Sat Jan 4 16:35:00 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit f0bbac9b9f963067a662d4f86d30e6c45cee128f
+
+    para probar jsonHelper en unitario con Valgrind
+
+Date:   Sun Jan 5 22:24:08 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit c9f05877d14e239ba4856a3db745ca7972ce1694
+
+    para probar jsonHelper en unitario con Valgrind
+
+Date:   Sun Jan 5 23:59:19 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9d7067856a5529ea1673873de0e38891cbfccf8a
+
+    se corrigio el json helper
+
+Date:   Sat Jan 4 20:06:36 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 91f5b392a81233932aec4e565336a7fd8ee68bd5
+
+    cambios en el modelo y se explica donde se viola el principio de doble ref
+
+Date:   Sat Jan 4 20:47:59 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit 9ed6a0f3b2a06d3035c576998c9623f6ae23ff69
+
+    cambios en el modelo
+
+Date:   Wed Jan 15 00:29:49 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit d64eea0316a6e6fc298a4b7bd5b4a873fe2132b2
+
+    cambio la dire del output
+
+Date:   Sat Jan 11 15:11:36 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 069426a7e2266bfdbb5a9b01ce9f9e3497f9357e
+
+    merge al master
+
+Date:   Sat Jan 11 20:01:21 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit ea4b02178122da38780f9ae8ba9d9c282d008db6
+
+    merge al master
+
+Date:   Sat Jan 11 20:08:43 2014 -0300
+Author: fllaryora <francisco.llaryora@mercadolibre.com>
+commit da1f4f868ddb5e6279249eee939a22b9247e53cf
+
+    agrego documentacion
+
+Date:   Wed Jan 15 20:46:40 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit ca1f2dbfa0a271584871026af3aeeffd0b1dd3ef
+
+    saco documentacion
+
+Date:   Fri Jan 17 17:09:54 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit c2c12a924be2d2d56f7a4e09d926c4efc5b7813f
+
+    BotQueue Web. Actualizacion
+
+Date:   Fri Jan 17 17:27:32 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit e767475aa5273cac258920ee2a026f8536417b73
+
+    Fix web
+
+Date:   Fri Jan 17 17:30:39 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 6be8b476732c1726f899f241ce8c5367185cae92
+
+    BotQueue Applet
+
+Date:   Fri Jan 17 18:04:04 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit a2e1c883bfb64006ae12bc9b0a50e7ce081a1331
+
+    jar
+
+Date:   Fri Jan 17 18:21:15 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9edf7c8a77dabefcc43383e4e515d143e998cd0e
+
+    jar
+
+Date:   Fri Jan 17 18:23:20 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit f368d3d203648d81ca7f57c2b758258bd6064a00
+
+    jar
+
+Date:   Fri Jan 17 18:36:00 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 5e512fc0fa115174b3dea906b6d1e0fc632f2b3c
+
+    bot queue web fix jar
+
+Date:   Fri Jan 17 18:58:43 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 276f7e6b9d6b37f17541b080b730d7ed81aad386
+
+    bot queue fix web
+
+Date:   Fri Jan 17 18:59:04 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 7ab57093beb7df9590539366eab4f4230a998d36
+
+    web fix
+
+Date:   Fri Jan 17 18:59:58 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 73938d3d5dc2d66d61af15c1e4faaffaaadfc283
+
+    jar
+
+Date:   Fri Jan 17 19:02:02 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 49993e20d22ce4feaace477d99276f2bffbee6a7
+
+    pruebas
+
+Date:   Sat Jan 18 17:03:36 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 484a64049ba554e43a5bb1ed5456d2085a522cf3
+
+    se cambia nan por null
+
+Date:   Sat Jan 18 18:19:57 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit bbd399ce3d1c7cfcfa60425554b0d27aeaf8a53a
+
+    se cambia VariableCost por variableCost
+
+Date:   Sat Jan 18 18:38:27 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit cd149896a65811a70aba729f687b419bd8610e15
+
+    web mongo ver1
+
+Date:   Sat Jan 18 21:17:02 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit f0b393c29c3e531c9c997327da23cdea56decc7e
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Sat Jan 18 21:17:13 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+Merge: f0b393c cd14989
+commit 573a92c0c34a9a2020b305ff26488cb93f784a5a
+
+    web mongo ver1
+
+Date:   Sat Jan 18 21:17:49 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 4a362d536b7b3773d1a42f1e209282a70bea5ea6
+
+    mongo ver1
+
+Date:   Sat Jan 18 21:18:11 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit daf4f1007d26e64f84282be8b2fabc774c9490ce
+
+    se corrige el cycles y se pone auto de mongo
+
+Date:   Mon Jan 20 20:27:07 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 1b520b2940fe46e01452d7d11b4d3fafdfc7773a
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Mon Jan 20 20:29:26 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 1b520b2 daf4f10
+commit 384a76a6e6575617d128d4b304c59970af7ae0a4
+
+    pruebas, mini cambios en el salida de botqueue y bootstrap
+
+Date:   Thu Jan 23 18:59:47 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit c94d6569f51578f43bd5b581057168574d8d2149
+
+    fixes en el bootstrap
+
+Date:   Thu Jan 23 21:17:16 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit c10114a8396f8580f308c5c6ad11b7dc1f0ccf0b
+
+    fin bootstrap
+
+Date:   Thu Jan 23 22:53:20 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9a9fb5f6c94e638dc999696e206b0688b09fbc84
+
+    Cambios Web
+
+Date:   Fri Jan 24 22:27:04 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit af648447e07e7d74d0f4fad7adbfe00b57df10cf
+
+    Cambios 2
+
+Date:   Fri Jan 24 22:28:27 2014 -0300
+Author: Cristian Zerpa <cristianzerpa89@gmail.com>
+commit 06d92d012d6af36464b85c624f4947b9aaddb757
+
+    cambios en el applet
+
+Date:   Fri Jan 24 22:37:52 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9ee14695168f7bd01f070149fc2aaa371fe864d4
+
+    mergue
+
+Date:   Fri Jan 24 22:47:27 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 9ee1469 06d92d0
+commit 1920ec8b14e17c7c188ed26121103ecfc6f3a31e
+
+    desarrollo applet
+
+Date:   Sun Jan 26 17:56:13 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit da401cda497f3c0ef48791186399fb7c52f7ce5b
+
+    actualizacion del branch
+
+Date:   Wed Jan 29 20:53:18 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 8b0dce8e39eb22bd9c4f9177e79e4a708073f97b
+
+    applet
+
+Date:   Thu Jan 30 00:41:51 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit c90e695c115de125ee76e12affcc77c17619c2f0
+
+    applet
+
+Date:   Thu Jan 30 01:16:43 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 0487d8b293e6c4c42ae4349fb478186e59517b41
+
+    applet
+
+Date:   Thu Jan 30 01:29:55 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 9688d4b10c74db5b5b985c742e0091a16a962bc4
+
+    Actualizacion BotQueue Web
+
+Date:   Sun Feb 2 14:28:47 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 7fde8d7afa6a06df67e5ff51dac8a022698d0ccd
+
+    test
+
+Date:   Sun Feb 9 17:07:43 2014 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit ccba495d0533841181fbfde563d8f19fc58d8e81
+
+    facade en el botqueue applet
+
+Date:   Mon Feb 10 23:37:32 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 53ac1ce2828ca128baca270c18d0556bb51a860a
+
+    Merge branch 'master' of https://github.com/fllaryora/IUATesisMSDED
+
+Date:   Mon Feb 10 23:37:50 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 53ac1ce ccba495
+commit 823aec31bbf2c75ed17717ecb8abb0ee3f46583c
+
+    se agrego el open & save en botqueue applet
+
+Date:   Sun Feb 16 15:45:03 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit b90c11656fd70b3763d7c10018fc8a676d27b7e5
+
+    validaciones y mensajes vaadin
+
+Date:   Tue Feb 18 02:46:32 2014 -0300
+Author: Cristian Z <cristianzerpa89@gmail.com>
+commit c8d82bdd9143b385b2ebcc3b7d9aa5170dd7d449
+
+    cambios
+
+Date:   Wed Feb 19 23:59:08 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+commit 5913c856d31b3bbd6a5043417a74f0f8f34d1f3e
+
+    merge
+
+Date:   Sun Feb 23 15:49:20 2014 -0300
+Author: Francisco Llaryora <francisco.llaryora@mercadolibre.com>
+Merge: 5913c85 c8d82bd
+commit 0cd9b3ca2b7f3bee6af9ab637a23e9ecb7eb0c8f

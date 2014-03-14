@@ -136,10 +136,19 @@ public static void main(String[] args) {
 		System.out.println("Se escribio el archivo");
 		
 		try {
-			System.out.println("runing "+toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString()+" process" );
+			String nroProces = toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString();
+			System.out.println("runing "+nroProces+" process" );
 			//http://docs.oracle.com/cd/E19708-01/821-1319-10/ExecutingPrograms.html
-			Process process = new ProcessBuilder("mpirun","-np", toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString() , "/home/francisco/Tesis/repo/IUATesisMSDED/Backend/Engine" ).start();
+			Process process = new ProcessBuilder(
+					ProjectsValues.BOTQUEUE_PROGRAM,
+					ProjectsValues.NUMBER_OF_PROCESS, nroProces ,
+					ProjectsValues.BOTQUEUE_CODE ).start();
 			System.out.println("waiting....." );
+			
+			if (process == null) {
+				System.out.println("no se pudo ejecutar botqueue");
+				return false;	
+			}
 			
 			synchronized (process){
 				process.wait();

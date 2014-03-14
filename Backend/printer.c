@@ -21,7 +21,13 @@ void printer(){
 	int* qCouNfComb = (int*)malloc(sizeof(int)*5);
 	MPI_Recv(qCouNfComb, 5, MPI_INT, MASTER_ID, INIT_NODES , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
-	fileDescriptor = open ("/home/francisco/Tesis/repo/IUATesisMSDED/Backend/output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
+	if(botqueueOutputFile == NULL ){
+		botqueueOutputFile = "/tmp/defaultOutputJson.json";
+		printf("Process Printer: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
+	}
+	
+	fileDescriptor = open (botqueueOutputFile , O_WRONLY|O_CREAT|O_TRUNC,00660);
 	
 	//open json file
 	openBrace(fileDescriptor);

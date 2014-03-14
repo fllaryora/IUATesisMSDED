@@ -20,7 +20,12 @@ ValidationResults* validateJsonInput( const char* filenameJson ){
 
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFile(const char* label){
-	int fileDescriptor = open ("/home/francisco/Tesis/repo/IUATesisMSDED/Backend/output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
+	if(botqueueOutputFile == NULL ){
+		botqueueOutputFile = "/tmp/defaultOutputJson.json";
+		printf("Process Printer: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
+	}
+	int fileDescriptor = open (botqueueOutputFile, O_WRONLY|O_CREAT|O_TRUNC,00660);
 	write(fileDescriptor,"{\n",2);
 	write(fileDescriptor,"\"Error\" : ",10);
 	write(fileDescriptor, label, strlen(label) );
@@ -30,7 +35,12 @@ void writeErrorInFile(const char* label){
 }
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFileN(const char* label, const int N){
-	int fileDescriptor = open ("/home/francisco/Tesis/repo/IUATesisMSDED/Backend/output/salidaDeJson.json",O_WRONLY|O_CREAT|O_TRUNC,00660);
+	char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
+	if(botqueueOutputFile == NULL ){
+		botqueueOutputFile = "/tmp/defaultOutputJson.json";
+		printf("Process Printer: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
+	}
+	int fileDescriptor = open (botqueueOutputFile,O_WRONLY|O_CREAT|O_TRUNC,00660);
 	write(fileDescriptor,"{\n",2);
 	write(fileDescriptor,"\"Error\" : ",10);
 	char* strNro = NULL;
@@ -46,7 +56,14 @@ void writeErrorInFileN(const char* label, const int N){
 /***********************************************REGION_SCHEMA*********************************************************/
 /* Valida El archivo de ingreso contra el schema */
 int validateSchema(const char *filenameJson){
-	const char* filenameSchema = "/home/francisco/Tesis/repo/IUATesisMSDED/Backend/archivos/schema.json";
+
+	char* botqueueSchema = getenv("BOTQUEUE_INPUT_FILE");
+	if(botqueueSchema == NULL ){
+		botqueueSchema = "/tmp/schema.json";
+		printf("Process Printer: can not find BOTQUEUE_INPUT_FILE, using default path: /tmp/schema.json \n");
+	}
+
+	const char* filenameSchema = botqueueSchema;
 	FILE *jsonfile; FILE *schemafile;
 	WJReader readjson; 	WJReader readschema;
 	WJElement json; WJElement schema; 	char *format=NULL;
