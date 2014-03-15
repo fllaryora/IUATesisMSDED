@@ -220,12 +220,15 @@ public class CombiWindow extends Window {
         final ComboBox cbDelay = new ComboBox();
         
         final HorizontalLayout hlSpace = new HorizontalLayout();
+        final Integer hlSpaceHeight = 410;
+        final Integer hlSpaceHeightItem = 40;
         
         if (isFull)
         {
-	        final HorizontalLayout hlSpace = new HorizontalLayout();
-	        hlSpace.setHeight("410px");
-	        
+	        //final HorizontalLayout hlSpace = new HorizontalLayout();
+        	//hlSpace.setHeight("250px");
+        	//hlSpace.setHeight("410px"); // +40 *4
+        	
         	cbDelay.addItem("---");
         	cbDelay.addItem("Deterministica");
         	cbDelay.addItem("Uniforme");
@@ -256,7 +259,21 @@ public class CombiWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(false);
 					        
-					        hlSpace.setHeight("370px"); //-40
+					        if(((BasicDBList)combi.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Uniforme"))
 						{
@@ -275,7 +292,20 @@ public class CombiWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("290px"); //-120
+					        if(((BasicDBList)combi.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 					    }
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Exponencial"))
 						{
@@ -294,7 +324,20 @@ public class CombiWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("330px"); //-80
+					        if(((BasicDBList)combi.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Normal"))
 						{
@@ -313,7 +356,20 @@ public class CombiWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("290px"); //-120
+					        if(((BasicDBList)combi.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Beta"))
 						{
@@ -332,7 +388,20 @@ public class CombiWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("210px"); //-200 (40*5)
+					        if(((BasicDBList)combi.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*6) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*6) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Triangular"))
 						{
@@ -351,7 +420,20 @@ public class CombiWindow extends Window {
 					        hlMode.setVisible(true);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("250px"); //-160
+					        if(((BasicDBList)combi.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 					}
 				}
@@ -400,51 +482,61 @@ public class CombiWindow extends Window {
 				cbDelay.setValue("Triangular");
         }
         
-        HorizontalLayout hlProbBranch = new HorizontalLayout();
-        hlProbBranch.setSpacing(true);
         final CheckBox cbProbBranch = new CheckBox();
-        cbProbBranch.setCaption("Probabilistic Branch");
-        if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
-        	cbProbBranch.setValue(true);
-        hlProbBranch.addComponent(cbProbBranch);
-        subContent.addComponent(hlProbBranch);
+        
+        if( combi.get("followers")!=null && ((BasicDBList)combi.get("followers")).size()>0)
+        {
+	        HorizontalLayout hlProbBranch = new HorizontalLayout();
+	        hlProbBranch.setSpacing(true);
+	        //final CheckBox cbProbBranch = new CheckBox();
+	        cbProbBranch.setCaption("Probabilistic Branch");
+	        if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
+	        	cbProbBranch.setValue(true);
+	        hlProbBranch.addComponent(cbProbBranch);
+	        subContent.addComponent(hlProbBranch);
+        }
         
         //DBLIST
         
         //HorizontalLayout hlProbBranchItem = new HorizontalLayout();
-        
-        final List<TextField> ltfProbBranchItem = new ArrayList();
-        BasicDBList probBranchList = (BasicDBList) dbProbBranch.get("nameList");
-    	ArrayList<BasicDBObject> probBranchArray = (ArrayList) probBranchList;
-    	
-        for (int i=0 ; i < ((BasicDBList)combi.get("followers")).size() ; i++)
+        final List<TextField> ltfProbBranchItem = new ArrayList();        
+        if (dbProbBranch!=null)
         {
-        	HorizontalLayout hlProbBranchItem = new HorizontalLayout();
-        	hlProbBranchItem.setSpacing(true);
-        	
-        	
-        	Label lProbBranchItem = null;
-        	if (probBranchArray!=null && probBranchArray.size()>0)
-	        	for (BasicDBObject probBranch :probBranchArray)
-	        	{
-		        	if (((BasicDBList)combi.get("followers")).get(i).toString().equalsIgnoreCase(probBranch.get("id").toString()))
-		        		lProbBranchItem = new Label(probBranch.get("name").toString());
-	        	}
-        	else
-        		lProbBranchItem = new Label("");
-        		
-        	TextField tfProbBranchItem = new TextField();
-        	
-        	if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
-        		tfProbBranchItem.setValue(((BasicDBList)combi.get("probabilisticBranch")).get(i).toString());
-
-        	ltfProbBranchItem.add(tfProbBranchItem);
-        	hlProbBranchItem.addComponent(lProbBranchItem);
-        	hlProbBranchItem.addComponent(tfProbBranchItem);
-        	subContent.addComponent(hlProbBranchItem);
+	        BasicDBList probBranchList = (BasicDBList) dbProbBranch.get("nameList");
+	    	ArrayList<BasicDBObject> probBranchArray = (ArrayList) probBranchList;
+	    	
+	        for (int i=0 ; i < ((BasicDBList)combi.get("followers")).size() ; i++)
+	        {
+	        	HorizontalLayout hlProbBranchItem = new HorizontalLayout();
+	        	hlProbBranchItem.setSpacing(true);
+	        	
+	        	
+	        	Label lProbBranchItem = null;
+	        	if (probBranchArray!=null && probBranchArray.size()>0)
+		        	for (BasicDBObject probBranch :probBranchArray)
+		        	{
+			        	if (((BasicDBList)combi.get("followers")).get(i).toString().equalsIgnoreCase(probBranch.get("id").toString()))
+			        		lProbBranchItem = new Label(probBranch.get("name").toString());
+		        	}
+	        	else
+	        		lProbBranchItem = new Label("");
+	        		
+	        	TextField tfProbBranchItem = new TextField();
+	        	
+	        	if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
+	        		tfProbBranchItem.setValue(((BasicDBList)combi.get("probabilisticBranch")).get(i).toString());
+	
+	        	ltfProbBranchItem.add(tfProbBranchItem);
+	        	hlProbBranchItem.addComponent(lProbBranchItem);
+	        	hlProbBranchItem.addComponent(tfProbBranchItem);
+	        	subContent.addComponent(hlProbBranchItem);
+	        }
         }
         
-        subContent.addComponent(hlSpace);
+        if (isFull)
+        {
+        	subContent.addComponent(hlSpace);
+        }
         
         //BOTONES
         
@@ -495,7 +587,7 @@ public class CombiWindow extends Window {
 	            	arrayParams[16] = tfName.getValue();
 	            	arrayParams[17] = ""; 
 			        
-	            	if (cbProbBranch.getValue())
+	            	if (cbProbBranch.getValue() && ltfProbBranchItem.size()>0)
 	            	{
 		            	String ProbBranch = "";
 		            	for(int i=0 ;i < ltfProbBranchItem.size() ;i++)
