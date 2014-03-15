@@ -48,7 +48,7 @@ public class Principal extends AbstractVaadinApplet {
 		 * asi me doy cuenta que no estoy pensando bien*/
 		this.setForeground(Color.RED);
 		this.nodeWorld.forcePaint();
-		runSimpleTest();
+		//runSimpleTest();
 	}
 	
 	/**

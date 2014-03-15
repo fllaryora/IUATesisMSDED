@@ -469,6 +469,10 @@ public class GraphicDTO {
 					", \"seed\":"+seedModel+
 					", \"transformation\": {"+
 					queues+","+combis+","+normals+","+functions+","+counters+"} }";
+			
+			//FIXME: ESto es para que el usuario no tenga que hacer click en guardar modelo en construccion y dame el pending
+			String modelTotal = getAuxAllModelFile( destination, length, seedModel);
+			model = modelTotal + "***" + model;
 			destination.vaadinUpdateVariable("editModel", model, true);
 			return model;
 			
@@ -481,7 +485,7 @@ public class GraphicDTO {
 		 * @param seedModel
 		 * @return
 		 */
-		public String getAllModelFile(Principal destination,int length, int seedModel){
+		public String getAuxAllModelFile(Principal destination,int length, int seedModel){
 			String queues = "\""+NodeFields.QUEUES+"\":[  ";
 			String combis = "\""+NodeFields.COMBIS+"\":[  ";
 			String normals = "\""+NodeFields.NORMALS+"\":[  ";
@@ -515,8 +519,13 @@ public class GraphicDTO {
 			model +=getArrowsSaveFileJson();
 			
 			model += "] }";
-			destination.vaadinUpdateVariable("editModelConstruct", model, true);
 			return model;
+		}
+		
+		public String getAllModelFile(Principal destination,int length, int seedModel){
+			String modelTotal = getAuxAllModelFile( destination, length, seedModel);
+			destination.vaadinUpdateVariable("editModelConstruct", modelTotal, true);
+			return modelTotal;
 			
 		}
 		
