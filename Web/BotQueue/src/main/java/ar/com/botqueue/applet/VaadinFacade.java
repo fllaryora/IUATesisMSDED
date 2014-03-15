@@ -67,8 +67,6 @@ public class VaadinFacade {
         	getModelInfo(params);
         else if (command.equalsIgnoreCase("getAllModelFile"))
         	getAllModelFile(params);
-        else if (command.equalsIgnoreCase("getAllModelFile"))
-        	getAllModelFile(params);
         else if (command.equalsIgnoreCase("setAllModelFile"))
         	setAllModelFile(params);
 		this.nodeWorld.forcePaint();
