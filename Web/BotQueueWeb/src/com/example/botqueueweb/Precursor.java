@@ -3,6 +3,7 @@ package com.example.botqueueweb;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
@@ -10,15 +11,20 @@ import org.vaadin.applet.AppletIntegration;
 
 import com.example.botqueueweb.business.ProjectBussines;
 import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.dto.construction.JsonConstruction;
 import com.example.botqueueweb.dto.input.Combi;
 import com.example.botqueueweb.dto.input.Function;
+import com.example.botqueueweb.dto.input.JsonInput;
 import com.example.botqueueweb.dto.input.Normal;
 import com.example.botqueueweb.dto.input.Queue;
 import com.example.botqueueweb.windows.CombiWindow;
 import com.example.botqueueweb.windows.CounterWindow;
 import com.example.botqueueweb.windows.FunctionWindow;
 import com.example.botqueueweb.windows.NormalWindow;
+import com.example.botqueueweb.windows.ProjectFinalWindow;
 import com.example.botqueueweb.windows.QueueWindow;
+import com.google.code.morphia.Morphia;
+import com.google.code.morphia.annotations.Id;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
@@ -34,6 +40,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 public class Precursor extends VerticalLayout implements View {
@@ -49,7 +56,7 @@ public class Precursor extends VerticalLayout implements View {
     ObjectId idProject;
     
     @Override
-    public void enter(ViewChangeEvent event) {
+    public void enter(final ViewChangeEvent event) {
     	
 		applet = new AppletIntegration() {
 
@@ -119,13 +126,26 @@ public class Precursor extends VerticalLayout implements View {
                 if (variables.containsKey("editFunction")) {                    
                     String jsonNode = (String) variables.get("editFunction");            
         			DBObject dbObject = null;
-        			try{	
-        				dbObject = (DBObject) JSON.parse(jsonNode);
+        			DBObject dbObject2 = null;
+        			try{
+        				String jsons[];
+        				//jsons = jsonNode.split("+");
+        				jsons = jsonNode.split("\\*\\*\\*");
+        				if (jsons.length>1)
+        				{
+	        				dbObject = (DBObject) JSON.parse(jsons[0]);
+	        				dbObject2 = (DBObject) JSON.parse(jsons[1]);
+        				}
+        				else
+        				{
+        					dbObject = (DBObject) JSON.parse("{}");
+	        				dbObject2 = (DBObject) JSON.parse(jsons[0]);
+        				}
         			}catch(JSONParseException exception){
         				exception.printStackTrace();
         			}
         			
-        			FunctionWindow fWindow = new FunctionWindow(dbObject,applet,true);
+        			FunctionWindow fWindow = new FunctionWindow(dbObject2,dbObject,applet,true);
         			fWindow.setHeight("610px");
         			fWindow.setWidth("450px");
                 	getUI().addWindow(fWindow);
@@ -133,14 +153,27 @@ public class Precursor extends VerticalLayout implements View {
                 
                 if (variables.containsKey("editNormal")) {                    
                     String jsonNode = (String) variables.get("editNormal");            
-        			DBObject dbObject = null;
-        			try{	
-        				dbObject = (DBObject) JSON.parse(jsonNode); //TODO: parsear segundo json de prob branch
+         			DBObject dbObject = null;
+        			DBObject dbObject2 = null;
+        			try{
+        				String jsons[];
+        				//jsons = jsonNode.split("+");
+        				jsons = jsonNode.split("\\*\\*\\*");
+        				if (jsons.length>1)
+        				{
+	        				dbObject = (DBObject) JSON.parse(jsons[0]);
+	        				dbObject2 = (DBObject) JSON.parse(jsons[1]);
+        				}
+        				else
+        				{
+        					dbObject = (DBObject) JSON.parse("{}");
+	        				dbObject2 = (DBObject) JSON.parse(jsons[0]);
+        				}
         			}catch(JSONParseException exception){
         				exception.printStackTrace();
         			}
         			
-        			NormalWindow nWindow = new NormalWindow(dbObject,applet,true);
+        			NormalWindow nWindow = new NormalWindow(dbObject2,dbObject,applet,true);
         			nWindow.setHeight("610px");
         			nWindow.setWidth("450px");
                 	getUI().addWindow(nWindow);
@@ -160,11 +193,79 @@ public class Precursor extends VerticalLayout implements View {
         			cWindow.setWidth("450px");
                 	getUI().addWindow(cWindow);
                 }
+                
+                if (variables.containsKey("editModel")) {
+                	String jsonNode = (String) variables.get("editModel");            
+                	DBObject dbObject = null;
+        			DBObject dbObject2 = null;
+        			try{
+        				String jsons[];
+        				jsons = jsonNode.split("\\*\\*\\*");
+        				dbObject = (DBObject) JSON.parse(jsons[0]); //construction
+        				dbObject2 = (DBObject) JSON.parse(jsons[1]); //pending
+        			}catch(JSONParseException exception){
+        				exception.printStackTrace();
+        			}
+        			
+        			Morphia morphia = new Morphia();
+        			morphia.map(JsonConstruction.class);
+        			JsonConstruction jsonConstruction = morphia.fromDBObject(JsonConstruction.class, dbObject);
+        			
+        			morphia = new Morphia();
+        			morphia.map(JsonInput.class);
+        		    JsonInput jsonInput = morphia.fromDBObject(JsonInput.class, dbObject2);
+        		    
+        		    ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+        	    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
+        	    	Project project = projectBussines.getProject(idProject);
+        	    	project.setConstruction(jsonConstruction);
+        	    	project.setInput(jsonInput);
+        	    	project.setState("P");
+        	    	project.setPendingStamp((new Long((new Date()).getTime())).toString());
+        	    	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
+        	    	
+        	    	projectBussines.saveProject(project);
+                }
+
+                if (variables.containsKey("editModelConstruct")) {
+                	String jsonNode = (String) variables.get("editModelConstruct");            
+        			DBObject dbObject = null;
+        			try{	
+        				dbObject = (DBObject) JSON.parse(jsonNode);
+        			}catch(JSONParseException exception){
+        				exception.printStackTrace();
+        			}
+        			
+        			Morphia morphia = new Morphia();
+        			morphia.map(JsonConstruction.class);
+        			JsonConstruction jsonConstruction = morphia.fromDBObject(JsonConstruction.class, dbObject);
+        		    
+        		    ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+        	    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
+        	    	Project project = projectBussines.getProject(idProject);
+        	    	project.setConstruction(jsonConstruction);
+        	    	project.setState("C");
+        	    	project.setPendingStamp((new Long((new Date()).getTime())).toString());
+        	    	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
+        	    	
+        	    	projectBussines.saveProject(project);
+                }
             }
 	        
 	    };
 	    
-    	setSpacing(false);
+    	setMargin(true);
+    	
+    	Panel bodyPanel = new Panel();
+    	bodyPanel.setWidth("100%");
+    	bodyPanel.setHeight("100%");
+    	VerticalLayout vlPanel = new VerticalLayout();
+    	
+        setSizeFull();
+        addStyleName("transactions");
+
+	    
+    	//setSpacing(false);
     	
         //setSizeFull();
         //addStyleName("transactions");
@@ -173,13 +274,19 @@ public class Precursor extends VerticalLayout implements View {
     	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
     	Project project = projectBussines.getProject(idProject);
     	
-    	showTop(project);
-    	showBotonera();
-	    addComponent(applet);
+    	showTop(project,vlPanel);
+    	showBotonera(vlPanel);
+	    //addComponent(applet);//vlPanel
+    	showBotoneraDown(vlPanel);
+	    vlPanel.addComponent(applet);
+    	vlPanel.setComponentAlignment(applet, Alignment.MIDDLE_LEFT);
 	    
+	    
+	    bodyPanel.setContent(vlPanel);
+        addComponent(bodyPanel);
     }
     
-    void showTop(Project project) //, VerticalLayout vlPanel)
+    void showTop(Project project, VerticalLayout vlPanel) //, VerticalLayout vlPanel)
     {
     	HorizontalLayout top = new HorizontalLayout();
     	top.setWidth("100%");
@@ -208,11 +315,49 @@ public class Precursor extends VerticalLayout implements View {
     	top.setComponentAlignment(lValue, Alignment.MIDDLE_CENTER);
     	//vlPanel.addComponent(top);
     	//vlPanel.setComponentAlignment(top, Alignment.MIDDLE_RIGHT);
-    	addComponent(top);
-    	setComponentAlignment(top, Alignment.MIDDLE_RIGHT);
+    	//addComponent(top);
+    	//setComponentAlignment(top, Alignment.MIDDLE_RIGHT);
+    	vlPanel.addComponent(top);
+    	vlPanel.setComponentAlignment(top, Alignment.MIDDLE_RIGHT);
     }
     
-    void showBotonera() //VerticalLayout vlPanel)
+    void showBotoneraDown(VerticalLayout vlPanel)
+    {
+    	HorizontalLayout hlBotonera = new HorizontalLayout();
+        hlBotonera.setSpacing(true);
+        hlBotonera.setHeight("40px");
+        hlBotonera.setMargin(true);
+        
+		Button button = new Button("Guardar");
+		button.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				String[] arrayParams = new String[2];
+            	arrayParams[0] = "0";
+            	arrayParams[1] = "0";	            	
+			    applet.executeCommand("getAllModelFile",arrayParams);
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Guardar y Ejecutar");
+		button.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				ProjectFinalWindow pfWindow = new ProjectFinalWindow(applet);
+				pfWindow.setHeight("200px");
+				pfWindow.setWidth("450px");
+            	getUI().addWindow(pfWindow);
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        //addComponent(hlBotonera);
+        vlPanel.addComponent(hlBotonera);
+    	vlPanel.setComponentAlignment(hlBotonera, Alignment.MIDDLE_RIGHT);
+    }
+    
+    void showBotonera(VerticalLayout vlPanel) //VerticalLayout vlPanel)
     {
         HorizontalLayout hlBotonera = new HorizontalLayout();
         hlBotonera.setSpacing(true);
@@ -253,7 +398,7 @@ public class Precursor extends VerticalLayout implements View {
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				FunctionWindow fWindow = new FunctionWindow((DBObject) JSON.parse("{}"),applet,false);
+				FunctionWindow fWindow = new FunctionWindow((DBObject) JSON.parse("{}"),null,applet,false);
 				fWindow.setHeight("140px");
 				fWindow.setWidth("450px");
             	getUI().addWindow(fWindow);
@@ -266,7 +411,7 @@ public class Precursor extends VerticalLayout implements View {
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				NormalWindow nWindow = new NormalWindow((DBObject) JSON.parse("{}"),applet,false);
+				NormalWindow nWindow = new NormalWindow((DBObject) JSON.parse("{}"),null,applet,false);
 				nWindow.setHeight("140px");
 				nWindow.setWidth("450px");
             	getUI().addWindow(nWindow);
@@ -381,7 +526,9 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        addComponent(hlBotonera);
+        //addComponent(hlBotonera);
+        vlPanel.addComponent(hlBotonera);
+    	vlPanel.setComponentAlignment(hlBotonera, Alignment.MIDDLE_LEFT);
     }
 
 }

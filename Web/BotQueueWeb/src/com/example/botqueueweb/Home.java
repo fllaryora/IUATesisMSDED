@@ -8,6 +8,10 @@ import org.bson.types.ObjectId;
 import com.example.botqueueweb.business.ProjectBussines;
 import com.example.botqueueweb.dto.Project;
 import com.example.botqueueweb.dto.output.QueueFinal;
+import com.example.botqueueweb.windows.FunctionWindow;
+import com.example.botqueueweb.windows.ProjectWindow;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import com.vaadin.data.Item;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -24,7 +28,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-public class Home extends VerticalLayout implements View {
+public class Home extends VerticalLayout implements View, Button.ClickListener{
 
     private static final long serialVersionUID = 1L;
 
@@ -69,9 +73,21 @@ public class Home extends VerticalLayout implements View {
         t.addContainerProperty("Nro de Procesos", Integer.class , null);
         
         int i=0;
+        String estadoName;
     	for (Project project : projects) {
     		i++;
-    		t.addItem(new Object[]{project.getId(),project.getName(),project.getState(),project.getNroProcs()},i);
+    		estadoName = "";
+    		if (project.getState().equalsIgnoreCase("C"))
+    			estadoName = "Construccion"; 
+    		else if (project.getState().equalsIgnoreCase("P"))
+    			estadoName = "Pendiente";
+    		else if (project.getState().equalsIgnoreCase("E"))
+		    	estadoName = "Error";
+		    else if (project.getState().equalsIgnoreCase("X"))
+		    	estadoName = "Ejecución";
+		    else if (project.getState().equalsIgnoreCase("F"))
+		    	estadoName = "Finalizado";
+    		t.addItem(new Object[]{project.getId(),project.getName(),estadoName,project.getNroProcs()},i);
     	}
     	t.addListener(new ItemClickListener() {
 			
@@ -98,7 +114,23 @@ public class Home extends VerticalLayout implements View {
             }
         });
     	hlPanel.addComponent(btnSeleccion);
-    	hlPanel.addComponent(new Button("Nuevo ..."));
+    	btnSeleccion = new Button("Nuevo ...");
+    	btnSeleccion.addClickListener(new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event2) {
+                event2.getButton().addStyleName("selected");
+                //getUI().getUI().setData(t.getData());// TODO:ver cual manda al UI
+                
+                ProjectWindow fWindow = new ProjectWindow(event.getNavigator().getUI());
+				fWindow.setHeight("140px");
+				fWindow.setWidth("450px");
+            	getUI().addWindow(fWindow);
+            	//fWindow.addlistener
+                //event.getNavigator().getUI().setData(t.getData());// TODO:ver cual manda al UI 
+            }
+        });
+    	hlPanel.addComponent(btnSeleccion);
+    	//hlPanel.addComponent(new Button("Nuevo ..."));
     	hlPanel.setSpacing(true);
     	vlPanel.addComponent(hlPanel);
     	
@@ -124,5 +156,11 @@ public class Home extends VerticalLayout implements View {
         bodyPanel.setContent(vlPanel);
         addComponent(bodyPanel);
     }
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		System.out.println("implement click");
+		//no me funciono para ProjectWindow
+	}
 
 }

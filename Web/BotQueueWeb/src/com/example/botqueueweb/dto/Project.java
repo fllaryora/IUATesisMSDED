@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
+import com.example.botqueueweb.dto.construction.JsonConstruction;
 import com.example.botqueueweb.dto.input.JsonInput;
 import com.example.botqueueweb.dto.output.JsonOutput;
 import com.google.code.morphia.annotations.Entity;
@@ -15,10 +16,12 @@ public class Project {
 	private @Id ObjectId id;
 	private String name;
 	private String state;
+	private String constructionStamp;
 	private String pendingStamp;
 	private String executingStamp;
 	private String finishingStamp;
 	private String lastUpdatedStamp;
+	private JsonConstruction construction;
 	private JsonInput input;
 	private Integer nroProcs;
 	private JsonOutput output;
@@ -90,6 +93,18 @@ public class Project {
 	}
 	public void setUsr(List<String> usr) {
 		this.usr = usr;
+	}
+	public String getConstructionStamp() {
+		return constructionStamp;
+	}
+	public void setConstructionStamp(String constructionStamp) {
+		this.constructionStamp = constructionStamp;
+	}
+	public JsonConstruction getConstruction() {
+		return construction;
+	}
+	public void setConstruction(JsonConstruction construction) {
+		this.construction = construction;
 	}
 
 }

@@ -27,7 +27,7 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class FunctionWindow extends Window {
 
-    public FunctionWindow(DBObject function, final AppletIntegration applet, boolean isFull) {
+    public FunctionWindow(final DBObject function,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull) {
     	
     	this.setCaption("Función");
     	this.setModal(true);
@@ -111,12 +111,13 @@ public class FunctionWindow extends Window {
         	bAceptar.addClickListener(new ClickListener() {
 	            @Override
 				public void buttonClick(ClickEvent event) {
-	            	String[] arrayParams = new String[4];
+	            	String[] arrayParams = new String[5];
 	            	arrayParams[0] = tfInput.getValue().toString();
 	            	arrayParams[1] = tfOutput.getValue();
-	            	arrayParams[2] = "";
+	            	arrayParams[2] = "no"; //"yes" //prob bhanch
 	            	arrayParams[3] = tfName.getValue();	            	
-			        
+	            	arrayParams[4] = ""; 
+	            	
 	        	    /*String[] arrayParams = new String[4];
 	        	    arrayParams[0] = tfName.getValue();
 	        	    arrayParams[1] = tfResource.getValue();
