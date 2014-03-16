@@ -315,9 +315,13 @@ public class BotqueuewebUI extends UI {
                     	ObjectId idProject = (ObjectId) getData();
                     	ProjectBussines projectBussines = new ProjectBussines();
                     	Project project = projectBussines.getProject(idProject);
-                    	if (project.getState().equalsIgnoreCase("F"))//todo: Pasar a PENDIENTE
+                    	if (project.getState().equalsIgnoreCase("C") ||
+                			project.getState().equalsIgnoreCase("P") ||
+                			project.getState().equalsIgnoreCase("E") ||
+                			project.getState().equalsIgnoreCase("X") 
+                    		)//todo: Pasar a PENDIENTE
                     	{
-                    		Notification.show("El Proyecto seleccionado se encuentra Pendiente", Notification.Type.WARNING_MESSAGE);
+                    		Notification.show("El Proyecto seleccionado debe estar Finalizado", Notification.Type.WARNING_MESSAGE);
     	                	return;
                     	}
 	                	//showNotification("Seleccione un proyecto");

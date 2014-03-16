@@ -28,7 +28,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-public class Home extends VerticalLayout implements View {
+public class Home extends VerticalLayout implements View, Button.ClickListener{
 
     private static final long serialVersionUID = 1L;
 
@@ -83,7 +83,7 @@ public class Home extends VerticalLayout implements View {
     			estadoName = "Pendiente";
     		else if (project.getState().equalsIgnoreCase("E"))
 		    	estadoName = "Error";
-		    else if (project.getState().equalsIgnoreCase("E"))
+		    else if (project.getState().equalsIgnoreCase("X"))
 		    	estadoName = "Ejecución";
 		    else if (project.getState().equalsIgnoreCase("F"))
 		    	estadoName = "Finalizado";
@@ -156,5 +156,11 @@ public class Home extends VerticalLayout implements View {
         bodyPanel.setContent(vlPanel);
         addComponent(bodyPanel);
     }
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		System.out.println("implement click");
+		//no me funciono para ProjectWindow
+	}
 
 }

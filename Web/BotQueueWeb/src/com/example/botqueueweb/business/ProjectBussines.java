@@ -168,6 +168,22 @@ public class ProjectBussines {
 		
 	}
 	
+	public void saveProject(Project project) {
+		Mongo mongo;
+		
+		try {
+			//TODO LLamar DAO
+			mongo = new Mongo("localhost", 27017);
+			Morphia morphia = new Morphia();
+			Datastore ds = morphia.createDatastore(mongo,"test");
+			ds.save(project);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
 	public Queue getQueue() {
 		
 		Mongo mongo;

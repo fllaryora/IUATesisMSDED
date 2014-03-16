@@ -8,6 +8,7 @@ import com.google.code.morphia.annotations.Embedded;
 public class Normal {
 
 	private Integer idNode;
+	private String name;
 	private List <Integer> preceders;
 	private List <Integer> followers;
 	private Delay delay;
@@ -42,6 +43,12 @@ public class Normal {
 	}
 	public void setProbabilisticBranch(List<Double> probabilisticBranch) {
 		this.probabilisticBranch = probabilisticBranch;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	

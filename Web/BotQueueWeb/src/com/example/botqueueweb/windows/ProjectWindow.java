@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.vaadin.applet.AppletIntegration;
 
+import com.example.botqueueweb.Home;
 import com.example.botqueueweb.business.ProjectBussines;
 import com.example.botqueueweb.dto.Project;
 import com.example.botqueueweb.dto.input.JsonInput;
@@ -58,7 +59,7 @@ public class ProjectWindow extends Window {
         HorizontalLayout hlBotones = new HorizontalLayout();
         hlBotones.setSpacing(true);
         
-        Button bAceptar = new Button("Aceptar");
+        final Button bAceptar = new Button("Aceptar");
         
         bAceptar.addClickListener(new ClickListener() {
             @Override
@@ -69,22 +70,28 @@ public class ProjectWindow extends Window {
             	Project project = new Project();
             	project.setName(tfName.getValue());
             	project.setState("C");
-            	project.setLastUpdatedStamp((new Date()).toString());
+            	project.setConstructionStamp((new Long((new Date()).getTime())).toString());
+            	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
             	//project.setUsr(new ArrayList<String>());
             	projectBussines.insertProject(project);
+            	//TODO: actualizar grilla
             	//TODO: poner como seleccionado
             	//TODO: en ventana deberia mostrarse projecto seleccionado
+            	//clickListener.buttonClick(new ClickEvent(bAceptar));
         	    close();
 			}
 		});
         
-        Button bCancelar = new Button("Cancelar");
+        final Button bCancelar = new Button("Cancelar");
         bCancelar.addClickListener(new ClickListener() {
             @Override
 			public void buttonClick(ClickEvent event) {
+            	//clickListener.buttonClick(bCancelar.get);
         	    close();
 			}
 		});
+        
+        //clickListener.buttonClick(new ClickEvent(bCancelar));
         
         bAceptar.setWidth("100");
         bCancelar.setWidth("100");

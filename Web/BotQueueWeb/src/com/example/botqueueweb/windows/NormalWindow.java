@@ -22,7 +22,7 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class NormalWindow extends Window {
 
-    public NormalWindow(DBObject normal, final AppletIntegration applet, boolean isFull) {
+    public NormalWindow(final DBObject normal,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull) {
     	
     	this.setCaption("Normal");
     	this.setModal(true);
@@ -394,7 +394,7 @@ public class NormalWindow extends Window {
         	bAceptar.addClickListener(new ClickListener() {
 	            @Override
 				public void buttonClick(ClickEvent event) {
-	            	String[] arrayParams = new String[17];
+	            	String[] arrayParams = new String[18];
 	            	
 	            	if (cbDelay.getValue().toString().equalsIgnoreCase("Deterministica"))
 	            		arrayParams[0] = "deterministic";
@@ -425,7 +425,8 @@ public class NormalWindow extends Window {
 	            	arrayParams[14] = tfEscale.getValue();
 	            	arrayParams[15] = "no"; //"yes"
 	            	arrayParams[16] = tfName.getValue();	            	
-			        
+	            	arrayParams[17] = ""; 
+	            	
 	        	    /*String[] arrayParams = new String[4];
 	        	    arrayParams[0] = tfName.getValue();
 	        	    arrayParams[1] = tfResource.getValue();

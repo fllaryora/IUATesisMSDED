@@ -8,6 +8,7 @@ import com.google.code.morphia.annotations.Embedded;
 public class Counter {
 
 	private Integer idNode;
+	private String name;
 	private Integer quantity;
 	private Integer cycle;
 	private List<Integer> preceders;
@@ -42,6 +43,12 @@ public class Counter {
 	}
 	public void setFollowers(List<Integer> followers) {
 		this.followers = followers;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
