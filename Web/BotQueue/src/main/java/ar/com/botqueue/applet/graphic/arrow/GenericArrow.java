@@ -305,8 +305,8 @@ public class GenericArrow implements Arrow{
 		arrowJson += putValue("tail",tail)+",";
 		arrowJson += putValue("head",head)+",";
 		
-		System.out.println("tail "+ this.tailSurface +putValue("tailSurface",this.tailSurface));
-		System.out.println("head "+ this.headSurface +putValue("headSurface",this.headSurface));
+		//System.out.println("tail "+ this.tailSurface +putValue("tailSurface",this.tailSurface));
+		//System.out.println("head "+ this.headSurface +putValue("headSurface",this.headSurface));
 		
 		arrowJson += putValue("tailSurface",this.tailSurface)+",";
 		arrowJson += putValue("headSurface",this.headSurface)+",";

@@ -441,28 +441,54 @@ public class GraphicDTO {
 		 */
 		public String getModelInfo(Principal destination,int length, int seedModel){
 			//clasifico
+			boolean hasLeastOneQueue = false;
+			boolean hasLeastOneCombi = false;
+			boolean hasLeastOneNormal = false;
+			boolean hasLeastOneFunction = false;
+			boolean hasLeastOneCounter = false;
 			String queues = "\""+NodeFields.QUEUES+"\":[  ";
 			String combis = "\""+NodeFields.COMBIS+"\":[  ";
 			String normals = "\""+NodeFields.NORMALS+"\":[  ";
 			String functions = "\""+NodeFields.FUNCTIONS+"\":[ ";
 			String counters = "\""+NodeFields.COUNTERS+"\":[  ";
 			for(Node nextNode:this.nodes){
-				if(nextNode instanceof Queue)
+				if(nextNode instanceof Queue){
 					queues += getNodeJson(nextNode)+",";
-				if(nextNode instanceof Normal)
+					hasLeastOneQueue = true;
+				}
+				if(nextNode instanceof Normal){
 					normals += getNodeJson(nextNode)+",";
-				if(nextNode instanceof Combi)
+					hasLeastOneNormal = true;
+				}
+				if(nextNode instanceof Combi){
 					combis += getNodeJson(nextNode)+",";
-				if(nextNode instanceof Function)
+					hasLeastOneCombi = true;
+				}
+				if(nextNode instanceof Function){
 					functions += getNodeJson(nextNode)+",";
-				if(nextNode instanceof Counter)
+					hasLeastOneFunction = true;
+				}
+				if(nextNode instanceof Counter){
 					counters += getNodeJson(nextNode)+",";
+					hasLeastOneCounter = true;
+					
+				}
 			}
-			queues = queues.substring(0, queues.length() - 1)+" ]";
-			combis = combis.substring(0, combis.length() - 1)+" ]";
-			normals = normals.substring(0, normals.length() - 1)+" ]";
-			functions = functions.substring(0, functions.length() - 1)+" ]";
-			counters = counters.substring(0, counters.length() - 1)+" ]";
+			if(hasLeastOneQueue)
+				queues = queues.substring(0, queues.length() - 1);
+			queues += " ]";
+			if(hasLeastOneCombi)
+				combis = combis.substring(0, combis.length() - 1);
+			combis += " ]";
+			if(hasLeastOneNormal)
+				normals = normals.substring(0, normals.length() - 1);
+			normals += " ]";
+			if(hasLeastOneFunction)
+				functions = functions.substring(0, functions.length() - 1);
+			functions += " ]";
+			if(hasLeastOneCounter)
+				counters = counters.substring(0, counters.length() - 1);
+			counters += " ]";
 			
 			
 			String model = "{ \"length\":"+ length +
@@ -486,6 +512,11 @@ public class GraphicDTO {
 		 * @return
 		 */
 		public String getAuxAllModelFile(Principal destination,int length, int seedModel){
+			boolean hasLeastOneQueue = false;
+			boolean hasLeastOneCombi = false;
+			boolean hasLeastOneNormal = false;
+			boolean hasLeastOneFunction = false;
+			boolean hasLeastOneCounter = false;
 			String queues = "\""+NodeFields.QUEUES+"\":[  ";
 			String combis = "\""+NodeFields.COMBIS+"\":[  ";
 			String normals = "\""+NodeFields.NORMALS+"\":[  ";
@@ -493,23 +524,42 @@ public class GraphicDTO {
 			String counters = "\""+NodeFields.COUNTERS+"\":[  ";
 			for(Node nextNode:this.nodes){
 				String jsonArrayElement = getNodeSaveFileJson(nextNode)+",";
-				if(nextNode instanceof Queue)
+				if(nextNode instanceof Queue){
 					queues += jsonArrayElement;
-				if(nextNode instanceof Normal)
+					hasLeastOneQueue = true;
+				}
+				if(nextNode instanceof Normal){
 					normals += jsonArrayElement;
-				if(nextNode instanceof Combi)
+					hasLeastOneNormal = true;
+				}
+				if(nextNode instanceof Combi){
 					combis += jsonArrayElement;
-				if(nextNode instanceof Function)
+					hasLeastOneCombi = true;
+				}
+				if(nextNode instanceof Function){
 					functions += jsonArrayElement;
-				if(nextNode instanceof Counter)
+					hasLeastOneFunction = true;
+				}
+				if(nextNode instanceof Counter){
 					counters += jsonArrayElement;
+					hasLeastOneCounter = true;
+				}
 			}
-			queues = queues.substring(0, queues.length() - 1)+" ]";
-			combis = combis.substring(0, combis.length() - 1)+" ]";
-			normals = normals.substring(0, normals.length() - 1)+" ]";
-			functions = functions.substring(0, functions.length() - 1)+" ]";
-			counters = counters.substring(0, counters.length() - 1)+" ]";
-			
+			if(hasLeastOneQueue)
+				queues = queues.substring(0, queues.length() - 1);
+			queues += " ]";
+			if(hasLeastOneCombi)
+				combis = combis.substring(0, combis.length() - 1);
+			combis += " ]";
+			if(hasLeastOneNormal)
+				normals = normals.substring(0, normals.length() - 1);
+			normals += " ]";
+			if(hasLeastOneFunction)
+				functions = functions.substring(0, functions.length() - 1);
+			functions += " ]";
+			if(hasLeastOneCounter)
+				counters = counters.substring(0, counters.length() - 1);
+			counters += " ]";
 			
 			String model = "{ \"length\":"+ length +
 					", \"seed\":"+seedModel+
@@ -535,10 +585,13 @@ public class GraphicDTO {
 		 */
 		private String getArrowsSaveFileJson() {
 			String jsonEdges = "";
+			boolean hasLeastOne = false;
 			for(GenericArrow ga: this.edges){
 				jsonEdges += ga.getArrowJson(this.nodes)+" ,";
+				hasLeastOne = true;
 			}
-			jsonEdges = jsonEdges.substring(0, jsonEdges.length() - 1);
+			if(hasLeastOne)
+				jsonEdges = jsonEdges.substring(0, jsonEdges.length() - 1);
 			return jsonEdges;
 		}
 		
@@ -572,15 +625,18 @@ public class GraphicDTO {
 		 * @return
 		 */
 		private String getNameList(Node nextNode){
+			boolean hasLeastOne = false;
 			List<GenericArrow> nodeEdges = this.getEdges(nextNode);
 			String json2 = "{ \"nameList\":[  ";
 			for(GenericArrow currentEdge : nodeEdges){
 				int idNode = this.nodes.indexOf(currentEdge.getHeadArrow()) +1;
 				String name = currentEdge.getHeadArrow().getLabel();
 				json2 += "{\"id\" : "+idNode+", \"name\": \""+name+"\"} ,";
+				hasLeastOne = true;
 				
 			}
-			json2 = json2.substring(0, json2.length()-1);
+			if(hasLeastOne)
+				json2 = json2.substring(0, json2.length()-1);
 			json2 += " ] }";
 			return json2;
 		}

@@ -220,21 +220,27 @@ public class GenericNode implements Node, Comparable<Node>{
 	}
 	
 	protected String putArray(String field, List<Integer> value){
+		boolean hasLeastOne = false;
 		String ret =  "\""+field+"\": [  ";
 		for(Integer element: value){
 			ret += ""+element+",";
+			hasLeastOne = true;
 		}
-		ret = ret.substring(0, ret.length() - 1);
+		if(hasLeastOne)
+			ret = ret.substring(0, ret.length() - 1);
 		ret += "]";
 		return ret;
 	}
 	
 	protected String putArrayDouble(String field, List<Double> value){
 		String ret =  "\""+field+"\": [  ";
+		boolean hasLeastOne = false;
 		for(Double element: value){
 			ret += ""+element+",";
+			hasLeastOne = true;
 		}
-		ret = ret.substring(0, ret.length() - 1);
+		if(hasLeastOne)
+			ret = ret.substring(0, ret.length() - 1);
 		ret += "]";
 		return ret;
 	}
