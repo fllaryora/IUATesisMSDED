@@ -388,6 +388,7 @@ public class VaadinFacade {
 					this.graphic.appendArrow(ga);
 				}
 			} catch(Exception e){
+				this.graphic.cleanAll();//no load middle model
 				System.err.println("error con "+e.getMessage());
 				e.printStackTrace();
 			}

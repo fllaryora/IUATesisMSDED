@@ -28,6 +28,11 @@ public class GraphicDTO {
 		
 	}
 	
+	public void cleanAll(){
+		this.nodes.clear();
+		this.edges.clear();
+	}
+	
 	@Deprecated
 	public void testFastExample(){
 		Node panadero = NodeFactory.createNode(NodeTypes.QUEUE, 70+40, 20+10, "Panadero");
