@@ -249,4 +249,21 @@ public class ProjectBussines {
 		}
 	}
 	
+	public void deleteProject(ObjectId idProject) {
+		Mongo mongo;
+		List<Project> projects = new ArrayList<Project>();
+		
+		try {
+			mongo = new Mongo("localhost", 27017);
+			Morphia morphia = new Morphia();
+			Datastore ds = morphia.createDatastore(mongo,"test");
+			Project project = new Project();
+			project.setId(idProject);
+			ds.delete(project);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
 }
