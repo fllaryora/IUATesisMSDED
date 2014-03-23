@@ -11,16 +11,26 @@ public class NodeFields {
 	public static final String FUNCTIONS = "functions";
 	public static final String COUNTERS = "counters";
 	
-	/** node fiels */
+	/** common node fiels */
 	public static final String ID_NODE = "idNode";
+	public static final String ORDER = "order";
 	public static final String NAME = "name";
 	public static final String POS_X = "posX";
 	public static final String POS_Y = "posY";
 	public static final String PROBAB_BRANCH = "probBranch";
 	
-	
+	/** arrow fiels */
 	public static final String PROCEDERS = "preceders";
 	public static final String FOLLOWERS = "followers";
+	
+	/** node fiels */
+	public static final String TAIL = "tail";
+	public static final String TAIL_SURFACE = "tailSurface";
+	public static final String HEAD = "head";
+	public static final String HEAD_SURFACE = "headSurface";
+	public static final String MIDDLE_POINTS = "middlePoints";
+	public static final String ENABLE_PROBABILISTIC = "enableProb";
+	
 	
 	public static final String RESOURCE = "resource";
 	public static final String FIXED_COST = "fixedCost";

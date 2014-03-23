@@ -66,7 +66,7 @@ public class Principal extends AbstractVaadinApplet {
 	@Deprecated
 	private void runSimpleTest(){
 		Object[] params = new Object[1];
-		params[0]= "{ \"length\":600, \"seed\":-1, "
+		/*params[0]= "{ \"length\":600, \"seed\":-1, "
 				+ "\"transformation\": {"
 				+ "\"queues\":[  {\"idNode\":5,\"name\":\"Panadero\",\"posX\":110,\"posY\":30,\"resource\":0,\"fixedCost\":0.0,\"variableCost\":0.0,\"preceders\": [  4],\"followers\": [  4]} ],"
 				+ "\"combis\":[  {\"idNode\":4,\"name\":\"Amazar\",\"posX\":96,\"posY\":132,\"probBranch\":true,\"delay\" : {\"distribution\":\"deterministic\",\"constant\":10.0},\"preceders\": [  5],\"followers\": [  3,5],\"probabilisticBranch\": [  0.9,0.1]} ],"
@@ -78,6 +78,13 @@ public class Principal extends AbstractVaadinApplet {
 				+ "{\"tail\":4,\"head\":3,\"tailSurface\":2,\"headSurface\":6,\"enableProb\":true,\"probabilisticBranch\":0.9,\"middlePoints\": [{\"posX\":203,\"posY\":154,\"order\":0} ]} ,"
 				+ "{\"tail\":5,\"head\":4,\"tailSurface\":5,\"headSurface\":7,\"enableProb\":false,\"probabilisticBranch\":0.0,\"middlePoints\": [{\"posX\":125,\"posY\":103,\"order\":0} ]} ,"
 				+ "{\"tail\":4,\"head\":5,\"tailSurface\":1,\"headSurface\":3,\"enableProb\":true,\"probabilisticBranch\":0.1,\"middlePoints\": [{\"posX\":138,\"posY\":103,\"order\":0} ]} ] }";
+				*/
+		params[0]= "{ \"className\" : \"com.example.botqueueweb.dto.construction.JsonConstruction\","
+				+ " \"length\" : 0 , \"seed\" : 0,"
+				+ " \"transformation\" : { "
+					+ "\"combis\" : [ { \"idNode\" : 1 , \"name\" : \"asd\" , \"posX\" : 297 , \"posY\" : 333 , \"delay\" : { \"distribution\" : \"deterministic\" , \"constant\" : 0.0} , \"probBranch\" : false}]"
+				+ "}"
+				+ "}";
 		doExecute("setAllModelFile", params);
 		
 		/*this.graphic.testFastExample();

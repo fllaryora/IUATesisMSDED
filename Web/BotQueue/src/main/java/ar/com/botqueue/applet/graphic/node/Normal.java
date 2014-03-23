@@ -88,7 +88,7 @@ public class Normal extends GenericNode{
 		super.putValue(NodeFields.ID_NODE , idNode)+","+
 		super.putString(NodeFields.NAME, this.label)+",";
 		
-		ret += "\"delay\" : {";
+		ret += "\""+NodeFields.DELAY+"\" : {";
 		if (this.distribution.equalsIgnoreCase(NodeFields.DETERMINISTIC)){
 			ret += super.putString(NodeFields.DISTRIBUTION, NodeFields.DETERMINISTIC)+","+
 			super.putValue(NodeFields.CONSTANT, this.constant);
@@ -174,7 +174,7 @@ public class Normal extends GenericNode{
 				super.putValue(NodeFields.POS_X , this.posX)+","+
 				super.putValue(NodeFields.POS_Y , this.posY)+","+
 				super.putValue(NodeFields.PROBAB_BRANCH , this.probBranch)+",";
-				ret += "\"delay\" : {";
+				ret += "\""+NodeFields.DELAY+"\" : {";
 				if (this.distribution.equalsIgnoreCase(NodeFields.DETERMINISTIC)){
 					ret += super.putString(NodeFields.DISTRIBUTION, NodeFields.DETERMINISTIC)+","+
 					super.putValue(NodeFields.CONSTANT, this.constant);

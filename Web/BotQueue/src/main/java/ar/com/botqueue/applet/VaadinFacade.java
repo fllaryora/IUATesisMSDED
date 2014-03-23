@@ -354,43 +354,74 @@ public class VaadinFacade {
 	 * */
 	public void setAllModelFile(Object[] params){
 		Map<Integer, Node> nodeMap = new HashMap<Integer, Node>();
+		JSONObject transformation = null;
+		JSONArray arrows = null;
+		JSONArray queues = null;
+		JSONArray normals = null;
+		JSONArray combis = null;
+		JSONArray counters = null;
+		JSONArray functions = null;
 		if(params.length == 1){//tiene que tener el json
 			try{
 				//string to json....
 				String oldModelJson = (String)params[0];
 				JSONObject model = new JSONObject(oldModelJson);
-				JSONObject transformation = model.getJSONObject(NodeFields.TRANSFORMATION);
-				JSONArray arrows = model.getJSONArray(NodeFields.ARROWS);
-				JSONArray queues = transformation.getJSONArray(NodeFields.QUEUES);
-				JSONArray normals = transformation.getJSONArray(NodeFields.NORMALS);
-				JSONArray combis = transformation.getJSONArray(NodeFields.COMBIS);
-				JSONArray counters = transformation.getJSONArray(NodeFields.COUNTERS);
-				JSONArray functions = transformation.getJSONArray(NodeFields.FUNCTIONS);
+				if(model.has(NodeFields.TRANSFORMATION))
+					transformation = model.getJSONObject(NodeFields.TRANSFORMATION);
+				if(model.has(NodeFields.ARROWS))
+					arrows = model.getJSONArray(NodeFields.ARROWS);
 				
-				//jsonObject to nodes in map
-				nodeMap.putAll(queueMap(queues));
-				nodeMap.putAll(counterMap(counters));
-				nodeMap.putAll(functionMap(functions));
-				nodeMap.putAll(normalMap(normals));
-				nodeMap.putAll(combiMap(combis));
-				
-				//add all nodes to model 
-				int max = nodeMap.size();
-				for(int i = 0; i< max;i++){
-					Node current = nodeMap.get(new Integer(i+1));
-					this.graphic.appendNode(i, current);
+				if(transformation != null){
+					if(transformation.has(NodeFields.QUEUES)){
+						queues = transformation.getJSONArray(NodeFields.QUEUES);
+						//jsonObject to nodes in map
+						nodeMap.putAll(queueMap(queues));
+					}
+					if(transformation.has(NodeFields.NORMALS)){
+						normals = transformation.getJSONArray(NodeFields.NORMALS);
+						//jsonObject to nodes in map
+						nodeMap.putAll(normalMap(normals));
+					}
+					if(transformation.has(NodeFields.COMBIS)){
+						combis = transformation.getJSONArray(NodeFields.COMBIS);
+						//jsonObject to nodes in map
+						nodeMap.putAll(combiMap(combis));	
+					}
+					if(transformation.has(NodeFields.COUNTERS)){
+						counters = transformation.getJSONArray(NodeFields.COUNTERS);
+						//jsonObject to nodes in map
+						nodeMap.putAll(counterMap(counters));
+					}
+					if(transformation.has(NodeFields.FUNCTIONS)){
+						functions = transformation.getJSONArray(NodeFields.FUNCTIONS);
+						//jsonObject to nodes in map
+						nodeMap.putAll(functionMap(functions));
+					}
+					
+					//add all nodes to model 
+					int max = nodeMap.size();
+					for(int i = 0; i< max;i++){
+						Node current = nodeMap.get(new Integer(i+1));
+						this.graphic.appendNode(i, current);
+					}
+					
 				}
 				
-				//process json of arrows to object
-				List<Node> modelNodes = this.graphic.getModelNode();
-				for(int i = 0; i < arrows.length(); i++){
-					GenericArrow ga = getGA( arrows.getJSONObject(i), nodeMap, modelNodes);
-					this.graphic.appendArrow(ga);
+				if(arrows != null){
+					//process json of arrows to object
+					List<Node> modelNodes = this.graphic.getModelNode();
+					for(int i = 0; i < arrows.length(); i++){
+						GenericArrow ga = getGA( arrows.getJSONObject(i), nodeMap, modelNodes);
+						this.graphic.appendArrow(ga);
+					}
+					
 				}
+								
 			} catch(Exception e){
 				this.graphic.cleanAll();//no load middle model
-				System.err.println("error con "+e.getMessage());
+				System.err.println("Error Atrapado por applet: el applet queda en estado consistente (aun se puede usar)\n A continuacion la descripcion del erorr."+e.getMessage());
 				e.printStackTrace();
+				System.err.println("Error Atrapado por applet: el applet queda en estado consistente (aun se puede usar).");
 			}
 		}//end if params
 		
@@ -505,26 +536,35 @@ public class VaadinFacade {
 		List<DotNode> dotList = new ArrayList<DotNode>();
 		for(int j = 0; j < middlePoints.length(); j++){
 			JSONObject point = middlePoints.getJSONObject(j);
-			int order = point.getInt("order");
-			int posX = point.getInt(NodeFields.POS_X);
-			int posY = point.getInt(NodeFields.POS_Y);
+			int order = point.getInt(NodeFields.ORDER); //deberia estar si o si
+			int posX = point.getInt(NodeFields.POS_X);  //deberia estar si o si
+			int posY = point.getInt(NodeFields.POS_Y);  //deberia estar si o si
 			Node dot = NodeFactory.createNode(NodeTypes.ARROW_DOT, posX, posY, null, order);
 			dotList.add((DotNode)dot);
 		}
 		return dotList;
 	}
 	
+	/**
+	 * 
+	 * @param arrow: json que entra desde vaadin
+	 * @param nodeMap: instancias de los nodos inicializados en un mapa por ids
+	 * @param modelNodes: la lista de nodos desde el GraphicDTO
+	 * @return
+	 */
 	private GenericArrow getGA(JSONObject arrow, Map<Integer, Node> nodeMap, List<Node> modelNodes){
-		JSONArray middlePoints = arrow.getJSONArray("middlePoints");
+		
+		JSONArray middlePoints = arrow.getJSONArray("middlePoints");//deberia estar si o si
 		List<DotNode> dotList =  getDotNodeList(middlePoints);
-		int tailNumber = arrow.getInt("tail");
+		int tailNumber = arrow.getInt(NodeFields.TAIL); //deberia estar si o si
 		Node tail = nodeMap.get( new Integer(tailNumber));
-		int headNumber = arrow.getInt("head");
+		int headNumber = arrow.getInt(NodeFields.HEAD); //deberia estar si o si
 		Node head = nodeMap.get( new Integer(headNumber));
-		BindSurface tailSurface = toBindSurface(arrow.getInt("tailSurface"));
-		BindSurface headSurface = toBindSurface(arrow.getInt("headSurface"));
-		boolean enableProb = arrow.getBoolean("enableProb");
-		double probabilisticBranch = arrow.getDouble("probabilisticBranch");
+		BindSurface tailSurface = toBindSurface(arrow.getInt(NodeFields.TAIL_SURFACE));//deberia estar si o si
+		BindSurface headSurface = toBindSurface(arrow.getInt(NodeFields.HEAD_SURFACE));//deberia estar si o si
+		boolean enableProb = arrow.getBoolean(NodeFields.ENABLE_PROBABILISTIC);//deberia estar si o si
+		double probabilisticBranch =arrow.has(NodeFields.PROBABILISTIC_BRANCH)? arrow.getDouble(NodeFields.PROBABILISTIC_BRANCH): 0.0;
+		
 		GenericArrow ga = new GenericArrow( modelNodes, tail, head, dotList, enableProb, probabilisticBranch, tailSurface, headSurface);
 		return ga;
 	}

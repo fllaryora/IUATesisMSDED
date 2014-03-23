@@ -54,9 +54,9 @@ public class DotNode extends GenericCircularNode {
 	
 	@Override
 	public String getJsonSaveFile(){
-		return "{"+super.putValue("posX" , this.posX)+","+
-				super.putValue("posY" , this.posY)+","+
-				super.putValue("order" , this.order)+"}";
+		return "{"+super.putValue(NodeFields.POS_X , this.posX)+","+ 
+				super.putValue(NodeFields.POS_Y , this.posY)+","+
+				super.putValue(NodeFields.ORDER , this.order)+"}";
 	}
 	
 }
