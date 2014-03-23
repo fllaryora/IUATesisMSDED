@@ -277,13 +277,21 @@ public class Precursor extends VerticalLayout implements View {
     	showTop(project,vlPanel);
     	showBotonera(vlPanel);
 	    //addComponent(applet);//vlPanel
-    	showBotoneraDown(vlPanel);
 	    vlPanel.addComponent(applet);
     	vlPanel.setComponentAlignment(applet, Alignment.MIDDLE_LEFT);
-	    
+    	showBotoneraDown(vlPanel);
 	    
 	    bodyPanel.setContent(vlPanel);
         addComponent(bodyPanel);
+        
+        if(project.getConstruction()!=null)
+        {
+	        String[] arrayParams = new String[1];
+	        Morphia morphia = new Morphia();
+			morphia.map(JsonConstruction.class);
+	    	arrayParams[0] = morphia.toDBObject(project.getConstruction()).toString();
+		    applet.executeCommand("setAllModelFile",arrayParams);
+        }
     }
     
     void showTop(Project project, VerticalLayout vlPanel) //, VerticalLayout vlPanel)
@@ -328,7 +336,22 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.setHeight("40px");
         hlBotonera.setMargin(true);
         
-		Button button = new Button("Guardar");
+        /*Button button = new Button("Cargar");
+		button.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+		    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
+		    	Project project = projectBussines.getProject(idProject);
+				String[] arrayParams = new String[1];
+		        Morphia morphia = new Morphia();
+				morphia.map(JsonConstruction.class);
+		    	arrayParams[0] = morphia.toDBObject(project.getConstruction()).toString();
+			    applet.executeCommand("setAllModelFile",arrayParams);
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);*/
+	    
+        Button button = new Button("Guardar");
 		button.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				String[] arrayParams = new String[2];
