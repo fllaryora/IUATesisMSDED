@@ -5,14 +5,11 @@ import java.util.List;
 
 import org.vaadin.applet.AppletIntegration;
 
-import com.example.botqueueweb.dto.input.Combi;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -30,37 +27,41 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class CombiWindow extends Window {
 
-    public CombiWindow(final DBObject combi,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull) {
+	private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings({ "deprecation", "rawtypes" })
+	public CombiWindow(final DBObject combi,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull) {
     	
+    	//CONFIGURACION INICIAL
     	this.setCaption("Combi");
     	this.setModal(true);
+    	this.setResizable(false);
     	
+    	//PANEL
     	Panel bodyPanel = new Panel();
     	bodyPanel.setWidth("100%");
     	bodyPanel.setHeight("100%");
-    	
-    	setResizable(false);
         VerticalLayout subContent = new VerticalLayout();
         subContent.setMargin(true);
         subContent.setSpacing(true);
-        
         bodyPanel.setContent(subContent);
         setContent(bodyPanel);
         
+        //NOMBRE COMBI
         HorizontalLayout hlNombre = new HorizontalLayout();
         Label lNombre = new Label("Nombre: ");
         if (isFull)	lNombre.setWidth("110");
         else		lNombre.setWidth("90");
         final TextField tfName = new TextField();
         if (isFull)	tfName.setWidth("310");
-        else		tfName.setWidth("330");
+        else		tfName.setWidth("338");
         if (combi.get("name")!=null)
         	tfName.setValue(combi.get("name").toString());
         hlNombre.addComponent(lNombre);
         hlNombre.addComponent(tfName);
         subContent.addComponent(hlNombre);
 
-     // Elementos Modificacion //
+        //ELEMENTOS DE COMBOBOX
     	
     	final HorizontalLayout hlMinimun = new HorizontalLayout();
         Label lMinimun = new Label("Minimo: ");
@@ -172,7 +173,6 @@ public class CombiWindow extends Window {
         hlVariance.addComponent(tfVariance);
         hlVariance.setVisible(false);
         
-        
         final HorizontalLayout hlLeast = new HorizontalLayout();
         Label lLeast = new Label("Least: ");
         lLeast.setWidth("110");
@@ -217,18 +217,14 @@ public class CombiWindow extends Window {
         hlSeed.addComponent(tfSeed);
         hlSeed.setVisible(false);
         
+        //COMBO
         final ComboBox cbDelay = new ComboBox();
-        
         final HorizontalLayout hlSpace = new HorizontalLayout();
         final Integer hlSpaceHeight = 410;
         final Integer hlSpaceHeightItem = 40;
         
         if (isFull)
         {
-	        //final HorizontalLayout hlSpace = new HorizontalLayout();
-        	//hlSpace.setHeight("250px");
-        	//hlSpace.setHeight("410px"); // +40 *4
-        	
         	cbDelay.addItem("---");
         	cbDelay.addItem("Deterministica");
         	cbDelay.addItem("Uniforme");
@@ -236,8 +232,10 @@ public class CombiWindow extends Window {
         	cbDelay.addItem("Normal");
         	cbDelay.addItem("Beta");
         	cbDelay.addItem("Triangular");
+        	//MINIMIZAR PARA LEER CODIGO
         	cbDelay.addListener(new Property.ValueChangeListener() {
 				
+				private static final long serialVersionUID = 1L;
 				@Override
 				public void valueChange(ValueChangeEvent event) {
 					if (cbDelay.getValue()!=null)
@@ -273,7 +271,6 @@ public class CombiWindow extends Window {
 					        	else
 					        		hlSpace.setHeight("0px");
 					        }
-					        
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Uniforme"))
 						{
@@ -438,6 +435,8 @@ public class CombiWindow extends Window {
 					}
 				}
 			});
+        	cbDelay.setImmediate(true);
+        	
         	HorizontalLayout hlDelay = new HorizontalLayout();
 	        Label lDelay = new Label("Distribucion: ");
 	        lDelay.setWidth("110");
@@ -462,11 +461,10 @@ public class CombiWindow extends Window {
 	        subContent.addComponent(hlSeed);
         }
         
-        //
-        
+        //SETEO INICIAL DE DELAY (COMBOBOX)
         if (combi.get("delay")!=null)
         {
-        	if (((BasicDBObject)combi.get("delay")).get("distribution") == null)
+        	if (((BasicDBObject)combi.get("delay")).get("distribution") == null) //TODO: VALIDACION <> --- // cambio a este no muestre elementos debajo
         		cbDelay.setValue("---");
         	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("deterministic"))
         		cbDelay.setValue("Deterministica");
@@ -482,13 +480,13 @@ public class CombiWindow extends Window {
 				cbDelay.setValue("Triangular");
         }
         
+        //PROBABILISTIC BRANCH
         final CheckBox cbProbBranch = new CheckBox();
-        
+        cbProbBranch.setHeight("28px");
         if( combi.get("followers")!=null && ((BasicDBList)combi.get("followers")).size()>0)
         {
 	        HorizontalLayout hlProbBranch = new HorizontalLayout();
 	        hlProbBranch.setSpacing(true);
-	        //final CheckBox cbProbBranch = new CheckBox();
 	        cbProbBranch.setCaption("Probabilistic Branch");
 	        if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
 	        	cbProbBranch.setValue(true);
@@ -496,33 +494,31 @@ public class CombiWindow extends Window {
 	        subContent.addComponent(hlProbBranch);
         }
         
-        //DBLIST
-        
-        //HorizontalLayout hlProbBranchItem = new HorizontalLayout();
-        final List<TextField> ltfProbBranchItem = new ArrayList();        
+        //ITEMS PROBABILISTIC BRANCH
+        final List<TextField> ltfProbBranchItem = new ArrayList<TextField>();        
         if (dbProbBranch!=null)
         {
 	        BasicDBList probBranchList = (BasicDBList) dbProbBranch.get("nameList");
-	    	ArrayList<BasicDBObject> probBranchArray = (ArrayList) probBranchList;
+	    	@SuppressWarnings("unchecked")
+			ArrayList<BasicDBObject> probBranchArray = (ArrayList) probBranchList;
 	    	
 	        for (int i=0 ; i < ((BasicDBList)combi.get("followers")).size() ; i++)
 	        {
 	        	HorizontalLayout hlProbBranchItem = new HorizontalLayout();
 	        	hlProbBranchItem.setSpacing(true);
 	        	
-	        	
+	        	//LABEL
 	        	Label lProbBranchItem = null;
 	        	if (probBranchArray!=null && probBranchArray.size()>0)
-		        	for (BasicDBObject probBranch :probBranchArray)
-		        	{
+		        	for (BasicDBObject probBranch :probBranchArray){
 			        	if (((BasicDBList)combi.get("followers")).get(i).toString().equalsIgnoreCase(probBranch.get("id").toString()))
 			        		lProbBranchItem = new Label(probBranch.get("name").toString());
 		        	}
 	        	else
 	        		lProbBranchItem = new Label("");
-	        		
+        		
+	        	//TEXTINPUT
 	        	TextField tfProbBranchItem = new TextField();
-	        	
 	        	if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
 	        		tfProbBranchItem.setValue(((BasicDBList)combi.get("probabilisticBranch")).get(i).toString());
 	
@@ -534,25 +530,19 @@ public class CombiWindow extends Window {
         }
         
         if (isFull)
-        {
         	subContent.addComponent(hlSpace);
-        }
         
         //BOTONES
-        
-	    //AbsoluteLayout alBotones = new AbsoluteLayout();
 	    HorizontalLayout hlBotones = new HorizontalLayout();
 	    hlBotones.setSpacing(true);
 	    hlBotones.setHeight("100%");
 	    
         Button bAceptar = new Button("Aceptar");
-        
         if(isFull)
         {
-        	//TODO: applet.executeCommand("editNode", arrayParams);
-        	//con json completo de Queue
         	bAceptar.addClickListener(new ClickListener() {
-	            @Override
+				private static final long serialVersionUID = 1L;
+				@Override
 				public void buttonClick(ClickEvent event) {
 	            	String[] arrayParams = new String[18];
 	            	
@@ -583,7 +573,7 @@ public class CombiWindow extends Window {
 	            	arrayParams[12] = tfShapeBeta.getValue();
 	            	arrayParams[13] = tfShape.getValue();
 	            	arrayParams[14] = tfEscale.getValue();
-	            	arrayParams[15] = "no"; //"yes"
+	            	arrayParams[15] = "no";
 	            	arrayParams[16] = tfName.getValue();
 	            	arrayParams[17] = ""; 
 			        
@@ -598,16 +588,9 @@ public class CombiWindow extends Window {
 		            		if (i<ltfProbBranchItem.size()-1)
 		            			ProbBranch += ",";
 		            	}
-		            	
 		            	arrayParams[15] = "yes";
 		            	arrayParams[17] = ProbBranch;
 	            	}
-	            	
-	        	    /*String[] arrayParams = new String[4];
-	        	    arrayParams[0] = tfName.getValue();
-	        	    arrayParams[1] = tfResource.getValue();
-	        	    arrayParams[2] = tfFixedCost.getValue();
-	        	    arrayParams[3] = tfVariableCost.getValue();*/
 	        	    
 	        	    applet.executeCommand("editNode", arrayParams);
 	        	    close();
@@ -617,7 +600,8 @@ public class CombiWindow extends Window {
         else
         {
 	        bAceptar.addClickListener(new ClickListener() {
-	            @Override
+				private static final long serialVersionUID = 1L;
+				@Override
 				public void buttonClick(ClickEvent event) {
 	            	String[] arrayParams = new String[2];
 	        	    arrayParams[0] = "1";
@@ -630,7 +614,8 @@ public class CombiWindow extends Window {
         
         Button bCancelar = new Button("Cancelar");
         bCancelar.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+			@Override
 			public void buttonClick(ClickEvent event) {
         	    close();
 			}
@@ -642,6 +627,7 @@ public class CombiWindow extends Window {
         hlBotones.addComponent(bCancelar);
         subContent.addComponent(hlBotones);
         subContent.setComponentAlignment(hlBotones, Alignment.BOTTOM_RIGHT);
+        
         center();
     }
 

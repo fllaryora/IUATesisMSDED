@@ -147,7 +147,7 @@ public class Precursor extends VerticalLayout implements View {
         			
         			FunctionWindow fWindow = new FunctionWindow(dbObject2,dbObject,applet,true);
         			fWindow.setHeight("610px");
-        			fWindow.setWidth("450px");
+        			fWindow.setWidth("458px");
                 	getUI().addWindow(fWindow);
                 }
                 
@@ -175,7 +175,7 @@ public class Precursor extends VerticalLayout implements View {
         			
         			NormalWindow nWindow = new NormalWindow(dbObject2,dbObject,applet,true);
         			nWindow.setHeight("610px");
-        			nWindow.setWidth("450px");
+        			nWindow.setWidth("458px");
                 	getUI().addWindow(nWindow);
                 }
                 
@@ -420,10 +420,11 @@ public class Precursor extends VerticalLayout implements View {
         button = new Button("Función");
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				FunctionWindow fWindow = new FunctionWindow((DBObject) JSON.parse("{}"),null,applet,false);
 				fWindow.setHeight("140px");
-				fWindow.setWidth("450px");
+				fWindow.setWidth("458px");
             	getUI().addWindow(fWindow);
 			}
 		});
@@ -433,10 +434,11 @@ public class Precursor extends VerticalLayout implements View {
         button = new Button("Normal");
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				NormalWindow nWindow = new NormalWindow((DBObject) JSON.parse("{}"),null,applet,false);
 				nWindow.setHeight("140px");
-				nWindow.setWidth("450px");
+				nWindow.setWidth("458px");
             	getUI().addWindow(nWindow);
 			}
 		});
@@ -446,6 +448,7 @@ public class Precursor extends VerticalLayout implements View {
         button = new Button("Counter");
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				CounterWindow cWindow = new CounterWindow((DBObject) JSON.parse("{}"),applet,false);
 				cWindow.setHeight("140px");
@@ -458,7 +461,7 @@ public class Precursor extends VerticalLayout implements View {
         
         button = new Button("Delete");
 		button.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 			    applet.executeCommand("deleteNode");
 			}
@@ -468,7 +471,7 @@ public class Precursor extends VerticalLayout implements View {
         
         button = new Button("createArrow");
 		button.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 			    applet.executeCommand("createArrow");
 			}
