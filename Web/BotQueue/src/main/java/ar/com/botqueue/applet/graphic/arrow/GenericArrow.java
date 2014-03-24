@@ -9,6 +9,7 @@ import java.util.List;
 
 import ar.com.botqueue.applet.enums.BindSurface;
 import ar.com.botqueue.applet.enums.NodeTypes;
+import ar.com.botqueue.applet.graphic.List.BotQueueList;
 import ar.com.botqueue.applet.graphic.node.DotNode;
 import ar.com.botqueue.applet.graphic.node.Node;
 import ar.com.botqueue.applet.graphic.node.NodeFactory;
@@ -296,11 +297,11 @@ public class GenericArrow implements Arrow{
 	}
 	
 	/////////////*******************obtener json****************************************
-	public String getArrowJson( List<Node> nodes) {
+	public String getArrowJson( BotQueueList<Node> nodes) {
 		String arrowJson = "{";
 		
-		int tail = nodes.indexOf(this.getTailArrow())+1;
-		int head = nodes.indexOf(this.getHeadArrow())+1;
+		int tail = nodes.indexOfJson(this.getTailArrow())+1;
+		int head = nodes.indexOfJson(this.getHeadArrow())+1;
 		
 		arrowJson += putValue("tail",tail)+",";
 		arrowJson += putValue("head",head)+",";

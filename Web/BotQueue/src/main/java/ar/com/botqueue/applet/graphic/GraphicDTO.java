@@ -2,12 +2,14 @@ package ar.com.botqueue.applet.graphic;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import ar.com.botqueue.applet.Principal;
 import ar.com.botqueue.applet.enums.BindSurface;
 import ar.com.botqueue.applet.enums.NodeFields;
 import ar.com.botqueue.applet.enums.NodeTypes;
+import ar.com.botqueue.applet.graphic.List.BotQueueList;
 import ar.com.botqueue.applet.graphic.arrow.GenericArrow;
 import ar.com.botqueue.applet.graphic.node.Combi;
 import ar.com.botqueue.applet.graphic.node.Counter;
@@ -19,12 +21,12 @@ import ar.com.botqueue.applet.graphic.node.Normal;
 import ar.com.botqueue.applet.graphic.node.Queue;
 
 public class GraphicDTO {
-	private List<Node> nodes;
-	private List<GenericArrow> edges;
+	private BotQueueList<Node> nodes;
+	private BotQueueList<GenericArrow> edges;
 	
 	public GraphicDTO(){
-		this.nodes = new ArrayList<Node>();
-		edges = new ArrayList<GenericArrow>();
+		this.nodes = new BotQueueList<Node>();//new ArrayList<Node>();
+		edges = new BotQueueList<GenericArrow>();//new ArrayList<GenericArrow>();
 		
 	}
 	
@@ -35,35 +37,39 @@ public class GraphicDTO {
 	
 	@Deprecated
 	public void testFastExample(){
+		
 		Node panadero = NodeFactory.createNode(NodeTypes.QUEUE, 70+40, 20+10, "Panadero");
 	    Node amazar = NodeFactory.createNode(NodeTypes.COMBI, 70+26, 20+112, "Amazar");
 	    Node cocinar = NodeFactory.createNode(NodeTypes.NORMAL, 70+170, 20+112, "Cocinar");
-	    Node cortar = NodeFactory.createNode(NodeTypes.FUNCTION, 70+314, 20+112, "Cortar");
-	    Node servir = NodeFactory.createNode(NodeTypes.COUNTER, 70+458, 20+112, "Servir"); 
-	    
-	    nodes.add(servir);
-	    nodes.add(cortar);
-	    nodes.add(cocinar);
-	    nodes.add( amazar );
 	    nodes.add(panadero);
+	    nodes.add( amazar );
+	    nodes.add(cocinar);
+	    
 	    
 	    GenericArrow toAmazar = new GenericArrow(nodes,panadero,amazar,1.0);
 	    toAmazar.headRotate();
 	    toAmazar.tailRotate();toAmazar.tailRotate();toAmazar.tailRotate();
+	    edges.add( toAmazar );
 	    GenericArrow toPanadero = new GenericArrow(nodes,amazar,panadero,1.0);
 	    toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();
 	    toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();
-	    
+	    edges.add( toPanadero );
 	    GenericArrow toCocinar = new GenericArrow(nodes,amazar,cocinar,1.0);
+	    edges.add( toCocinar );
+	    
+	    
+	    Node cortar = NodeFactory.createNode(NodeTypes.FUNCTION, 70+314, 20+112, "Cortar");
+	    Node servir = NodeFactory.createNode(NodeTypes.COUNTER, 70+458, 20+112, "Servir");
+	    nodes.add(servir);
+	    nodes.add(cortar);
+	    
 	    GenericArrow toCortar = new GenericArrow(nodes,cocinar,cortar,1.0);
 	    GenericArrow toServir = new GenericArrow(nodes,cortar,servir,1.0);
-	    
 	    edges.add( toServir );
 	    edges.add( toCortar );
-	    edges.add( toCocinar );
-	    edges.add( toAmazar );
-	    edges.add( toPanadero );
-	    amazar.select();    
+	    
+	    
+	   // amazar.select();    
 	}
 	
 	/**
@@ -606,17 +612,17 @@ public class GraphicDTO {
 		 * @return
 		 */
 		private String getNodeSaveFileJson(Node nextNode) {
-			int idNode = this.nodes.indexOf(nextNode)+1;
+			int idNode = this.nodes.indexOfJson(nextNode)+1;
 			List<Integer> preceders = new ArrayList<Integer>();
 			List<Integer> followers = new ArrayList<Integer>();
 			List<Double> probabilisticBranch = new ArrayList<Double>();
 			for(GenericArrow edge: this.edges){
 				if( edge.getHeadArrow().equals(nextNode) ){
-					preceders.add( this.nodes.indexOf(edge.getTailArrow()) +1);				
+					preceders.add( this.nodes.indexOfJson(edge.getTailArrow()) +1);				
 				}
 				if( edge.getTailArrow().equals(nextNode) ){
 					probabilisticBranch.add(edge.getProbabilisticBranch());
-					followers.add( this.nodes.indexOf(edge.getHeadArrow()) +1);
+					followers.add( this.nodes.indexOfJson(edge.getHeadArrow()) +1);
 
 				}
 			}
@@ -652,19 +658,19 @@ public class GraphicDTO {
 		 * @return
 		 */
 		private String getNodeJson(Node nextNode) {
-			int idNode = this.nodes.indexOf(nextNode)+1;
+			int idNode = this.nodes.indexOfJson(nextNode)+1;
 			List<Integer> preceders = new ArrayList<Integer>();
 			List<Integer> followers = new ArrayList<Integer>();
 			List<Double> probabilisticBranch = new ArrayList<Double>();
 			
 			for(GenericArrow edge: this.edges){
 				if( edge.getHeadArrow().equals(nextNode) ){
-					preceders.add( this.nodes.indexOf(edge.getTailArrow()) +1);				
+					preceders.add( this.nodes.indexOfJson(edge.getTailArrow()) +1);				
 				}
 				if( edge.getTailArrow().equals(nextNode) ){
 					//System.out.println("prob: "+edge.getProbabilisticBranch()); 
 					probabilisticBranch.add(edge.getProbabilisticBranch());
-					followers.add( this.nodes.indexOf(edge.getHeadArrow()) +1);
+					followers.add( this.nodes.indexOfJson(edge.getHeadArrow()) +1);
 
 				}
 			}

@@ -402,7 +402,12 @@ public class VaadinFacade {
 					int max = nodeMap.size();
 					for(int i = 0; i< max;i++){
 						Node current = nodeMap.get(new Integer(i+1));
-						this.graphic.appendNode(i, current);
+						if(current != null){
+							this.graphic.appendNode(i, current);
+						} else {
+							throw new Exception("Error: nodes in construction not serialized, please repair.");
+						}
+						
 					}
 					
 				}
@@ -438,6 +443,7 @@ public class VaadinFacade {
 					queue.getInt(NodeFields.RESOURCE),
 					queue.getDouble(NodeFields.FIXED_COST),
 					queue.getDouble(NodeFields.VARIABLE_COST), 0, 0);
+
 			qMap.put(queue.getInt(NodeFields.ID_NODE), queueNode);
 		}
 		return qMap;
@@ -452,7 +458,9 @@ public class VaadinFacade {
 					counter.getString(NodeFields.NAME),
 					false, null, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 					counter.getInt(NodeFields.QUANTITY), counter.getInt(NodeFields.CYCLE), 0, 0.0, 0.0, 0, 0);
+
 			cMap.put(counter.getInt(NodeFields.ID_NODE), counterNode);
+			
 		}
 		return cMap;
 	}
@@ -497,6 +505,7 @@ public class VaadinFacade {
 					(double)delay.get(NodeFields.SHAPE),
 					(double)delay.get(NodeFields.ESCALE),
 					0, 0, 0, 0.0, 0.0, 0, 0);
+
 			nMap.put(normal.getInt(NodeFields.ID_NODE), normalNode);
 		}
 		return nMap;
@@ -527,6 +536,7 @@ public class VaadinFacade {
 					(double)delay.get(NodeFields.SHAPE),
 					(double)delay.get(NodeFields.ESCALE),
 					0, 0, 0, 0.0, 0.0, 0, 0);
+
 			cMap.put(combi.getInt(NodeFields.ID_NODE), combiNode);
 		}
 		return cMap;
