@@ -1,24 +1,11 @@
 package ar.com.cron.Bootstrap;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.Date;
-
-import ar.com.cron.Bootstrap.constants.BaseConfigurations;
 import ar.com.cron.Bootstrap.constants.ProjectsFiels;
 import ar.com.cron.Bootstrap.constants.ProjectsValues;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
-import com.mongodb.ReadPreference;
 import com.mongodb.util.JSON;
 
  
@@ -29,150 +16,126 @@ import com.mongodb.util.JSON;
 public class App {
 
 
-public static void main(String[] args) {
- 
-	try {
-		/**** Connect to MongoDB ****/
-		MongoClient mongo = new MongoClient(BaseConfigurations.MONGO_HOST, BaseConfigurations.MONGO_PORT);
-		DB db = mongo.getDB(BaseConfigurations.BOTQUEUEDB);
-		DBCollection documents = db.getCollection(BaseConfigurations.PROJECTS);
-	 
-		if (isThereProjectRunning(documents)) {
-			
-			if(isBotqueueRunning()){
-				System.out.println("Ya hay un Botqueue ejecutando...");
-				return;
-			} else {
-				System.out.println("Se encontro un proyecto en ejecucion no finalizado, resolviendo....!!");
+	public static void main(String[] args) {
+		System.out.println("...START JOB BOOTSTRAP BOTQUEUE...");
+		try {
+			MongoHelper myMongo = new MongoHelper();
+		 
+			if (myMongo.isThereProjectRunning( )) {
 				
-				DBObject toRead = getExecutingProject( documents);
-				if(toRead != null){
-					String output = getOutput();
-					if( output == null || output.trim().isEmpty() ){
-						toErrorState( documents,  toRead );
-						return;
-					}
-					DBObject toWrite = null;
-					try{
-						toWrite = (DBObject)JSON.parse(output);
-					} catch(Exception e){
-						//archivo tiene texto json mal formado
-						toErrorState( documents,  toRead );
-						return;
-					}
-					/**** Update to finished ****/
-					toFinishedState( documents,  toRead,  toWrite);
-					toErrorState( documents,  toRead );
+				if( OSHelper.isBotqueueRunning() ){
+					anotherBotQueueIsRunningCase();
 					return;
-					
 				} else {
-					System.out.println("Error desconocido: Existe un proyecto en ejecucion pero mongo no me lo da.");
-				}	
+					resolvingOldProjectCase(myMongo);	
+				}
 				
+			} else {
+				passToExecuteAProjectCase( myMongo );
 			}
+		
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (MongoException e) {
+			e.printStackTrace();
+		}
+		System.out.println("...END JOB BOOTSTRAP BOTQUEUE...");
+	}
+
+	private static void anotherBotQueueIsRunningCase() {
+		System.out.println("There is already a running Botqueue, Ya hay un Botqueue ejecutando...");
+	}
+	
+	private static void passToExecuteAProjectCase(MongoHelper myMongo) {
+		System.out.println("Was not found a project on execution, No se encontro un proyecto en ejecución...");
+		DBObject toRead = myMongo.getPendingProject();
+	
+		if(toRead != null){
+			if(!executeProject( myMongo,  toRead )){
+				myMongo.toErrorState( toRead );
+				System.out.println("The project was passed to wrong state, Ya se paso a estado erroneo el proyecto..." );
+			}
+		} else{
+			System.out.println("Was not found pending projects, No se encontraron proyectos pendientes...");
+		}
+	}
+	
+	private static void resolvingOldProjectCase(MongoHelper myMongo) {
+		System.out.println("A project not completed was found, solving; Se encontro un proyecto en ejecucion no finalizado, resolviendo....");
+		DBObject toRead = myMongo.getExecutingProject();
+		if(toRead != null){
+			String output = OSHelper.getOutput();
+			if( output == null || output.trim().isEmpty() ){
+				myMongo.toErrorState( toRead );
+				return;
+			}
+			DBObject toWrite = null;
+			try{
+				toWrite = (DBObject)JSON.parse(output);
+			} catch(Exception e){
+				//archivo tiene texto json mal formado
+				myMongo.toErrorState( toRead );
+				return;
+			}
+			myMongo.toFinishedState(toRead,  toWrite);
+			myMongo.toErrorState( toRead );
+			return;
 			
 		} else {
-			System.out.println("NO Se encontro un proyecto en ejecucion!!");
-			DBObject toRead = getPendingProject(documents);
-		
-			if(toRead != null){
-				if(!executeProject( documents,  toRead )){
-					System.out.println("pasa a error..." );
-					toErrorState( documents,  toRead );
-				}
-			} else{
-				System.out.println("No se encontraron proyectos pendientes");
-			}
+			System.out.println("Unknown error, Error desconocido....");
 		}
-	
-	} catch (UnknownHostException e) {
-		e.printStackTrace();
-	} catch (MongoException e) {
-		e.printStackTrace();
-	}
- 
-	}
-	static boolean isThereProjectRunning(DBCollection documents){
-		BasicDBObject documentQuery = new BasicDBObject();
-		documentQuery.put(ProjectsFiels.STATE_FIELD, ProjectsValues.EXECUTING_STATE);
-		return documents.count(documentQuery) > 0;
 	}
 	
-	static DBObject getPendingProject(DBCollection documents){
-		
-		BasicDBObject documentQuery = new BasicDBObject();
-		documentQuery.put(ProjectsFiels.STATE_FIELD, ProjectsValues.PENDING_STATE);
-		
-		BasicDBObject documentFields = new BasicDBObject();
-		documentFields.put(ProjectsFiels.INPUT_FIELD, 1);
-		documentFields.put(ProjectsFiels.NRO_PROCS_FIELD, 1);
-		
-		BasicDBObject documentSort = new BasicDBObject();
-		documentSort.put(ProjectsFiels.PENDING_STAMP_FIELD, 1);
-		
-		return documents.findOne(documentQuery ,documentFields, documentSort, ReadPreference.nearest());
-		
-	}
-	
-	static DBObject getExecutingProject(DBCollection documents){
-		BasicDBObject documentQuery = new BasicDBObject();
-		documentQuery.put(ProjectsFiels.STATE_FIELD, ProjectsValues.EXECUTING_STATE);
-		
-		BasicDBObject documentFields = new BasicDBObject();
-		documentFields.put(ProjectsFiels.NRO_PROCS_FIELD, 1);
-		
-		BasicDBObject documentSort = new BasicDBObject();
-		documentSort.put(ProjectsFiels.EXECUTING_STAMP_FIELD, 1);
-		
-		return documents.findOne(documentQuery ,documentFields, documentSort, ReadPreference.nearest());
-	}
-	
-	static boolean executeProject(DBCollection documents, DBObject toRead ){
-		System.out.println("Se va a ejecurat un proyecto");
-		/**** Update ****/		
-		if(!toExecuteState( documents,  toRead )) return false;
-		System.out.println("Se cambio el estado a en ejecucion...");
-		if(!writeFile( toRead )) return false;
-		System.out.println("Se escribio el archivo");
+	/**
+	 * Pone en ejecucion al id que le llega en toRead
+	 * como se aprendio en http://docs.oracle.com/cd/E19708-01/821-1319-10/ExecutingPrograms.html
+	 * @param myMongo
+	 * @param toRead
+	 * @return
+	 */
+	static boolean executeProject(MongoHelper myMongo, DBObject toRead ){
+		System.out.println("Se pasa el proyecto a estado en ejecucion...");
+		if(!myMongo.toExecuteState( toRead )) return false;
+		System.out.println("Se escribe el input en el archivo de entrada...");
+		if(! OSHelper.writeFile( toRead )) return false;
 		
 		try {
+			System.out.println("Se arma parametros de entrada para MPI...");
 			String nroProces = toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString();
-			System.out.println("runing "+nroProces+" process" );
-			//http://docs.oracle.com/cd/E19708-01/821-1319-10/ExecutingPrograms.html
+			
 			Process process = new ProcessBuilder(
 					ProjectsValues.BOTQUEUE_PROGRAM,
 					ProjectsValues.NUMBER_OF_PROCESS, nroProces ,
 					ProjectsValues.BOTQUEUE_CODE ).start();
-			System.out.println("waiting....." );
+			System.out.println("waiting, esperando a que termine....." );
 			
 			if (process == null) {
-				System.out.println("no se pudo ejecutar botqueue");
+				System.out.println("Can't execute botqueue, No se pudo ejecutar botqueue...");
 				return false;	
 			}
 			
 			synchronized (process){
 				process.wait();
 			}
-			
-			String output = getOutput();
+			System.out.println("Se finalizo la ejecucion...");
+			String output = OSHelper.getOutput();
 			
 			if( output == null || output.trim().isEmpty() ){
-				System.out.println("archivo vacio");
+				System.out.println("El archivo esta vacio...");
 				return false;
 			}
-			System.out.println("obtube salida" );
+			System.out.println("Se obtubo salida..." );
 			DBObject toWrite = (DBObject)JSON.parse(output);
-			/**** Update to finished ****/
-			if(!toFinishedState( documents,  toRead,  toWrite)) {
-				System.out.println("no pude finalizar" );
+			if(!myMongo.toFinishedState( toRead, toWrite)) {
+				System.out.println("No pude finalizar un proyecto en mongo..." );
 				return false;
 			}
-			System.out.println("lo finalizo..." );
+			System.out.println("Se finalizo el proyecto..." );
 			if( output.contains(ProjectsValues.ERROR_TOKEN_IN_OUTPUT_FILE) ) {
-				System.out.println("detecto error..." );
+				System.out.println("Pero se detecto error dentro del archivo de salida..." );
 				return false;
 			}
-			System.out.println("no se detecto error..." );
+			System.out.println("No se detecto error dentro del archivo de salida..." );
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -181,143 +144,11 @@ public static void main(String[] args) {
 			e.printStackTrace();
 			return false;
 		}catch (Exception e) {
-			//JSON Exception, etc
 			e.printStackTrace();
 			return false;
 		}
-
 	  
 		return true;
 	}
 	
-	private static String getOutput() {
-		File newTextFile = new File(ProjectsValues.BOTQUEUE_OUTPUT_FILE);
-		if(newTextFile.exists()){
-			StringBuffer fileData = new StringBuffer();
-	        char[] buf = new char[1024];
-	        int numRead=0;
-	        try {
-	        	BufferedReader reader = new BufferedReader(  new FileReader(newTextFile));
-				while((numRead=reader.read(buf)) != -1){
-				    String readData = String.valueOf(buf, 0, numRead);
-				    fileData.append(readData);
-				}
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	        newTextFile.deleteOnExit();
-	        return fileData.toString();
-		} else return null;
-        
-    }
-	
-	private static boolean toExecuteState(DBCollection documents, DBObject toRead ){
-		/**** Update ****/
-		BasicDBObject query = new BasicDBObject();
-		query.put(ProjectsFiels.OID_FIELD, toRead.get(ProjectsFiels.OID_FIELD));
-	 
-		BasicDBObject newDocument = new BasicDBObject();
-		newDocument.put(ProjectsFiels.STATE_FIELD, ProjectsValues.EXECUTING_STATE);
-		Long executingTimeStap = new Long((new Date()).getTime());
-		newDocument.put(ProjectsFiels.EXECUTING_STAMP_FIELD, executingTimeStap.toString());
-		newDocument.put(ProjectsFiels.LAST_UPDATE_STAMP_FIELD, executingTimeStap.toString());
-		BasicDBObject updateOperatios = new BasicDBObject();
-		updateOperatios.put("$set", newDocument);
-		int nroFiels = documents.update(query, updateOperatios).getN();
-	
-		if(nroFiels > 0) return true;
-		return false;
-	}
-	
-	private static boolean toFinishedState(DBCollection documents, DBObject toRead,   DBObject toWrite){
-		/**** Update ****/
-		System.out.println("Se pasa al estado finalizado....");
-		BasicDBObject query = new BasicDBObject();
-		query.put(ProjectsFiels.OID_FIELD, toRead.get(ProjectsFiels.OID_FIELD));
-	 
-		BasicDBObject newDocument = new BasicDBObject();
-		newDocument.put(ProjectsFiels.STATE_FIELD, ProjectsValues.FINISHED_STATE);
-		Long finishedTimeStap = new Long((new Date()).getTime());
-		newDocument.put(ProjectsFiels.FINISHED_STAMP_FIELD, finishedTimeStap.toString());
-		newDocument.put(ProjectsFiels.LAST_UPDATE_STAMP_FIELD, finishedTimeStap.toString());
-		newDocument.put(ProjectsFiels.OUTPUT_FIELD, toWrite);
-		BasicDBObject updateOperatios = new BasicDBObject();
-		updateOperatios.put("$set", newDocument);
-		int nroFiels = documents.update(query, updateOperatios).getN();
-		if(nroFiels > 0) return true;
-		return false;
-	}
-	
-	private static boolean writeFile(DBObject toRead ){
-		try {
-			File newTextFile = new File(ProjectsValues.BOTQUEUE_INPUT_FILE);
-			if(newTextFile.exists())newTextFile.delete();
-				
-			FileWriter fw = new FileWriter(newTextFile);
-			fw.write(toRead.get(ProjectsFiels.INPUT_FIELD).toString());
-			fw.close();
-		
-		} catch (IOException iox) {
-			//do stuff with exception
-			System.out.println("Fallo la escritura");
-			iox.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-	
-	private static void toErrorState(DBCollection documents, DBObject toRead ){
-		/**** Update ****/
-		BasicDBObject query = new BasicDBObject();
-		query.put(ProjectsFiels.OID_FIELD, toRead.get(ProjectsFiels.OID_FIELD));
-	 
-		BasicDBObject newDocument = new BasicDBObject();
-		newDocument.put(ProjectsFiels.STATE_FIELD, ProjectsValues.ERROR_FAIL_STATE);
-		Long errorTimeStamp = new Long((new Date()).getTime());
-		newDocument.put(ProjectsFiels.LAST_UPDATE_STAMP_FIELD, errorTimeStamp.toString());
-		BasicDBObject updateOperatios = new BasicDBObject();
-		updateOperatios.put("$set", newDocument);
-		documents.update(query, updateOperatios);
-		
-	}
-	
-	private static boolean isBotqueueRunning(){
-		final File folder = new File("/proc");
-		for (final File fileEntry : folder.listFiles()) {
-			if (fileEntry.isDirectory() && isNum(fileEntry.getName())) {
-				 File procName = new File("/proc/" + fileEntry.getName() + "/comm");
-				 StringBuffer fileData = new StringBuffer();
-				 char[] buf = new char[1024];
-				 int numRead=0;
-				 try {
-					 BufferedReader reader = new BufferedReader(  new FileReader(procName));
-					 while((numRead=reader.read(buf)) != -1){
-						 String readData = String.valueOf(buf, 0, numRead);
-						 fileData.append(readData);
-					 }
-					 reader.close();
-				 } catch (IOException e) {
-					 e.printStackTrace();
-				 }
-			       
-				 if(fileData.toString().contains(ProjectsValues.BOTQUEUE_PROGRAM))
-					 return true;
-			}
-		}
-		return false;
-		
-	}
-	
-	private static boolean isNum(String value){  
-		try{  
-			Integer.parseInt(value);  
-			return true;  
-		} catch(NumberFormatException nfe){  
-	          return false;  
-		}  
-	}
-	
 }
-
-

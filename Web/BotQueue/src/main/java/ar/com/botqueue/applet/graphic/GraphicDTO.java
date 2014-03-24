@@ -104,7 +104,10 @@ public class GraphicDTO {
 		Node nextNode = getOnlyOneSelected();
 		if (nextNode == null) return false;
 		List<GenericArrow> edgesAsociated = this.getEdges(nextNode);
-		this.edges.removeAll(edgesAsociated);
+		for(GenericArrow ga: edgesAsociated){
+			ga.deleteArrow();
+			this.edges.remove(ga);	
+		}
 		nodes.remove(nextNode);
 		return true;
 	}
