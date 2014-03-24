@@ -34,7 +34,7 @@ public class ProjectBussines {
 			//TODO LLamar DAO
 			mongo = new Mongo("localhost", 27017);
 			Morphia morphia = new Morphia();
-			Datastore ds = morphia.createDatastore(mongo,"test");
+			Datastore ds = morphia.createDatastore(mongo,"botqueuedb");
 			for (Project project : ds.find(Project.class).retrievedFields(true, "_id","name","state","nroProcs")) {
 				projects.add(project);
 			}
@@ -59,7 +59,7 @@ public class ProjectBussines {
 			
 			mongo = new Mongo("localhost", 27017);
 			Morphia morphia = new Morphia();
-			Datastore ds = morphia.createDatastore(mongo,"test");
+			Datastore ds = morphia.createDatastore(mongo,"botqueuedb");
 			for (Project project : ds.find(Project.class).filter("_id", idProject)) {
 				//System.out.println(project.getOutput().getSummaryReport().getTotalTime());
 				return project;
@@ -175,7 +175,7 @@ public class ProjectBussines {
 			//TODO LLamar DAO
 			mongo = new Mongo("localhost", 27017);
 			Morphia morphia = new Morphia();
-			Datastore ds = morphia.createDatastore(mongo,"test");
+			Datastore ds = morphia.createDatastore(mongo,"botqueuedb");
 			ds.save(project);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -241,7 +241,7 @@ public class ProjectBussines {
 		try {
 			mongo = new Mongo("localhost", 27017);
 			Morphia morphia = new Morphia();
-			Datastore ds = morphia.createDatastore(mongo,"test");
+			Datastore ds = morphia.createDatastore(mongo,"botqueuedb");
 			ds.save(project);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -256,7 +256,7 @@ public class ProjectBussines {
 		try {
 			mongo = new Mongo("localhost", 27017);
 			Morphia morphia = new Morphia();
-			Datastore ds = morphia.createDatastore(mongo,"test");
+			Datastore ds = morphia.createDatastore(mongo,"botqueuedb");
 			Project project = new Project();
 			project.setId(idProject);
 			ds.delete(project);

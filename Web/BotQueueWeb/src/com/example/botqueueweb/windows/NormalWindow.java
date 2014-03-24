@@ -1,13 +1,18 @@
 package com.example.botqueueweb.windows;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.vaadin.applet.AppletIntegration;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -22,42 +27,47 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class NormalWindow extends Window {
 
-    public NormalWindow(final DBObject normal,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull) {
+	private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings({ "deprecation", "rawtypes" })
+	public NormalWindow(final DBObject normal,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull) {
     	
+    	//CONFIGURACION INICIAL
     	this.setCaption("Normal");
     	this.setModal(true);
+    	this.setResizable(false);
     	
+    	//PANEL
     	Panel bodyPanel = new Panel();
     	bodyPanel.setWidth("100%");
     	bodyPanel.setHeight("100%");
-    	
-    	setResizable(false);
         VerticalLayout subContent = new VerticalLayout();
         subContent.setMargin(true);
         subContent.setSpacing(true);
-        
         bodyPanel.setContent(subContent);
         setContent(bodyPanel);
         
+        //NOMBRE NORMAL
         HorizontalLayout hlNombre = new HorizontalLayout();
         Label lNombre = new Label("Nombre: ");
         if (isFull)	lNombre.setWidth("110");
         else		lNombre.setWidth("90");
         final TextField tfName = new TextField();
         if (isFull)	tfName.setWidth("310");
-        else		tfName.setWidth("330");
+        else		tfName.setWidth("338");
         if (normal.get("name")!=null)
         	tfName.setValue(normal.get("name").toString());
         hlNombre.addComponent(lNombre);
         hlNombre.addComponent(tfName);
         subContent.addComponent(hlNombre);
 
-     // Elementos Modificacion //
+        //ELEMENTOS COMBO BOX (DELAY)
     	
     	final HorizontalLayout hlMinimun = new HorizontalLayout();
         Label lMinimun = new Label("Minimo: ");
         lMinimun.setWidth("110");
         final TextField tfMinimun = new TextField();
+        tfMinimun.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("minimun")!=null)
         	tfMinimun.setValue(((BasicDBObject)normal.get("delay")).get("minimun").toString());
         hlMinimun.addComponent(lMinimun);
@@ -68,6 +78,7 @@ public class NormalWindow extends Window {
         Label lMaximun = new Label("Maximo: ");
         lMaximun.setWidth("110");
         final TextField tfMaximun = new TextField();
+        tfMaximun.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("maximun")!=null)
         	tfMaximun.setValue(((BasicDBObject)normal.get("delay")).get("maximun").toString());
         hlMaximun.addComponent(lMaximun);
@@ -78,6 +89,7 @@ public class NormalWindow extends Window {
         Label lShapeAlpha = new Label("Shape Alpha: ");
         lShapeAlpha.setWidth("110");
         final TextField tfShapeAlpha = new TextField();
+        tfShapeAlpha.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("shapeAlpha")!=null)
         	tfShapeAlpha.setValue(((BasicDBObject)normal.get("delay")).get("shapeAlpha").toString());
         hlShapeAlpha.addComponent(lShapeAlpha);
@@ -88,6 +100,7 @@ public class NormalWindow extends Window {
         Label lShapeBeta = new Label("Shape Beta: ");
         lShapeBeta.setWidth("110");
         final TextField tfShapeBeta = new TextField();
+        tfShapeBeta.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("shapeBeta")!=null)
         	tfShapeBeta.setValue(((BasicDBObject)normal.get("delay")).get("shapeBeta").toString());
         hlShapeBeta.addComponent(lShapeBeta);
@@ -98,6 +111,7 @@ public class NormalWindow extends Window {
         Label lConstant = new Label("Constante: ");
         lConstant.setWidth("110");
         final TextField tfConstant = new TextField();
+        tfConstant.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("constant")!=null)
         	tfConstant.setValue(((BasicDBObject)normal.get("delay")).get("constant").toString());
         hlConstant.addComponent(lConstant);
@@ -108,6 +122,7 @@ public class NormalWindow extends Window {
         Label lLambda = new Label("Lambda: ");
         lLambda.setWidth("110");
         final TextField tfLambda = new TextField();
+        tfLambda.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("lambda")!=null)
         	tfLambda.setValue(((BasicDBObject)normal.get("delay")).get("lambda").toString());
         hlLambda.addComponent(lLambda);
@@ -118,6 +133,7 @@ public class NormalWindow extends Window {
         Label lEscale = new Label("Escale: ");
         lEscale.setWidth("110");
         final TextField tfEscale = new TextField();
+        tfEscale.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("escale")!=null)
         	tfEscale.setValue(((BasicDBObject)normal.get("delay")).get("escale").toString());
         hlEscale.addComponent(lEscale);
@@ -128,6 +144,7 @@ public class NormalWindow extends Window {
         Label lShape = new Label("Shape: ");
         lShape.setWidth("110");
         final TextField tfShape = new TextField();
+        tfShape.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("shape")!=null)
         	tfShape.setValue(((BasicDBObject)normal.get("delay")).get("shape").toString());
         hlShape.addComponent(lShape);
@@ -138,6 +155,7 @@ public class NormalWindow extends Window {
         Label lMean = new Label("Mean: ");
         lMean.setWidth("110");
         final TextField tfMean = new TextField();
+        tfMean.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("mean")!=null)
         	tfMean.setValue(((BasicDBObject)normal.get("delay")).get("mean").toString());
         hlMean.addComponent(lMean);
@@ -148,17 +166,18 @@ public class NormalWindow extends Window {
         Label lVariance = new Label("Variansa: ");
         lVariance.setWidth("110");
         final TextField tfVariance = new TextField();
+        tfVariance.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("variance")!=null)
         	tfVariance.setValue(((BasicDBObject)normal.get("delay")).get("variance").toString());
         hlVariance.addComponent(lVariance);
         hlVariance.addComponent(tfVariance);
         hlVariance.setVisible(false);
         
-        
         final HorizontalLayout hlLeast = new HorizontalLayout();
         Label lLeast = new Label("Least: ");
         lLeast.setWidth("110");
         final TextField tfLeast = new TextField();
+        tfLeast.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("least")!=null)
         	tfLeast.setValue(((BasicDBObject)normal.get("delay")).get("least").toString());
         hlLeast.addComponent(lLeast);
@@ -169,6 +188,7 @@ public class NormalWindow extends Window {
         Label lHighest = new Label("Highest: ");
         lHighest.setWidth("110");
         final TextField tfHighest = new TextField();
+        tfHighest.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("highest")!=null)
         	tfHighest.setValue(((BasicDBObject)normal.get("delay")).get("highest").toString());
         hlHighest.addComponent(lHighest);
@@ -179,6 +199,7 @@ public class NormalWindow extends Window {
         Label lMode = new Label("Moda: ");
         lMode.setWidth("110");
         final TextField tfMode = new TextField();
+        tfMode.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("mode")!=null)
         	tfMode.setValue(((BasicDBObject)normal.get("delay")).get("mode").toString());
         hlMode.addComponent(lMode);
@@ -189,19 +210,21 @@ public class NormalWindow extends Window {
         Label lSeed = new Label("Semilla: ");
         lSeed.setWidth("110");
         final TextField tfSeed = new TextField();
+        tfSeed.setWidth("310");
         if (normal.get("delay")!=null && ((BasicDBObject)normal.get("delay")).get("seed")!=null)
         	tfSeed.setValue(((BasicDBObject)normal.get("delay")).get("seed").toString());
         hlSeed.addComponent(lSeed);
         hlSeed.addComponent(tfSeed);
         hlSeed.setVisible(false);
         
+      //COMBO
         final ComboBox cbDelay = new ComboBox();
+        final HorizontalLayout hlSpace = new HorizontalLayout();
+        final Integer hlSpaceHeight = 415;
+        final Integer hlSpaceHeightItem = 40;
         
         if (isFull)
         {
-	        final HorizontalLayout hlSpace = new HorizontalLayout();
-	        hlSpace.setHeight("410px");
-	        
         	cbDelay.addItem("---");
         	cbDelay.addItem("Deterministica");
         	cbDelay.addItem("Uniforme");
@@ -209,8 +232,10 @@ public class NormalWindow extends Window {
         	cbDelay.addItem("Normal");
         	cbDelay.addItem("Beta");
         	cbDelay.addItem("Triangular");
+        	//MINIMIZAR PARA LEER CODIGO
         	cbDelay.addListener(new Property.ValueChangeListener() {
-				
+
+				private static final long serialVersionUID = 1L;
 				@Override
 				public void valueChange(ValueChangeEvent event) {
 					if (cbDelay.getValue()!=null)
@@ -232,7 +257,20 @@ public class NormalWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(false);
 					        
-					        hlSpace.setHeight("370px"); //-40
+					        if(((BasicDBList)normal.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Uniforme"))
 						{
@@ -251,7 +289,20 @@ public class NormalWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("290px"); //-120
+					        if(((BasicDBList)normal.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 					    }
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Exponencial"))
 						{
@@ -270,7 +321,20 @@ public class NormalWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("330px"); //-80
+					        if(((BasicDBList)normal.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Normal"))
 						{
@@ -289,7 +353,20 @@ public class NormalWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("290px"); //-120
+					        if(((BasicDBList)normal.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Beta"))
 						{
@@ -308,7 +385,20 @@ public class NormalWindow extends Window {
 					        hlMode.setVisible(false);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("210px"); //-200 (40*5)
+					        if(((BasicDBList)normal.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*6) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*6) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Triangular"))
 						{
@@ -327,11 +417,26 @@ public class NormalWindow extends Window {
 					        hlMode.setVisible(true);
 					        hlSeed.setVisible(true);
 					        
-					        hlSpace.setHeight("250px"); //-160
+					        if(((BasicDBList)normal.get("followers")).size()>0)
+					        {
+					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5) - ((BasicDBList)normal.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
+					        else
+					        {
+					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
+					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4))).toString()+"px");
+					        	else
+					        		hlSpace.setHeight("0px");
+					        }
 						}
 					}
 				}
 			});
+        	cbDelay.setImmediate(true);
+        	
         	HorizontalLayout hlDelay = new HorizontalLayout();
 	        Label lDelay = new Label("Distribucion: ");
 	        lDelay.setWidth("110");
@@ -357,8 +462,7 @@ public class NormalWindow extends Window {
 	        subContent.addComponent(hlSpace);
         }
         
-        //
-        
+        //SETEO INICIAL DE DELAY (COMBOBOX)
         if (normal.get("delay")!=null)
         {
         	if (((BasicDBObject)normal.get("delay")).get("distribution") == null)
@@ -377,22 +481,69 @@ public class NormalWindow extends Window {
 				cbDelay.setValue("Triangular");
         }
         
+        //PROBABILISTIC BRANCH
+        final CheckBox cbProbBranch = new CheckBox();
+        cbProbBranch.setHeight("28px");
+        if( normal.get("followers")!=null && ((BasicDBList)normal.get("followers")).size()>0)
+        {
+	        HorizontalLayout hlProbBranch = new HorizontalLayout();
+	        hlProbBranch.setSpacing(true);
+	        cbProbBranch.setCaption("Probabilistic Branch");
+	        if ((BasicDBList)normal.get("probabilisticBranch")!=null && ((BasicDBList)normal.get("probabilisticBranch")).size()>0)
+	        	cbProbBranch.setValue(true);
+	        hlProbBranch.addComponent(cbProbBranch);
+	        subContent.addComponent(hlProbBranch);
+        }
+        
+        //ITEMS PROBABILISTIC BRANCH
+        final List<TextField> ltfProbBranchItem = new ArrayList<TextField>();        
+        if (dbProbBranch!=null)
+        {
+	        BasicDBList probBranchList = (BasicDBList) dbProbBranch.get("nameList");
+	    	@SuppressWarnings("unchecked")
+			ArrayList<BasicDBObject> probBranchArray = (ArrayList) probBranchList;
+	    	
+	        for (int i=0 ; i < ((BasicDBList)normal.get("followers")).size() ; i++)
+	        {
+	        	HorizontalLayout hlProbBranchItem = new HorizontalLayout();
+	        	hlProbBranchItem.setSpacing(true);
+	        	
+	        	//LABEL
+	        	Label lProbBranchItem = null;
+	        	if (probBranchArray!=null && probBranchArray.size()>0)
+		        	for (BasicDBObject probBranch :probBranchArray){
+			        	if (((BasicDBList)normal.get("followers")).get(i).toString().equalsIgnoreCase(probBranch.get("id").toString()))
+			        		lProbBranchItem = new Label(probBranch.get("name").toString());
+		        	}
+	        	else
+	        		lProbBranchItem = new Label("");
+        		
+	        	//TEXTINPUT
+	        	TextField tfProbBranchItem = new TextField();
+	        	if ((BasicDBList)normal.get("probabilisticBranch")!=null && ((BasicDBList)normal.get("probabilisticBranch")).size()>0)
+	        		tfProbBranchItem.setValue(((BasicDBList)normal.get("probabilisticBranch")).get(i).toString());
+	
+	        	ltfProbBranchItem.add(tfProbBranchItem);
+	        	hlProbBranchItem.addComponent(lProbBranchItem);
+	        	hlProbBranchItem.addComponent(tfProbBranchItem);
+	        	subContent.addComponent(hlProbBranchItem);
+	        }
+        }
+        
+        if (isFull)
+        	subContent.addComponent(hlSpace);
         
         //BOTONES
-        
-	    //AbsoluteLayout alBotones = new AbsoluteLayout();
 	    HorizontalLayout hlBotones = new HorizontalLayout();
 	    hlBotones.setSpacing(true);
 	    hlBotones.setHeight("100%");
 	    
         Button bAceptar = new Button("Aceptar");
-        
         if(isFull)
         {
-        	//TODO: applet.executeCommand("editNode", arrayParams);
-        	//con json completo de Queue
-        	bAceptar.addClickListener(new ClickListener() {
-	            @Override
+          	bAceptar.addClickListener(new ClickListener() {
+				private static final long serialVersionUID = 1L;
+				@Override
 				public void buttonClick(ClickEvent event) {
 	            	String[] arrayParams = new String[18];
 	            	
@@ -427,11 +578,20 @@ public class NormalWindow extends Window {
 	            	arrayParams[16] = tfName.getValue();	            	
 	            	arrayParams[17] = ""; 
 	            	
-	        	    /*String[] arrayParams = new String[4];
-	        	    arrayParams[0] = tfName.getValue();
-	        	    arrayParams[1] = tfResource.getValue();
-	        	    arrayParams[2] = tfFixedCost.getValue();
-	        	    arrayParams[3] = tfVariableCost.getValue();*/
+	            	if (cbProbBranch.getValue() && ltfProbBranchItem.size()>0)
+	            	{
+		            	String ProbBranch = "";
+		            	for(int i=0 ;i < ltfProbBranchItem.size() ;i++)
+		            	{
+		            		ProbBranch += ((BasicDBList)normal.get("followers")).get(i).toString();
+		            		ProbBranch += ",";
+		            		ProbBranch += ltfProbBranchItem.get(i).getValue();
+		            		if (i<ltfProbBranchItem.size()-1)
+		            			ProbBranch += ",";
+		            	}
+		            	arrayParams[15] = "yes";
+		            	arrayParams[17] = ProbBranch;
+	            	}
 	        	    
 	        	    applet.executeCommand("editNode", arrayParams);
 	        	    close();
@@ -441,7 +601,8 @@ public class NormalWindow extends Window {
         else
         {
 	        bAceptar.addClickListener(new ClickListener() {
-	            @Override
+				private static final long serialVersionUID = 1L;
+				@Override
 				public void buttonClick(ClickEvent event) {
 	            	String[] arrayParams = new String[2];
 	        	    arrayParams[0] = "5";
@@ -454,7 +615,8 @@ public class NormalWindow extends Window {
         
         Button bCancelar = new Button("Cancelar");
         bCancelar.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+			@Override
 			public void buttonClick(ClickEvent event) {
         	    close();
 			}
@@ -466,6 +628,7 @@ public class NormalWindow extends Window {
         hlBotones.addComponent(bCancelar);
         subContent.addComponent(hlBotones);
         subContent.setComponentAlignment(hlBotones, Alignment.BOTTOM_RIGHT);
+        
         center();
     }
 
