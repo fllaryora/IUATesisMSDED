@@ -77,7 +77,7 @@ public static void main(String[] args) {
 		
 			if(toRead != null){
 				if(!executeProject( documents,  toRead )){
-					System.out.println("pasa a eror..." );
+					System.out.println("pasa a error..." );
 					toErrorState( documents,  toRead );
 				}
 			} else{
@@ -169,10 +169,10 @@ public static void main(String[] args) {
 			}
 			System.out.println("lo finalizo..." );
 			if( output.contains(ProjectsValues.ERROR_TOKEN_IN_OUTPUT_FILE) ) {
-				System.out.println("detecto eror..." );
+				System.out.println("detecto error..." );
 				return false;
 			}
-			System.out.println("no se detecto eror..." );
+			System.out.println("no se detecto error..." );
 			
 		} catch (IOException e) {
 			e.printStackTrace();
