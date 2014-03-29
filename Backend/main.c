@@ -31,7 +31,8 @@ void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenam
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
-	unsigned startTime, endTime;
+	unsigned startTime, endTime, runningTime;
+	int benckmarkCsv = open ("/tmp/benchmark.csv" , O_WRONLY|O_CREAT|O_TRUNC,00660);
 	if(MASTER_ID){
 		startTime = (unsigned)time(NULL);
 	}
@@ -86,8 +87,14 @@ int main(int argc, char **argv){
 	}
 	/* FIN de zona de MPI */
 	if(processRank != NULL)free(processRank);
-
-	unsigned startTime = (unsigned)time(NULL);
+	if(MASTER_ID){
+		endTime = (unsigned)time(NULL);
+		runningTime = endTime - startTime;
+		write(benckmarkCsv,"\t",1);
+		putUnsigned(benckmarkCsv, runningTime);
+		
+		close(fileDescriptor);
+	}
 	MPI_Finalize();
 	return 0;
 }
