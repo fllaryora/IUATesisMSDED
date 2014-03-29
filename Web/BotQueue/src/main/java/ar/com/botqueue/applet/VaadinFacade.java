@@ -248,8 +248,13 @@ public class VaadinFacade {
 							this.graphic.editArrows(nextNode, probBranch, idNodes, probabilities);
 							break;	
 						}
+					} else {
+						this.graphic.editFunction( nextNode, input, output, probBranch, (String)params[3]);
+						for (GenericArrow ga: this.graphic.getEdges(nextNode)){
+							ga.setProbabilisticBranch(0.0, false);
+						}
 					}
-					System.err.println("probabilistic malformed");
+					
 				}
 				break;
 			case 18:
@@ -284,8 +289,14 @@ public class VaadinFacade {
 							this.graphic.editArrows(nextNode, probBranch, idNodes, probabilities);	
 						}
 						break;
+					} else {
+						this.graphic.editNormal(nextNode, distribution, seed, least, highest, constant,
+								mean, variance, lambda, mode, minimun, maximun, shapeAlpha,
+								shapeBeta, shape, escale, probBranch,(String)params[16]);
+						for (GenericArrow ga: this.graphic.getEdges(nextNode)){
+							ga.setProbabilisticBranch(0.0, false);
+						}
 					}
-					System.err.println("probabilistic malformed");
 					break;
 				}
 				if(nextNode instanceof Combi){
@@ -319,8 +330,15 @@ public class VaadinFacade {
 							this.graphic.editArrows(nextNode, probBranch, idNodes, probabilities);	
 						}
 						break;
+					} else {
+						this.graphic.editCombi(nextNode, distribution, seed, least, highest, constant,
+								mean, variance, lambda, mode, minimun, maximun, shapeAlpha,
+								shapeBeta, shape, escale, probBranch,(String)params[16]);
+						for (GenericArrow ga: this.graphic.getEdges(nextNode)){
+							ga.setProbabilisticBranch(0.0, false);
+						}
 					}
-					System.err.println("probabilistic malformed");
+					
 				}
 			break;
 			default : break;

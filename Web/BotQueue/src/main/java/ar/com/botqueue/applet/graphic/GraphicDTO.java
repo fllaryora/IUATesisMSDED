@@ -699,7 +699,7 @@ public class GraphicDTO {
 		 * @param nextNode
 		 * @return lista de flechas
 		 */
-		private List<GenericArrow> getEdges(Node nextNode) {
+		public List<GenericArrow> getEdges(Node nextNode) {
 			List<GenericArrow> ret = new ArrayList<GenericArrow>();
 			for(GenericArrow edge: this.edges){
 				
