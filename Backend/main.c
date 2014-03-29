@@ -31,7 +31,12 @@ void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenam
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 
 int main(int argc, char **argv){
-	
+	unsigned startTime, endTime;
+	if(MASTER_ID){
+		startTime = (unsigned)time(NULL);
+	}
+
+
 	char* botqueueInputFile = getenv("BOTQUEUE_INPUT_FILE");
 	if(botqueueInputFile == NULL ){
 		botqueueInputFile = "/tmp/defaultInputJson.json";
@@ -81,6 +86,8 @@ int main(int argc, char **argv){
 	}
 	/* FIN de zona de MPI */
 	if(processRank != NULL)free(processRank);
+
+	unsigned startTime = (unsigned)time(NULL);
 	MPI_Finalize();
 	return 0;
 }
