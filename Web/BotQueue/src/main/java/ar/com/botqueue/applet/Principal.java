@@ -43,8 +43,8 @@ public class Principal extends AbstractVaadinApplet {
 	 */
 	public void start(){
 		super.start();
-		//this.setBackground(Color.WHITE);
-		this.setBackground(Color.BLUE);
+		this.setBackground(Color.WHITE);
+		//this.setBackground(Color.BLUE);
 		/* Lo que no aclaro el color se pone en rojo
 		 * asi me doy cuenta que no estoy pensando bien*/
 		this.setForeground(Color.RED);
