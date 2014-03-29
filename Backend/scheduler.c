@@ -5,7 +5,7 @@
 #include "scheduler.h"
 
 
-void scheduler(unsigned long watchdog, const MPI_Comm commNodes , CycleValidator* targets, const int mpiProcesses, const int counterNodes){
+void scheduler(unsigned long watchdog, const MPI_Comm commNodes , CycleValidator* targets, const int mpiProcesses, const int counterNodes ){
 	int msg = 0;
 	int watchdog2 = 0;
 	int* nodesStatus = (int*) malloc (sizeof(int)  * (mpiProcesses -RAFFLER_PRINTER));

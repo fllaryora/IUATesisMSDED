@@ -334,15 +334,6 @@ void putInteger(int fileDescriptor, const int nro){
 	free(strNro);
 }
 
-void putUnsigned(int fileDescriptor, const unsigned nro){
-	char* strNro = NULL;
-	int len = snprintf(NULL, 0, "%u", nro);
-	strNro = (char*) malloc( (len + 1) * sizeof(char) );
-	snprintf(strNro, (len + 1), "%u", nro);
-	write(fileDescriptor, strNro, len );
-	free(strNro);
-}
-
 void putDouble(int fileDescriptor, const double nro){
 	char* strNro = NULL;
 	if( isnan(nro) ){

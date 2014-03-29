@@ -29,6 +29,7 @@
 void logError(int error_code, int my_rank);
 void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenameJson );
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
+void putUnsigned(int fileDescriptor, const unsigned nro);
 
 int main(int argc, char **argv){
 	unsigned startTime, endTime, runningTime;
@@ -60,7 +61,7 @@ int main(int argc, char **argv){
 	
 	switch( idNodo ){
 		case MASTER_ID:
-			master(mpiProcesses, commNodes,filenameJson);
+			master(mpiProcesses, commNodes,filenameJson, benckmarkCsv);
 			break;
 		case RAFFLER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
@@ -93,13 +94,15 @@ int main(int argc, char **argv){
 		write(benckmarkCsv,"\t",1);
 		putUnsigned(benckmarkCsv, runningTime);
 		
-		close(fileDescriptor);
+		close(benckmarkCsv);
 	}
 	MPI_Finalize();
 	return 0;
 }
 
-void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filenameJson ){
+void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filenameJson , int benckmarkCsv){
+	unsigned startLoadTime, endLoadTime, loadTime;
+	unsigned startSIMTime, endSIMTime, simTime;
 	int jsonResult;
 	ValidationResults* vr = validateJsonInput(filenameJson);
 	if ( vr->isValid == VALIDATION_PASS ) {		
@@ -107,14 +110,24 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			//broadcast TAG JSON BUENO
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+			
+			startLoadTime = (unsigned)time(NULL);
 			//envio estructuras
 			sendStructToNodes(filenameJson, commNodes);
 			//enviar lo combisIds al raffler
 			MPI_Send( &vr->seedAndCombisId[1] ,   vr->seedAndCombisId[0] , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			//envio counts de los elementos.
 			MPI_Send( vr->qCouNfComb , 5 , MPI_INT , PRINTER_ID , INIT_NODES , MPI_COMM_WORLD);
-			scheduler( vr->watchdog, commNodes , vr->targets , mpiProcesses, vr->targetCounter);
-
+			endLoadTime = (unsigned)time(NULL);
+			loadTime = endLoadTime - startLoadTime;
+			write(benckmarkCsv,"\t",1);
+			putUnsigned(benckmarkCsv, loadTime);
+			startSIMTime = (unsigned)time(NULL);
+			scheduler( vr->watchdog, commNodes , vr->targets , mpiProcesses, vr->targetCounter, benckmarkCsv);
+			endSIMTime = (unsigned)time(NULL);
+			simTime = endSIMTime - startSIMTime;
+			write(benckmarkCsv,"\t",1);
+			putUnsigned(benckmarkCsv, simTime);
 			free(vr->targets);
 			free(vr->seedAndCombisId);
 			free(vr->qCouNfComb);
@@ -181,4 +194,13 @@ void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* 
 	logError( error_code, idNodo);
 	 MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_ARE_FATAL);
 	*processRank = myProcessRank;
+}
+
+void putUnsigned(int fileDescriptor, const unsigned nro){
+	char* strNro = NULL;
+	int len = snprintf(NULL, 0, "%u", nro);
+	strNro = (char*) malloc( (len + 1) * sizeof(char) );
+	snprintf(strNro, (len + 1), "%u", nro);
+	write(fileDescriptor, strNro, len );
+	free(strNro);
 }
