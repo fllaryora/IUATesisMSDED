@@ -38,7 +38,7 @@ public class GraphicDTO {
 	@Deprecated
 	public void testFastExample(){
 		
-		Node panadero = NodeFactory.createNode(NodeTypes.QUEUE, 70+40, 20+10, "Panadero");
+		/*Node panadero = NodeFactory.createNode(NodeTypes.QUEUE, 70+40, 20+10, "Panadero");
 	    Node amazar = NodeFactory.createNode(NodeTypes.COMBI, 70+26, 20+112, "Amazar");
 	    Node cocinar = NodeFactory.createNode(NodeTypes.NORMAL, 70+170, 20+112, "Cocinar");
 	    nodes.add(panadero);
@@ -67,9 +67,20 @@ public class GraphicDTO {
 	    GenericArrow toServir = new GenericArrow(nodes,cortar,servir,1.0);
 	    edges.add( toServir );
 	    edges.add( toCortar );
+	    */
 	    
-	    
-	   // amazar.select();    
+	   this.nodes.get(3).select();
+	   this.nodes.get(6).select();
+	   
+	   for (Node nn : this.nodes){
+		   if (nn instanceof DotNode){
+			   System.out.println("nn es un punto");
+
+		   } else {
+			   System.out.println("nn no es un punto");
+			  
+		   }
+	   }
 	}
 	
 	/**
