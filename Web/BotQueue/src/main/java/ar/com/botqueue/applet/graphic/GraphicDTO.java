@@ -141,7 +141,7 @@ public class GraphicDTO {
 			
 			if(nodeA == null || nodeB == null) return false;
 			
-			if(nodeA instanceof DotNode || nodeA instanceof DotNode){
+			if(nodeA instanceof DotNode || nodeB instanceof DotNode){
 				return false;
 			}
 			GenericArrow ga= new GenericArrow(nodes , nodeA, nodeB, zoom);
