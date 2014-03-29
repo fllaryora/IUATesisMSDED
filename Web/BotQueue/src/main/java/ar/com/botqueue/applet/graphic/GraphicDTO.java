@@ -103,7 +103,7 @@ public class GraphicDTO {
 	public boolean deleteNode(){
 		Node nextNode = getOnlyOneSelected();
 		if (nextNode == null) return false;
-		List<GenericArrow> edgesAsociated = this.getEdges(nextNode);
+		List<GenericArrow> edgesAsociated = this.getNodeEdges(nextNode);
 		for(GenericArrow ga: edgesAsociated){
 			ga.deleteArrow();
 			this.edges.remove(ga);	
@@ -690,10 +690,25 @@ public class GraphicDTO {
 		 */
 		private List<GenericArrow> getEdges(Node nextNode) {
 			List<GenericArrow> ret = new ArrayList<GenericArrow>();
-			
 			for(GenericArrow edge: this.edges){
 				
 				if( edge.getTailArrow().equals(nextNode) ){
+					ret.add(edge);
+				}
+			}
+			return ret;
+		}
+		
+		/** 
+		 * retorna las flachas que salen y entran del nodo
+		 * @param nextNode
+		 * @return lista de flechas
+		 */
+		private List<GenericArrow> getNodeEdges(Node nextNode) {
+			List<GenericArrow> ret = new ArrayList<GenericArrow>();
+			for(GenericArrow edge: this.edges){
+				
+				if( edge.getTailArrow().equals(nextNode) || edge.getHeadArrow().equals(nextNode)){
 					ret.add(edge);
 				}
 			}
