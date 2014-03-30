@@ -10,6 +10,7 @@ public class ProjectsValues {
 	private static String tryOutput;
 	private static String tryEngine;
 	
+	public static final int SCHEDULER_PROCS = 3;
 	static { //static constructor of class
 		
 		tryInput = System.getenv("BOTQUEUE_INPUT_FILE");

@@ -2,8 +2,10 @@ package ar.com.cron.Bootstrap;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+
 import ar.com.cron.Bootstrap.constants.ProjectsFiels;
 import ar.com.cron.Bootstrap.constants.ProjectsValues;
+
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.util.JSON;
@@ -101,7 +103,8 @@ public class App {
 		
 		try {
 			System.out.println("Se arma parametros de entrada para MPI...");
-			String nroProces = toRead.get(ProjectsFiels.NRO_PROCS_FIELD).toString();
+			int nrp = (Integer)toRead.get(ProjectsFiels.NRO_PROCS_FIELD);
+			String nroProces = ""+ (nrp+ProjectsValues.SCHEDULER_PROCS);
 			
 			Process process = new ProcessBuilder(
 					ProjectsValues.BOTQUEUE_PROGRAM,
