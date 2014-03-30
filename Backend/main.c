@@ -27,14 +27,15 @@
 #include "jsonHelper.h"
 
 void logError(int error_code, int my_rank);
-void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenameJson );
+void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenameJson, int benckmarkCsv );
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
 void putUnsigned(int fileDescriptor, const unsigned nro);
 
 int main(int argc, char **argv){
 	unsigned startTime, endTime, runningTime;
-	int benckmarkCsv = open ("/tmp/benchmark.csv" , O_WRONLY|O_CREAT|O_TRUNC,00660);
+	int benckmarkCsv = 0;
 	if(MASTER_ID){
+		benckmarkCsv = open ("/tmp/benchmark.csv" , O_WRONLY|O_CREAT|O_APPEND,00660);
 		startTime = (unsigned)time(NULL);
 	}
 
@@ -93,7 +94,7 @@ int main(int argc, char **argv){
 		runningTime = endTime - startTime;
 		write(benckmarkCsv,"\t",1);
 		putUnsigned(benckmarkCsv, runningTime);
-		
+		write(benckmarkCsv,"\n",1);
 		close(benckmarkCsv);
 	}
 	MPI_Finalize();
@@ -123,7 +124,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			write(benckmarkCsv,"\t",1);
 			putUnsigned(benckmarkCsv, loadTime);
 			startSIMTime = (unsigned)time(NULL);
-			scheduler( vr->watchdog, commNodes , vr->targets , mpiProcesses, vr->targetCounter, benckmarkCsv);
+			scheduler( vr->watchdog, commNodes , vr->targets , mpiProcesses, vr->targetCounter);
 			endSIMTime = (unsigned)time(NULL);
 			simTime = endSIMTime - startSIMTime;
 			write(benckmarkCsv,"\t",1);
