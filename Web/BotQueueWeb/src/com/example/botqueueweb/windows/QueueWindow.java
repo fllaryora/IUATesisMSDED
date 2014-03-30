@@ -66,8 +66,9 @@ public class QueueWindow extends Window {
         
         HorizontalLayout hlResource = new HorizontalLayout();
         Label lResource = new Label("Recursos: ");
-        lResource.setWidth("90");
+        lResource.setWidth("110");
         final TextField tfResource = new TextField();
+        tfResource.setWidth("310");
         if (queue.get("resource")!=null)
         	tfResource.setValue(queue.get("resource").toString());
         hlResource.addComponent(lResource);
@@ -78,8 +79,9 @@ public class QueueWindow extends Window {
         
         HorizontalLayout hlFixedCost = new HorizontalLayout();
         Label lFixedCost = new Label("Costo Fijo: ");
-        lFixedCost.setWidth("90");
+        lFixedCost.setWidth("110");
         final TextField tfFixedCost = new TextField();
+        tfFixedCost.setWidth("310");
         if (queue.get("fixedCost")!=null)
         	tfFixedCost.setValue(queue.get("fixedCost").toString());
         hlFixedCost.addComponent(lFixedCost);
@@ -89,8 +91,9 @@ public class QueueWindow extends Window {
         
         HorizontalLayout hlVariableCost = new HorizontalLayout();
         Label lVariableCost = new Label("Costo Variable: ");
-        lVariableCost.setWidth("90");
+        lVariableCost.setWidth("110");
         final TextField tfVariableCost = new TextField();
+        tfVariableCost.setWidth("310");
         if (queue.get("variableCost")!=null)
         	tfVariableCost.setValue(queue.get("variableCost").toString());
         hlVariableCost.addComponent(lVariableCost);

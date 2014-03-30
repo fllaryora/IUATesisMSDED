@@ -53,10 +53,10 @@ public class CounterWindow extends Window {
         
         HorizontalLayout hlNombre = new HorizontalLayout();
         Label lNombre = new Label("Nombre: ");
-        if (isFull)	lNombre.setWidth("110");
+        if (isFull)	lNombre.setWidth("75");
         else		lNombre.setWidth("90");
         final TextField tfName = new TextField();
-        if (isFull)	tfName.setWidth("310");
+        if (isFull)	tfName.setWidth("345");
         else		tfName.setWidth("330");
         if (counter.get("name")!=null)
         	tfName.setValue(counter.get("name").toString());
@@ -66,8 +66,9 @@ public class CounterWindow extends Window {
         
         HorizontalLayout hlQuantity = new HorizontalLayout();
         Label lQuantity = new Label("Quantity: ");
-        lQuantity.setWidth("90");
+        lQuantity.setWidth("75");
         final TextField tfQuantity = new TextField();
+        tfQuantity.setWidth("345");
         if (counter.get("quantity")!=null)
         	tfQuantity.setValue(counter.get("quantity").toString());
         hlQuantity.addComponent(lQuantity);
@@ -78,8 +79,9 @@ public class CounterWindow extends Window {
         
         HorizontalLayout hlCycle = new HorizontalLayout();
         Label lCycle = new Label("Cycle: ");
-        lCycle.setWidth("90");
+        lCycle.setWidth("75");
         final TextField tfCycle = new TextField();
+        tfCycle.setWidth("345");
         if (counter.get("cycle")!=null)
         	tfCycle.setValue(counter.get("cycle").toString());
         hlCycle.addComponent(lCycle);

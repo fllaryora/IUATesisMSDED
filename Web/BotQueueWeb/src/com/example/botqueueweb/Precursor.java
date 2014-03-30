@@ -88,7 +88,7 @@ public class Precursor extends VerticalLayout implements View {
         			}
         			
                     QueueWindow qWindow = new QueueWindow(dbObject,applet,true);
-                    qWindow.setHeight("610px");
+                    qWindow.setHeight("256px");//("610px"); -344
                     qWindow.setWidth("450px");
                 	getUI().addWindow(qWindow);
                 }
@@ -189,20 +189,21 @@ public class Precursor extends VerticalLayout implements View {
         			}
         			
         			CounterWindow cWindow = new CounterWindow(dbObject,applet,true);
-        			cWindow.setHeight("610px");
+        			cWindow.setHeight("216px");
         			cWindow.setWidth("450px");
                 	getUI().addWindow(cWindow);
                 }
                 
                 if (variables.containsKey("editModel")) {
                 	String jsonNode = (String) variables.get("editModel");            
-                	DBObject dbObject = null;
-        			DBObject dbObject2 = null;
+                	DBObject dbObject = null, dbObject2 = null;
+                	int nroNodos = 0;
         			try{
         				String jsons[];
         				jsons = jsonNode.split("\\*\\*\\*");
-        				dbObject = (DBObject) JSON.parse(jsons[0]); //construction
+        				dbObject = (DBObject) JSON.parse(jsons[0]);  //construction
         				dbObject2 = (DBObject) JSON.parse(jsons[1]); //pending
+        				nroNodos = Integer.parseInt(jsons[2]);
         			}catch(JSONParseException exception){
         				exception.printStackTrace();
         			}
@@ -223,7 +224,7 @@ public class Precursor extends VerticalLayout implements View {
         	    	project.setState("P");
         	    	project.setPendingStamp((new Long((new Date()).getTime())).toString());
         	    	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
-        	    	
+        	    	project.setNroProcs(nroNodos);
         	    	projectBussines.saveProject(project);
                 }
 
@@ -395,7 +396,7 @@ public class Precursor extends VerticalLayout implements View {
             @Override
 			public void buttonClick(ClickEvent event) {
             	QueueWindow qWindow = new QueueWindow((DBObject) JSON.parse("{}"),applet,false);
-            	qWindow.setHeight("150px");
+            	qWindow.setHeight("136px"); //("150px"); -14
             	qWindow.setWidth("450px");
             	getUI().addWindow(qWindow);
 			}
@@ -408,8 +409,7 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				CombiWindow cWindow = new CombiWindow((DBObject) JSON.parse("{}"),null,applet,false);
-				cWindow.setHeight("145px");
-				//cWindow.setWidth("450px");
+				cWindow.setHeight("136px");//.setHeight("145px"); -9
 				cWindow.setWidth("458px");
             	getUI().addWindow(cWindow);
 			}
@@ -423,7 +423,7 @@ public class Precursor extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				FunctionWindow fWindow = new FunctionWindow((DBObject) JSON.parse("{}"),null,applet,false);
-				fWindow.setHeight("140px");
+				fWindow.setHeight("136px");//("140px"); -4
 				fWindow.setWidth("458px");
             	getUI().addWindow(fWindow);
 			}
@@ -437,7 +437,7 @@ public class Precursor extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				NormalWindow nWindow = new NormalWindow((DBObject) JSON.parse("{}"),null,applet,false);
-				nWindow.setHeight("140px");
+				nWindow.setHeight("136px");//("140px"); -4
 				nWindow.setWidth("458px");
             	getUI().addWindow(nWindow);
 			}
@@ -451,7 +451,7 @@ public class Precursor extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				CounterWindow cWindow = new CounterWindow((DBObject) JSON.parse("{}"),applet,false);
-				cWindow.setHeight("140px");
+				cWindow.setHeight("136px");//("140px"); -4
 				cWindow.setWidth("450px");
             	getUI().addWindow(cWindow);
 			}

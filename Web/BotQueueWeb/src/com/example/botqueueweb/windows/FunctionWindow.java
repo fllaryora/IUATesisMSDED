@@ -9,6 +9,8 @@ import com.mongodb.DBObject;
 
 import org.vaadin.applet.AppletIntegration;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -64,6 +66,7 @@ public class FunctionWindow extends Window {
         Label lMinimun = new Label("Input: ");
         lMinimun.setWidth("110");
         final TextField tfInput = new TextField();
+        tfInput.setWidth("310");
         if (function.get("input")!=null)
         	tfInput.setValue(function.get("input").toString());
         hlInput.addComponent(lMinimun);
@@ -73,6 +76,7 @@ public class FunctionWindow extends Window {
         Label lMaximun = new Label("Output: ");
         lMaximun.setWidth("110");
         final TextField tfOutput = new TextField();
+        tfOutput.setWidth("310");
         if (function.get("output")!=null)
         	tfOutput.setValue(function.get("output").toString());
         hlOutput.addComponent(lMaximun);
@@ -85,13 +89,13 @@ public class FunctionWindow extends Window {
         }
         
         final HorizontalLayout hlSpace = new HorizontalLayout();
-        final Integer hlSpaceHeight = 380;//375; //250
+        final Integer hlSpaceHeight = 370;
         final Integer hlSpaceHeightItem = 40;
         
         //PROBABILISTIC BRANCH
         final CheckBox cbProbBranch = new CheckBox();
-        cbProbBranch.setHeight("28px");
-        if( function.get("followers")!=null && ((BasicDBList)function.get("followers")).size()>0)
+        //cbProbBranch.setHeight("28px");
+        if( function.get("followers")!=null && ((BasicDBList)function.get("followers")).size()>1)
         {
 	        HorizontalLayout hlProbBranch = new HorizontalLayout();
 	        hlProbBranch.setSpacing(true);
@@ -103,7 +107,8 @@ public class FunctionWindow extends Window {
         }
         
         //ITEMS PROBABILISTIC BRANCH
-        final List<TextField> ltfProbBranchItem = new ArrayList<TextField>();        
+        final List<TextField> ltfProbBranchItem = new ArrayList<TextField>();
+        final List<HorizontalLayout> hlProbBranchItems = new ArrayList<HorizontalLayout>();
         if (dbProbBranch!=null)
         {
 	        BasicDBList probBranchList = (BasicDBList) dbProbBranch.get("nameList");
@@ -124,15 +129,18 @@ public class FunctionWindow extends Window {
 		        	}
 	        	else
 	        		lProbBranchItem = new Label("");
-        		
+	        	lProbBranchItem.setWidth("98");
+	        	
 	        	//TEXTINPUT
 	        	TextField tfProbBranchItem = new TextField();
+	        	tfProbBranchItem.setWidth("310");
 	        	if ((BasicDBList)function.get("probabilisticBranch")!=null && ((BasicDBList)function.get("probabilisticBranch")).size()>0)
 	        		tfProbBranchItem.setValue(((BasicDBList)function.get("probabilisticBranch")).get(i).toString());
 	
 	        	ltfProbBranchItem.add(tfProbBranchItem);
 	        	hlProbBranchItem.addComponent(lProbBranchItem);
 	        	hlProbBranchItem.addComponent(tfProbBranchItem);
+	        	hlProbBranchItems.add(hlProbBranchItem);
 	        	subContent.addComponent(hlProbBranchItem);
 	        }
         }
@@ -140,7 +148,7 @@ public class FunctionWindow extends Window {
         //CALCULO ESPACIO
         if (isFull)
         {
-        	if(((BasicDBList)function.get("followers")).size()>0)
+        	/*if(((BasicDBList)function.get("followers")).size()>1)
 	        {
 	        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem - ((BasicDBList)function.get("followers")).size() * hlSpaceHeightItem))>0)
 	        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - hlSpaceHeightItem - ((BasicDBList)function.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
@@ -150,12 +158,56 @@ public class FunctionWindow extends Window {
 	        else
 	        {
 	        	hlSpace.setHeight(((Integer)hlSpaceHeight)+"px");
-	        	//if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
-	        	//	hlSpace.setHeight( ((Integer)(hlSpaceHeight - hlSpaceHeightItem)).toString()+"px");
-	        	//else
-	        	//	hlSpace.setHeight("0px");
-	        }
+	        }*/
 	        subContent.addComponent(hlSpace);
+        	
+        	cbProbBranch.setImmediate(true);
+	        cbProbBranch.addValueChangeListener(new ValueChangeListener() {
+				private static final long serialVersionUID = 1L;
+				
+				public void setSpaceHeight(Integer space) {
+        			if (space==null)
+        				hlSpace.setHeight("0px");
+        			else
+        				hlSpace.setHeight( space.toString()+"px");
+        		}
+				
+				public void valueChange(ValueChangeEvent event)
+				{
+					if(cbProbBranch.getValue()==true) {
+						for (HorizontalLayout horizontalLayout : hlProbBranchItems) {
+							horizontalLayout.setVisible(true);
+						}
+					}
+					else {
+						for (HorizontalLayout horizontalLayout : hlProbBranchItems) {
+							horizontalLayout.setVisible(false);
+						}
+					}
+					
+					int spaceCheck = 0;
+					int spaceFollowers = 0;
+					
+					if(((BasicDBList)function.get("followers")).size()>1) {
+						spaceCheck = 1;
+						if (cbProbBranch.getValue())
+							spaceFollowers = ((BasicDBList)function.get("followers")).size();
+						else
+							spaceFollowers = 0;
+					}
+					
+			        if( ( hlSpaceHeight - (hlSpaceHeightItem * (spaceCheck + spaceFollowers) ) ) > 0)
+		        		setSpaceHeight( hlSpaceHeight - (hlSpaceHeightItem * (spaceCheck + spaceFollowers) ) );
+			        else
+			        	setSpaceHeight(0);
+	            }
+	        });
+	        
+	        if (cbProbBranch.getValue()) cbProbBranch.setValue(false);
+	        else						 cbProbBranch.setValue(true);
+	        
+	        if (cbProbBranch.getValue()) cbProbBranch.setValue(false);
+	        else						 cbProbBranch.setValue(true);
         }
         
         //BOTONES
