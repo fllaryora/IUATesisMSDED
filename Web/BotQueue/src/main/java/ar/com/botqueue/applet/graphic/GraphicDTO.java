@@ -525,11 +525,12 @@ public class GraphicDTO {
 			
 			//FIXME: ESto es para que el usuario no tenga que hacer click en guardar modelo en construccion y dame el pending
 			String modelTotal = getAuxAllModelFile( destination, length, seedModel);
-			model = modelTotal + "***" + model;
+			model = modelTotal + "***" + model + "***" + this.nodes.sizeNodes();
 			destination.vaadinUpdateVariable("editModel", model, true);
 			return model;
 			
 		}
+		
 		
 		/** 
 		 * obtiene el json de todo el modelo para retomar el trabajo luego

@@ -34,5 +34,20 @@ public class BotQueueList<E> extends ArrayList<E> {
 	    }
 	    return -1;
 	}
+	
+	public int sizeNodes() {
+		int length = 0;
+        for (int i = 0; i < super.size(); i++){
+        	if(super.get(i) == null ){
+        		continue;
+        	}
+        	if(super.get(i) instanceof DotNode){
+        		continue;
+        	}
+        		
+        	length++;
+        }
+	    return length;
+	}
 
 }
