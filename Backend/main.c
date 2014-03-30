@@ -15,7 +15,6 @@
  * MA 02110-1301, USA.
  * 
  */
- 
 #include "ourMPI.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,19 +24,23 @@
 #include "printer.h"
 #include "genericNode.h"
 #include "jsonHelper.h"
+#include <stdint.h>
+
+#define USED_CLOCK CLOCK_MONOTONIC // CLOCK_MONOTONIC_RAW if available
+#define NANOS 1000000000LL
 
 void logError(int error_code, int my_rank);
 void master(const int mpiProcesses, const MPI_Comm commNodes,const char *filenameJson, int benckmarkCsv );
 void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* groupWorld, int** processRank, int mpiProcesses, int idNodo );
-void putUnsigned(int fileDescriptor, const unsigned nro);
+void putUnsigned(int fileDescriptor, const long long nro);
 
 int main(int argc, char **argv){
-	unsigned startTime, endTime, runningTime;
+	struct timespec startTime , endTime;
+	long long  runningTime = 0LL;
+	long long start = 0LL;
+	long long end = 0LL;
 	int benckmarkCsv = 0;
-	if(MASTER_ID){
-		benckmarkCsv = open ("/tmp/benchmark.csv" , O_WRONLY|O_CREAT|O_APPEND,00660);
-		startTime = (unsigned)time(NULL);
-	}
+	
 
 
 	char* botqueueInputFile = getenv("BOTQUEUE_INPUT_FILE");
@@ -55,6 +58,11 @@ int main(int argc, char **argv){
 	MPI_Init(&argc, &argv);
 	/* Busco mi nodo Id y cantidad*/
 	MPI_Comm_rank(MPI_COMM_WORLD, &idNodo);
+	if(idNodo == MASTER_ID){
+		benckmarkCsv = open ("/tmp/benchmark.csv" , O_WRONLY|O_CREAT|O_APPEND,00660);
+		clock_gettime(USED_CLOCK, &startTime);
+		start = startTime.tv_sec * NANOS + startTime.tv_nsec;
+	}
 	MPI_Comm_size(MPI_COMM_WORLD, &mpiProcesses);
 	/*voy a armar comunicadores*/
 	createCommunicator( &commNodes, &groupNodes, &groupWorld, &processRank, mpiProcesses, idNodo );
@@ -89,9 +97,10 @@ int main(int argc, char **argv){
 	}
 	/* FIN de zona de MPI */
 	if(processRank != NULL)free(processRank);
-	if(MASTER_ID){
-		endTime = (unsigned)time(NULL);
-		runningTime = endTime - startTime;
+	if(idNodo == MASTER_ID){
+		clock_gettime(USED_CLOCK, &endTime);
+		end = endTime.tv_sec * NANOS + endTime.tv_nsec;
+		runningTime = (uint64_t)(end - start);
 		write(benckmarkCsv,"\t",1);
 		putUnsigned(benckmarkCsv, runningTime);
 		write(benckmarkCsv,"\n",1);
@@ -102,8 +111,11 @@ int main(int argc, char **argv){
 }
 
 void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filenameJson , int benckmarkCsv){
-	unsigned startLoadTime, endLoadTime, loadTime;
-	unsigned startSIMTime, endSIMTime, simTime;
+	struct timespec startLoadTime, endLoadTime;
+	long long start = 0LL, end = 0LL;
+	long long  loadTime = 0LL;
+	struct timespec startSIMTime, endSIMTime;
+	long long simTime = 0LL;
 	int jsonResult;
 	ValidationResults* vr = validateJsonInput(filenameJson);
 	if ( vr->isValid == VALIDATION_PASS ) {		
@@ -112,21 +124,29 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			jsonResult = GOOD_JSON;
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
 			
-			startLoadTime = (unsigned)time(NULL);
+			clock_gettime(USED_CLOCK, &startLoadTime);
+			start = startLoadTime.tv_sec * NANOS + startLoadTime.tv_nsec;
 			//envio estructuras
 			sendStructToNodes(filenameJson, commNodes);
 			//enviar lo combisIds al raffler
 			MPI_Send( &vr->seedAndCombisId[1] ,   vr->seedAndCombisId[0] , MPI_INT , RAFFLER_ID , SEED_AND_COMBI_LIST , MPI_COMM_WORLD);
 			//envio counts de los elementos.
 			MPI_Send( vr->qCouNfComb , 5 , MPI_INT , PRINTER_ID , INIT_NODES , MPI_COMM_WORLD);
-			endLoadTime = (unsigned)time(NULL);
-			loadTime = endLoadTime - startLoadTime;
+
+			clock_gettime(USED_CLOCK, &endLoadTime);
+			end = endLoadTime.tv_sec * NANOS + endLoadTime.tv_nsec;
+			loadTime = (uint64_t)(end - start);
+
 			write(benckmarkCsv,"\t",1);
 			putUnsigned(benckmarkCsv, loadTime);
-			startSIMTime = (unsigned)time(NULL);
+			clock_gettime(USED_CLOCK, &startSIMTime);
+			start = startSIMTime.tv_sec * NANOS + startSIMTime.tv_nsec;
 			scheduler( vr->watchdog, commNodes , vr->targets , mpiProcesses, vr->targetCounter);
-			endSIMTime = (unsigned)time(NULL);
-			simTime = endSIMTime - startSIMTime;
+			clock_gettime(USED_CLOCK, &endSIMTime);
+
+			end = endSIMTime.tv_sec * NANOS + endSIMTime.tv_nsec;
+			simTime = (uint64_t)(end - start);
+
 			write(benckmarkCsv,"\t",1);
 			putUnsigned(benckmarkCsv, simTime);
 			free(vr->targets);
@@ -197,11 +217,11 @@ void createCommunicator( MPI_Comm* commNodes, MPI_Group* groupNodes, MPI_Group* 
 	*processRank = myProcessRank;
 }
 
-void putUnsigned(int fileDescriptor, const unsigned nro){
+void putUnsigned(int fileDescriptor, const long long nro){
 	char* strNro = NULL;
-	int len = snprintf(NULL, 0, "%u", nro);
+	int len = snprintf(NULL, 0, "%lld", nro);
 	strNro = (char*) malloc( (len + 1) * sizeof(char) );
-	snprintf(strNro, (len + 1), "%u", nro);
+	snprintf(strNro, (len + 1), "%lld", nro);
 	write(fileDescriptor, strNro, len );
 	free(strNro);
 }
