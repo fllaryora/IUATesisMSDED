@@ -91,7 +91,7 @@ public class ProjectWindow extends Window {
                 String estadoName;
                 Container container = new IndexedContainer();
                 container.addContainerProperty("Id", ObjectId.class, null);
-                container.addContainerProperty("Nombre", String.class, null);
+                container.addContainerProperty("Nombre de Proyecto", String.class, null);
                 container.addContainerProperty("Estado", String.class , null);
                 container.addContainerProperty("Nro de Procesos", Integer.class , null);
                 for (Project project1 : projects) {
@@ -113,7 +113,7 @@ public class ProjectWindow extends Window {
             		@SuppressWarnings("rawtypes")
 					Property property = item.getItemProperty("Id");
                 	property.setValue(project1.getId());
-                	property = item.getItemProperty("Nombre");
+                	property = item.getItemProperty("Nombre de Proyecto");
                 	property.setValue(project1.getName());
             		property = item.getItemProperty("Estado");
                 	property.setValue(estadoName);
@@ -121,8 +121,11 @@ public class ProjectWindow extends Window {
                 	property.setValue(project1.getNroProcs());
             	}
                 t.setContainerDataSource(container);
-                t.setVisibleColumns(new Object[]{"Nombre", "Estado", "Nro de Procesos"});
-            	
+                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+            	t.setColumnExpandRatio("Nombre de Proyecto", 80);
+            	t.setColumnExpandRatio("Estado", 15);
+            	t.setColumnExpandRatio("Nro de Procesos", 15);
+            	t.setWidth("750");
         	    close();
 			}
 		});

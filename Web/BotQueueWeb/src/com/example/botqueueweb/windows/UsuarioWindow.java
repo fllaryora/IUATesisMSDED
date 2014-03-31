@@ -12,7 +12,9 @@ import com.vaadin.ui.Window;
 
 public class UsuarioWindow extends Window {
 
-    public UsuarioWindow() {
+	private static final long serialVersionUID = 1L;
+
+	public UsuarioWindow() {
     	
     	this.setCaption("Formulario Usuario");
     	this.setModal(true);

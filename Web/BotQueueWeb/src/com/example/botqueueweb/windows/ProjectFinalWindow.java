@@ -2,8 +2,6 @@ package com.example.botqueueweb.windows;
 
 import org.vaadin.applet.AppletIntegration;
 
-import com.example.botqueueweb.dto.input.Queue;
-import com.mongodb.DBObject;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -19,7 +17,9 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class ProjectFinalWindow extends Window {
 
-    public ProjectFinalWindow(final AppletIntegration applet) {
+	private static final long serialVersionUID = 1L;
+
+	public ProjectFinalWindow(final AppletIntegration applet) {
     	
     	this.setCaption("Cola");
     	this.setModal(true);
@@ -62,7 +62,8 @@ public class ProjectFinalWindow extends Window {
         Button bAceptar = new Button("Aceptar");
         
         bAceptar.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+			@Override
 			public void buttonClick(ClickEvent event) {
             	String[] arrayParams = new String[2];
             	arrayParams[0] = tfLength.getValue();
@@ -74,7 +75,8 @@ public class ProjectFinalWindow extends Window {
         
         Button bCancelar = new Button("Cancelar");
         bCancelar.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+			@Override
 			public void buttonClick(ClickEvent event) {
         	    close();
 			}

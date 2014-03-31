@@ -112,7 +112,7 @@ public class FunctionWindow extends Window {
         if (dbProbBranch!=null)
         {
 	        BasicDBList probBranchList = (BasicDBList) dbProbBranch.get("nameList");
-	    	@SuppressWarnings("unchecked")
+	    	@SuppressWarnings({ "unchecked", "rawtypes" })
 			ArrayList<BasicDBObject> probBranchArray = (ArrayList) probBranchList;
 	    	
 	        for (int i=0 ; i < ((BasicDBList)function.get("followers")).size() ; i++)

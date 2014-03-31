@@ -14,6 +14,7 @@ import java.util.*;
  * @author Sami Ekblad
  *
  */
+@SuppressWarnings("deprecation")
 public class VAppletIntegration extends HTML implements Paintable {
 
     protected static final String PARAM_APP_SESSION = "appSession";

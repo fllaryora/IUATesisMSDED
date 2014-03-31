@@ -1,7 +1,6 @@
 package com.example.botqueueweb.js;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.annotations.JavaScript;
@@ -10,7 +9,9 @@ import com.vaadin.ui.AbstractJavaScriptComponent;
 @JavaScript({ "Chart.js", "chart_connector.js" })
 public class Chart extends AbstractJavaScriptComponent {
 	
-    public Chart(String domId) {
+	private static final long serialVersionUID = 1L;
+
+	public Chart(String domId) {
         getState().domId = domId;
     }
     public void setValue(int value) {

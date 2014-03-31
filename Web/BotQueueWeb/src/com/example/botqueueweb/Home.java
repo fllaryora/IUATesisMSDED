@@ -16,6 +16,7 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
@@ -55,16 +56,26 @@ public class Home extends VerticalLayout implements View{
     	Image image = new Image(null,imgLogo);
         vlPanel.addComponent(image);
 
-        //PROYECTOS
-        Label subtitle = new Label("Proyectos");
-        subtitle.addStyleName("ticket");
-        vlPanel.addComponent(subtitle);
+        //SUBTITULO
+        HorizontalLayout hbSubtitle = new HorizontalLayout();
+        hbSubtitle.setSpacing(true);
         
-        //SELECCCIONADO
-        //TODO:Agregar proyecto seleccionado (label + nombre)
+        Label subtitle = new Label("Proyectos - Seleccionado: ");
+        subtitle.addStyleName("ticket");
+        hbSubtitle.addComponent(subtitle);
+        
+        final Label lbSelected = new Label("");
+        lbSelected.addStyleName("ticket");
+        hbSubtitle.addComponent(lbSelected);
+        
+        ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+    	Project projectTemp = projectBussines.getProject(idProject);
+    	if (projectTemp!=null)
+    		lbSelected.setValue(projectTemp.getName());
+    	
+        vlPanel.addComponent(hbSubtitle);
         
         //TABLA DE PROYECTOS
-        //TODO: Ancho de columna fijo, ver tamaños maximos
         final Table t = new Table();
         t.setSelectable(true);
         t.setImmediate(true);
@@ -72,7 +83,7 @@ public class Home extends VerticalLayout implements View{
         t.setColumnReorderingAllowed(true);
         
         t.addContainerProperty("Id", ObjectId.class, null);
-        t.addContainerProperty("Nombre", String.class, null);
+        t.addContainerProperty("Nombre de Proyecto", String.class, null);
         t.addContainerProperty("Estado", String.class , null);
         t.addContainerProperty("Nro de Procesos", Integer.class , null);
         
@@ -102,11 +113,14 @@ public class Home extends VerticalLayout implements View{
 				t.setData(myObjectProperty);
 			}
 		});
-    	t.setVisibleColumns(new Object[]{"Nombre", "Estado", "Nro de Procesos"});
+    	t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+    	t.setColumnExpandRatio("Nombre de Proyecto", 80);
+    	t.setColumnExpandRatio("Estado", 15);
+    	t.setColumnExpandRatio("Nro de Procesos", 15);
+    	t.setWidth("750");
     	vlPanel.addComponent(t);
     	
     	//BOTONES
-    	//TODO: botones aliniados a la detecha, borde derecho de la tabla
     	HorizontalLayout hlPanel = new HorizontalLayout();
     	Button btnGeneric = new Button("Refrescar");
     	btnGeneric.addClickListener(new ClickListener() {
@@ -122,7 +136,7 @@ public class Home extends VerticalLayout implements View{
                 String estadoName;
                 Container container = new IndexedContainer();
                 container.addContainerProperty("Id", ObjectId.class, null);
-                container.addContainerProperty("Nombre", String.class, null);
+                container.addContainerProperty("Nombre de Proyecto", String.class, null);
                 container.addContainerProperty("Estado", String.class , null);
                 container.addContainerProperty("Nro de Procesos", Integer.class , null);
                 for (Project project1 : projects) {
@@ -143,7 +157,7 @@ public class Home extends VerticalLayout implements View{
             		
             		Property property = item.getItemProperty("Id");
                 	property.setValue(project1.getId());
-                	property = item.getItemProperty("Nombre");
+                	property = item.getItemProperty("Nombre de Proyecto");
                 	property.setValue(project1.getName());
             		property = item.getItemProperty("Estado");
                 	property.setValue(estadoName);
@@ -151,7 +165,11 @@ public class Home extends VerticalLayout implements View{
                 	property.setValue(project1.getNroProcs());
             	}
                 t.setContainerDataSource(container);
-                t.setVisibleColumns(new Object[]{"Nombre", "Estado", "Nro de Procesos"});
+                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+            	t.setColumnExpandRatio("Nombre de Proyecto", 80);
+            	t.setColumnExpandRatio("Estado", 15);
+            	t.setColumnExpandRatio("Nro de Procesos", 15);
+            	t.setWidth("750");
             }
         });
     	hlPanel.addComponent(btnGeneric);
@@ -164,6 +182,12 @@ public class Home extends VerticalLayout implements View{
             public void buttonClick(ClickEvent event2) {
                 event2.getButton().addStyleName("selected");
                 event.getNavigator().getUI().setData(t.getData()); 
+                
+                ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+    	    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
+    	    	Project project = projectBussines.getProject(idProject);
+    	    	if (project!=null)
+    	    		lbSelected.setValue(project.getName());
             }
         });
     	hlPanel.addComponent(btnGeneric);
@@ -190,6 +214,9 @@ public class Home extends VerticalLayout implements View{
     	    	t.setData(null);
     	    	event.getNavigator().getUI().setData(null); 
     	    	
+    	    	//RESET SELECTED
+   	    		lbSelected.setValue("");
+    	    	
     	    	//GET PROYECTOS
              	List<Project> projects = projectBussines.getProjects();
             	
@@ -197,7 +224,7 @@ public class Home extends VerticalLayout implements View{
                 String estadoName;
                 Container container = new IndexedContainer();
                 container.addContainerProperty("Id", ObjectId.class, null);
-                container.addContainerProperty("Nombre", String.class, null);
+                container.addContainerProperty("Nombre de Proyecto", String.class, null);
                 container.addContainerProperty("Estado", String.class , null);
                 container.addContainerProperty("Nro de Procesos", Integer.class , null);
                 for (Project project1 : projects) {
@@ -218,7 +245,7 @@ public class Home extends VerticalLayout implements View{
             		
             		Property property = item.getItemProperty("Id");
                 	property.setValue(project1.getId());
-                	property = item.getItemProperty("Nombre");
+                	property = item.getItemProperty("Nombre de Proyecto");
                 	property.setValue(project1.getName());
             		property = item.getItemProperty("Estado");
                 	property.setValue(estadoName);
@@ -226,7 +253,11 @@ public class Home extends VerticalLayout implements View{
                 	property.setValue(project1.getNroProcs());
             	}
                 t.setContainerDataSource(container);
-                t.setVisibleColumns(new Object[]{"Nombre", "Estado", "Nro de Procesos"});
+                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+            	t.setColumnExpandRatio("Nombre de Proyecto", 80);
+            	t.setColumnExpandRatio("Estado", 15);
+            	t.setColumnExpandRatio("Nro de Procesos", 15);
+            	t.setWidth("750");
             }
         });
     	hlPanel.addComponent(btnGeneric);
@@ -249,7 +280,9 @@ public class Home extends VerticalLayout implements View{
     	hlPanel.addComponent(btnGeneric);
     	hlPanel.setSpacing(true);
     	vlPanel.addComponent(hlPanel);
-        
+    	vlPanel.setWidth("750");
+    	vlPanel.setComponentAlignment(hlPanel, Alignment.MIDDLE_RIGHT);
+    	
         bodyPanel.setContent(vlPanel);
         addComponent(bodyPanel);
     }
