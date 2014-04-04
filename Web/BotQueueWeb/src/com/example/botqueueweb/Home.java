@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import com.example.botqueueweb.business.ProjectBussines;
 import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.windows.ProjectWindow;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -38,8 +38,7 @@ public class Home extends VerticalLayout implements View{
 	@Override
     public void enter(final ViewChangeEvent event) {
         
-        ProjectBussines projectBussines = new ProjectBussines(); //TODO: HACER SINGLETON
-    	List<Project> projects = projectBussines.getProjects();
+    	List<Project> projects = Facade.getInstance().getProjects();
     	
     	//CONFIGURACION INICIAL
     	setMargin(true);
@@ -69,7 +68,7 @@ public class Home extends VerticalLayout implements View{
         hbSubtitle.addComponent(lbSelected);
         
         ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
-    	Project projectTemp = projectBussines.getProject(idProject);
+    	Project projectTemp = Facade.getInstance().getProject(idProject);
     	if (projectTemp!=null)
     		lbSelected.setValue(projectTemp.getName());
     	
@@ -129,8 +128,7 @@ public class Home extends VerticalLayout implements View{
 			@Override
             public void buttonClick(ClickEvent event2) {
 				//GET PROYECTOS
-				ProjectBussines projectBussines = new ProjectBussines(); //TODO: HACER SINGLETON
-             	List<Project> projects = projectBussines.getProjects();
+             	List<Project> projects = Facade.getInstance().getProjects();
             	
             	//ACTUALIZACION DE TABLA (INTERFACE)
                 String estadoName;
@@ -184,8 +182,7 @@ public class Home extends VerticalLayout implements View{
                 event.getNavigator().getUI().setData(t.getData()); 
                 
                 ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
-    	    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
-    	    	Project project = projectBussines.getProject(idProject);
+    	    	Project project = Facade.getInstance().getProject(idProject);
     	    	if (project!=null)
     	    		lbSelected.setValue(project.getName());
             }
@@ -209,8 +206,7 @@ public class Home extends VerticalLayout implements View{
                 
                 //ELIMINAR PROYECTO
                 ObjectId idProject = (ObjectId) t.getData();
-                ProjectBussines projectBussines = new ProjectBussines(); //TODO: HACER SINGLETON
-    	    	projectBussines.deleteProject(idProject);
+                Facade.getInstance().deleteProject(idProject);
     	    	t.setData(null);
     	    	event.getNavigator().getUI().setData(null); 
     	    	
@@ -218,7 +214,7 @@ public class Home extends VerticalLayout implements View{
    	    		lbSelected.setValue("");
     	    	
     	    	//GET PROYECTOS
-             	List<Project> projects = projectBussines.getProjects();
+             	List<Project> projects = Facade.getInstance().getProjects();
             	
             	//ACTUALIZACION DE TABLA (INTERFACE)
                 String estadoName;

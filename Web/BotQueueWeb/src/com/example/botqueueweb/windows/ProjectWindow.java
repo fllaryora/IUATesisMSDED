@@ -5,8 +5,9 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import com.example.botqueueweb.business.ProjectBussines;
+import com.example.botqueueweb.business.ProjectBusiness;
 import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.facade.Facade;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -75,17 +76,16 @@ public class ProjectWindow extends Window {
 				}
             	
             	//INSERT PROYECTO
-            	ProjectBussines projectBussines = new ProjectBussines(); //TODO: Hacer singleton
             	Project project = new Project();
             	project.setName(tfName.getValue());
             	project.setState("C");
             	project.setConstructionStamp((new Long((new Date()).getTime())).toString());
             	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
             	//project.setUsr(new ArrayList<String>()); //TODO: Asignar Usuario con referencia
-            	projectBussines.insertProject(project);
+            	Facade.getInstance().insertProject(project);
             	
             	// GET PROYECTOS
-             	List<Project> projects = projectBussines.getProjects();
+             	List<Project> projects = Facade.getInstance().getProjects();
             	
             	//ACTUALIZACION DE TABLA (INTERFACE)
                 String estadoName;

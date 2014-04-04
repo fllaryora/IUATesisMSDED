@@ -7,10 +7,10 @@ import java.util.Map;
 import org.bson.types.ObjectId;
 import org.vaadin.applet.AppletIntegration;
 
-import com.example.botqueueweb.business.ProjectBussines;
 import com.example.botqueueweb.dto.Project;
 import com.example.botqueueweb.dto.construction.JsonConstruction;
 import com.example.botqueueweb.dto.input.JsonInput;
+import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.windows.CombiWindow;
 import com.example.botqueueweb.windows.CounterWindow;
 import com.example.botqueueweb.windows.FunctionWindow;
@@ -198,15 +198,14 @@ public class Precursor extends VerticalLayout implements View {
         		    JsonInput jsonInput = morphia.fromDBObject(JsonInput.class, dbObject2);
         		    
         		    ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
-        	    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
-        	    	Project project = projectBussines.getProject(idProject);
+        	    	Project project = Facade.getInstance().getProject(idProject);
         	    	project.setConstruction(jsonConstruction);
         	    	project.setInput(jsonInput);
         	    	project.setState("P");
         	    	project.setPendingStamp((new Long((new Date()).getTime())).toString());
         	    	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
         	    	project.setNroProcs(nroNodos);
-        	    	projectBussines.saveProject(project);
+        	    	Facade.getInstance().saveProject(project);
                 }
 
                 if (variables.containsKey("editModelConstruct")) {
@@ -223,14 +222,13 @@ public class Precursor extends VerticalLayout implements View {
         			JsonConstruction jsonConstruction = morphia.fromDBObject(JsonConstruction.class, dbObject);
         		    
         		    ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
-        	    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
-        	    	Project project = projectBussines.getProject(idProject);
+        	    	Project project = Facade.getInstance().getProject(idProject);
         	    	project.setConstruction(jsonConstruction);
         	    	project.setState("C");
         	    	project.setPendingStamp((new Long((new Date()).getTime())).toString());
         	    	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
         	    	
-        	    	projectBussines.saveProject(project);
+        	    	Facade.getInstance().saveProject(project);
                 }
             }
 	        
@@ -247,8 +245,7 @@ public class Precursor extends VerticalLayout implements View {
         addStyleName("transactions");
 
     	idProject = (ObjectId) event.getNavigator().getUI().getData();
-    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
-    	Project project = projectBussines.getProject(idProject);
+    	Project project = Facade.getInstance().getProject(idProject);
     	
     	showTop(project,vlPanel);
     	showBotonera(vlPanel);

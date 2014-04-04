@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import com.example.botqueueweb.business.ProjectBussines;
 import com.example.botqueueweb.dto.Project;
 import com.example.botqueueweb.dto.output.Combi;
 import com.example.botqueueweb.dto.output.Counter;
@@ -14,6 +13,7 @@ import com.example.botqueueweb.dto.output.Function;
 import com.example.botqueueweb.dto.output.Normal;
 import com.example.botqueueweb.dto.output.Queue;
 import com.example.botqueueweb.dto.output.QueueFinal;
+import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.js.Chart;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -37,46 +37,35 @@ public class Reporte extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeEvent event) {
     	
-    	/*String idProject = event.getParameters();
-    	System.out.println(idProject);*/
-    	idProject = (ObjectId) event.getNavigator().getUI().getData();
-    	
-    	//TODO: idProject==null no se selecciono proyecto
-    	//TODO: al volver a pantalla principal selecionar el proyecto al que se esta apuntando i es diferente de null
-    	
-    	ProjectBussines projectBussines = new ProjectBussines(); //TODO: hacer singleton
-    	
-    	//com.example.botqueueweb.dto.input.Queue qu = projectBussines.getQueue();
-    	
-    	Project project = projectBussines.getProject(idProject);
-    	//System.out.println(project.getName());
+    	/* CONFIGURACION INICIAL */
     	setMargin(true);
+        setSizeFull();
+        addStyleName("transactions");
+        
+    	idProject = (ObjectId) event.getNavigator().getUI().getData();
+    	//TODO: idProject==null no se selecciono proyecto
     	
+    	/* PANEL */
+    	Project project = Facade.getInstance().getProject(idProject);
     	Panel bodyPanel = new Panel();
     	bodyPanel.setWidth("100%");
     	bodyPanel.setHeight("100%");
     	VerticalLayout vlPanel = new VerticalLayout();
-    	
-        setSizeFull();
-        addStyleName("transactions");
+
 
         /* Pie Chart*/
-        
         /*final Chart chart2 = new Chart("Chart2");
-        
         chart2.setType("Pie");
-        
         chart2.addColor("#F38630");
         chart2.addPercent(25.0);
-        
         chart2.addColor("#E0E4CC");
         chart2.addPercent(25.0);
-        
         chart2.addColor("#69D2E7");
         chart2.addPercent(50.0);
-        
         addComponent(chart2);*/
         
+    	/* COMPONENTS */
+    	
         showTop(project,vlPanel);
         
         showSummaryReport(project,vlPanel);
@@ -95,10 +84,8 @@ public class Reporte extends VerticalLayout implements View {
     {
     	HorizontalLayout top = new HorizontalLayout();
     	top.setWidth("100%");
-    	//top.setHeight("30px");
     	top.setSpacing(true);
     	top.addStyleName("toolbar");
-    	//addComponent(top);
     	
     	Label lTicket =  new Label("Proyecto: ");
         lTicket.addStyleName("ticket");
@@ -114,7 +101,6 @@ public class Reporte extends VerticalLayout implements View {
         top.addComponent(lValue);
         top.addComponent(new Label(" "));
         top.setSizeUndefined();
-        //top.setHeight("25px");
         
     	top.setComponentAlignment(lTicket, Alignment.MIDDLE_CENTER);
     	top.setComponentAlignment(lValue, Alignment.MIDDLE_CENTER);
@@ -149,11 +135,7 @@ public class Reporte extends VerticalLayout implements View {
         hlTupla.addComponent(new Label(project.getOutput().getSummaryReport().getTotalTime().toString()));
     	vlPanel.addComponent(hlTupla);
     	
-    	//vlPanel.addComponent(new Label("Counter Final"));
-    	
     	Table t = new Table();
-        //t.setSizeFull();
-        //t.addStyleName("borderless");
         t.setSelectable(true);
         t.setImmediate(true);
         t.setColumnCollapsingAllowed(true);
@@ -169,8 +151,6 @@ public class Reporte extends VerticalLayout implements View {
 		}
     	
     	vlPanel.addComponent(t);
-    	//padding-top: 10px;
-    	//vlPanel.addComponent(new Label("Queues Final"));
     	
     	t = new Table();
         t.setSelectable(true);
@@ -188,11 +168,8 @@ public class Reporte extends VerticalLayout implements View {
     		t.addItem(new Object[]{queueFinal.getIdNode(),"$ "+queueFinal.getFixCost(),"$ "+queueFinal.getVariableCost()},i);
     	}
     	
-    	//t.setHeight("100%");
     	vlPanel.addComponent(t);
-    	
     	project.getOutput().getSummaryReport().getCounters();
-    	
     }
     
     void showCombisFull(Project project, VerticalLayout vlPanel)
