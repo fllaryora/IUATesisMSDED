@@ -15,6 +15,8 @@ import com.example.botqueueweb.dto.output.Queue;
 import com.example.botqueueweb.dto.output.QueueFinal;
 import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.js.Chart;
+//import com.google.gwt.dev.util.collect.HashMap;
+import java.util.HashMap;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
@@ -42,7 +44,7 @@ public class Reporte extends VerticalLayout implements View {
         setSizeFull();
         addStyleName("transactions");
         
-    	idProject = (ObjectId) event.getNavigator().getUI().getData();
+    	idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
     	//TODO: idProject==null no se selecciono proyecto
     	
     	/* PANEL */

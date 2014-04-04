@@ -1,7 +1,5 @@
 package com.example.botqueueweb.dto;
 
-import java.util.List;
-
 import org.bson.types.ObjectId;
 
 import com.example.botqueueweb.dto.construction.JsonConstruction;
@@ -9,6 +7,7 @@ import com.example.botqueueweb.dto.input.JsonInput;
 import com.example.botqueueweb.dto.output.JsonOutput;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Reference;
 
 @Entity("projects")
 public class Project {
@@ -25,7 +24,9 @@ public class Project {
 	private JsonInput input;
 	private Integer nroProcs;
 	private JsonOutput output;
-	private List<String> usr; //TODO: hacer referencia
+	//private List<String> usr; //TODO: hacer referencia
+	@Reference
+	private User user;
 	
 	public ObjectId getId() {
 		return id;
@@ -33,7 +34,12 @@ public class Project {
 	public void setId(ObjectId id) {
 		this.id = id;
 	}
-	
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
 	public String getName() {
 		return name;
 	}
@@ -87,12 +93,6 @@ public class Project {
 	}
 	public void setOutput(JsonOutput output) {
 		this.output = output;
-	}
-	public List<String> getUsr() {
-		return usr;
-	}
-	public void setUsr(List<String> usr) {
-		this.usr = usr;
 	}
 	public String getConstructionStamp() {
 		return constructionStamp;

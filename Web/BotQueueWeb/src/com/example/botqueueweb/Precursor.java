@@ -18,6 +18,8 @@ import com.example.botqueueweb.windows.NormalWindow;
 import com.example.botqueueweb.windows.ProjectFinalWindow;
 import com.example.botqueueweb.windows.QueueWindow;
 import com.google.code.morphia.Morphia;
+//import com.google.gwt.dev.util.collect.HashMap;
+import java.util.HashMap;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
@@ -197,7 +199,7 @@ public class Precursor extends VerticalLayout implements View {
         			morphia.map(JsonInput.class);
         		    JsonInput jsonInput = morphia.fromDBObject(JsonInput.class, dbObject2);
         		    
-        		    ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+        		    ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
         	    	Project project = Facade.getInstance().getProject(idProject);
         	    	project.setConstruction(jsonConstruction);
         	    	project.setInput(jsonInput);
@@ -221,7 +223,7 @@ public class Precursor extends VerticalLayout implements View {
         			morphia.map(JsonConstruction.class);
         			JsonConstruction jsonConstruction = morphia.fromDBObject(JsonConstruction.class, dbObject);
         		    
-        		    ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+        		    ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
         	    	Project project = Facade.getInstance().getProject(idProject);
         	    	project.setConstruction(jsonConstruction);
         	    	project.setState("C");
@@ -244,7 +246,7 @@ public class Precursor extends VerticalLayout implements View {
         setSizeFull();
         addStyleName("transactions");
 
-    	idProject = (ObjectId) event.getNavigator().getUI().getData();
+    	idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
     	Project project = Facade.getInstance().getProject(idProject);
     	
     	showTop(project,vlPanel);

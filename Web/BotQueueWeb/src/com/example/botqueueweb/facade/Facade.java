@@ -25,10 +25,22 @@ public class Facade {
         return facade;
     }
     
-    public List<Project> getProjects()
+    /*public List<Project> getProjects()
 	{
 		try {
 			return ProjectBusiness.getInstance().getProjects();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}*/
+    
+    public List<Project> getProjectsByUser(User user)
+	{
+		try {
+			return ProjectBusiness.getInstance().getProjectsByUser(user);
+			//return ProjectBusiness.getInstance().getProjects();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();

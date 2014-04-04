@@ -203,6 +203,8 @@ public class BotqueuewebUI extends UI {
             	user = Facade.getInstance().getUserByName(user);
             	
                 if (user != null && user.getPassword().equals(password.getValue())) {
+                	setData(new HashMap<String,Object>());
+                	((HashMap<String,Object>)getData()).put("user", user);
                     signin.removeShortcutListener(enter);
                     buildMainView(user);
                 } else {
@@ -298,6 +300,7 @@ public class BotqueuewebUI extends UI {
                         exit.addClickListener(new ClickListener() {
                             @Override
                             public void buttonClick(ClickEvent event) {
+                            	setData(null);
                                 buildLoginView(true);
                             }
                         });
@@ -328,16 +331,19 @@ public class BotqueuewebUI extends UI {
                 public void buttonClick(ClickEvent event) {
                     
                     //setData(idProject);
-                    if (!view.equalsIgnoreCase("Home") && getData()==null)
+                    //if (!view.equalsIgnoreCase("Home") && getData()==null)
+                    if (!view.equalsIgnoreCase("Home") && ((HashMap<String,Object>)getData()).get("idProjectSelected")==null)
                     {
                     	//showNotification("Seleccione un proyecto");
                     	//Notification.show("Seleccione un proyecto", Notification.Type.WARNING_MESSAGE);
                     	Notification.show("Seleccione un Proyecto", Notification.Type.WARNING_MESSAGE);
                     	return;
                     }
-                    else if (view.equalsIgnoreCase("Reporte") && getData()!=null)
+                    //else if (view.equalsIgnoreCase("Reporte") && getData()!=null)
+                    else if (view.equalsIgnoreCase("Reporte") && ((HashMap<String,Object>)getData()).get("idProjectSelected")!=null)
                     {
-                    	ObjectId idProject = (ObjectId) getData();
+                    	//ObjectId idProject = (ObjectId) getData();
+                    	ObjectId idProject = (ObjectId) ((HashMap<String,Object>)getData()).get("idProjectSelected");
                     	Project project = Facade.getInstance().getProject(idProject);
                     	if (project.getState().equalsIgnoreCase("C") ||
                 			project.getState().equalsIgnoreCase("P") ||
@@ -367,14 +373,17 @@ public class BotqueuewebUI extends UI {
         menu.addStyleName("menu");
         menu.setHeight("100%");
         
-        String f = Page.getCurrent().getUriFragment();
+        /*String f = Page.getCurrent().getUriFragment();
         if (f != null && f.startsWith("!")) {
             f = f.substring(1);
         }
         if (f == null || f.equals("") || f.equals("/")) {
             nav.navigateTo("/Home");
             menu.getComponent(0).addStyleName("selected");
-        }
+        }*/
+        
+        nav.navigateTo("/Home");
+        menu.getComponent(0).addStyleName("selected");
     }
     
     private void clearMenuSelection() {

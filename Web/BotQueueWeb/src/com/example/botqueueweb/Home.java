@@ -5,8 +5,11 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.dto.User;
 import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.windows.ProjectWindow;
+//import com.google.gwt.dev.util.collect.HashMap;
+import java.util.HashMap;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -38,8 +41,8 @@ public class Home extends VerticalLayout implements View{
 	@Override
     public void enter(final ViewChangeEvent event) {
         
-    	List<Project> projects = Facade.getInstance().getProjects();
-    	
+    	List<Project> projects = Facade.getInstance().getProjectsByUser((User)((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("user"));
+
     	//CONFIGURACION INICIAL
     	setMargin(true);
     	Panel bodyPanel = new Panel();
@@ -67,7 +70,8 @@ public class Home extends VerticalLayout implements View{
         lbSelected.addStyleName("ticket");
         hbSubtitle.addComponent(lbSelected);
         
-        ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+        //ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+        ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
     	Project projectTemp = Facade.getInstance().getProject(idProject);
     	if (projectTemp!=null)
     		lbSelected.setValue(projectTemp.getName());
@@ -128,8 +132,9 @@ public class Home extends VerticalLayout implements View{
 			@Override
             public void buttonClick(ClickEvent event2) {
 				//GET PROYECTOS
-             	List<Project> projects = Facade.getInstance().getProjects();
-            	
+             	//List<Project> projects = Facade.getInstance().getProjects();
+             	List<Project> projects = Facade.getInstance().getProjectsByUser((User)((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("user"));
+             			
             	//ACTUALIZACION DE TABLA (INTERFACE)
                 String estadoName;
                 Container container = new IndexedContainer();
@@ -179,9 +184,9 @@ public class Home extends VerticalLayout implements View{
 			@Override
             public void buttonClick(ClickEvent event2) {
                 event2.getButton().addStyleName("selected");
-                event.getNavigator().getUI().setData(t.getData()); 
-                
-                ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
+                ((HashMap<String,Object>) event.getNavigator().getUI().getData()).put("idProjectSelected", t.getData());
+                //event.getNavigator().getUI().setData(t.getData()); 
+                ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
     	    	Project project = Facade.getInstance().getProject(idProject);
     	    	if (project!=null)
     	    		lbSelected.setValue(project.getName());
@@ -208,13 +213,14 @@ public class Home extends VerticalLayout implements View{
                 ObjectId idProject = (ObjectId) t.getData();
                 Facade.getInstance().deleteProject(idProject);
     	    	t.setData(null);
-    	    	event.getNavigator().getUI().setData(null); 
+    	    	//event.getNavigator().getUI().setData(null); 
+    	    	((HashMap<String,Object>) event.getNavigator().getUI().getData()).put("idProjectSelected", null);
     	    	
     	    	//RESET SELECTED
    	    		lbSelected.setValue("");
     	    	
     	    	//GET PROYECTOS
-             	List<Project> projects = Facade.getInstance().getProjects();
+             	List<Project> projects = Facade.getInstance().getProjectsByUser((User)((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("user"));
             	
             	//ACTUALIZACION DE TABLA (INTERFACE)
                 String estadoName;
@@ -267,7 +273,7 @@ public class Home extends VerticalLayout implements View{
                 event2.getButton().addStyleName("selected");
                 
                 //ABRIR NUEVO PROYECTO
-                ProjectWindow fWindow = new ProjectWindow(t);
+                ProjectWindow fWindow = new ProjectWindow(t,event);
 				fWindow.setHeight("140px");
 				fWindow.setWidth("450px");
             	getUI().addWindow(fWindow);

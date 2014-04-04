@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 
 import com.example.botqueueweb.dao.MongoConnection;
 import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.dto.User;
 
 public class ProjectBusiness {
 
@@ -30,6 +31,23 @@ public class ProjectBusiness {
 		List<Project> projects = new ArrayList<Project>();
 		try {
 			for (Project project : MongoConnection.getInstance().getDatastore().find(Project.class).retrievedFields(true, "_id","name","state","nroProcs")) {
+				projects.add(project);
+			}
+			return projects;
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public List<Project> getProjectsByUser(User user)
+	{
+		List<Project> projects = new ArrayList<Project>();
+		try {
+			for (Project project : MongoConnection.getInstance().getDatastore().find(Project.class).retrievedFields(true, "_id","name","state","nroProcs").filter("user", user)) {
 				projects.add(project);
 			}
 			return projects;

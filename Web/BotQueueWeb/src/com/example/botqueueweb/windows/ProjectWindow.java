@@ -1,17 +1,20 @@
 package com.example.botqueueweb.windows;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bson.types.ObjectId;
 
 import com.example.botqueueweb.business.ProjectBusiness;
 import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.dto.User;
 import com.example.botqueueweb.facade.Facade;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -31,7 +34,7 @@ public class ProjectWindow extends Window {
 
 	private static final long serialVersionUID = 1L;
 
-	public ProjectWindow(final Table t) {
+	public ProjectWindow(final Table t, final ViewChangeEvent eventPpal) {
     	
 		//CONFIGURACION
     	this.setCaption("Proyecto");
@@ -81,12 +84,13 @@ public class ProjectWindow extends Window {
             	project.setState("C");
             	project.setConstructionStamp((new Long((new Date()).getTime())).toString());
             	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
-            	//project.setUsr(new ArrayList<String>()); //TODO: Asignar Usuario con referencia
+            	project.setUser((User)((HashMap<String,Object>)eventPpal.getNavigator().getUI().getData()).get("user"));
             	Facade.getInstance().insertProject(project);
             	
             	// GET PROYECTOS
-             	List<Project> projects = Facade.getInstance().getProjects();
-            	
+             	//List<Project> projects = Facade.getInstance().getProjects();
+             	List<Project> projects = Facade.getInstance().getProjectsByUser((User)((HashMap<String,Object>)eventPpal.getNavigator().getUI().getData()).get("user"));
+             	
             	//ACTUALIZACION DE TABLA (INTERFACE)
                 String estadoName;
                 Container container = new IndexedContainer();
