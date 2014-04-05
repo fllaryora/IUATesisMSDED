@@ -1,7 +1,6 @@
 package com.example.botqueueweb.dto.input;
 
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.NotSaved;
 
 @Embedded
 public class Delay {

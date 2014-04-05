@@ -7,7 +7,9 @@ import com.vaadin.shared.ui.JavaScriptComponentState;
 
 public class ChartState extends JavaScriptComponentState
 {
-    public int value = 0;
+	private static final long serialVersionUID = 1L;
+	
+	public int value = 0;
     public String domId;
     
     public String type;

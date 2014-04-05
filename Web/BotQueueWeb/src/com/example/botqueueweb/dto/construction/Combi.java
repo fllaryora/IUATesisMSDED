@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.example.botqueueweb.dto.input.Delay;
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.NotSaved;
 
 @Embedded
 public class Combi {

@@ -1,7 +1,5 @@
 package com.example.botqueueweb.dto.output;
 
-import java.util.List;
-
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded

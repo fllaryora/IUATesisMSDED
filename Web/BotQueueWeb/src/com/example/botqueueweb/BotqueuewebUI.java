@@ -4,12 +4,12 @@ import javax.servlet.annotation.WebServlet;
 
 import org.bson.types.ObjectId;
 
-import com.example.botqueueweb.business.ProjectBussines;
 import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.dto.User;
+import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.windows.UsuarioWindow;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
@@ -89,8 +89,8 @@ public class BotqueuewebUI extends UI {
 		
         //helpManager = new HelpManager(this);
 
-        setLocale(Locale.US);
-
+		setLocale(Locale.US);
+		
         setContent(root);
         root.addStyleName("root");
         root.setSizeFull();
@@ -164,30 +164,56 @@ public class BotqueuewebUI extends UI {
 
         signin.addClickListener(new ClickListener() {
             @Override
-            public void buttonClick(ClickEvent event) {
-            	
-            	//TODO: Buscar en BD usuario (para test implementar con una funncion que tenga un arrau de 3 us con pass)
-            	//TODO: Buscar en BD usuario 
-            	
-                if (username.getValue() != null
-                        && username.getValue().equals("")
-                        && password.getValue() != null
-                        && password.getValue().equals("")) {
-                    signin.removeShortcutListener(enter);
-                    buildMainView();
-                } else {
-                    if (loginPanel.getComponentCount() > 2) {
-                        // Remove the previous error message
+            public void buttonClick(ClickEvent event)
+            {
+            	if (username.getValue() == null || username.getValue().equals(""))
+            	{
+            		if (loginPanel.getComponentCount() > 2) {
                         loginPanel.removeComponent(loginPanel.getComponent(2));
                     }
-                    // Add new error message
-                    Label error = new Label(
-                            "Usuario o Contraseña incorrecto.",
-                            ContentMode.HTML);
+            		Label error = new Label( "Ingrese Usuario.", ContentMode.HTML);
                     error.addStyleName("error");
                     error.setSizeUndefined();
                     error.addStyleName("light");
-                    // Add animation
+                    error.addStyleName("v-animate-reveal");
+                    loginPanel.addComponent(error);
+                    username.focus();
+                    return;
+            	}
+            	
+            	if (password.getValue() == null || password.getValue().equals(""))
+            	{
+            		if (loginPanel.getComponentCount() > 2) {
+                        loginPanel.removeComponent(loginPanel.getComponent(2));
+                    }
+            		Label error = new Label( "Ingrese Contraseña.", ContentMode.HTML);
+                    error.addStyleName("error");
+                    error.setSizeUndefined();
+                    error.addStyleName("light");
+                    error.addStyleName("v-animate-reveal");
+                    loginPanel.addComponent(error);
+                    username.focus();
+                    return;
+            	}
+            	
+            	//TODO implementar proyectos propios de usuario
+            	User user = new User();
+            	user.setUsername(username.getValue());
+            	user = Facade.getInstance().getUserByName(user);
+            	
+                if (user != null && user.getPassword().equals(password.getValue())) {
+                	setData(new HashMap<String,Object>());
+                	((HashMap<String,Object>)getData()).put("user", user);
+                    signin.removeShortcutListener(enter);
+                    buildMainView(user);
+                } else {
+                    if (loginPanel.getComponentCount() > 2) {
+                        loginPanel.removeComponent(loginPanel.getComponent(2));
+                    }
+                    Label error = new Label("Usuario o Contraseña incorrecto.", ContentMode.HTML);
+                    error.addStyleName("error");
+                    error.setSizeUndefined();
+                    error.addStyleName("light");
                     error.addStyleName("v-animate-reveal");
                     loginPanel.addComponent(error);
                     username.focus();
@@ -203,7 +229,7 @@ public class BotqueuewebUI extends UI {
         loginLayout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
     }
 
-    private void buildMainView() {
+    private void buildMainView(final User user) {
 
         nav = new Navigator(this, content);
 
@@ -250,7 +276,7 @@ public class BotqueuewebUI extends UI {
                         Image profilePic = new Image(null, new ThemeResource("img/profile-pic.png"));
                         profilePic.setWidth("34px");
                         vmUserMenu.addComponent(profilePic);
-                        Label userName = new Label("Cristian Zerpa");
+                        Label userName = new Label(user.getNickname());
                         userName.setSizeUndefined();
                         vmUserMenu.addComponent(userName);
                         
@@ -273,6 +299,7 @@ public class BotqueuewebUI extends UI {
                         exit.addClickListener(new ClickListener() {
                             @Override
                             public void buttonClick(ClickEvent event) {
+                            	setData(null);
                                 buildLoginView(true);
                             }
                         });
@@ -303,18 +330,20 @@ public class BotqueuewebUI extends UI {
                 public void buttonClick(ClickEvent event) {
                     
                     //setData(idProject);
-                    if (!view.equalsIgnoreCase("Home") && getData()==null)
+                    //if (!view.equalsIgnoreCase("Home") && getData()==null)
+                    if (!view.equalsIgnoreCase("Home") && ((HashMap<String,Object>)getData()).get("idProjectSelected")==null)
                     {
                     	//showNotification("Seleccione un proyecto");
                     	//Notification.show("Seleccione un proyecto", Notification.Type.WARNING_MESSAGE);
                     	Notification.show("Seleccione un Proyecto", Notification.Type.WARNING_MESSAGE);
                     	return;
                     }
-                    else if (view.equalsIgnoreCase("Reporte") && getData()!=null)
+                    //else if (view.equalsIgnoreCase("Reporte") && getData()!=null)
+                    else if (view.equalsIgnoreCase("Reporte") && ((HashMap<String,Object>)getData()).get("idProjectSelected")!=null)
                     {
-                    	ObjectId idProject = (ObjectId) getData();
-                    	ProjectBussines projectBussines = new ProjectBussines();
-                    	Project project = projectBussines.getProject(idProject);
+                    	//ObjectId idProject = (ObjectId) getData();
+                    	ObjectId idProject = (ObjectId) ((HashMap<String,Object>)getData()).get("idProjectSelected");
+                    	Project project = Facade.getInstance().getProject(idProject);
                     	if (project.getState().equalsIgnoreCase("C") ||
                 			project.getState().equalsIgnoreCase("P") ||
                 			project.getState().equalsIgnoreCase("E") ||
@@ -343,14 +372,17 @@ public class BotqueuewebUI extends UI {
         menu.addStyleName("menu");
         menu.setHeight("100%");
         
-        String f = Page.getCurrent().getUriFragment();
+        /*String f = Page.getCurrent().getUriFragment();
         if (f != null && f.startsWith("!")) {
             f = f.substring(1);
         }
         if (f == null || f.equals("") || f.equals("/")) {
             nav.navigateTo("/Home");
             menu.getComponent(0).addStyleName("selected");
-        }
+        }*/
+        
+        nav.navigateTo("/Home");
+        menu.getComponent(0).addStyleName("selected");
     }
     
     private void clearMenuSelection() {
@@ -360,7 +392,6 @@ public class BotqueuewebUI extends UI {
             if (next instanceof NativeButton) {
                 next.removeStyleName("selected");
             } else if (next instanceof DragAndDropWrapper) {
-                // Wow, this is ugly (even uglier than the rest of the code)
                 ((DragAndDropWrapper) next).iterator().next()
                         .removeStyleName("selected");
             }

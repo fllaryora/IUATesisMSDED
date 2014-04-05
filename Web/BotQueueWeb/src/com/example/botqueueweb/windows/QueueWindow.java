@@ -2,7 +2,6 @@ package com.example.botqueueweb.windows;
 
 import org.vaadin.applet.AppletIntegration;
 
-import com.example.botqueueweb.dto.input.Queue;
 import com.mongodb.DBObject;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -19,37 +18,24 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class QueueWindow extends Window {
 
-    public QueueWindow(final DBObject queue, final AppletIntegration applet, boolean isFull) {
+	private static final long serialVersionUID = 1L;
+
+	public QueueWindow(final DBObject queue, final AppletIntegration applet, boolean isFull) {
     	
+		//CONFIGURACION INICIAL
     	this.setCaption("Cola");
     	this.setModal(true);
+    	this.setResizable(false);
     	
+    	//PANEL
     	Panel bodyPanel = new Panel();
     	bodyPanel.setWidth("100%");
     	bodyPanel.setHeight("100%");
-    	
-    	setResizable(false);
         VerticalLayout subContent = new VerticalLayout();
         subContent.setMargin(true);
         subContent.setSpacing(true);
-        
         bodyPanel.setContent(subContent);
         setContent(bodyPanel);
-        
-        // idNode:5
-		//resource: 5
-		//"preceders": [5,8,11,13,15,17],
-		//"followers": [5,8,11,13,15,17],
-		//fixedCost": 0.0,
-		//variableCost": 0.0
-		
-        //dbObject.get("idNode");
-	    //dbObject.get("name");
-	    //dbObject.get("resource");
-		//private List<Integer> preceders;
-		//private List<Integer> followers;
-		//dbObject.get("fixedCost");
-		//dbObject.get("variableCost");
         
         HorizontalLayout hlNombre = new HorizontalLayout();
         Label lNombre = new Label("Nombre: ");
@@ -66,8 +52,9 @@ public class QueueWindow extends Window {
         
         HorizontalLayout hlResource = new HorizontalLayout();
         Label lResource = new Label("Recursos: ");
-        lResource.setWidth("90");
+        lResource.setWidth("110");
         final TextField tfResource = new TextField();
+        tfResource.setWidth("310");
         if (queue.get("resource")!=null)
         	tfResource.setValue(queue.get("resource").toString());
         hlResource.addComponent(lResource);
@@ -78,8 +65,9 @@ public class QueueWindow extends Window {
         
         HorizontalLayout hlFixedCost = new HorizontalLayout();
         Label lFixedCost = new Label("Costo Fijo: ");
-        lFixedCost.setWidth("90");
+        lFixedCost.setWidth("110");
         final TextField tfFixedCost = new TextField();
+        tfFixedCost.setWidth("310");
         if (queue.get("fixedCost")!=null)
         	tfFixedCost.setValue(queue.get("fixedCost").toString());
         hlFixedCost.addComponent(lFixedCost);
@@ -89,8 +77,9 @@ public class QueueWindow extends Window {
         
         HorizontalLayout hlVariableCost = new HorizontalLayout();
         Label lVariableCost = new Label("Costo Variable: ");
-        lVariableCost.setWidth("90");
+        lVariableCost.setWidth("110");
         final TextField tfVariableCost = new TextField();
+        tfVariableCost.setWidth("310");
         if (queue.get("variableCost")!=null)
         	tfVariableCost.setValue(queue.get("variableCost").toString());
         hlVariableCost.addComponent(lVariableCost);
@@ -108,10 +97,9 @@ public class QueueWindow extends Window {
         
         if(isFull)
         {
-        	//applet.executeCommand("editNode", arrayParams);
-        	//TODO: con json completo de Queue, ver si lo pasa con BSON
         	bAceptar.addClickListener(new ClickListener() {
-	            @Override
+				private static final long serialVersionUID = 1L;
+				@Override
 				public void buttonClick(ClickEvent event) {
 	            	String[] arrayParams = new String[4];
 		        	arrayParams[0] = tfResource.getValue();
@@ -126,7 +114,8 @@ public class QueueWindow extends Window {
         else
         {
 	        bAceptar.addClickListener(new ClickListener() {
-	            @Override
+				private static final long serialVersionUID = 1L;
+				@Override
 				public void buttonClick(ClickEvent event) {
 	            	String[] arrayParams = new String[2];
 	        	    arrayParams[0] = "3";
@@ -139,7 +128,8 @@ public class QueueWindow extends Window {
         
         Button bCancelar = new Button("Cancelar");
         bCancelar.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+			@Override
 			public void buttonClick(ClickEvent event) {
         	    close();
 			}
@@ -153,11 +143,6 @@ public class QueueWindow extends Window {
         subContent.setComponentAlignment(hlBotones, Alignment.BOTTOM_RIGHT);
         
         center();
-        
-        //setContent(new CssLayout());
-        //setPrimaryStyleName("help-overlay");
-        //setDraggable(false);
-        //setResizable(false);
     }
 
     public void addComponent(Component c) {

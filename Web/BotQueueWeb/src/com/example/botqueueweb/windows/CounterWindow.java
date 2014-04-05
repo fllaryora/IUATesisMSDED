@@ -2,7 +2,6 @@ package com.example.botqueueweb.windows;
 
 import org.vaadin.applet.AppletIntegration;
 
-import com.example.botqueueweb.dto.input.Queue;
 import com.mongodb.DBObject;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -19,44 +18,32 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class CounterWindow extends Window {
 
-    public CounterWindow(final DBObject counter, final AppletIntegration applet, boolean isFull) {
+	private static final long serialVersionUID = 1L;
+
+	public CounterWindow(final DBObject counter, final AppletIntegration applet, boolean isFull) {
     	
+		//CONFIGURACION INICIAL
     	this.setCaption("Contador");
     	this.setModal(true);
+    	this.setResizable(false);
     	
+    	//PANEL
     	Panel bodyPanel = new Panel();
     	bodyPanel.setWidth("100%");
     	bodyPanel.setHeight("100%");
-    	
-    	setResizable(false);
         VerticalLayout subContent = new VerticalLayout();
         subContent.setMargin(true);
         subContent.setSpacing(true);
-        
         bodyPanel.setContent(subContent);
         setContent(bodyPanel);
         
-        // idNode:5
-		//resource: 5
-		//"preceders": [5,8,11,13,15,17],
-		//"followers": [5,8,11,13,15,17],
-		//fixedCost": 0.0,
-		//variableCost": 0.0
-		
-        //dbObject.get("idNode");
-	    //dbObject.get("name");
-	    //dbObject.get("resource");
-		//private List<Integer> preceders;
-		//private List<Integer> followers;
-		//dbObject.get("fixedCost");
-		//dbObject.get("variableCost");
-        
+        //ELEMENTOS
         HorizontalLayout hlNombre = new HorizontalLayout();
         Label lNombre = new Label("Nombre: ");
-        if (isFull)	lNombre.setWidth("110");
+        if (isFull)	lNombre.setWidth("75");
         else		lNombre.setWidth("90");
         final TextField tfName = new TextField();
-        if (isFull)	tfName.setWidth("310");
+        if (isFull)	tfName.setWidth("345");
         else		tfName.setWidth("330");
         if (counter.get("name")!=null)
         	tfName.setValue(counter.get("name").toString());
@@ -66,8 +53,9 @@ public class CounterWindow extends Window {
         
         HorizontalLayout hlQuantity = new HorizontalLayout();
         Label lQuantity = new Label("Quantity: ");
-        lQuantity.setWidth("90");
+        lQuantity.setWidth("75");
         final TextField tfQuantity = new TextField();
+        tfQuantity.setWidth("345");
         if (counter.get("quantity")!=null)
         	tfQuantity.setValue(counter.get("quantity").toString());
         hlQuantity.addComponent(lQuantity);
@@ -78,8 +66,9 @@ public class CounterWindow extends Window {
         
         HorizontalLayout hlCycle = new HorizontalLayout();
         Label lCycle = new Label("Cycle: ");
-        lCycle.setWidth("90");
+        lCycle.setWidth("75");
         final TextField tfCycle = new TextField();
+        tfCycle.setWidth("345");
         if (counter.get("cycle")!=null)
         	tfCycle.setValue(counter.get("cycle").toString());
         hlCycle.addComponent(lCycle);
@@ -96,10 +85,9 @@ public class CounterWindow extends Window {
         
         if(isFull)
         {
-        	//applet.executeCommand("editNode", arrayParams);
-        	//TODO: con json completo de Queue, ver si lo pasa con BSON
         	bAceptar.addClickListener(new ClickListener() {
-	            @Override
+				private static final long serialVersionUID = 1L;
+				@Override
 				public void buttonClick(ClickEvent event) {
 	            	String[] arrayParams = new String[3];
 		        	arrayParams[0] = tfQuantity.getValue();
@@ -113,7 +101,8 @@ public class CounterWindow extends Window {
         else
         {
 	        bAceptar.addClickListener(new ClickListener() {
-	            @Override
+				private static final long serialVersionUID = 1L;
+				@Override
 				public void buttonClick(ClickEvent event) {
 	            	String[] arrayParams = new String[2];
 	        	    arrayParams[0] = "2";
@@ -126,7 +115,8 @@ public class CounterWindow extends Window {
         
         Button bCancelar = new Button("Cancelar");
         bCancelar.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+			@Override
 			public void buttonClick(ClickEvent event) {
         	    close();
 			}
@@ -140,11 +130,6 @@ public class CounterWindow extends Window {
         subContent.setComponentAlignment(hlBotones, Alignment.BOTTOM_RIGHT);
         
         center();
-        
-        //setContent(new CssLayout());
-        //setPrimaryStyleName("help-overlay");
-        //setDraggable(false);
-        //setResizable(false);
     }
 
     public void addComponent(Component c) {

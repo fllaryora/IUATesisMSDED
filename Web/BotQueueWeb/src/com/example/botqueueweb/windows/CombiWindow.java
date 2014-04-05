@@ -10,6 +10,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -217,221 +218,105 @@ public class CombiWindow extends Window {
         hlSeed.addComponent(tfSeed);
         hlSeed.setVisible(false);
         
+        //PROBABILISTIC BRANCH (COMBO DEFINICION)
+        final CheckBox cbProbBranch = new CheckBox();
+        //cbProbBranch.setHeight("32px");
+        if( combi.get("followers")!=null && ((BasicDBList)combi.get("followers")).size()>1) {
+	        if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
+	        	cbProbBranch.setValue(true);
+        }
+        
         //COMBO
         final ComboBox cbDelay = new ComboBox();
+        cbDelay.setWidth("310");
         final HorizontalLayout hlSpace = new HorizontalLayout();
         final Integer hlSpaceHeight = 410;
         final Integer hlSpaceHeightItem = 40;
         
         if (isFull)
         {
-        	cbDelay.addItem("---");
         	cbDelay.addItem("Deterministica");
         	cbDelay.addItem("Uniforme");
         	cbDelay.addItem("Exponencial");
         	cbDelay.addItem("Normal");
         	cbDelay.addItem("Beta");
         	cbDelay.addItem("Triangular");
-        	//MINIMIZAR PARA LEER CODIGO
+
         	cbDelay.addListener(new Property.ValueChangeListener() {
 				
+        		public void setSpaceHeight(Integer space) {
+        			if (space==null)
+        				hlSpace.setHeight("0px");
+        			else
+        				hlSpace.setHeight( space.toString()+"px");
+        		}
+        		
+        		public void setVisibleComponentsDelay(boolean boolMinimun, boolean boolMaximun, boolean boolShapeAlpha, boolean boolShapeBeta, boolean  boolConstant,
+									        		  boolean boolLambda,  boolean boolEscale,  boolean boolShape,      boolean boolMean,      boolean boolVariance,
+									        		  boolean boolLeast,   boolean boolHighest, boolean boolMode,       boolean boolSeed) 
+        		{
+    		        hlMinimun.setVisible(boolMinimun);
+    		        hlMaximun.setVisible(boolMaximun);
+    		        hlShapeAlpha.setVisible(boolShapeAlpha);
+    		        hlShapeBeta.setVisible(boolShapeBeta);
+    		        hlConstant.setVisible(boolConstant);
+    		        hlLambda.setVisible(boolLambda);
+    		        hlEscale.setVisible(boolEscale);
+    		        hlShape.setVisible(boolShape);
+    		        hlMean.setVisible(boolMean);
+    		        hlVariance.setVisible(boolVariance);
+    		        hlLeast.setVisible(boolLeast);
+    		        hlHighest.setVisible(boolHighest);
+    		        hlMode.setVisible(boolMode);
+    		        hlSeed.setVisible(boolSeed);
+        		}
+        		 
 				private static final long serialVersionUID = 1L;
 				@Override
 				public void valueChange(ValueChangeEvent event) {
 					if (cbDelay.getValue()!=null)
 					{
-						if (cbDelay.getValue().toString().equalsIgnoreCase("Deterministica"))
-						{
-							hlMinimun.setVisible(false);
-					        hlMaximun.setVisible(false);
-					        hlShapeAlpha.setVisible(false);
-					        hlShapeBeta.setVisible(false);
-					        hlConstant.setVisible(true);
-					        hlLambda.setVisible(false);
-					        hlEscale.setVisible(false);
-					        hlShape.setVisible(false);
-					        hlMean.setVisible(false);
-					        hlVariance.setVisible(false);
-					        hlLeast.setVisible(false);
-					        hlHighest.setVisible(false);
-					        hlMode.setVisible(false);
-					        hlSeed.setVisible(false);
-					        
-					        if(((BasicDBList)combi.get("followers")).size()>0)
-					        {
-					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
-					        else
-					        {
-					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - hlSpaceHeightItem)).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
+						int spaceComponents = 0;
+						int spaceCheck = 0;
+						int spaceFollowers = 0;
+						
+						if(((BasicDBList)combi.get("followers")).size()>1) {
+							spaceCheck = 1;
+							if (cbProbBranch.getValue())
+								spaceFollowers = ((BasicDBList)combi.get("followers")).size();
+							else
+								spaceFollowers = 0;
 						}
-						else if (cbDelay.getValue().toString().equalsIgnoreCase("Uniforme"))
-						{
-							hlMinimun.setVisible(false);
-					        hlMaximun.setVisible(false);
-					        hlShapeAlpha.setVisible(false);
-					        hlShapeBeta.setVisible(false);
-					        hlConstant.setVisible(false);
-					        hlLambda.setVisible(false);
-					        hlEscale.setVisible(false);
-					        hlShape.setVisible(false);
-					        hlMean.setVisible(false);
-					        hlVariance.setVisible(false);
-					        hlLeast.setVisible(true);
-							hlHighest.setVisible(true);
-					        hlMode.setVisible(false);
-					        hlSeed.setVisible(true);
-					        
-					        if(((BasicDBList)combi.get("followers")).size()>0)
-					        {
-					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
-					        else
-					        {
-					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3))).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
+						
+						if (cbDelay.getValue().toString().equalsIgnoreCase("Deterministica")) {
+							setVisibleComponentsDelay(false,false,false,false,true,false,false,false,false,false,false,false,false,false);
+					        spaceComponents = 1;
+						}
+						else if (cbDelay.getValue().toString().equalsIgnoreCase("Uniforme")) {
+							setVisibleComponentsDelay(false,false,false,false,false,false,false,false,false,false,true,true,false,true);
+					        spaceComponents = 3;
 					    }
-						else if (cbDelay.getValue().toString().equalsIgnoreCase("Exponencial"))
-						{
-							hlMinimun.setVisible(false);
-					        hlMaximun.setVisible(false);
-					        hlShapeAlpha.setVisible(false);
-					        hlShapeBeta.setVisible(false);
-					        hlConstant.setVisible(false);
-					        hlLambda.setVisible(true);
-					        hlEscale.setVisible(false);
-					        hlShape.setVisible(false);
-					        hlMean.setVisible(false);
-					        hlVariance.setVisible(false);
-					        hlLeast.setVisible(false);
-					        hlHighest.setVisible(false);
-					        hlMode.setVisible(false);
-					        hlSeed.setVisible(true);
-					        
-					        if(((BasicDBList)combi.get("followers")).size()>0)
-					        {
-					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
-					        else
-					        {
-					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*2))).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
+						else if (cbDelay.getValue().toString().equalsIgnoreCase("Exponencial")) {
+							setVisibleComponentsDelay(false,false,false,false,false,true,false,false,false,false,false,false,false,true);
+					        spaceComponents = 2;
 						}
-						else if (cbDelay.getValue().toString().equalsIgnoreCase("Normal"))
-						{
-							hlMinimun.setVisible(false);
-					        hlMaximun.setVisible(false);
-					        hlShapeAlpha.setVisible(false);
-					        hlShapeBeta.setVisible(false);
-					        hlConstant.setVisible(false);
-					        hlLambda.setVisible(false);
-					        hlEscale.setVisible(false);
-					        hlShape.setVisible(false);
-					        hlMean.setVisible(true);
-							hlVariance.setVisible(true);
-					        hlLeast.setVisible(false);
-					        hlHighest.setVisible(false);
-					        hlMode.setVisible(false);
-					        hlSeed.setVisible(true);
-					        
-					        if(((BasicDBList)combi.get("followers")).size()>0)
-					        {
-					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
-					        else
-					        {
-					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*3))).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
+						else if (cbDelay.getValue().toString().equalsIgnoreCase("Normal")) {
+							setVisibleComponentsDelay(false,false,false,false,false,false,false,false,true,true,false,false,false,true);
+					        spaceComponents = 3;
 						}
-						else if (cbDelay.getValue().toString().equalsIgnoreCase("Beta"))
-						{
-							hlMinimun.setVisible(true);
-					        hlMaximun.setVisible(true);
-					        hlShapeAlpha.setVisible(true);
-					        hlShapeBeta.setVisible(true);
-					        hlConstant.setVisible(false);
-					        hlLambda.setVisible(false);
-					        hlEscale.setVisible(false);
-					        hlShape.setVisible(false);
-					        hlMean.setVisible(false);
-					        hlVariance.setVisible(false);
-					        hlLeast.setVisible(false);
-					        hlHighest.setVisible(false);
-					        hlMode.setVisible(false);
-					        hlSeed.setVisible(true);
-					        
-					        if(((BasicDBList)combi.get("followers")).size()>0)
-					        {
-					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*6) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*6) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
-					        else
-					        {
-					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5))).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
+						else if (cbDelay.getValue().toString().equalsIgnoreCase("Beta")) {
+							setVisibleComponentsDelay(true,true,true,true,false,false,false,false,false,false,false,false,false,true);
+					        spaceComponents = 5;
 						}
-						else if (cbDelay.getValue().toString().equalsIgnoreCase("Triangular"))
-						{
-							hlMinimun.setVisible(false);
-					        hlMaximun.setVisible(false);
-					        hlShapeAlpha.setVisible(false);
-					        hlShapeBeta.setVisible(false);
-					        hlConstant.setVisible(false);
-					        hlLambda.setVisible(false);
-					        hlEscale.setVisible(false);
-					        hlShape.setVisible(false);
-					        hlMean.setVisible(false);
-					        hlVariance.setVisible(false);
-					        hlLeast.setVisible(true);
-					        hlHighest.setVisible(true);
-					        hlMode.setVisible(true);
-					        hlSeed.setVisible(true);
-					        
-					        if(((BasicDBList)combi.get("followers")).size()>0)
-					        {
-					        	if(((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*5) - ((BasicDBList)combi.get("followers")).size() * hlSpaceHeightItem)).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
-					        else
-					        {
-					        	if(((Integer)(hlSpaceHeight - hlSpaceHeightItem))>0)
-					        		hlSpace.setHeight( ((Integer)(hlSpaceHeight - (hlSpaceHeightItem*4))).toString()+"px");
-					        	else
-					        		hlSpace.setHeight("0px");
-					        }
+						else if (cbDelay.getValue().toString().equalsIgnoreCase("Triangular")) {
+							setVisibleComponentsDelay(false,false,false,false,false,false,false,false,false,false,true,true,true,true);
+					        spaceComponents = 4;
 						}
+						
+						if( ( hlSpaceHeight - (hlSpaceHeightItem * (spaceComponents + spaceCheck + spaceFollowers) ) ) > 0)
+			        		setSpaceHeight( hlSpaceHeight - (hlSpaceHeightItem * (spaceComponents + spaceCheck + spaceFollowers) ) );
+				        else
+				        	setSpaceHeight(0);
 					}
 				}
 			});
@@ -461,41 +346,19 @@ public class CombiWindow extends Window {
 	        subContent.addComponent(hlSeed);
         }
         
-        //SETEO INICIAL DE DELAY (COMBOBOX)
-        if (combi.get("delay")!=null)
-        {
-        	if (((BasicDBObject)combi.get("delay")).get("distribution") == null) //TODO: VALIDACION <> --- // cambio a este no muestre elementos debajo
-        		cbDelay.setValue("---");
-        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("deterministic"))
-        		cbDelay.setValue("Deterministica");
-        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("uniform"))
-        		cbDelay.setValue("Uniforme");
-        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("exponential"))
-				cbDelay.setValue("Exponencial");
-        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("normal"))
-				cbDelay.setValue("Normal");
-        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("beta"))
-				cbDelay.setValue("Beta");
-        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("triangular"))
-				cbDelay.setValue("Triangular");
-        }
-        
-        //PROBABILISTIC BRANCH
-        final CheckBox cbProbBranch = new CheckBox();
-        cbProbBranch.setHeight("28px");
-        if( combi.get("followers")!=null && ((BasicDBList)combi.get("followers")).size()>0)
+        //PROBABILISTIC BRANCH (AGREGAR COMBO A INTERFACE)
+        if( combi.get("followers")!=null && ((BasicDBList)combi.get("followers")).size()>1)
         {
 	        HorizontalLayout hlProbBranch = new HorizontalLayout();
 	        hlProbBranch.setSpacing(true);
 	        cbProbBranch.setCaption("Probabilistic Branch");
-	        if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
-	        	cbProbBranch.setValue(true);
 	        hlProbBranch.addComponent(cbProbBranch);
 	        subContent.addComponent(hlProbBranch);
         }
         
         //ITEMS PROBABILISTIC BRANCH
-        final List<TextField> ltfProbBranchItem = new ArrayList<TextField>();        
+        final List<TextField> ltfProbBranchItem = new ArrayList<TextField>();
+        final List<HorizontalLayout> hlProbBranchItems = new ArrayList<HorizontalLayout>();
         if (dbProbBranch!=null)
         {
 	        BasicDBList probBranchList = (BasicDBList) dbProbBranch.get("nameList");
@@ -516,17 +379,111 @@ public class CombiWindow extends Window {
 		        	}
 	        	else
 	        		lProbBranchItem = new Label("");
-        		
+	        	lProbBranchItem.setWidth("98");
+	        	
 	        	//TEXTINPUT
 	        	TextField tfProbBranchItem = new TextField();
+	        	tfProbBranchItem.setWidth("310");
 	        	if ((BasicDBList)combi.get("probabilisticBranch")!=null && ((BasicDBList)combi.get("probabilisticBranch")).size()>0)
 	        		tfProbBranchItem.setValue(((BasicDBList)combi.get("probabilisticBranch")).get(i).toString());
 	
 	        	ltfProbBranchItem.add(tfProbBranchItem);
 	        	hlProbBranchItem.addComponent(lProbBranchItem);
 	        	hlProbBranchItem.addComponent(tfProbBranchItem);
+	        	hlProbBranchItems.add(hlProbBranchItem);
 	        	subContent.addComponent(hlProbBranchItem);
 	        }
+        }
+        
+        //SETEO INICIAL DE DELAY (COMBOBOX)
+        if (combi.get("delay")!=null)
+        {
+        	if (((BasicDBObject)combi.get("delay")).get("distribution") == null) //TODO: VALIDACION <> --- // cambio a este no muestre elementos debajo
+        		cbDelay.setValue("---");
+        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("deterministic"))
+        		cbDelay.setValue("Deterministica");
+        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("uniform"))
+        		cbDelay.setValue("Uniforme");
+        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("exponential"))
+				cbDelay.setValue("Exponencial");
+        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("normal"))
+				cbDelay.setValue("Normal");
+        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("beta"))
+				cbDelay.setValue("Beta");
+        	else if (((BasicDBObject)combi.get("delay")).get("distribution").toString().equalsIgnoreCase("triangular"))
+				cbDelay.setValue("Triangular");
+        }
+        
+        //CALCULO DE ESPACIO POR CHECK PROB BRANCH
+        if (dbProbBranch!=null)
+        {
+	        cbProbBranch.setImmediate(true);
+	        cbProbBranch.addValueChangeListener(new ValueChangeListener() {
+				private static final long serialVersionUID = 1L;
+				
+				public void setSpaceHeight(Integer space) {
+        			if (space==null)
+        				hlSpace.setHeight("0px");
+        			else
+        				hlSpace.setHeight( space.toString()+"px");
+        		}
+				
+				public void valueChange(ValueChangeEvent event)
+				{
+					if(cbProbBranch.getValue()==true) {
+						for (HorizontalLayout horizontalLayout : hlProbBranchItems) {
+							horizontalLayout.setVisible(true);
+						}
+					}
+					else {
+						for (HorizontalLayout horizontalLayout : hlProbBranchItems) {
+							horizontalLayout.setVisible(false);
+						}
+					}
+					
+					int spaceComponents = 0;
+					int spaceCheck = 0;
+					int spaceFollowers = 0;
+					
+					if(((BasicDBList)combi.get("followers")).size()>1) {
+						spaceCheck = 1;
+						if (cbProbBranch.getValue())
+							spaceFollowers = ((BasicDBList)combi.get("followers")).size();
+						else
+							spaceFollowers = 0;
+					}
+					
+					if (cbDelay.getValue().toString().equalsIgnoreCase("Deterministica")) {
+				        spaceComponents = 1;
+					}
+					else if (cbDelay.getValue().toString().equalsIgnoreCase("Uniforme")) {					        
+				        spaceComponents = 3;
+				    }
+					else if (cbDelay.getValue().toString().equalsIgnoreCase("Exponencial")) {				        
+				        spaceComponents = 2;
+					}
+					else if (cbDelay.getValue().toString().equalsIgnoreCase("Normal")) {					        
+				        spaceComponents = 3;
+					}
+					else if (cbDelay.getValue().toString().equalsIgnoreCase("Beta")) {
+				        spaceComponents = 5;
+					}
+					else if (cbDelay.getValue().toString().equalsIgnoreCase("Triangular")) {
+				        spaceComponents = 4;
+					}
+					
+			        if( ( hlSpaceHeight - (hlSpaceHeightItem * (spaceComponents + spaceCheck + spaceFollowers) ) ) > 0)
+		        		setSpaceHeight( hlSpaceHeight - (hlSpaceHeightItem * (spaceComponents + spaceCheck + spaceFollowers) ) );
+			        else
+			        	setSpaceHeight(0);
+	            }
+	        });
+	        
+	        if (cbProbBranch.getValue()) cbProbBranch.setValue(false);
+	        else						 cbProbBranch.setValue(true);
+	        
+	        if (cbProbBranch.getValue()) cbProbBranch.setValue(false);
+	        else						 cbProbBranch.setValue(true);
         }
         
         if (isFull)

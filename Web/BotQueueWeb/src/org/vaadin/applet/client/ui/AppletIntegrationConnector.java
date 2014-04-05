@@ -12,6 +12,7 @@ import com.vaadin.client.UIDL;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.shared.ui.Connect;
+
 import org.vaadin.applet.AppletIntegration;
 
 import java.util.logging.Logger;
@@ -19,10 +20,13 @@ import java.util.logging.Logger;
 /**
  * @author artamonov
  */
+@SuppressWarnings("deprecation")
 @Connect(AppletIntegration.class)
 public class AppletIntegrationConnector extends AbstractComponentConnector implements Paintable {
 
-    protected Logger log = Logger.getLogger("AppletIntegrationConnector");
+	private static final long serialVersionUID = 1L;
+	
+	protected Logger log = Logger.getLogger("AppletIntegrationConnector");
 
     @Override
     public VAppletIntegration getWidget() {

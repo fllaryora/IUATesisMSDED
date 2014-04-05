@@ -2,7 +2,6 @@ package com.example.botqueueweb.dto.construction;
 
 import java.util.List;
 
-import com.example.botqueueweb.dto.input.Combi;
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded

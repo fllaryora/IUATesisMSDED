@@ -2,11 +2,7 @@ package com.example.botqueueweb.dto.output;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
 
 @Embedded
 public class JsonOutput {

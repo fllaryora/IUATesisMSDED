@@ -5,6 +5,7 @@ import com.vaadin.server.PaintTarget;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.LegacyComponent;
+
 import org.vaadin.applet.client.ui.VAppletIntegration;
 
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.Map;
 /**
  * Server side component for the VAppletIntegration widget.
  */
+@SuppressWarnings("deprecation")
 public class AppletIntegration extends AbstractComponent implements LegacyComponent {
 
     private static final long serialVersionUID = 6061722679712017720L;
