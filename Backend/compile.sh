@@ -1,3 +1,16 @@
+#!/bin/bash
+
+#para poder ejecutarlo desde cualquier lado
+if [ -z ${BOTQUEUE_HOME+x} ]
+then 
+	echo "BOTQUEUE_HOME var is unset"
+	echo "end of compile"
+	exit 0
+else
+	echo "BOTQUEUE_HOME existe"
+fi
+cd $BOTQUEUE_HOME
+
 MINPARAMS=2
 COMPILER=" "
 GCCARGS=" "
