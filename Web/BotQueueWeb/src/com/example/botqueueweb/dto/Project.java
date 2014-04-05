@@ -9,6 +9,10 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Reference;
 
+/**
+ * Clase de dominio de un proyecto
+ *
+ */
 @Entity("projects")
 public class Project {
 	
@@ -25,6 +29,8 @@ public class Project {
 	private Integer nroProcs;
 	private JsonOutput output;
 	//private List<String> usr; //TODO: hacer referencia
+	
+	
 	@Reference
 	private User user;
 	

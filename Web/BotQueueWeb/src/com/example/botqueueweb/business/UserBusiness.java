@@ -20,6 +20,11 @@ public class UserBusiness {
         return userBusiness;
     }
     
+    /**
+     * Busca un usuario por username
+     * @param user
+     * @return la primer coincidencia 
+     */
 	public User getUserByName(User user)
 	{
 		try {

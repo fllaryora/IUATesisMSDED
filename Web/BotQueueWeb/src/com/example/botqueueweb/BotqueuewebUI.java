@@ -10,7 +10,6 @@ import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.windows.UsuarioWindow;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
@@ -90,8 +89,8 @@ public class BotqueuewebUI extends UI {
 		
         //helpManager = new HelpManager(this);
 
-        setLocale(Locale.US);
-
+		setLocale(Locale.US);
+		
         setContent(root);
         root.addStyleName("root");
         root.setSizeFull();
