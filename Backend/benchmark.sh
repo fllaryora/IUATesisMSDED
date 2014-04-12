@@ -12,28 +12,40 @@ fi
 cd $BOTQUEUE_HOME
 ./compile.sh PRODUCTION 666
 
-#rm /tmp/benchmark.csv
-#cp /home/francisco/Tesis/repo/IUATesisMSDED/Pruebas/benchmark/k13/modelo.json $BOTQUEUE_INPUT_FILE
+if [ -e "/tmp/benchmark.csv" ]
+then
+   if [ -f "/tmp/benchmark.csv" ]
+   then
+      echo "rm /tmp/benchmark.csv"
+      rm /tmp/benchmark.csv
+   else
+      echo "no hay Engine"
+   fi
+else
+   echo "no hay Engine"
+fi
+
+cp /home/francisco/Tesis/repo/IUATesisMSDED/Pruebas/benchmark/k13/modelo.json $BOTQUEUE_INPUT_FILE
 for i in {1..32}
 do
    echo "1-$i"
-   #mpirun -np 13 ./Engine 
+   mpirun -np 13 ./Engine 
 done
-#cp /tmp/benchmark.csv /tmp/benchmark13.csv
-#rm /tmp/benchmark.csv
-#cp /home/francisco/Tesis/repo/IUATesisMSDED/Pruebas/benchmark/k18/modelo.json $BOTQUEUE_INPUT_FILE
+cp /tmp/benchmark.csv /tmp/benchmark13.csv
+rm /tmp/benchmark.csv
+cp /home/francisco/Tesis/repo/IUATesisMSDED/Pruebas/benchmark/k18/modelo.json $BOTQUEUE_INPUT_FILE
 for i in {1..32}
 do
    echo "2-$i"
-   #mpirun -np 18 ./Engine 
+   mpirun -np 18 ./Engine 
 done 
-#cp /tmp/benchmark.csv /tmp/benchmark18.csv
-#rm /tmp/benchmark.csv
-#cp /home/francisco/Tesis/repo/IUATesisMSDED/Pruebas/benchmark/k23/modelo.json $BOTQUEUE_INPUT_FILE
+cp /tmp/benchmark.csv /tmp/benchmark18.csv
+rm /tmp/benchmark.csv
+cp /home/francisco/Tesis/repo/IUATesisMSDED/Pruebas/benchmark/k23/modelo.json $BOTQUEUE_INPUT_FILE
 for i in {1..32}
 do
    echo "3-$i"
-   #mpirun -np 23 ./Engine 
+   mpirun -np 23 ./Engine 
 done 
-#cp /tmp/benchmark.csv /tmp/benchmark23.csv
+cp /tmp/benchmark.csv /tmp/benchmark23.csv
 
