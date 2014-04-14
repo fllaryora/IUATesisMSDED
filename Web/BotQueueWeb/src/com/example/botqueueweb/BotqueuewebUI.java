@@ -346,7 +346,7 @@ public class BotqueuewebUI extends UI {
                     	Project project = Facade.getInstance().getProject(idProject);
                     	if (project.getState().equalsIgnoreCase("C") ||
                 			project.getState().equalsIgnoreCase("P") ||
-                			project.getState().equalsIgnoreCase("E") ||
+                			//project.getState().equalsIgnoreCase("E") ||
                 			project.getState().equalsIgnoreCase("X") 
                     		)//todo: Pasar a PENDIENTE
                     	{

@@ -10,13 +10,18 @@ import com.example.botqueueweb.dto.output.Combi;
 import com.example.botqueueweb.dto.output.Counter;
 import com.example.botqueueweb.dto.output.CounterFinal;
 import com.example.botqueueweb.dto.output.Function;
+import com.example.botqueueweb.dto.output.NodesStatus;
 import com.example.botqueueweb.dto.output.Normal;
 import com.example.botqueueweb.dto.output.Queue;
 import com.example.botqueueweb.dto.output.QueueFinal;
+import com.example.botqueueweb.dto.output.TimeLine;
 import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.js.Chart;
+
+
 //import com.google.gwt.dev.util.collect.HashMap;
 import java.util.HashMap;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
@@ -69,14 +74,54 @@ public class Reporte extends VerticalLayout implements View {
     	/* COMPONENTS */
     	
         showTop(project,vlPanel);
-        
-        showSummaryReport(project,vlPanel);
-        
-        showCounterFull(project,vlPanel);
-        showCombisFull(project,vlPanel);
-        showQueuesFull(project,vlPanel);
-        showNormalFull(project,vlPanel);
-        showFunctionFull(project,vlPanel);
+        List<TimeLine> deltaTs= project.getOutput().getTimeLines();
+        if( deltaTs != null && !deltaTs.isEmpty() )
+        {
+        	NodesStatus status = deltaTs.get(0).getNodesStatus();
+            if ( status.getCounters() != null && !status.getCounters().isEmpty() && status.getQueues() != null && !status.getQueues().isEmpty() )
+            {
+            	showSummaryReport(project,vlPanel);
+            }
+            if ( status.getCounters() != null && !status.getCounters().isEmpty() )
+            {
+            	showCounterFull(project,vlPanel);
+            }
+            if ( status.getCombis() != null && !status.getCombis().isEmpty() )
+            {
+            	showCombisFull(project,vlPanel);
+            }
+            if ( status.getQueues() != null && !status.getQueues().isEmpty() )
+            {
+            	showQueuesFull(project,vlPanel);
+            }
+            if ( status.getNormals() != null && !status.getNormals().isEmpty() )
+            {
+            	showNormalFull(project,vlPanel);
+            }
+            if ( status.getFunctions() != null && !status.getFunctions().isEmpty() )
+            {
+            	showFunctionFull(project,vlPanel);
+            }	
+        } else{
+        	String errorMesage = project.getOutput().getError();
+        	vlPanel.setSpacing(true);
+        	
+        	Label title = new Label("Reporte de Error de botqueue");
+            title.addStyleName("h1");
+            vlPanel.addComponent(title);
+
+            HorizontalLayout hlTupla;
+            Label lTicket;
+            
+            lTicket =  new Label("Error: ");
+            lTicket.addStyleName("ticket");
+            hlTupla = new HorizontalLayout();
+            hlTupla.setSpacing(true);
+            hlTupla.addComponent(lTicket);
+            hlTupla.addComponent(new Label(errorMesage) );
+            vlPanel.addComponent(hlTupla);
+        	
+        }
         
         bodyPanel.setContent(vlPanel);
         addComponent(bodyPanel);

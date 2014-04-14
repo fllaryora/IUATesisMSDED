@@ -26,11 +26,9 @@ void writeErrorInFile(const char* label){
 		printf("Process Printer: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
 	}
 	int fileDescriptor = open (botqueueOutputFile, O_WRONLY|O_CREAT|O_TRUNC,00660);
-	write(fileDescriptor,"{\n",2);
-	write(fileDescriptor,"\"Error\" : ",10);
+	write(fileDescriptor,"{\n\"Error\" : \"",13);
 	write(fileDescriptor, label, strlen(label) );
-	write(fileDescriptor,"\"",1);
-	write(fileDescriptor,"\n}",2);
+	write(fileDescriptor,"\"\n}",3);
 	close(fileDescriptor);
 }
 /**	Escribe el porque fracazo la validacion del json */
@@ -41,16 +39,14 @@ void writeErrorInFileN(const char* label, const int N){
 		printf("Process Printer: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
 	}
 	int fileDescriptor = open (botqueueOutputFile,O_WRONLY|O_CREAT|O_TRUNC,00660);
-	write(fileDescriptor,"{\n",2);
-	write(fileDescriptor,"\"Error\" : ",10);
+	write(fileDescriptor,"{\n\"Error\" : \"",13);
 	char* strNro = NULL;
 	int len = snprintf(NULL, 0, label, N);
 	strNro = (char*) malloc( (len + 1) * sizeof(char) );
 	snprintf(strNro, (len + 1),label, N);
 	write(fileDescriptor, strNro, len );
-	write(fileDescriptor,"\n}",2);
+	write(fileDescriptor,"\"\n}",3);
 	free(strNro);
-	write(fileDescriptor,"\"",1);
 	close(fileDescriptor);
 }
 /***********************************************REGION_SCHEMA*********************************************************/
