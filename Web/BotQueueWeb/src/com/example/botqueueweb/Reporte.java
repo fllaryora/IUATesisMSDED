@@ -104,6 +104,7 @@ public class Reporte extends VerticalLayout implements View {
             }	
         } else{
         	String errorMesage = project.getOutput().getError();
+        	errorMesage = (errorMesage != null && !errorMesage.isEmpty() )?errorMesage:"No se encontro archivo de salida. Contacte a soporte";
         	vlPanel.setSpacing(true);
         	
         	Label title = new Label("Reporte de Error de botqueue");
