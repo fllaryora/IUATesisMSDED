@@ -41,6 +41,8 @@ public class Reporte extends VerticalLayout implements View {
 
     ObjectId idProject;
     
+    HashMap<Integer, String> hashNameNodes;
+    
     @Override
     public void enter(ViewChangeEvent event) {
     	
@@ -59,7 +61,31 @@ public class Reporte extends VerticalLayout implements View {
     	bodyPanel.setHeight("100%");
     	VerticalLayout vlPanel = new VerticalLayout();
 
-
+    	/* Crear Hash (mapea id y nombre)*/
+    	
+    	hashNameNodes = new HashMap<Integer, String>();
+    	
+    	if (project.getInput().getTransformation().getQueues()!=null)
+	    	for (com.example.botqueueweb.dto.input.Queue queue : project.getInput().getTransformation().getQueues()) {
+	    		hashNameNodes.put(queue.getIdNode(), queue.getName());
+			}
+    	if (project.getInput().getTransformation().getCounters()!=null)
+	    	for (com.example.botqueueweb.dto.input.Counter counter : project.getInput().getTransformation().getCounters()) {
+	    		hashNameNodes.put(counter.getIdNode(), counter.getName());
+			}
+    	if (project.getInput().getTransformation().getNormals()!=null)
+	    	for (com.example.botqueueweb.dto.input.Normal normal : project.getInput().getTransformation().getNormals()) {
+	    		hashNameNodes.put(normal.getIdNode(), normal.getName());
+			}
+    	if (project.getInput().getTransformation().getFunctions()!=null)
+	    	for (com.example.botqueueweb.dto.input.Function function : project.getInput().getTransformation().getFunctions()) {
+	    		hashNameNodes.put(function.getIdNode(), function.getName());
+			}
+    	if (project.getInput().getTransformation().getCombis()!=null)
+	    	for (com.example.botqueueweb.dto.input.Combi combi : project.getInput().getTransformation().getCombis()) {
+	    		hashNameNodes.put(combi.getIdNode(), combi.getName());
+			}
+    	
         /* Pie Chart*/
         /*final Chart chart2 = new Chart("Chart2");
         chart2.setType("Pie");
@@ -239,7 +265,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	Image image = new Image(null,imgCombi);
 	    	lTicket =  new Label("Combi: ");
 	        lTicket.addStyleName("ticket");
-	        lValue = new Label(idCombi.toString());
+	        //lValue = new Label(idCombi.toString());
+	        lValue = new Label(hashNameNodes.get(idCombi));
 	        hlTupla = new HorizontalLayout();
 	        hlTupla.addComponent(image);
 	        hlTupla.addComponent(lTicket);
@@ -406,7 +433,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	Image image = new Image(null,imgQueue);
 	    	lTicket =  new Label("Queue: ");
 	        lTicket.addStyleName("ticket");
-	        lValue = new Label(idQueue.toString());
+	        //lValue = new Label(idQueue.toString());
+	        lValue = new Label(hashNameNodes.get(idQueue));
 	        hlTupla = new HorizontalLayout();
 	        hlTupla.addComponent(image);
 	        hlTupla.addComponent(lTicket);
@@ -629,7 +657,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	Image image = new Image(null,imgCombi);
 	    	lTicket =  new Label("Normal: ");
 	        lTicket.addStyleName("ticket");
-	        lValue = new Label(idNormal.toString());
+	        //lValue = new Label(idNormal.toString());
+	        lValue = new Label(hashNameNodes.get(idNormal));
 	        hlTupla = new HorizontalLayout();
 	        hlTupla.addComponent(image);
 	        hlTupla.addComponent(lTicket);
@@ -796,7 +825,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	Image image = new Image(null,imgFunction);
 	    	lTicket =  new Label("Function: ");
 	        lTicket.addStyleName("ticket");
-	        lValue = new Label(idFunction.toString());
+	        //lValue = new Label(idFunction.toString());
+	        lValue = new Label(hashNameNodes.get(idFunction));
 	        hlTupla = new HorizontalLayout();
 	        hlTupla.addComponent(image);
 	        hlTupla.addComponent(lTicket);
@@ -868,7 +898,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	Image image = new Image(null,imgCounter);
 	    	lTicket =  new Label("Counter: ");
 	        lTicket.addStyleName("ticket");
-	        lValue = new Label(idCounter.toString());
+	        //lValue = new Label(idCounter.toString());
+	        lValue = new Label(hashNameNodes.get(idCounter));
 	        hlTupla = new HorizontalLayout();
 	        hlTupla.addComponent(image);
 	        hlTupla.addComponent(lTicket);
