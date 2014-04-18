@@ -20,14 +20,14 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 	qReport.maximun = initialStatus->resource;
 	qReport.minimun = initialStatus->resource;
 	qReport.counterInput = 0;
+	int oldCounterInput = 0;
+	double oldAverageDelay = 0.0;
 	qReport.counterOutput = 0;
 	qReport.average = 0.0;
 	qReport.timesNotEmpty = 0.0;
 	int isTimeNotEmpty;
-	int amountInput ;
 	qReport.percentTimesNotEmpty = 0.0;
-	
-	
+	qReport.averageDelay = 0.0;
 	PrinterFinalQueue qReportFinal;
 	qReportFinal.idNode = initialStatus->idNode;
 	qReportFinal.fixCost = initialStatus->fixedCost;
@@ -50,10 +50,9 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 				isTimeNotEmpty = FALSE; //de esa forma se hace ell conteo por cada delta T
-				amountInput = 0;
 			case GENERATION_PHASE_PRIMA:
 				logPhase(fileDescriptor,"Generation Phase input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
-				generationPhaseQueue(&inputResource, &bodyResource, commNodes, &isTimeNotEmpty, &amountInput, &qReport);
+				generationPhaseQueue(&inputResource, &bodyResource, commNodes, &isTimeNotEmpty, &qReport);
 				logPhase(fileDescriptor,"End generation Phase input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				break;
 			case CONSUME_DT:
@@ -61,18 +60,23 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 				deltaTCount++;
 				qReport.amount = bodyResource;
 				int stepsDones = 1;//TODO fixear para paso variable
+
 				qReport.average = (qReport.average * (double)(deltaTCount - stepsDones) + (double)qReport.amount) / (double)deltaTCount;
-				if( qReport.minimun > amountInput  ){
-					qReport.minimun = amountInput;
+				if( qReport.minimun > bodyResource  ){
+					qReport.minimun = bodyResource;
 				}
-				if( qReport.maximun < amountInput ){
-					qReport.maximun = amountInput;
+				if( qReport.maximun < bodyResource ){
+					qReport.maximun = bodyResource;
 				}
 				if(isTimeNotEmpty){
 					qReport.timesNotEmpty++;
 				}
 				qReport.percentTimesNotEmpty = qReport.timesNotEmpty / (double)deltaTCount;
 				
+				//del calculo tiempo rpomedio de espera
+				qReport.averageDelay = ( (double)oldCounterInput * oldAverageDelay + (double)qReport.amount )/((double)qReport.counterInput);
+				oldCounterInput = qReport.counterInput;
+				oldAverageDelay = qReport.averageDelay;
 				MPI_Barrier( commNodes );
 				logPhase(fileDescriptor,"End consume DT input = %d, body = %d , output = %d\n",inputResource,bodyResource,bodyResource);
 				break;
@@ -274,10 +278,9 @@ void getFortunatedCombis(int* currentFollowerListStatus, const Queue *initialSta
 	return;
 }
 
-void generationPhaseQueue(int* inputResource, int* bodyResource, const MPI_Comm commNodes, int *isTimeNotEmpty, int* amountInput, PrinterQueue* qReport){
+void generationPhaseQueue(int* inputResource, int* bodyResource, const MPI_Comm commNodes, int *isTimeNotEmpty, PrinterQueue* qReport){
 	if( (*inputResource) > 0){
 		(*isTimeNotEmpty) = TRUE;
-		(*amountInput) += (*inputResource);
 		qReport->counterInput += (*inputResource);
 	}
 	(*bodyResource) += (*inputResource);

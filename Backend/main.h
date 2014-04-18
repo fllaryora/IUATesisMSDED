@@ -102,6 +102,8 @@ typedef struct{
 	int minimun;
 	double timesNotEmpty;
 	double percentTimesNotEmpty;
+
+	double averageDelay;//tiempo promedio de espera
 }PrinterQueue;
 			
 typedef struct{
