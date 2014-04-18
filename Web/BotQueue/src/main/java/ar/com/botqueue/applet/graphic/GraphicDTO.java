@@ -37,50 +37,43 @@ public class GraphicDTO {
 	
 	@Deprecated
 	public void testFastExample(){
-		
-		/*Node panadero = NodeFactory.createNode(NodeTypes.QUEUE, 70+40, 20+10, "Panadero");
-	    Node amazar = NodeFactory.createNode(NodeTypes.COMBI, 70+26, 20+112, "Amazar");
-	    Node cocinar = NodeFactory.createNode(NodeTypes.NORMAL, 70+170, 20+112, "Cocinar");
-	    nodes.add(panadero);
-	    nodes.add( amazar );
-	    nodes.add(cocinar);
-	    
-	    
-	    GenericArrow toAmazar = new GenericArrow(nodes,panadero,amazar,1.0);
+		//cola
+		Node panadero = NodeFactory.createNode(NodeTypes.QUEUE, 70+40, 20+10, "Panadero");
+		nodes.add(panadero);
+		//combi
+		Node amazar = NodeFactory.createNode(NodeTypes.COMBI, 70+26, 20+112, "Amazar");
+		nodes.add( amazar );
+	    //flecha (de cola a combi)
+		GenericArrow toAmazar = new GenericArrow(nodes,panadero,amazar,1.0);
 	    toAmazar.headRotate();
 	    toAmazar.tailRotate();toAmazar.tailRotate();toAmazar.tailRotate();
 	    edges.add( toAmazar );
+	    //flecha (de combi a cola)
 	    GenericArrow toPanadero = new GenericArrow(nodes,amazar,panadero,1.0);
 	    toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();toPanadero.headRotate();
 	    toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();toPanadero.tailRotate();
 	    edges.add( toPanadero );
+	    //normal
+	    Node cocinar = NodeFactory.createNode(NodeTypes.NORMAL, 70+170, 20+112, "Cocinar");
+	    nodes.add(cocinar);
+	    //flecha (de combi a normal) 
 	    GenericArrow toCocinar = new GenericArrow(nodes,amazar,cocinar,1.0);
 	    edges.add( toCocinar );
 	    
-	    
+	    this.nodes.get(this.nodes.indexOf(amazar)).select();
+	    /*
 	    Node cortar = NodeFactory.createNode(NodeTypes.FUNCTION, 70+314, 20+112, "Cortar");
 	    Node servir = NodeFactory.createNode(NodeTypes.COUNTER, 70+458, 20+112, "Servir");
 	    nodes.add(servir);
 	    nodes.add(cortar);
-	    
 	    GenericArrow toCortar = new GenericArrow(nodes,cocinar,cortar,1.0);
 	    GenericArrow toServir = new GenericArrow(nodes,cortar,servir,1.0);
 	    edges.add( toServir );
 	    edges.add( toCortar );
 	    */
 	    
-	   this.nodes.get(3).select();
-	   this.nodes.get(6).select();
+	    
 	   
-	   for (Node nn : this.nodes){
-		   if (nn instanceof DotNode){
-			   System.out.println("nn es un punto");
-
-		   } else {
-			   System.out.println("nn no es un punto");
-			  
-		   }
-	   }
 	}
 	
 	/**
@@ -456,6 +449,7 @@ public class GraphicDTO {
 			if(nextNode instanceof Counter)
 				destination.vaadinUpdateVariable("editCounter", json, true);
 			
+			System.out.println( "juanete ---->"+json );
 			return json; 
 		}
 		
@@ -657,7 +651,7 @@ public class GraphicDTO {
 			List<GenericArrow> nodeEdges = this.getEdges(nextNode);
 			String json2 = "{ \"nameList\":[  ";
 			for(GenericArrow currentEdge : nodeEdges){
-				int idNode = this.nodes.indexOf(currentEdge.getHeadArrow()) +1;
+				int idNode = this.nodes.indexOfJson(currentEdge.getHeadArrow()) +1;
 				String name = currentEdge.getHeadArrow().getLabel();
 				json2 += "{\"id\" : "+idNode+", \"name\": \""+name+"\"} ,";
 				hasLeastOne = true;

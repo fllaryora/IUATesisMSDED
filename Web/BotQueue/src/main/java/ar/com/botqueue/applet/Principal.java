@@ -66,7 +66,7 @@ public class Principal extends AbstractVaadinApplet {
 	
 	@Deprecated
 	private void runSimpleTest(){
-		Object[] params = new Object[1];
+		/*Object[] params = new Object[1];
 		params[0]= "{ \"length\":600, \"seed\":-1, "
 				+ "\"transformation\": {"
 				+ "\"queues\":[  {\"idNode\":5,\"name\":\"Panadero\",\"posX\":110,\"posY\":30,\"resource\":0,\"fixedCost\":0.0,\"variableCost\":0.0,\"preceders\": [  4],\"followers\": [  4]} ],"
@@ -80,7 +80,7 @@ public class Principal extends AbstractVaadinApplet {
 				+ "{\"tail\":5,\"head\":4,\"tailSurface\":5,\"headSurface\":7,\"enableProb\":false,\"probabilisticBranch\":0.0,\"middlePoints\": [{\"posX\":125,\"posY\":103,\"order\":0} ]} ,"
 				+ "{\"tail\":4,\"head\":5,\"tailSurface\":1,\"headSurface\":3,\"enableProb\":true,\"probabilisticBranch\":0.1,\"middlePoints\": [{\"posX\":138,\"posY\":103,\"order\":0} ]} ] }";
 				
-		
+		*/
 		/*params[0]= "{\"length\":600,\"seed\":-1,\"transformation\":{"
 					+ "\"queues\":[{\"idNode\":1,\"name\":\"Panadero\",\"posX\":110,\"posY\":30,\"resource\":0,\"fixedCost\":0.0,\"variableCost\":0.0,\"preceders\":[2],\"followers\":[2]}],"
 					+ "\"combis\":[{\"idNode\":2,\"name\":\"Amazar\",\"posX\":96,\"posY\":132,\"probBranch\":false,\"delay\":{\"distribution\":\"deterministic\",\"constant\":0.0},\"preceders\":[1],\"followers\":[1,3]}],"
@@ -94,9 +94,10 @@ public class Principal extends AbstractVaadinApplet {
 					+ "{\"tail\":5,\"head\":4,\"tailSurface\":2,\"headSurface\":6,\"enableProb\":false,\"probabilisticBranch\":0.0,\"middlePoints\":[{\"posX\":478,\"posY\":154,\"order\":0}]},"
 					+ "{\"tail\":3,\"head\":5,\"tailSurface\":2,\"headSurface\":6,\"enableProb\":false,\"probabilisticBranch\":0.0,\"middlePoints\":[{\"posX\":347,\"posY\":154,\"order\":0}]}]}";
 		*/
-		doExecute("setAllModelFile", params);
+		//doExecute("setAllModelFile", params);
 		
 		this.graphic.testFastExample();
+		doExecute("getNodeInfo", null);
 		/*Object[] params = new Object[18]; 
 		String probabilistics = "3,0.9,5,0.1";
 		params[17]= probabilistics;
@@ -106,10 +107,10 @@ public class Principal extends AbstractVaadinApplet {
 		params[16]= "Amazar";
 		doExecute("editNode", params);*/
 		
-		doExecute("createArrow", params);
+		//doExecute("createArrow", params);
 		
 		//System.out.println( this.graphic.getModelInfo(this, 600 , -1) );
-		//System.out.println( this.graphic.getAllModelFile(this, 600 , -1) );
+		System.out.println( "oooooohhhhhhuuuuuu    ---->"+this.graphic.getAllModelFile(this, 600 , -1) );
 	}
 	
 }
