@@ -290,7 +290,7 @@ void doQueue(int fileDescriptor, const int idNode, const int amount, const int c
 		putLabel(fileDescriptor, "maximun");   putInteger(fileDescriptor, maximun); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "minimun");   putInteger(fileDescriptor, minimun); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "timesNotEmpty");   putDouble(fileDescriptor, timesNotEmpty); separeElement(fileDescriptor);
-		putLabel(fileDescriptor, "percentTimesNotEmpty");   putDouble(fileDescriptor, percentTimesNotEmpty);
+		putLabel(fileDescriptor, "percentTimesNotEmpty");   putDouble(fileDescriptor, percentTimesNotEmpty); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "averageDelay");   putDouble(fileDescriptor, averageDelay);
 		
 	//close one queue
