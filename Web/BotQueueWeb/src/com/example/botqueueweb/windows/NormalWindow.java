@@ -347,7 +347,7 @@ public class NormalWindow extends Window {
         }
         
         //PROBABILISTIC BRANCH (AGREGAR COMBO A INTERFACE)
-        if( normal.get("followers")!=null && ((BasicDBList)normal.get("followers")).size()>0)
+        if( normal.get("followers")!=null && ((BasicDBList)normal.get("followers")).size()>1)
         {
 	        HorizontalLayout hlProbBranch = new HorizontalLayout();
 	        hlProbBranch.setSpacing(true);

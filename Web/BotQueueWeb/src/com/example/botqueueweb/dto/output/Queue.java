@@ -5,15 +5,17 @@ import com.google.code.morphia.annotations.Embedded;
 @Embedded
 public class Queue {
 	
-	Integer idNode;
-	Integer amount;
-	Integer counterInput;
-	Integer counterOutput;
-	Double average;
-	Integer maximun;
-	Integer minimun;
-	Double timesNotEmpty;
-	Double percentTimesNotEmpty;
+	private Integer idNode;
+	private Integer amount;
+	private Integer counterInput;
+	private Integer counterOutput;
+	private Double average;
+	private Integer maximun;
+	private Integer minimun;
+	private Double timesNotEmpty;
+	private Double percentTimesNotEmpty;
+	private Double averageDelay;
+	
 	public Integer getIdNode() {
 		return idNode;
 	}
@@ -67,6 +69,12 @@ public class Queue {
 	}
 	public void setPercentTimesNotEmpty(Double percentTimesNotEmpty) {
 		this.percentTimesNotEmpty = percentTimesNotEmpty;
+	}
+	public Double getAverageDelay() {
+		return averageDelay;
+	}
+	public void setAverageDelay(Double averageDelay) {
+		this.averageDelay = averageDelay;
 	}
 	
 }

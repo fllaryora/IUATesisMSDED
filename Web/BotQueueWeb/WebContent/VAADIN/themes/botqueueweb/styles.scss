@@ -13,5 +13,10 @@
 /* Output the actual theme selectors */
 .botqueueweb {
 	@include botqueueweb;
+	
 }
+
+.v-Notification-system h1+p+p i{
+		display: none;
+	}
 

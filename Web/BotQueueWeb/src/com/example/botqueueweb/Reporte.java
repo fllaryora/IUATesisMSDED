@@ -100,40 +100,13 @@ public class Reporte extends VerticalLayout implements View {
     	/* COMPONENTS */
     	
         showTop(project,vlPanel);
-        List<TimeLine> deltaTs= project.getOutput().getTimeLines();
-        if( deltaTs != null && !deltaTs.isEmpty() )
+        
+        if (project.getOutput() == null || (project.getOutput()!=null && !(( project.getOutput().getTimeLines() != null && !project.getOutput().getTimeLines().isEmpty() ))))
         {
-        	NodesStatus status = deltaTs.get(0).getNodesStatus();
-            if ( status.getCounters() != null && !status.getCounters().isEmpty() && status.getQueues() != null && !status.getQueues().isEmpty() )
-            {
-            	showSummaryReport(project,vlPanel);
-            }
-            if ( status.getCounters() != null && !status.getCounters().isEmpty() )
-            {
-            	showCounterFull(project,vlPanel);
-            }
-            if ( status.getCombis() != null && !status.getCombis().isEmpty() )
-            {
-            	showCombisFull(project,vlPanel);
-            }
-            if ( status.getQueues() != null && !status.getQueues().isEmpty() )
-            {
-            	showQueuesFull(project,vlPanel);
-            }
-            if ( status.getNormals() != null && !status.getNormals().isEmpty() )
-            {
-            	showNormalFull(project,vlPanel);
-            }
-            if ( status.getFunctions() != null && !status.getFunctions().isEmpty() )
-            {
-            	showFunctionFull(project,vlPanel);
-            }	
-        } else{
-        	String errorMesage = project.getOutput().getError();
-        	errorMesage = (errorMesage != null && !errorMesage.isEmpty() )?errorMesage:"No se encontro archivo de salida. Contacte a soporte";
+        	String errorMesage = (project.getOutput() != null &&  project.getOutput().getError() != null && !project.getOutput().getError().isEmpty())?project.getOutput().getError():"No se encontro archivo de salida. Conectese a soporte";
         	vlPanel.setSpacing(true);
         	
-        	Label title = new Label("Reporte de Error de botqueue");
+        	Label title = new Label("Reporte de Error de BotQueue");
             title.addStyleName("h1");
             vlPanel.addComponent(title);
 
@@ -147,9 +120,39 @@ public class Reporte extends VerticalLayout implements View {
             hlTupla.addComponent(lTicket);
             hlTupla.addComponent(new Label(errorMesage) );
             vlPanel.addComponent(hlTupla);
-        	
         }
-        
+        else
+        {
+	        List<TimeLine> deltaTs= project.getOutput().getTimeLines();
+	        if( deltaTs != null && !deltaTs.isEmpty() )
+	        {
+	        	NodesStatus status = deltaTs.get(0).getNodesStatus();
+	            if ( status.getCounters() != null && !status.getCounters().isEmpty() && status.getQueues() != null && !status.getQueues().isEmpty() )
+	            {
+	            	showSummaryReport(project,vlPanel);
+	            }
+	            if ( status.getCounters() != null && !status.getCounters().isEmpty() )
+	            {
+	            	showCounterFull(project,vlPanel);
+	            }
+	            if ( status.getCombis() != null && !status.getCombis().isEmpty() )
+	            {
+	            	showCombisFull(project,vlPanel);
+	            }
+	            if ( status.getQueues() != null && !status.getQueues().isEmpty() )
+	            {
+	            	showQueuesFull(project,vlPanel);
+	            }
+	            if ( status.getNormals() != null && !status.getNormals().isEmpty() )
+	            {
+	            	showNormalFull(project,vlPanel);
+	            }
+	            if ( status.getFunctions() != null && !status.getFunctions().isEmpty() )
+	            {
+	            	showFunctionFull(project,vlPanel);
+	            }	
+	        }
+        }
         bodyPanel.setContent(vlPanel);
         addComponent(bodyPanel);
     }
@@ -282,7 +285,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	//BAR - COUNTER IMPUT
 	    	
-	    	vlPanel.addComponent(new Label("CounterImput"));	
+	    	vlPanel.addComponent(new Label("Cantidad de Entradas"));	
 	    	final Chart chart = new Chart("ChartCombi");
 	    	chart.setType("Bar");
 	    	
@@ -294,7 +297,10 @@ public class Reporte extends VerticalLayout implements View {
 			}
 	    	chart.setLabels(labels);
 	    	
-	    	chart.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chart.setWidthJS("750");
+	    	else
+	    		chart.setWidthJS(""+(15*timeLinesCount));
 	    	chart.setHeightJS("300"); 
 	    	chart.setPointStrokeColor("#fff");
 	    	chart.addFillColor("rgba(151,187,205,0.5)");
@@ -319,7 +325,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// CHART - AMOUNT DELAY
 	    	
-	    	vlPanel.addComponent(new Label("AmountDelay "));	
+	    	vlPanel.addComponent(new Label("Promedio de Duraciones Sorteadas"));	
 	    	final Chart chartAmountDelay = new Chart("ChartCombi");
 	    	chartAmountDelay.setType("Line");
 	    	
@@ -332,7 +338,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	chartAmountDelay.setLabels(labels);
 	    	
-	    	chartAmountDelay.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chartAmountDelay.setWidthJS("750");
+	    	else
+	    		chartAmountDelay.setWidthJS(""+(15*timeLinesCount));
 	    	chartAmountDelay.setHeightJS("300"); 
 	    	chartAmountDelay.setPointStrokeColor("#fff");
 	    	chartAmountDelay.addFillColor("rgba(151,187,205,0.5)");
@@ -346,7 +355,12 @@ public class Reporte extends VerticalLayout implements View {
 	            		if (combi.getAmountDelay() == null)
 	            			points2[i] = 0;
 	        		    else
-	        		    	points2[i] = combi.getAmountDelay();
+	        		    {
+	        		    	if (combi.getCounterInput() == null || combi.getCounterInput() ==0)
+	        		    		points2[i] = 0;
+	        		    	else
+	        		    		points2[i] = combi.getAmountDelay()/combi.getCounterInput();
+	        		    }
 	            	}
 				}	
 			}
@@ -357,7 +371,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// MINIMA Y MINIMA DURACION SORTEADA
 	    	
-	    	vlPanel.addComponent(new Label("Minimo / Maximo  "));	
+	    	vlPanel.addComponent(new Label("Duración Minimo / Maximo "));	
 	    	final Chart chartMM = new Chart("ChartCombi");
 	    	chartMM.setType("Bar");
 	    	
@@ -370,7 +384,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	chartMM.setLabels(labels);
 	    	
-	    	chartMM.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chartMM.setWidthJS("750");
+	    	else
+	    		chartMM.setWidthJS(""+(15*timeLinesCount));
 	    	chartMM.setHeightJS("300"); 
 	    	chartMM.setPointStrokeColor("#fff");
 	    	chartMM.addFillColor("rgba(151,187,205,0.5)");
@@ -445,11 +462,69 @@ public class Reporte extends VerticalLayout implements View {
 	        
 	        vlPanel.addComponent(hlTupla);
 	        
-	    	//vlPanel.addComponent(image);	
+	    	//TIEMPO ESPERA PROMEDIO
+	        
+	        lTicket =  new Label("Tiempo de Espera Promedio: ");
+            for (Queue queue : project.getOutput().getTimeLines().get(timeLinesCount-1).getNodesStatus().getQueues()) {
+            	if (queue.getIdNode().equals(idQueue))
+            	{
+            		if (queue.getAverageDelay() == null)
+            			lValue =  new Label("0");
+        		    else
+        		    	lValue =  new Label(queue.getAverageDelay().toString());
+            	}
+			}
+            hlTupla = new HorizontalLayout();
+	        hlTupla.addComponent(lTicket);
+	        hlTupla.addComponent(lValue);
+	        hlTupla.setComponentAlignment(lTicket,Alignment.MIDDLE_CENTER);
+	        hlTupla.setComponentAlignment(lValue,Alignment.MIDDLE_CENTER);
+	        hlTupla.setSpacing(true);
 	    	
+	        vlPanel.addComponent(hlTupla);
+	        
+	        // MAXIMO Y MINIMO
+	        
+	        Integer maximo=null , minimo=null;
+	        
+            for (Queue queue : project.getOutput().getTimeLines().get(timeLinesCount-1).getNodesStatus().getQueues()) {
+            	if (queue.getIdNode().equals(idQueue))
+            	{
+            		if (queue.getMinimun() == null)
+            			minimo = 0;
+        		    else
+        		    	minimo = queue.getMinimun();
+            		
+            		if (queue.getMaximun() == null)
+            			maximo = 0;
+        		    else
+        		    	maximo = queue.getMaximun();
+            	}
+            }
+	        
+	        lTicket =  new Label("Tamaño Máximo: ");
+	        lValue =  new Label(maximo.toString());
+            hlTupla = new HorizontalLayout();
+	        hlTupla.addComponent(lTicket);
+	        hlTupla.addComponent(lValue);
+	        hlTupla.setComponentAlignment(lTicket,Alignment.MIDDLE_CENTER);
+	        hlTupla.setComponentAlignment(lValue,Alignment.MIDDLE_CENTER);
+	        hlTupla.setSpacing(true);
+	        vlPanel.addComponent(hlTupla);
+	        
+	        lTicket =  new Label("Tamaño Mínimo: ");
+	        lValue =  new Label(minimo.toString());
+            hlTupla = new HorizontalLayout();
+	        hlTupla.addComponent(lTicket);
+	        hlTupla.addComponent(lValue);
+	        hlTupla.setComponentAlignment(lTicket,Alignment.MIDDLE_CENTER);
+	        hlTupla.setComponentAlignment(lValue,Alignment.MIDDLE_CENTER);
+	        hlTupla.setSpacing(true);
+	        vlPanel.addComponent(hlTupla);
+	        
 	    	//BAR - AMAUNT
 	    	
-	    	vlPanel.addComponent(new Label("Amaunt"));	
+	    	vlPanel.addComponent(new Label("Cantidad de Elementos"));	
 	    	final Chart chart = new Chart("ChartQueue");
 	    	chart.setType("Bar");
 	    	
@@ -461,7 +536,10 @@ public class Reporte extends VerticalLayout implements View {
 			}
 	    	chart.setLabels(labels);
 	    	
-	    	chart.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chart.setWidthJS("750");
+	    	else
+	    		chart.setWidthJS(""+(15*timeLinesCount));
 	    	chart.setHeightJS("300"); 
 	    	chart.setPointStrokeColor("#fff");
 	    	chart.addFillColor("rgba(151,187,205,0.5)");
@@ -486,7 +564,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// CHART - AMOUNT DELAY
 	    	
-	    	vlPanel.addComponent(new Label("Average"));	
+	    	vlPanel.addComponent(new Label("Promedio de recursos en espera"));	
 	    	final Chart chartAmountDelay = new Chart("ChartCombi");
 	    	chartAmountDelay.setType("Line");
 	    	
@@ -499,7 +577,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	chartAmountDelay.setLabels(labels);
 	    	
-	    	chartAmountDelay.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chartAmountDelay.setWidthJS("750");
+	    	else
+	    		chartAmountDelay.setWidthJS(""+(15*timeLinesCount));
 	    	chartAmountDelay.setHeightJS("300"); 
 	    	chartAmountDelay.setPointStrokeColor("#fff");
 	    	chartAmountDelay.addFillColor("rgba(151,187,205,0.5)");
@@ -522,9 +603,50 @@ public class Reporte extends VerticalLayout implements View {
 	        
 	    	vlPanel.addComponent(chartAmountDelay);
 	    	
+	    	//CHART - AVERAGE DELAY
+	    	
+	    	vlPanel.addComponent(new Label("Tiempo de Espera Promedio"));	
+	    	final Chart chartAverageDelay = new Chart("ChartCombi");
+	    	chartAverageDelay.setType("Line");
+	    	
+	    	labels = new String[timeLinesCount];
+	    	points2 = new double[timeLinesCount];
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	    		labels[i] = String.valueOf(i);
+			}
+	    	
+	    	chartAverageDelay.setLabels(labels);
+	    	
+	    	if (timeLinesCount < 50)
+	    		chartAverageDelay.setWidthJS("750");
+	    	else
+	    		chartAverageDelay.setWidthJS(""+(15*timeLinesCount));
+	    	chartAverageDelay.setHeightJS("300"); 
+	    	chartAverageDelay.setPointStrokeColor("#fff");
+	    	chartAverageDelay.addFillColor("rgba(151,187,205,0.5)");
+	    	chartAverageDelay.addStrokeColor("rgba(151,187,205,1)");
+	    	chartAverageDelay.addPointColor("rgba(151,187,205,1)");
+	    	
+	    	for (int i = 0; i < timeLinesCount; i++) {
+	            for (Queue queue : project.getOutput().getTimeLines().get(i).getNodesStatus().getQueues()) {
+	            	if (queue.getIdNode().equals(idQueue))
+	            	{
+	            		if (queue.getAverageDelay() == null)
+	            			points2[i] = 0;
+	        		    else
+	        		    	points2[i] = queue.getAverageDelay();
+	            	}
+				}	
+			}
+	    	
+	    	chartAverageDelay.addPoints(points2);
+	        
+	    	vlPanel.addComponent(chartAverageDelay);
+	    	
 	    	//  DURACION SORTEADA
 	    	
-	    	vlPanel.addComponent(new Label("Counter Input/Output"));	
+	    	vlPanel.addComponent(new Label("Cantidad de Entrada/Salida de Recursos"));	
 	    	final Chart chartIO = new Chart("ChartCombi");
 	    	chartIO.setType("Bar");
 	    	
@@ -537,7 +659,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	chartIO.setLabels(labels);
 	    	
-	    	chartIO.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chartIO.setWidthJS("750");
+	    	else
+	    		chartIO.setWidthJS(""+(15*timeLinesCount));
 	    	chartIO.setHeightJS("300"); 
 	    	chartIO.setPointStrokeColor("#fff");
 	    	chartIO.addFillColor("rgba(151,187,205,0.5)");
@@ -581,7 +706,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// MINIMA Y MINIMA DURACION SORTEADA
 	    	
-	    	vlPanel.addComponent(new Label("Minimo / Maximo  "));	
+	    	vlPanel.addComponent(new Label("Cantidad de Mínima/Máxima de Recursos"));	
 	    	final Chart chartMM = new Chart("ChartCombi");
 	    	chartMM.setType("Bar");
 	    	
@@ -594,7 +719,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	chartMM.setLabels(labels);
 	    	
-	    	chartMM.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chartMM.setWidthJS("750");
+	    	else
+	    		chartMM.setWidthJS(""+(15*timeLinesCount));
 	    	chartMM.setHeightJS("300"); 
 	    	chartMM.setPointStrokeColor("#fff");
 	    	chartMM.addFillColor("rgba(151,187,205,0.5)");
@@ -674,7 +802,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	//BAR - COUNTER IMPUT
 	    	
-	    	vlPanel.addComponent(new Label("CounterImput"));	
+	    	vlPanel.addComponent(new Label("Cantidad de Entradas"));	
 	    	final Chart chart = new Chart("ChartNormal");
 	    	chart.setType("Bar");
 	    	
@@ -686,7 +814,10 @@ public class Reporte extends VerticalLayout implements View {
 			}
 	    	chart.setLabels(labels);
 	    	
-	    	chart.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chart.setWidthJS("750");
+	    	else
+	    		chart.setWidthJS(""+(15*timeLinesCount));
 	    	chart.setHeightJS("300"); 
 	    	chart.setPointStrokeColor("#fff");
 	    	chart.addFillColor("rgba(151,187,205,0.5)");
@@ -711,7 +842,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// CHART - AMOUNT DELAY
 	    	
-	    	vlPanel.addComponent(new Label("AmountDelay "));	
+	    	vlPanel.addComponent(new Label("Promedio de Duraciones Sorteadas"));	
 	    	final Chart chartAmountDelay = new Chart("ChartCombi");
 	    	chartAmountDelay.setType("Line");
 	    	
@@ -724,7 +855,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	chartAmountDelay.setLabels(labels);
 	    	
-	    	chartAmountDelay.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chartAmountDelay.setWidthJS("750");
+	    	else
+	    		chartAmountDelay.setWidthJS(""+(15*timeLinesCount));
 	    	chartAmountDelay.setHeightJS("300"); 
 	    	chartAmountDelay.setPointStrokeColor("#fff");
 	    	chartAmountDelay.addFillColor("rgba(151,187,205,0.5)");
@@ -735,10 +869,18 @@ public class Reporte extends VerticalLayout implements View {
 	            for (Normal normal : project.getOutput().getTimeLines().get(i).getNodesStatus().getNormals()) {
 	            	if (normal.getIdNode().equals(idNormal))
 	            	{
-	            		if (normal.getAmountDelay() == null)
-	            			points2[i] = 0;
-	        		    else
-	        		    	points2[i] = normal.getAmountDelay();
+	            		if (normal.getIdNode().equals(idNormal))
+		            	{
+		            		if (normal.getAmountDelay() == null)
+		            			points2[i] = 0;
+		        		    else
+		        		    {
+		        		    	if (normal.getCounterInput() == null || normal.getCounterInput() == 0)
+		        		    		points2[i] = 0;
+		        		    	else
+		        		    		points2[i] = normal.getAmountDelay()/normal.getCounterInput();
+		        		    }
+		            	}
 	            	}
 				}	
 			}
@@ -749,7 +891,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// MINIMA Y MINIMA DURACION SORTEADA
 	    	
-	    	vlPanel.addComponent(new Label("Minimo / Maximo  "));	
+	    	vlPanel.addComponent(new Label("Cantidad de Mínima/Máxima de Recursos"));	
 	    	final Chart chartMM = new Chart("ChartCombi");
 	    	chartMM.setType("Bar");
 	    	
@@ -762,7 +904,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	chartMM.setLabels(labels);
 	    	
-	    	chartMM.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chartMM.setWidthJS("750");
+	    	else
+	    		chartMM.setWidthJS(""+(15*timeLinesCount));
 	    	chartMM.setHeightJS("300"); 
 	    	chartMM.setPointStrokeColor("#fff");
 	    	chartMM.addFillColor("rgba(151,187,205,0.5)");
@@ -842,7 +987,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	//BAR - COUNTER IMPUT
 	    	
-	    	vlPanel.addComponent(new Label("Amount"));	
+	    	vlPanel.addComponent(new Label("Cantida de Elementos sin Combinar"));	
 	    	final Chart chart = new Chart("ChartFunction");
 	    	chart.setType("Bar");
 	    	
@@ -854,7 +999,10 @@ public class Reporte extends VerticalLayout implements View {
 			}
 	    	chart.setLabels(labels);
 	    	
-	    	chart.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chart.setWidthJS("750");
+	    	else
+	    		chart.setWidthJS(""+(15*timeLinesCount));
 	    	chart.setHeightJS("300"); 
 	    	chart.setPointStrokeColor("#fff");
 	    	chart.addFillColor("rgba(151,187,205,0.5)");
@@ -915,7 +1063,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	//BAR - COUNTER IMPUT
 	    	
-	    	vlPanel.addComponent(new Label("DeltaTProductivity"));	
+	    	vlPanel.addComponent(new Label("Productividad por Delta T"));	
 	    	final Chart chart = new Chart("ChartFunction");
 	    	chart.setType("Bar");
 	    	
@@ -927,7 +1075,10 @@ public class Reporte extends VerticalLayout implements View {
 			}
 	    	chart.setLabels(labels);
 	    	
-	    	chart.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chart.setWidthJS("750");
+	    	else
+	    		chart.setWidthJS(""+(15*timeLinesCount));
 	    	chart.setHeightJS("300"); 
 	    	chart.setPointStrokeColor("#fff");
 	    	chart.addFillColor("rgba(151,187,205,0.5)");
@@ -952,7 +1103,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	//BAR - COUNTER IMPUT
 	    	
-	    	vlPanel.addComponent(new Label("TotalProductivity"));	
+	    	vlPanel.addComponent(new Label("Productividad Total"));	
 	    	final Chart chart2 = new Chart("ChartFunction");
 	    	chart2.setType("Bar");
 	    	
@@ -964,7 +1115,10 @@ public class Reporte extends VerticalLayout implements View {
 			}
 	    	chart2.setLabels(labels);
 	    	
-	    	chart2.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chart2.setWidthJS("750");
+	    	else
+	    		chart2.setWidthJS(""+(15*timeLinesCount));
 	    	chart2.setHeightJS("300"); 
 	    	chart2.setPointStrokeColor("#fff");
 	    	chart2.addFillColor("rgba(151,187,205,0.5)");
@@ -989,7 +1143,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// CHART - AMOUNT DELAY
 	    	
-	    	vlPanel.addComponent(new Label("ProductivityPerTime"));	
+	    	vlPanel.addComponent(new Label("Productividad Promedio"));	
 	    	final Chart chartAmountDelay = new Chart("ChartCounter");
 	    	chartAmountDelay.setType("Line");
 	    	
@@ -1002,7 +1156,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	chartAmountDelay.setLabels(labels);
 	    	
-	    	chartAmountDelay.setWidthJS("750");
+	    	if (timeLinesCount < 50)
+	    		chartAmountDelay.setWidthJS("750");
+	    	else
+	    		chartAmountDelay.setWidthJS(""+(15*timeLinesCount));
 	    	chartAmountDelay.setHeightJS("300"); 
 	    	chartAmountDelay.setPointStrokeColor("#fff");
 	    	chartAmountDelay.addFillColor("rgba(151,187,205,0.5)");

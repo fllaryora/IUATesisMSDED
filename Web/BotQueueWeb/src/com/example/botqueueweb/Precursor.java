@@ -18,8 +18,11 @@ import com.example.botqueueweb.windows.NormalWindow;
 import com.example.botqueueweb.windows.ProjectFinalWindow;
 import com.example.botqueueweb.windows.QueueWindow;
 import com.google.code.morphia.Morphia;
+
 //import com.google.gwt.dev.util.collect.HashMap;
 import java.util.HashMap;
+
+import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
@@ -89,24 +92,22 @@ public class Precursor extends VerticalLayout implements View {
                 
                 if (variables.containsKey("editCombi")) {                    
                     String jsonNode = (String) variables.get("editCombi");
+        			DBObject dbObjectProbBranch = null;
         			DBObject dbObject = null;
-        			DBObject dbObject2 = null;
         			try{
         				String jsons[];
         				jsons = jsonNode.split("\\*\\*\\*");
         				if (jsons.length>1) {
-	        				dbObject = (DBObject) JSON.parse(jsons[0]);
-	        				dbObject2 = (DBObject) JSON.parse(jsons[1]);
-        				}
-        				else {
-        					dbObject = (DBObject) JSON.parse("{}");
-	        				dbObject2 = (DBObject) JSON.parse(jsons[0]);
+        					dbObjectProbBranch = (DBObject) JSON.parse(jsons[0]);
+        					dbObject = (DBObject) JSON.parse(jsons[1]);
+	        				if ((BasicDBList)dbObject.get("followers")==null || ((BasicDBList)dbObject.get("followers")).size()<2)
+	        					dbObjectProbBranch = null;
         				}
         			}catch(JSONParseException exception){
         				exception.printStackTrace();
         			}
         			
-        			CombiWindow cWindow = new CombiWindow(dbObject2,dbObject,applet,true);
+        			CombiWindow cWindow = new CombiWindow(dbObject,dbObjectProbBranch,applet,true);
         			cWindow.setHeight("610px");
     				cWindow.setWidth("458px");
                 	getUI().addWindow(cWindow);
@@ -114,24 +115,22 @@ public class Precursor extends VerticalLayout implements View {
                 
                 if (variables.containsKey("editFunction")) {                    
                     String jsonNode = (String) variables.get("editFunction");            
+                    DBObject dbObjectProbBranch = null;
         			DBObject dbObject = null;
-        			DBObject dbObject2 = null;
         			try{
         				String jsons[];
         				jsons = jsonNode.split("\\*\\*\\*");
         				if (jsons.length>1) {
-	        				dbObject = (DBObject) JSON.parse(jsons[0]);
-	        				dbObject2 = (DBObject) JSON.parse(jsons[1]);
-        				}
-        				else {
-        					dbObject = (DBObject) JSON.parse("{}");
-	        				dbObject2 = (DBObject) JSON.parse(jsons[0]);
+        					dbObjectProbBranch = (DBObject) JSON.parse(jsons[0]);
+        					dbObject = (DBObject) JSON.parse(jsons[1]);
+	        				if ((BasicDBList)dbObject.get("followers")==null || ((BasicDBList)dbObject.get("followers")).size()<2)
+	        					dbObjectProbBranch = null;
         				}
         			}catch(JSONParseException exception){
         				exception.printStackTrace();
         			}
         			
-        			FunctionWindow fWindow = new FunctionWindow(dbObject2,dbObject,applet,true);
+        			FunctionWindow fWindow = new FunctionWindow(dbObject,dbObjectProbBranch,applet,true);
         			fWindow.setHeight("610px");
         			fWindow.setWidth("458px");
                 	getUI().addWindow(fWindow);
@@ -139,24 +138,22 @@ public class Precursor extends VerticalLayout implements View {
                 
                 if (variables.containsKey("editNormal")) {                    
                     String jsonNode = (String) variables.get("editNormal");            
-         			DBObject dbObject = null;
-        			DBObject dbObject2 = null;
+                    DBObject dbObjectProbBranch = null;
+        			DBObject dbObject = null;
         			try{
         				String jsons[];
         				jsons = jsonNode.split("\\*\\*\\*");
         				if (jsons.length>1) {
-	        				dbObject = (DBObject) JSON.parse(jsons[0]);
-	        				dbObject2 = (DBObject) JSON.parse(jsons[1]);
-        				}
-        				else {
-        					dbObject = (DBObject) JSON.parse("{}");
-	        				dbObject2 = (DBObject) JSON.parse(jsons[0]);
+        					dbObjectProbBranch = (DBObject) JSON.parse(jsons[0]);
+        					dbObject = (DBObject) JSON.parse(jsons[1]);
+	        				if ((BasicDBList)dbObject.get("followers")==null || ((BasicDBList)dbObject.get("followers")).size()<2)
+	        					dbObjectProbBranch = null;
         				}
         			}catch(JSONParseException exception){
         				exception.printStackTrace();
         			}
         			
-        			NormalWindow nWindow = new NormalWindow(dbObject2,dbObject,applet,true);
+        			NormalWindow nWindow = new NormalWindow(dbObject,dbObjectProbBranch,applet,true);
         			nWindow.setHeight("610px");
         			nWindow.setWidth("458px");
                 	getUI().addWindow(nWindow);
@@ -342,6 +339,7 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.setMargin(true);
         
 		Button button = new Button("Cola");
+		button.setWidth("90px");
 		//ThemeResource imgCombi = new ThemeResource("img/queue.png");
     	//Image image = new Image(null,imgCombi);
 		//button.setIcon(imgCombi);
@@ -359,6 +357,7 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Combi");
+        button.setWidth("90px");
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -373,6 +372,7 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Función");
+        button.setWidth("90px");
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -387,6 +387,7 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Normal");
+        button.setWidth("90px");
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -401,6 +402,7 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Counter");
+        button.setWidth("90px");
 		//button.setIcon(new ThemeResource("img/queue.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -414,97 +416,8 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        button = new Button("Delete");
-		button.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("deleteNode");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-        
-        button = new Button("createArrow");
-		button.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("createArrow");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-        
-        button = new Button("invertArrow");
-		button.addClickListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("invertArrow");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-        
-        button = new Button("deleteArrow");
-		button.addClickListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("deleteArrow");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-
-        button = new Button("rotateHead");
-		button.addClickListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("rotateHead");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-        
-        button = new Button("rotateTail");
-		button.addClickListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("rotateTail");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-        
-        button = new Button("deleteDot");
-		button.addClickListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("deleteDot");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-        
-        button = new Button("createNextDot");
-		button.addClickListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("createNextDot");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-        
-        button = new Button("createPreviusDot");
-		button.addClickListener(new Button.ClickListener() {
-			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("createPreviusDot");
-			}
-		});
-		button.addStyleName("small");
-        hlBotonera.addComponent(button);
-        
-        button = new Button("editNode");
+        button = new Button("Editar");
+        button.setWidth("90px");
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -515,7 +428,113 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        //addComponent(hlBotonera);
+        button = new Button("Eliminar");
+        button.setWidth("90px");
+		button.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("deleteNode");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        vlPanel.addComponent(hlBotonera);
+    	vlPanel.setComponentAlignment(hlBotonera, Alignment.MIDDLE_LEFT);
+    	
+    	hlBotonera = new HorizontalLayout();
+        hlBotonera.setSpacing(true);
+        hlBotonera.setHeight("40px");
+        hlBotonera.setMargin(true);
+         
+        button = new Button("Flecha");
+        button.setWidth("90px");
+		button.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("createArrow");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Invertir F.");
+        button.setWidth("90px");
+		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("invertArrow");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Eliminar F.");
+        button.setWidth("90px");
+		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("deleteArrow");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+
+        button = new Button("Rotar Punta F.");
+        button.setWidth("90px");
+		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("rotateHead");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Rotar Cola F.");
+        button.setWidth("90px");
+		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("rotateTail");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Punto Siguiente");
+        button.setWidth("90px");
+		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("createNextDot");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Punto Anterior");
+        button.setWidth("90px");
+		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("createPreviusDot");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("Eliminar P.");
+        button.setWidth("90px");
+		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+			    applet.executeCommand("deleteDot");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
         vlPanel.addComponent(hlBotonera);
     	vlPanel.setComponentAlignment(hlBotonera, Alignment.MIDDLE_LEFT);
     }

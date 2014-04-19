@@ -1,5 +1,6 @@
 package com.example.botqueueweb;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.bson.types.ObjectId;
@@ -10,6 +11,10 @@ import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.windows.UsuarioWindow;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.server.CustomizedSystemMessages;
+import com.vaadin.server.SystemMessages;
+import com.vaadin.server.SystemMessagesInfo;
+import com.vaadin.server.SystemMessagesProvider;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
@@ -82,6 +87,26 @@ public class BotqueuewebUI extends UI {
 	@VaadinServletConfiguration(productionMode = false, ui = BotqueuewebUI.class, widgetset = "com.example.botqueueweb.widgetset.BotqueuewebWidgetset")
 	//@VaadinServletConfiguration(productionMode = false, ui = BotqueuewebUI.class, widgetset = "org.vaadin.applet.widgetset.AppletintegrationWidgetset")
 	public static class Servlet extends VaadinServlet {
+		
+		 @Override
+		    protected void servletInitialized()
+		            throws ServletException {
+		        super.servletInitialized();
+
+		        getService().setSystemMessagesProvider(
+		        	new SystemMessagesProvider() {
+					   public SystemMessages getSystemMessages(SystemMessagesInfo systemMessagesInfo){
+					       CustomizedSystemMessages messages = new CustomizedSystemMessages();
+					       messages.setCommunicationErrorCaption("Error");
+					       messages.setCommunicationErrorMessage("Se ha producido un fallo de conexión.");
+					       messages.setCommunicationErrorNotificationEnabled(true);
+					       messages.setCommunicationErrorURL("http://vaadin.com/");
+					       return messages;
+					   }
+					}			   
+		        );
+		    }
+		
 	}
 
 	@Override

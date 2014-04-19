@@ -6162,3 +6162,7 @@ body .botqueueweb.v-app .v-app-loading {
 .botqueueweb .edit-botqueueweb .v-formlayout .v-formlayout-captioncell {
 	vertical-align: middle;
 }
+
+.v-Notification-system h1 + p + p i {
+	display: none;
+}

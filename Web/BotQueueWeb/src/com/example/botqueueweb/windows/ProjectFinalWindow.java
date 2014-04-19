@@ -21,7 +21,7 @@ public class ProjectFinalWindow extends Window {
 
 	public ProjectFinalWindow(final AppletIntegration applet) {
     	
-    	this.setCaption("Cola");
+    	this.setCaption("Proyecto");
     	this.setModal(true);
     	
     	Panel bodyPanel = new Panel();

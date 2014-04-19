@@ -62,7 +62,7 @@ public class Home extends VerticalLayout implements View{
         HorizontalLayout hbSubtitle = new HorizontalLayout();
         hbSubtitle.setSpacing(true);
         
-        Label subtitle = new Label("Proyectos - Seleccionado: ");
+        Label subtitle = new Label("Proyecto Seleccionado: ");
         subtitle.addStyleName("ticket");
         hbSubtitle.addComponent(subtitle);
         
