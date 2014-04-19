@@ -74,7 +74,10 @@ void queueNode( const MPI_Comm commNodes,  const  Queue *initialStatus, const in
 				qReport.percentTimesNotEmpty = qReport.timesNotEmpty / (double)deltaTCount;
 				
 				//del calculo tiempo rpomedio de espera
-				qReport.averageDelay = ( (double)oldCounterInput * oldAverageDelay + (double)qReport.amount )/((double)qReport.counterInput);
+				if( qReport.counterInput != 0 ){
+					qReport.averageDelay = ( (double)oldCounterInput * oldAverageDelay + (double)qReport.amount )/((double)qReport.counterInput);
+				}
+
 				oldCounterInput = qReport.counterInput;
 				oldAverageDelay = qReport.averageDelay;
 				MPI_Barrier( commNodes );

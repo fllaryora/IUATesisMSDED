@@ -25,7 +25,7 @@ extern void putArrayInteger(int , const int* , int );
 extern void doSummaryReport(int , const double , const int , const int  );
 extern void doDeltaT(int , const double , const int , const int , const int , const int , const int );
 
-extern void doQueue(int , const int , const int , const int , const int , const double , const int ,  const int ,  const double ,  const double );
+extern void doQueue(int , const int , const int , const int , const int , const double , const int ,  const int ,  const double ,  const double ,  const double );
 extern void doFinalQueue(int , const int , const double , const double );
 extern void doCounter(int , const int , const int , const int , const double  );
 extern void doFinalCounter(int , const int , const int );

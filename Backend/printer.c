@@ -137,7 +137,7 @@ void doDeltaT(int fileDescriptor, const double deltaT, const int queues, const i
 					//printf("recividela cola\n");
 					MPI_Recv3(&qeStruct, sizeof(PrinterQueue), MPI_BYTE, MPI_ANY_SOURCE, QUEUE_REPORT , MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 					doQueue( fileDescriptor, qeStruct.idNode, qeStruct.amount, qeStruct.counterInput, qeStruct.counterOutput, 
-							qeStruct.average, qeStruct.maximun,  qeStruct.minimun,  qeStruct.timesNotEmpty,  qeStruct.percentTimesNotEmpty);
+							qeStruct.average, qeStruct.maximun,  qeStruct.minimun,  qeStruct.timesNotEmpty,  qeStruct.percentTimesNotEmpty, qeStruct.averageDelay);
 					if (i+1 < queues ){separeElement(fileDescriptor);}
 				}
 			closeBracket(fileDescriptor); separeElement(fileDescriptor);
@@ -279,7 +279,7 @@ void doCounter(int fileDescriptor, const int idNode, const int totalProductivity
 }
 
 void doQueue(int fileDescriptor, const int idNode, const int amount, const int counterInput, const int counterOutput, 
-			const double average, const int maximun,  const int minimun,  const double timesNotEmpty,  const double percentTimesNotEmpty){
+			const double average, const int maximun,  const int minimun,  const double timesNotEmpty,  const double percentTimesNotEmpty , const double averageDelay){
 	//open one queue
 	openBrace(fileDescriptor);
 		putLabel(fileDescriptor, "idNode");   putInteger(fileDescriptor, idNode); separeElement(fileDescriptor);
@@ -291,6 +291,8 @@ void doQueue(int fileDescriptor, const int idNode, const int amount, const int c
 		putLabel(fileDescriptor, "minimun");   putInteger(fileDescriptor, minimun); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "timesNotEmpty");   putDouble(fileDescriptor, timesNotEmpty); separeElement(fileDescriptor);
 		putLabel(fileDescriptor, "percentTimesNotEmpty");   putDouble(fileDescriptor, percentTimesNotEmpty);
+		putLabel(fileDescriptor, "averageDelay");   putDouble(fileDescriptor, averageDelay);
+		
 	//close one queue
 	closeBrace(fileDescriptor);
 }
