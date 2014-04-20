@@ -2,6 +2,7 @@ package com.example.botqueueweb.windows;
 
 import org.vaadin.applet.AppletIntegration;
 
+import com.example.botqueueweb.dto.Project;
 import com.mongodb.DBObject;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -20,7 +21,7 @@ public class QueueWindow extends Window {
 
 	private static final long serialVersionUID = 1L;
 
-	public QueueWindow(final DBObject queue, final AppletIntegration applet, boolean isFull) {
+	public QueueWindow(final DBObject queue, final AppletIntegration applet, boolean isFull, Project project) {
     	
 		//CONFIGURACION INICIAL
     	this.setCaption("Cola");
@@ -126,7 +127,11 @@ public class QueueWindow extends Window {
 			});
         }
         
-        Button bCancelar = new Button("Cancelar");
+        Button bCancelar = null;
+        if (!project.getState().equalsIgnoreCase("C"))
+        	bCancelar = new Button("Cerrar");
+        else
+        	bCancelar = new Button("Cancelar");		
         bCancelar.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -137,8 +142,11 @@ public class QueueWindow extends Window {
         
         bAceptar.setWidth("100");
         bCancelar.setWidth("100");
-        hlBotones.addComponent(bAceptar);
-        hlBotones.addComponent(bCancelar);
+        if (project.getState().equalsIgnoreCase("C"))
+        	hlBotones.addComponent(bAceptar);
+        hlBotones.addComponent(bCancelar);	
+        
+        
         subContent.addComponent(hlBotones);
         subContent.setComponentAlignment(hlBotones, Alignment.BOTTOM_RIGHT);
         

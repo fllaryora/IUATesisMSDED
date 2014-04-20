@@ -2,12 +2,14 @@ package com.example.botqueueweb;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.vaadin.applet.AppletIntegration;
 
 import com.example.botqueueweb.dto.Project;
+import com.example.botqueueweb.dto.User;
 import com.example.botqueueweb.dto.construction.JsonConstruction;
 import com.example.botqueueweb.dto.input.JsonInput;
 import com.example.botqueueweb.facade.Facade;
@@ -18,6 +20,8 @@ import com.example.botqueueweb.windows.NormalWindow;
 import com.example.botqueueweb.windows.ProjectFinalWindow;
 import com.example.botqueueweb.windows.QueueWindow;
 import com.google.code.morphia.Morphia;
+
+
 
 //import com.google.gwt.dev.util.collect.HashMap;
 import java.util.HashMap;
@@ -51,10 +55,53 @@ public class Precursor extends VerticalLayout implements View {
 
     ObjectId idProject;
     
+    Project project;
+    
     @Override
-    public void enter(final ViewChangeEvent event) {
+    public void enter(final ViewChangeEvent event)
+    {
     	
-		applet = new AppletIntegration() {
+		setMargin(true);
+    	
+    	Panel bodyPanel = new Panel();
+    	bodyPanel.setWidth("100%");
+    	bodyPanel.setHeight("100%");
+    	VerticalLayout vlPanel = new VerticalLayout();
+    	
+        setSizeFull();
+        addStyleName("transactions");
+
+    	idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
+    	project = Facade.getInstance().getProject(idProject);
+    	
+    	showTop(vlPanel);
+    	showBotonera(vlPanel);
+    	showApplet(vlPanel,event);
+   		showBotoneraDown(vlPanel,event);
+    	//showRedimencion(vlPanel);
+   		
+	    bodyPanel.setContent(vlPanel);
+        addComponent(bodyPanel);
+        
+        if(project.getConstruction()!=null)
+        {
+	        String[] arrayParams = new String[1];
+	        Morphia morphia = new Morphia();
+			morphia.map(JsonConstruction.class);
+	    	arrayParams[0] = morphia.toDBObject(project.getConstruction()).toString();
+		    applet.executeCommand("setAllModelFile",arrayParams);
+        }
+    }
+    
+    void showApplet(VerticalLayout vlPanel, final ViewChangeEvent eventPpal)
+    {
+    	HorizontalLayout hlApplet = new HorizontalLayout();
+    	hlApplet.setSpacing(true);
+    	hlApplet.setWidth("1000px");
+    	hlApplet.setHeight("1000px");
+    	hlApplet.setMargin(true);
+        
+    	applet = new AppletIntegration() {
 
 	        private static final long serialVersionUID = 1L;
 	
@@ -84,7 +131,7 @@ public class Precursor extends VerticalLayout implements View {
         				exception.printStackTrace();
         			}
         			
-                    QueueWindow qWindow = new QueueWindow(dbObject,applet,true);
+                    QueueWindow qWindow = new QueueWindow(dbObject,applet,true, project);
                     qWindow.setHeight("256px");//("610px"); -344
                     qWindow.setWidth("450px");
                 	getUI().addWindow(qWindow);
@@ -107,7 +154,7 @@ public class Precursor extends VerticalLayout implements View {
         				exception.printStackTrace();
         			}
         			
-        			CombiWindow cWindow = new CombiWindow(dbObject,dbObjectProbBranch,applet,true);
+        			CombiWindow cWindow = new CombiWindow(dbObject,dbObjectProbBranch,applet,true, project);
         			cWindow.setHeight("610px");
     				cWindow.setWidth("458px");
                 	getUI().addWindow(cWindow);
@@ -130,7 +177,7 @@ public class Precursor extends VerticalLayout implements View {
         				exception.printStackTrace();
         			}
         			
-        			FunctionWindow fWindow = new FunctionWindow(dbObject,dbObjectProbBranch,applet,true);
+        			FunctionWindow fWindow = new FunctionWindow(dbObject,dbObjectProbBranch,applet,true, project);
         			fWindow.setHeight("610px");
         			fWindow.setWidth("458px");
                 	getUI().addWindow(fWindow);
@@ -153,7 +200,7 @@ public class Precursor extends VerticalLayout implements View {
         				exception.printStackTrace();
         			}
         			
-        			NormalWindow nWindow = new NormalWindow(dbObject,dbObjectProbBranch,applet,true);
+        			NormalWindow nWindow = new NormalWindow(dbObject,dbObjectProbBranch,applet,true, project);
         			nWindow.setHeight("610px");
         			nWindow.setWidth("458px");
                 	getUI().addWindow(nWindow);
@@ -168,7 +215,7 @@ public class Precursor extends VerticalLayout implements View {
         				exception.printStackTrace();
         			}
         			
-        			CounterWindow cWindow = new CounterWindow(dbObject,applet,true);
+        			CounterWindow cWindow = new CounterWindow(dbObject,applet,true, project);
         			cWindow.setHeight("216px");
         			cWindow.setWidth("450px");
                 	getUI().addWindow(cWindow);
@@ -196,15 +243,25 @@ public class Precursor extends VerticalLayout implements View {
         			morphia.map(JsonInput.class);
         		    JsonInput jsonInput = morphia.fromDBObject(JsonInput.class, dbObject2);
         		    
-        		    ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
+        		    //PROYECTO CONSTRUCCION
         	    	Project project = Facade.getInstance().getProject(idProject);
         	    	project.setConstruction(jsonConstruction);
-        	    	project.setInput(jsonInput);
-        	    	project.setState("P");
-        	    	project.setPendingStamp((new Long((new Date()).getTime())).toString());
+        	    	project.setState("C");
+        	    	project.setConstructionStamp((new Long((new Date()).getTime())).toString());
         	    	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
-        	    	project.setNroProcs(nroNodos);
         	    	Facade.getInstance().saveProject(project);
+        	    	
+        	    	//PROYECTO PENDIENTE
+        	    	project = new Project();
+                	project.setName((String)((HashMap<String,Object>)eventPpal.getNavigator().getUI().getData()).get("nameProjectPending"));
+                	project.setConstruction(jsonConstruction);
+                	project.setInput(jsonInput);
+                	project.setState("P");
+                	project.setPendingStamp((new Long((new Date()).getTime())).toString());
+                	project.setLastUpdatedStamp((new Long((new Date()).getTime())).toString());
+                	project.setUser((User)((HashMap<String,Object>)eventPpal.getNavigator().getUI().getData()).get("user"));
+                	project.setNroProcs(nroNodos);
+                	Facade.getInstance().insertProject(project);
                 }
 
                 if (variables.containsKey("editModelConstruct")) {
@@ -220,7 +277,7 @@ public class Precursor extends VerticalLayout implements View {
         			morphia.map(JsonConstruction.class);
         			JsonConstruction jsonConstruction = morphia.fromDBObject(JsonConstruction.class, dbObject);
         		    
-        		    ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
+        		    //ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
         	    	Project project = Facade.getInstance().getProject(idProject);
         	    	project.setConstruction(jsonConstruction);
         	    	project.setState("C");
@@ -233,39 +290,15 @@ public class Precursor extends VerticalLayout implements View {
 	        
 	    };
 	    
-    	setMargin(true);
+	    hlApplet.addComponent(applet);
+        vlPanel.addComponent(hlApplet);
+    	vlPanel.setComponentAlignment(hlApplet, Alignment.MIDDLE_LEFT);
     	
-    	Panel bodyPanel = new Panel();
-    	bodyPanel.setWidth("100%");
-    	bodyPanel.setHeight("100%");
-    	VerticalLayout vlPanel = new VerticalLayout();
-    	
-        setSizeFull();
-        addStyleName("transactions");
-
-    	idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
-    	Project project = Facade.getInstance().getProject(idProject);
-    	
-    	showTop(project,vlPanel);
-    	showBotonera(vlPanel);
-	    vlPanel.addComponent(applet);
-    	vlPanel.setComponentAlignment(applet, Alignment.MIDDLE_LEFT);
-    	showBotoneraDown(vlPanel);
-	    
-	    bodyPanel.setContent(vlPanel);
-        addComponent(bodyPanel);
-        
-        if(project.getConstruction()!=null)
-        {
-	        String[] arrayParams = new String[1];
-	        Morphia morphia = new Morphia();
-			morphia.map(JsonConstruction.class);
-	    	arrayParams[0] = morphia.toDBObject(project.getConstruction()).toString();
-		    applet.executeCommand("setAllModelFile",arrayParams);
-        }
+	    //vlPanel.addComponent(applet);
+		//vlPanel.setComponentAlignment(applet, Alignment.MIDDLE_LEFT);
     }
     
-    void showTop(Project project, VerticalLayout vlPanel)
+    void showTop(VerticalLayout vlPanel)
     {
     	HorizontalLayout top = new HorizontalLayout();
     	top.setWidth("100%");
@@ -293,8 +326,11 @@ public class Precursor extends VerticalLayout implements View {
     	vlPanel.setComponentAlignment(top, Alignment.MIDDLE_RIGHT);
     }
     
-    void showBotoneraDown(VerticalLayout vlPanel)
+    void showBotoneraDown(VerticalLayout vlPanel,final ViewChangeEvent eventPpal)
     {
+    	if (!project.getState().equalsIgnoreCase("C"))
+    		return;
+    		
     	HorizontalLayout hlBotonera = new HorizontalLayout();
         hlBotonera.setSpacing(true);
         hlBotonera.setHeight("40px");
@@ -317,8 +353,8 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-				ProjectFinalWindow pfWindow = new ProjectFinalWindow(applet);
-				pfWindow.setHeight("200px");
+				ProjectFinalWindow pfWindow = new ProjectFinalWindow(applet,eventPpal,project);
+				pfWindow.setHeight("240px");
 				pfWindow.setWidth("450px");
             	getUI().addWindow(pfWindow);
 			}
@@ -333,21 +369,45 @@ public class Precursor extends VerticalLayout implements View {
     
     void showBotonera(VerticalLayout vlPanel) //VerticalLayout vlPanel)
     {
+   		if (!project.getState().equalsIgnoreCase("C"))
+   		{
+   			HorizontalLayout hlBotonera = new HorizontalLayout();
+   	        hlBotonera.setSpacing(true);
+   	        hlBotonera.setHeight("40px");
+   	        hlBotonera.setMargin(true);
+   	        
+   			Button button = new Button("Consultar");
+   	        button.setIcon(new ThemeResource("img/Attibutes.png"));
+   	        button.setWidth("110px");
+   			button.addClickListener(new Button.ClickListener() {
+   				private static final long serialVersionUID = 1L;
+   				public void buttonClick(ClickEvent event) {
+   				    applet.executeCommand("getNodeInfo");
+   				    System.out.println("getNodeInfo");
+   				}
+   			});
+   			button.addStyleName("small");
+   	        hlBotonera.addComponent(button);
+
+   	     	vlPanel.addComponent(hlBotonera);
+   	     	vlPanel.setComponentAlignment(hlBotonera, Alignment.MIDDLE_LEFT);
+   	     	return;
+   		}
         HorizontalLayout hlBotonera = new HorizontalLayout();
         hlBotonera.setSpacing(true);
         hlBotonera.setHeight("40px");
         hlBotonera.setMargin(true);
         
 		Button button = new Button("Cola");
-		button.setWidth("90px");
-		//ThemeResource imgCombi = new ThemeResource("img/queue.png");
-    	//Image image = new Image(null,imgCombi);
-		//button.setIcon(imgCombi);
+		button.setWidth("110px");
+		ThemeResource imgCombi = new ThemeResource("img/Queue.png");
+    	Image image = new Image(null,imgCombi);
+		button.setIcon(imgCombi);
 		button.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-            	QueueWindow qWindow = new QueueWindow((DBObject) JSON.parse("{}"),applet,false);
+            	QueueWindow qWindow = new QueueWindow((DBObject) JSON.parse("{}"),applet,false, project);
             	qWindow.setHeight("136px"); //("150px"); -14
             	qWindow.setWidth("450px");
             	getUI().addWindow(qWindow);
@@ -357,12 +417,12 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Combi");
-        button.setWidth("90px");
-		//button.setIcon(new ThemeResource("img/queue.png"));
+        button.setWidth("110px");
+		button.setIcon(new ThemeResource("img/Combi.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-				CombiWindow cWindow = new CombiWindow((DBObject) JSON.parse("{}"),null,applet,false);
+				CombiWindow cWindow = new CombiWindow((DBObject) JSON.parse("{}"),null,applet,false, project);
 				cWindow.setHeight("136px");//.setHeight("145px"); -9
 				cWindow.setWidth("458px");
             	getUI().addWindow(cWindow);
@@ -372,12 +432,12 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Función");
-        button.setWidth("90px");
-		//button.setIcon(new ThemeResource("img/queue.png"));
+        button.setWidth("110px");
+		button.setIcon(new ThemeResource("img/Function.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-				FunctionWindow fWindow = new FunctionWindow((DBObject) JSON.parse("{}"),null,applet,false);
+				FunctionWindow fWindow = new FunctionWindow((DBObject) JSON.parse("{}"),null,applet,false, project);
 				fWindow.setHeight("136px");//("140px"); -4
 				fWindow.setWidth("458px");
             	getUI().addWindow(fWindow);
@@ -387,12 +447,12 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Normal");
-        button.setWidth("90px");
-		//button.setIcon(new ThemeResource("img/queue.png"));
+        button.setWidth("110px");
+		button.setIcon(new ThemeResource("img/Normal.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-				NormalWindow nWindow = new NormalWindow((DBObject) JSON.parse("{}"),null,applet,false);
+				NormalWindow nWindow = new NormalWindow((DBObject) JSON.parse("{}"),null,applet,false, project);
 				nWindow.setHeight("136px");//("140px"); -4
 				nWindow.setWidth("458px");
             	getUI().addWindow(nWindow);
@@ -402,12 +462,12 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Counter");
-        button.setWidth("90px");
-		//button.setIcon(new ThemeResource("img/queue.png"));
+        button.setWidth("110px");
+		button.setIcon(new ThemeResource("img/Counter.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-				CounterWindow cWindow = new CounterWindow((DBObject) JSON.parse("{}"),applet,false);
+				CounterWindow cWindow = new CounterWindow((DBObject) JSON.parse("{}"),applet,false, project);
 				cWindow.setHeight("136px");//("140px"); -4
 				cWindow.setWidth("450px");
             	getUI().addWindow(cWindow);
@@ -417,7 +477,8 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Editar");
-        button.setWidth("90px");
+        button.setIcon(new ThemeResource("img/Edit.png"));
+        button.setWidth("110px");
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -429,7 +490,8 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.addComponent(button);
         
         button = new Button("Eliminar");
-        button.setWidth("90px");
+        button.setWidth("110px");
+        button.setIcon(new ThemeResource("img/Delete.png"));
 		button.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -448,7 +510,8 @@ public class Precursor extends VerticalLayout implements View {
         hlBotonera.setMargin(true);
          
         button = new Button("Flecha");
-        button.setWidth("90px");
+        button.setWidth("110px");
+        button.setIcon(new ThemeResource("img/Arrow.png"));
 		button.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -458,8 +521,9 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        button = new Button("Invertir F.");
-        button.setWidth("90px");
+        button = new Button("Invertir");
+        button.setWidth("110px");
+        button.setIcon(new ThemeResource("img/Invert.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -469,8 +533,9 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        button = new Button("Eliminar F.");
-        button.setWidth("90px");
+        button = new Button("Eliminar");
+        button.setWidth("110px");
+        button.setIcon(new ThemeResource("img/DeleteArrow.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -480,8 +545,9 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
 
-        button = new Button("Rotar Punta F.");
-        button.setWidth("90px");
+        button = new Button("Rotar Punta");
+        button.setWidth("110px");
+        button.setIcon(new ThemeResource("img/Head.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -491,8 +557,9 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        button = new Button("Rotar Cola F.");
-        button.setWidth("90px");
+        button = new Button("Rotar Cola");
+        button.setWidth("110px");
+        button.setIcon(new ThemeResource("img/Tail.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -502,8 +569,9 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        button = new Button("Punto Siguiente");
-        button.setWidth("90px");
+        button = new Button("Punto");
+        button.setWidth("110px");
+        button.setIcon(new ThemeResource("img/DotNext.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -513,8 +581,9 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        button = new Button("Punto Anterior");
-        button.setWidth("90px");
+        button = new Button("Punto");
+        button.setWidth("110px");
+        button.setIcon(new ThemeResource("img/DotBack.png"));
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -524,8 +593,9 @@ public class Precursor extends VerticalLayout implements View {
 		button.addStyleName("small");
         hlBotonera.addComponent(button);
         
-        button = new Button("Eliminar P.");
-        button.setWidth("90px");
+        button = new Button("Eliminar");
+        button.setIcon(new ThemeResource("img/DeleteDot.png"));
+        button.setWidth("110px");
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
@@ -539,4 +609,42 @@ public class Precursor extends VerticalLayout implements View {
     	vlPanel.setComponentAlignment(hlBotonera, Alignment.MIDDLE_LEFT);
     }
 
+    void showRedimencion(VerticalLayout vlPanel)
+    {
+    	HorizontalLayout hlBotonera = new HorizontalLayout();
+        hlBotonera.setSpacing(true);
+        hlBotonera.setHeight("40px");
+        hlBotonera.setMargin(true);
+        
+		Button button = new Button(">>");
+		button.setWidth("45px");
+		button.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				applet.setWidth( Integer.parseInt((applet.getWidth()+"").replace(".0", "")) + 10 + "px");
+				applet.requestRepaint();
+				applet.requestRepaintAll();
+				applet.attach();
+				//applet.;
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button(">>");
+		button.setWidth("45px");
+		button.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				applet.setWidth( Integer.parseInt(applet.getWidth()+"") - 10 + "px");
+				applet.attach();
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        vlPanel.addComponent(hlBotonera);
+    	vlPanel.setComponentAlignment(applet, Alignment.MIDDLE_LEFT);
+    }
 }

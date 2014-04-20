@@ -1,7 +1,11 @@
 package com.example.botqueueweb.windows;
 
+import java.util.HashMap;
+
 import org.vaadin.applet.AppletIntegration;
 
+import com.example.botqueueweb.dto.Project;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -19,7 +23,7 @@ public class ProjectFinalWindow extends Window {
 
 	private static final long serialVersionUID = 1L;
 
-	public ProjectFinalWindow(final AppletIntegration applet) {
+	public ProjectFinalWindow(final AppletIntegration applet,final ViewChangeEvent eventPpal, Project project) {
     	
     	this.setCaption("Proyecto");
     	this.setModal(true);
@@ -35,6 +39,16 @@ public class ProjectFinalWindow extends Window {
         
         bodyPanel.setContent(subContent);
         setContent(bodyPanel);
+        
+        HorizontalLayout hlName = new HorizontalLayout();
+        Label lName = new Label("Nombre: ");
+        lName.setWidth("90");
+        final TextField tfName = new TextField();
+        tfName.setWidth("330");
+        tfName.setValue(project.getName());
+        hlName.addComponent(lName);
+        hlName.addComponent(tfName);
+        subContent.addComponent(hlName);
         
         HorizontalLayout hlLength = new HorizontalLayout();
         Label lLength = new Label("Tiempo de Simulación: ");
@@ -65,6 +79,7 @@ public class ProjectFinalWindow extends Window {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
+				((HashMap<String,Object>) eventPpal.getNavigator().getUI().getData()).put("nameProjectPending", tfName.getValue());
             	String[] arrayParams = new String[2];
             	arrayParams[0] = tfLength.getValue();
             	arrayParams[1] = tfSeed.getValue();        	

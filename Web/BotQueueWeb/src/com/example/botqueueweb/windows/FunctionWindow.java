@@ -3,6 +3,7 @@ package com.example.botqueueweb.windows;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.botqueueweb.dto.Project;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -29,7 +30,7 @@ public class FunctionWindow extends Window {
 
 	private static final long serialVersionUID = 1L;
 
-	public FunctionWindow(final DBObject function,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull) {
+	public FunctionWindow(final DBObject function,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull, Project project) {
     	
 		//CONFIGURACION INICIAL
     	this.setCaption("Función");
@@ -264,7 +265,11 @@ public class FunctionWindow extends Window {
 			});
         }
         
-        Button bCancelar = new Button("Cancelar");
+        Button bCancelar = null;
+        if (!project.getState().equalsIgnoreCase("C"))
+        	bCancelar = new Button("Cerrar");
+        else
+        	bCancelar = new Button("Cancelar");	
         bCancelar.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -275,7 +280,8 @@ public class FunctionWindow extends Window {
         
         bAceptar.setWidth("100");
         bCancelar.setWidth("100");
-        hlBotones.addComponent(bAceptar);
+        if (project.getState().equalsIgnoreCase("C"))
+        	hlBotones.addComponent(bAceptar);
         hlBotones.addComponent(bCancelar);
         subContent.addComponent(hlBotones);
         subContent.setComponentAlignment(hlBotones, Alignment.BOTTOM_RIGHT);

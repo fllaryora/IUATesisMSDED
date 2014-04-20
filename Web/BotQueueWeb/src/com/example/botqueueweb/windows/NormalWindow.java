@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.vaadin.applet.AppletIntegration;
 
+import com.example.botqueueweb.dto.Project;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -31,7 +32,7 @@ public class NormalWindow extends Window {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings({ "deprecation", "rawtypes" })
-	public NormalWindow(final DBObject normal,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull) {
+	public NormalWindow(final DBObject normal,DBObject dbProbBranch, final AppletIntegration applet, boolean isFull, Project project) {
     	
     	//CONFIGURACION INICIAL
     	this.setCaption("Normal");
@@ -569,7 +570,11 @@ public class NormalWindow extends Window {
 			});
         }
         
-        Button bCancelar = new Button("Cancelar");
+        Button bCancelar = null;
+        if (!project.getState().equalsIgnoreCase("C"))
+        	bCancelar = new Button("Cerrar");
+        else
+        	bCancelar = new Button("Cancelar");	
         bCancelar.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -580,7 +585,8 @@ public class NormalWindow extends Window {
         
         bAceptar.setWidth("100");
         bCancelar.setWidth("100");
-        hlBotones.addComponent(bAceptar);
+        if (project.getState().equalsIgnoreCase("C"))
+        	hlBotones.addComponent(bAceptar);
         hlBotones.addComponent(bCancelar);
         subContent.addComponent(hlBotones);
         subContent.setComponentAlignment(hlBotones, Alignment.BOTTOM_RIGHT);
