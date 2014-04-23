@@ -218,13 +218,13 @@ public class Reporte extends VerticalLayout implements View {
         t.setColumnCollapsingAllowed(true);
         t.setColumnReorderingAllowed(true);
         
-        t.addContainerProperty("Counter", Integer.class, null);
+        t.addContainerProperty("Acumulador", String.class, null);
         t.addContainerProperty("Productividad Total", Integer.class , null);
         
         int i=0;
     	for (CounterFinal counterFinal : project.getOutput().getSummaryReport().getCounters()) {
     		i++;
-    		t.addItem(new Object[]{counterFinal.getIdNode(),counterFinal.getTotalProductivity()},i);
+    		t.addItem(new Object[]{hashNameNodes.get(counterFinal.getIdNode()),counterFinal.getTotalProductivity()},i);
 		}
     	
     	vlPanel.addComponent(t);
@@ -235,14 +235,14 @@ public class Reporte extends VerticalLayout implements View {
         t.setColumnCollapsingAllowed(true);
         t.setColumnReorderingAllowed(true);
         
-        t.addContainerProperty("Queue", Integer.class, null);
+        t.addContainerProperty("Cola", String.class, null);
         t.addContainerProperty("Costo Fijo", String.class , null);
         t.addContainerProperty("Costo Variable", String.class , null);
         
         i=0;
     	for (QueueFinal queueFinal : project.getOutput().getSummaryReport().getQueues()) {
     		i++;
-    		t.addItem(new Object[]{queueFinal.getIdNode(),"$ "+queueFinal.getFixCost(),"$ "+queueFinal.getVariableCost()},i);
+    		t.addItem(new Object[]{hashNameNodes.get(queueFinal.getIdNode()),"$ "+queueFinal.getFixCost(),"$ "+queueFinal.getVariableCost()},i);
     	}
     	
     	vlPanel.addComponent(t);
@@ -371,7 +371,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// MINIMA Y MINIMA DURACION SORTEADA
 	    	
-	    	vlPanel.addComponent(new Label("Duración Minimo / Maximo "));	
+	    	vlPanel.addComponent(new Label("Cantidad Mínima / Máxima de Duración de Worktask"));	
 	    	final Chart chartMM = new Chart("ChartCombi");
 	    	chartMM.setType("Bar");
 	    	
@@ -448,7 +448,7 @@ public class Reporte extends VerticalLayout implements View {
 	    {
 	    	ThemeResource imgQueue = new ThemeResource("img/queue.png");
 	    	Image image = new Image(null,imgQueue);
-	    	lTicket =  new Label("Queue: ");
+	    	lTicket =  new Label("Cola: ");
 	        lTicket.addStyleName("ticket");
 	        //lValue = new Label(idQueue.toString());
 	        lValue = new Label(hashNameNodes.get(idQueue));
@@ -564,7 +564,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// CHART - AMOUNT DELAY
 	    	
-	    	vlPanel.addComponent(new Label("Promedio de recursos en espera"));	
+	    	vlPanel.addComponent(new Label("Promedio de Recursos en Espera"));	
 	    	final Chart chartAmountDelay = new Chart("ChartCombi");
 	    	chartAmountDelay.setType("Line");
 	    	
@@ -646,7 +646,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	//  DURACION SORTEADA
 	    	
-	    	vlPanel.addComponent(new Label("Cantidad de Entrada/Salida de Recursos"));	
+	    	vlPanel.addComponent(new Label("Cantidad de Entrada / Salida de Recursos"));	
 	    	final Chart chartIO = new Chart("ChartCombi");
 	    	chartIO.setType("Bar");
 	    	
@@ -706,7 +706,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// MINIMA Y MINIMA DURACION SORTEADA
 	    	
-	    	vlPanel.addComponent(new Label("Cantidad de Mínima/Máxima de Recursos"));	
+	    	vlPanel.addComponent(new Label("Cantidad Mínima / Máxima de Recursos"));	
 	    	final Chart chartMM = new Chart("ChartCombi");
 	    	chartMM.setType("Bar");
 	    	
@@ -891,7 +891,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	// MINIMA Y MINIMA DURACION SORTEADA
 	    	
-	    	vlPanel.addComponent(new Label("Cantidad de Mínima/Máxima de Recursos"));	
+	    	vlPanel.addComponent(new Label("Cantidad Mínima / Máxima de Duración de Worktask"));	
 	    	final Chart chartMM = new Chart("ChartCombi");
 	    	chartMM.setType("Bar");
 	    	
@@ -968,7 +968,7 @@ public class Reporte extends VerticalLayout implements View {
 	    {
 	    	ThemeResource imgFunction = new ThemeResource("img/function.png");
 	    	Image image = new Image(null,imgFunction);
-	    	lTicket =  new Label("Function: ");
+	    	lTicket =  new Label("Función: ");
 	        lTicket.addStyleName("ticket");
 	        //lValue = new Label(idFunction.toString());
 	        lValue = new Label(hashNameNodes.get(idFunction));
@@ -987,7 +987,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	//BAR - COUNTER IMPUT
 	    	
-	    	vlPanel.addComponent(new Label("Cantida de Elementos sin Combinar"));	
+	    	vlPanel.addComponent(new Label("Cantidad de Elementos sin Combinar"));	
 	    	final Chart chart = new Chart("ChartFunction");
 	    	chart.setType("Bar");
 	    	
@@ -1044,7 +1044,7 @@ public class Reporte extends VerticalLayout implements View {
 	    {
 	    	ThemeResource imgCounter = new ThemeResource("img/counter.png");
 	    	Image image = new Image(null,imgCounter);
-	    	lTicket =  new Label("Counter: ");
+	    	lTicket =  new Label("Acumulador: ");
 	        lTicket.addStyleName("ticket");
 	        //lValue = new Label(idCounter.toString());
 	        lValue = new Label(hashNameNodes.get(idCounter));
