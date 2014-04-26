@@ -1,3 +1,18 @@
+#!/bin/bash
+
+#para poder ejecutarlo desde cualquier lado
+if [ -z ${BOTQUEUE_HOME+x} ]
+then
+	echo "BOTQUEUE_HOME var is unset"
+	echo "end of compile"
+	exit 0
+else
+	echo "BOTQUEUE_HOME existe"
+fi
+cd $BOTQUEUE_HOME
+
+
+
 MINPARAMS=2
 COMPILER=" "
 GCCARGS=" "
@@ -37,7 +52,8 @@ then
 	echo
 	echo "compiling environment PRODUCTION"
 	COMPILER="mpicc"
-	GCCARGS="-O3 -std=c99"
+	#GCCARGS="-O3  -D_POSIX_C_SOURCE=199309L -lrt -std=c99"
+	GCCARGS="-O3 -std=c99"	
 	export PATH=$PATH:/usr/lib64/mpich2/bin
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/mpich2/lib
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
