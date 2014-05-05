@@ -14,6 +14,7 @@ public class ProjectsFiels {
 	public static final String PENDING_STAMP_FIELD =  "pendingStamp";
 	
 	public static final String NRO_PROCS_FIELD =  "nroProcs";
+	public static final String DELTA_T =  "deltaT";
 	public static final String USR_FIELD =  "usr";
 	
 }

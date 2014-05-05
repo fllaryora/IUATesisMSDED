@@ -18,7 +18,9 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
+#ifndef TIME_ONE_STEP
 #define TIME_ONE_STEP 1.0
+#endif
 
 #define MASTER_ID	0
 #define RAFFLER_ID	1

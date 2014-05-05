@@ -12,7 +12,9 @@ fi
 cd $BOTQUEUE_HOME
 
 
-
+MAXSTEP=1.0
+MINSTEP=0.01
+REALSTEP=1.0
 MINPARAMS=2
 COMPILER=" "
 GCCARGS=" "
@@ -52,18 +54,30 @@ then
 	echo
 	echo "compiling environment PRODUCTION"
 	COMPILER="mpicc"
-	#GCCARGS="-O3  -D_POSIX_C_SOURCE=199309L -lrt -std=c99"
-	GCCARGS="-O3 -std=c99"	
 	export PATH=$PATH:/usr/lib64/mpich2/bin
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/mpich2/lib
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-	re='^[0-9]+$'
+	#re='^[0-9]+$'
+	re='^[0-9]+(\.[0-9]+)?$'
 	if ! [[ $2 =~ $re ]]
 	then
-		echo "invalid second param: Not is a number"
+		#echo "invalid second param: Not is a number"
+		echo "invalid second param: Not is a decimal number"
 		exit 0
 	fi
-	RUNFORESTRUN="mpirun -np $2"
+	#bash doesn't support aritmetic operation with decimals , but bc yes
+	if [ $(echo "$2>$MAXSTEP"|bc) -gt 0 ]
+	then
+		REALSTEP=$MAXSTEP
+	elif [ $(echo "$2<$MINSTEP"|bc) -gt 0 ]
+	then
+		REALSTEP=$MINSTEP
+	else
+		REALSTEP=$2
+	fi
+	GCCARGS="-O3 -DTIME_ONE_STEP=$REALSTEP -std=c99"
+	#GCCARGS="-O3  -D TIME_ONE_STEP=$REALSTEP -D_POSIX_C_SOURCE=199309L -lrt -std=c99"
+	RUNFORESTRUN="mpirun -np 666"
 	
 elif [ $1 == "TEST" ]
 then
@@ -150,6 +164,3 @@ echo "$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o 
 $COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o queue.o combi.o normal.o function.o counter.o scheduler.o -lm -lwjelement -lwjreader -o Engine main.c
 
 rm *.o
-
-echo "$RUNFORESTRUN ./Engine"
-#$RUNFORESTRUN ./Engine

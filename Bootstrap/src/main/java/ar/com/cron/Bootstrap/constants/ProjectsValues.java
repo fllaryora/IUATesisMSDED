@@ -36,4 +36,6 @@ public class ProjectsValues {
 	public final static String BOTQUEUE_PROGRAM = "mpirun";
 	public final static String NUMBER_OF_PROCESS = "-np";
 	public final static String ERROR_TOKEN_IN_OUTPUT_FILE = "Error";
+	public static final String BOTQUEUE_COMPILE_SCRIPT = System.getenv("BOTQUEUE_COMPILE_SCRIPT");
+	public final static String COMPILATION_MODE_PRODUCTION = "PRODUCTION";
 }

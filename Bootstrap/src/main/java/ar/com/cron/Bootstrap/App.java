@@ -104,21 +104,37 @@ public class App {
 		try {
 			System.out.println("Se arma parametros de entrada para MPI...");
 			int nrp = (Integer)toRead.get(ProjectsFiels.NRO_PROCS_FIELD);
+			Object dT = toRead.get(ProjectsFiels.DELTA_T);
+			String deltaT = ""+(Double)(dT!=null?dT:1.0);
 			String nroProces = ""+ (nrp+ProjectsValues.SCHEDULER_PROCS);
 			
-			Process process = new ProcessBuilder(
+			Process compilationProcess = new ProcessBuilder(
+					ProjectsValues.BOTQUEUE_COMPILE_SCRIPT,
+					ProjectsValues.COMPILATION_MODE_PRODUCTION, deltaT ).start();
+			System.out.println("waiting, esperando a que termine....." );
+			
+			if (compilationProcess == null) {
+				System.out.println("Can't execute botqueue compile, No se pudo ejecutar el compilador de botqueue...");
+				return false;	
+			}
+			
+			synchronized (compilationProcess){
+				compilationProcess.wait();
+			}
+			
+			Process mpiProcess = new ProcessBuilder(
 					ProjectsValues.BOTQUEUE_PROGRAM,
 					ProjectsValues.NUMBER_OF_PROCESS, nroProces ,
 					ProjectsValues.BOTQUEUE_CODE ).start();
 			System.out.println("waiting, esperando a que termine....." );
 			
-			if (process == null) {
+			if (mpiProcess == null) {
 				System.out.println("Can't execute botqueue, No se pudo ejecutar botqueue...");
 				return false;	
 			}
 			
-			synchronized (process){
-				process.wait();
+			synchronized (mpiProcess){
+				mpiProcess.wait();
 			}
 			System.out.println("Se finalizo la ejecucion...");
 			String output = OSHelper.getOutput();
