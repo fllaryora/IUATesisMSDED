@@ -1,7 +1,10 @@
 package com.example.botqueueweb;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.bson.types.ObjectId;
 
@@ -17,6 +20,9 @@ import com.example.botqueueweb.dto.output.QueueFinal;
 import com.example.botqueueweb.dto.output.TimeLine;
 import com.example.botqueueweb.facade.Facade;
 import com.example.botqueueweb.js.Chart;
+
+
+
 
 
 //import com.google.gwt.dev.util.collect.HashMap;
@@ -43,8 +49,16 @@ public class Reporte extends VerticalLayout implements View {
     
     HashMap<Integer, String> hashNameNodes;
     
+    DecimalFormat decimalFormat;
+    
     @Override
     public void enter(ViewChangeEvent event) {
+    	
+    	/* INIT VARIABLES */
+    	Locale locale  = new Locale("en", "UK");
+		String pattern = "###.##";
+		decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+		decimalFormat.applyPattern(pattern);
     	
     	/* CONFIGURACION INICIAL */
     	setMargin(true);
@@ -293,7 +307,7 @@ public class Reporte extends VerticalLayout implements View {
 	    	double points[]= new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	chart.setLabels(labels);
 	    	
@@ -333,7 +347,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	double points2[] = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartAmountDelay.setLabels(labels);
@@ -379,7 +394,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	points = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartMM.setLabels(labels);
@@ -530,9 +546,10 @@ public class Reporte extends VerticalLayout implements View {
 	    	
 	    	String labels[]= new String[timeLinesCount];
 	    	double points[]= new double[timeLinesCount];
-	    	
+    		
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	chart.setLabels(labels);
 	    	
@@ -572,7 +589,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	double points2[] = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartAmountDelay.setLabels(labels);
@@ -613,7 +631,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	points2 = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartAverageDelay.setLabels(labels);
@@ -654,7 +673,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	points = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartIO.setLabels(labels);
@@ -714,7 +734,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	points = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartMM.setLabels(labels);
@@ -810,7 +831,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	double points[]= new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	chart.setLabels(labels);
 	    	
@@ -850,7 +872,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	double points2[] = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartAmountDelay.setLabels(labels);
@@ -899,7 +922,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	points = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartMM.setLabels(labels);
@@ -995,7 +1019,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	double points[]= new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	chart.setLabels(labels);
 	    	
@@ -1071,7 +1096,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	double points[]= new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	chart.setLabels(labels);
 	    	
@@ -1111,7 +1137,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	points= new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	chart2.setLabels(labels);
 	    	
@@ -1151,7 +1178,8 @@ public class Reporte extends VerticalLayout implements View {
 	    	double points2[] = new double[timeLinesCount];
 	    	
 	    	for (int i = 0; i < timeLinesCount; i++) {
-	    		labels[i] = String.valueOf(i);
+	    		//labels[i] = String.valueOf(i);
+	    		labels[i] = decimalFormat.format(project.getOutput().getTimeLines().get(i).getDeltaT());
 			}
 	    	
 	    	chartAmountDelay.setLabels(labels);

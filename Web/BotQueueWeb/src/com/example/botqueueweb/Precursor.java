@@ -23,6 +23,7 @@ import com.google.code.morphia.Morphia;
 
 
 
+
 //import com.google.gwt.dev.util.collect.HashMap;
 import java.util.HashMap;
 
@@ -97,8 +98,8 @@ public class Precursor extends VerticalLayout implements View {
     {
     	HorizontalLayout hlApplet = new HorizontalLayout();
     	hlApplet.setSpacing(true);
-    	hlApplet.setWidth("1000px");
-    	hlApplet.setHeight("1000px");
+    	hlApplet.setWidth("1160px");
+    	hlApplet.setHeight("1015px");
     	hlApplet.setMargin(true);
         
     	applet = new AppletIntegration() {
@@ -113,7 +114,7 @@ public class Precursor extends VerticalLayout implements View {
 	            setCodebase("/BotQueueWeb/VAADIN/applet/");     
 	            setAppletClass("ar/com/botqueue/applet/Principal.class");  
 	            
-	            setWidth("1000px");  
+	            setWidth("1160px");  
 	            setHeight("1000px");
 	        }
 	        
@@ -254,6 +255,8 @@ public class Precursor extends VerticalLayout implements View {
         	    	//PROYECTO PENDIENTE
         	    	project = new Project();
                 	project.setName((String)((HashMap<String,Object>)eventPpal.getNavigator().getUI().getData()).get("nameProjectPending"));
+    				project.setDeltaT((Double)((HashMap<String,Object>)eventPpal.getNavigator().getUI().getData()).get("deltaT"));
+    				project.setSimTime((Double)((HashMap<String,Object>)eventPpal.getNavigator().getUI().getData()).get("simTime"));
                 	project.setConstruction(jsonConstruction);
                 	project.setInput(jsonInput);
                 	project.setState("P");
@@ -354,8 +357,8 @@ public class Precursor extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 				ProjectFinalWindow pfWindow = new ProjectFinalWindow(applet,eventPpal,project);
-				pfWindow.setHeight("240px");
-				pfWindow.setWidth("450px");
+				pfWindow.setHeight("260px");
+				pfWindow.setWidth("570px");
             	getUI().addWindow(pfWindow);
 			}
 		});

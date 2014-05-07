@@ -27,9 +27,9 @@ public class Project {
 	private JsonConstruction construction;
 	private JsonInput input;
 	private Integer nroProcs;
+	private Double deltaT;
+	private Double simTime;
 	private JsonOutput output;
-	//private List<String> usr; //TODO: hacer referencia
-	
 	
 	@Reference
 	private User user;
@@ -111,6 +111,18 @@ public class Project {
 	}
 	public void setConstruction(JsonConstruction construction) {
 		this.construction = construction;
+	}
+	public Double getDeltaT() {
+		return deltaT;
+	}
+	public void setDeltaT(Double deltaT) {
+		this.deltaT = deltaT;
+	}
+	public Double getSimTime() {
+		return simTime;
+	}
+	public void setSimTime(Double simTime) {
+		this.simTime = simTime;
 	}
 
 }

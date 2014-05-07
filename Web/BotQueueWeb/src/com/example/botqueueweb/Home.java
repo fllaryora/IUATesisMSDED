@@ -89,6 +89,8 @@ public class Home extends VerticalLayout implements View{
         t.addContainerProperty("Nombre de Proyecto", String.class, null);
         t.addContainerProperty("Estado", String.class , null);
         t.addContainerProperty("Nro de Procesos", Integer.class , null);
+        t.addContainerProperty("Tiempo de Simulación", Double.class , null);
+        t.addContainerProperty("Paso de Simulación", Double.class , null);
         
         int i=0;
         String estadoName;
@@ -105,7 +107,7 @@ public class Home extends VerticalLayout implements View{
 		    	estadoName = "Ejecución";
 		    else if (project.getState().equalsIgnoreCase("F"))
 		    	estadoName = "Finalizado";
-    		t.addItem(new Object[]{project.getId(),project.getName(),estadoName,project.getNroProcs()},i);
+    		t.addItem(new Object[]{project.getId(),project.getName(),estadoName,project.getNroProcs(),project.getSimTime(),project.getDeltaT()},i);
     	}
     	t.addListener(new ItemClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -116,11 +118,13 @@ public class Home extends VerticalLayout implements View{
 				t.setData(myObjectProperty);
 			}
 		});
-    	t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+    	t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos", "Tiempo de Simulación", "Paso de Simulación"});
     	t.setColumnExpandRatio("Nombre de Proyecto", 80);
     	t.setColumnExpandRatio("Estado", 15);
     	t.setColumnExpandRatio("Nro de Procesos", 15);
-    	t.setWidth("750");
+    	t.setColumnExpandRatio("Tiempo de Simulación", 23);
+    	t.setColumnExpandRatio("Paso de Simulación", 23);
+    	t.setWidth("1090");
     	vlPanel.addComponent(t);
     	
     	//BOTONES
@@ -142,6 +146,8 @@ public class Home extends VerticalLayout implements View{
                 container.addContainerProperty("Nombre de Proyecto", String.class, null);
                 container.addContainerProperty("Estado", String.class , null);
                 container.addContainerProperty("Nro de Procesos", Integer.class , null);
+                container.addContainerProperty("Tiempo de Simulación", Double.class , null);
+                container.addContainerProperty("Paso de Simulación", Double.class , null);
                 for (Project project1 : projects) {
                 	container.addItem(project1.getId());
                 	Item item = container.getItem(project1.getId());
@@ -166,13 +172,19 @@ public class Home extends VerticalLayout implements View{
                 	property.setValue(estadoName);
             		property = item.getItemProperty("Nro de Procesos");
                 	property.setValue(project1.getNroProcs());
+                	property = item.getItemProperty("Tiempo de Simulación");
+                	property.setValue(project1.getSimTime());
+                	property = item.getItemProperty("Paso de Simulación");
+                	property.setValue(project1.getDeltaT());
             	}
                 t.setContainerDataSource(container);
-                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos", "Tiempo de Simulación", "Paso de Simulación"});
             	t.setColumnExpandRatio("Nombre de Proyecto", 80);
             	t.setColumnExpandRatio("Estado", 15);
             	t.setColumnExpandRatio("Nro de Procesos", 15);
-            	t.setWidth("750");
+            	t.setColumnExpandRatio("Tiempo de Simulación", 23);
+            	t.setColumnExpandRatio("Paso de Simulación", 23);
+            	t.setWidth("1090");
             }
         });
     	hlPanel.addComponent(btnGeneric);
@@ -229,6 +241,8 @@ public class Home extends VerticalLayout implements View{
                 container.addContainerProperty("Nombre de Proyecto", String.class, null);
                 container.addContainerProperty("Estado", String.class , null);
                 container.addContainerProperty("Nro de Procesos", Integer.class , null);
+                container.addContainerProperty("Tiempo de Simulación", Double.class , null);
+                container.addContainerProperty("Paso de Simulación", Double.class , null);
                 for (Project project1 : projects) {
                 	container.addItem(project1.getId());
                 	Item item = container.getItem(project1.getId());
@@ -253,13 +267,19 @@ public class Home extends VerticalLayout implements View{
                 	property.setValue(estadoName);
             		property = item.getItemProperty("Nro de Procesos");
                 	property.setValue(project1.getNroProcs());
+                	property = item.getItemProperty("Tiempo de Simulación");
+                	property.setValue(project1.getSimTime());
+                	property = item.getItemProperty("Paso de Simulación");
+                	property.setValue(project1.getDeltaT());
             	}
                 t.setContainerDataSource(container);
-                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos", "Tiempo de Simulación", "Paso de Simulación"});
             	t.setColumnExpandRatio("Nombre de Proyecto", 80);
             	t.setColumnExpandRatio("Estado", 15);
             	t.setColumnExpandRatio("Nro de Procesos", 15);
-            	t.setWidth("750");
+            	t.setColumnExpandRatio("Tiempo de Simulación", 23);
+            	t.setColumnExpandRatio("Paso de Simulación", 23);
+            	t.setWidth("1090");
             }
         });
     	hlPanel.addComponent(btnGeneric);
@@ -282,7 +302,7 @@ public class Home extends VerticalLayout implements View{
     	hlPanel.addComponent(btnGeneric);
     	hlPanel.setSpacing(true);
     	vlPanel.addComponent(hlPanel);
-    	vlPanel.setWidth("750");
+    	vlPanel.setWidth("1090");
     	vlPanel.setComponentAlignment(hlPanel, Alignment.MIDDLE_RIGHT);
     	
         bodyPanel.setContent(vlPanel);

@@ -66,7 +66,7 @@ public class NormalWindow extends Window {
         //ELEMENTOS COMBO BOX (DELAY)
     	
     	final HorizontalLayout hlMinimun = new HorizontalLayout();
-        Label lMinimun = new Label("Minimo: ");
+        Label lMinimun = new Label("Mínimo: ");
         lMinimun.setWidth("110");
         final TextField tfMinimun = new TextField();
         tfMinimun.setWidth("310");
@@ -77,7 +77,7 @@ public class NormalWindow extends Window {
         hlMinimun.setVisible(false);
         
         final HorizontalLayout hlMaximun = new HorizontalLayout();
-        Label lMaximun = new Label("Maximo: ");
+        Label lMaximun = new Label("Máximo: ");
         lMaximun.setWidth("110");
         final TextField tfMaximun = new TextField();
         tfMaximun.setWidth("310");
@@ -88,7 +88,7 @@ public class NormalWindow extends Window {
         hlMaximun.setVisible(false);
         
         final HorizontalLayout hlShapeAlpha = new HorizontalLayout();
-        Label lShapeAlpha = new Label("Shape Alpha: ");
+        Label lShapeAlpha = new Label("Forma Alpha: ");
         lShapeAlpha.setWidth("110");
         final TextField tfShapeAlpha = new TextField();
         tfShapeAlpha.setWidth("310");
@@ -99,7 +99,7 @@ public class NormalWindow extends Window {
         hlShapeAlpha.setVisible(false);
         
         final HorizontalLayout hlShapeBeta = new HorizontalLayout();
-        Label lShapeBeta = new Label("Shape Beta: ");
+        Label lShapeBeta = new Label("Forma Beta: ");
         lShapeBeta.setWidth("110");
         final TextField tfShapeBeta = new TextField();
         tfShapeBeta.setWidth("310");
@@ -132,7 +132,7 @@ public class NormalWindow extends Window {
         hlLambda.setVisible(false);
         
         final HorizontalLayout hlEscale = new HorizontalLayout();
-        Label lEscale = new Label("Escale: ");
+        Label lEscale = new Label("Escala: ");
         lEscale.setWidth("110");
         final TextField tfEscale = new TextField();
         tfEscale.setWidth("310");
@@ -143,7 +143,7 @@ public class NormalWindow extends Window {
         hlEscale.setVisible(false);
         
         final HorizontalLayout hlShape = new HorizontalLayout();
-        Label lShape = new Label("Shape: ");
+        Label lShape = new Label("Forma: ");
         lShape.setWidth("110");
         final TextField tfShape = new TextField();
         tfShape.setWidth("310");
@@ -154,7 +154,7 @@ public class NormalWindow extends Window {
         hlShape.setVisible(false);
         
         final HorizontalLayout hlMean = new HorizontalLayout();
-        Label lMean = new Label("Mean: ");
+        Label lMean = new Label("Media: ");
         lMean.setWidth("110");
         final TextField tfMean = new TextField();
         tfMean.setWidth("310");
@@ -165,7 +165,7 @@ public class NormalWindow extends Window {
         hlMean.setVisible(false);
         
         final HorizontalLayout hlVariance = new HorizontalLayout();
-        Label lVariance = new Label("Variansa: ");
+        Label lVariance = new Label("Varianza: ");
         lVariance.setWidth("110");
         final TextField tfVariance = new TextField();
         tfVariance.setWidth("310");
@@ -176,7 +176,7 @@ public class NormalWindow extends Window {
         hlVariance.setVisible(false);
         
         final HorizontalLayout hlLeast = new HorizontalLayout();
-        Label lLeast = new Label("Least: ");
+        Label lLeast = new Label("Mínimo: ");
         lLeast.setWidth("110");
         final TextField tfLeast = new TextField();
         tfLeast.setWidth("310");
@@ -187,7 +187,7 @@ public class NormalWindow extends Window {
         hlLeast.setVisible(false);
         	        
         final HorizontalLayout hlHighest = new HorizontalLayout();
-        Label lHighest = new Label("Highest: ");
+        Label lHighest = new Label("Máximo: ");
         lHighest.setWidth("110");
         final TextField tfHighest = new TextField();
         tfHighest.setWidth("310");
@@ -242,6 +242,7 @@ public class NormalWindow extends Window {
         	cbDelay.addItem("Normal");
         	cbDelay.addItem("Beta");
         	cbDelay.addItem("Triangular");
+        	cbDelay.addItem("Log-Normal");
         	
         	cbDelay.addListener(new Property.ValueChangeListener() {
 				
@@ -311,6 +312,10 @@ public class NormalWindow extends Window {
 						}
 						else if (cbDelay.getValue().toString().equalsIgnoreCase("Triangular")) {
 							setVisibleComponentsDelay(false,false,false,false,false,false,false,false,false,false,true,true,true,true);
+					        spaceComponents = 4;
+						}
+						else if (cbDelay.getValue().toString().equalsIgnoreCase("Log-Normal")) {
+							setVisibleComponentsDelay(false,false,false,false,false,false,true,true,false,false,true,false,false,false);
 					        spaceComponents = 4;
 						}
 						
@@ -413,6 +418,8 @@ public class NormalWindow extends Window {
 				cbDelay.setValue("Beta");
         	else if (((BasicDBObject)normal.get("delay")).get("distribution").toString().equalsIgnoreCase("triangular"))
 				cbDelay.setValue("Triangular");
+        	else if (((BasicDBObject)normal.get("delay")).get("distribution").toString().equalsIgnoreCase("log-normal"))
+				cbDelay.setValue("Log-Normal");
         }
         
       //CALCULO DE ESPACIO POR CHECK PROB BRANCH
@@ -472,6 +479,9 @@ public class NormalWindow extends Window {
 					else if (cbDelay.getValue().toString().equalsIgnoreCase("Triangular")) {
 				        spaceComponents = 4;
 					}
+					else if (cbDelay.getValue().toString().equalsIgnoreCase("Log-Normal")) {					        
+				        spaceComponents = 4;
+					}
 					
 			        if( ( hlSpaceHeight - (hlSpaceHeightItem * (spaceComponents + spaceCheck + spaceFollowers) ) ) > 0)
 		        		setSpaceHeight( hlSpaceHeight - (hlSpaceHeightItem * (spaceComponents + spaceCheck + spaceFollowers) ) );
@@ -516,7 +526,8 @@ public class NormalWindow extends Window {
 	    				arrayParams[0] = "beta";
 	    			if (cbDelay.getValue().toString().equalsIgnoreCase("Triangular"))
 	    				arrayParams[0] = "triangular";
-
+	    			if (cbDelay.getValue().toString().equalsIgnoreCase("Log-Normal"))
+	    				arrayParams[0] = "log-normal";
 	            	arrayParams[1] = tfSeed.getValue();
 	            	arrayParams[2] = tfLeast.getValue();
 	            	arrayParams[3] = tfHighest.getValue();

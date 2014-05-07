@@ -33,7 +33,7 @@ public class ProjectBusiness {
 	{
 		List<Project> projects = new ArrayList<Project>();
 		try {
-			for (Project project : MongoConnection.getInstance().getDatastore().find(Project.class).retrievedFields(true, "_id","name","state","nroProcs")) {
+			for (Project project : MongoConnection.getInstance().getDatastore().find(Project.class).retrievedFields(true, "_id","name","state","nroProcs","simTime","deltaT")) {
 				projects.add(project);
 			}
 			return projects;
@@ -54,7 +54,7 @@ public class ProjectBusiness {
 	{
 		List<Project> projects = new ArrayList<Project>();
 		try {
-			for (Project project : MongoConnection.getInstance().getDatastore().find(Project.class).retrievedFields(true, "_id","name","state","nroProcs").filter("user", user)) {
+			for (Project project : MongoConnection.getInstance().getDatastore().find(Project.class).retrievedFields(true, "_id","name","state","nroProcs","simTime","deltaT").filter("user", user)) {
 				projects.add(project);
 			}
 			return projects;

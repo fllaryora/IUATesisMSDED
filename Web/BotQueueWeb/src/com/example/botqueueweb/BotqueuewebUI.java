@@ -67,7 +67,7 @@ public class BotqueuewebUI extends UI {
     HashMap<String, Class<? extends View>> routes = new HashMap<String, Class<? extends View>>() {
         {
         	put("/Home", Home.class);//put("/dashboard", DashboardView.class);
-        	put("/Transformacion", Transformacion.class);//put("/dashboard", DashboardView.class);
+        	//put("/Transformacion", Transformacion.class);//put("/dashboard", DashboardView.class);
         	put("/Precursor", Precursor.class);//put("/dashboard", DashboardView.class);
         	put("/Reporte", Reporte.class);//put("/dashboard", DashboardView.class);
         	/*put("/sales", SalesView.class);//put("/sales", SalesView.class);
@@ -344,7 +344,7 @@ public class BotqueuewebUI extends UI {
 
         menu.removeAllComponents();
 
-        String[] modulos = new String[] { "Home","Transformacion","Precursor", "Reporte", };
+        String[] modulos = new String[] { "Home","Precursor", "Reporte", };
         for (final String view : modulos)
         {
             Button b = new NativeButton();
