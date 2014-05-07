@@ -47,6 +47,7 @@ public class MongoHelper {
 		BasicDBObject documentFields = new BasicDBObject();
 		documentFields.put(ProjectsFiels.INPUT_FIELD, 1);
 		documentFields.put(ProjectsFiels.NRO_PROCS_FIELD, 1);
+		documentFields.put(ProjectsFiels.DELTA_T, 1);
 		BasicDBObject documentSort = new BasicDBObject();
 		documentSort.put(ProjectsFiels.PENDING_STAMP_FIELD, 1);
 		return this.projects.findOne(documentQuery ,documentFields, documentSort, ReadPreference.nearest());
