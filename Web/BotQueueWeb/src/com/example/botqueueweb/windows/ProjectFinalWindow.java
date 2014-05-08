@@ -92,7 +92,7 @@ public class ProjectFinalWindow extends Window {
 				((HashMap<String,Object>) eventPpal.getNavigator().getUI().getData()).put("simTime", Double.parseDouble(tfLength.getValue()));
 				((HashMap<String,Object>) eventPpal.getNavigator().getUI().getData()).put("deltaT", Double.parseDouble(tfDeltaT.getValue()));
             	String[] arrayParams = new String[2];
-            	arrayParams[0] = (Double.parseDouble(tfLength.getValue())/( Double.parseDouble(tfDeltaT.getValue())))+"";
+            	arrayParams[0] = (int)Math.ceil(Double.parseDouble(tfLength.getValue())/( Double.parseDouble(tfDeltaT.getValue())))+"";
             	arrayParams[1] = tfSeed.getValue();        	
 			    applet.executeCommand("getModelInfo",arrayParams);
         	    close();
