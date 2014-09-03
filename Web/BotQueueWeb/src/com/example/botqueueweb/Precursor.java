@@ -356,6 +356,7 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletHidden");
 				ProjectFinalWindow pfWindow = new ProjectFinalWindow(applet,eventPpal,project);
 				pfWindow.setHeight("260px");
 				pfWindow.setWidth("570px");
@@ -385,12 +386,26 @@ public class Precursor extends VerticalLayout implements View {
    			button.addClickListener(new Button.ClickListener() {
    				private static final long serialVersionUID = 1L;
    				public void buttonClick(ClickEvent event) {
+   					applet.setStyleName("v-AppletHidden");
    				    applet.executeCommand("getNodeInfo");
    				    System.out.println("getNodeInfo");
    				}
    			});
    			button.addStyleName("small");
    	        hlBotonera.addComponent(button);
+   	        
+   	        button = new Button("");
+	        button.setIcon(new ThemeResource("img/Refresh.png"));
+	        button.setHeight("25px");
+	        button.setWidth("49px");
+			button.addClickListener(new Button.ClickListener() {
+				private static final long serialVersionUID = 1L;
+				public void buttonClick(ClickEvent event) {
+					applet.setStyleName("v-AppletVisible");
+				}
+			});
+			button.addStyleName("small");
+	        hlBotonera.addComponent(button);
 
    	     	vlPanel.addComponent(hlBotonera);
    	     	vlPanel.setComponentAlignment(hlBotonera, Alignment.MIDDLE_LEFT);
@@ -410,7 +425,8 @@ public class Precursor extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-            	QueueWindow qWindow = new QueueWindow((DBObject) JSON.parse("{}"),applet,false, project);
+				applet.setStyleName("v-AppletHidden");
+				QueueWindow qWindow = new QueueWindow((DBObject) JSON.parse("{}"),applet,false, project);
             	qWindow.setHeight("136px"); //("150px"); -14
             	qWindow.setWidth("450px");
             	getUI().addWindow(qWindow);
@@ -425,6 +441,7 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletHidden");
 				CombiWindow cWindow = new CombiWindow((DBObject) JSON.parse("{}"),null,applet,false, project);
 				cWindow.setHeight("136px");//.setHeight("145px"); -9
 				cWindow.setWidth("458px");
@@ -440,6 +457,7 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletHidden");
 				FunctionWindow fWindow = new FunctionWindow((DBObject) JSON.parse("{}"),null,applet,false, project);
 				fWindow.setHeight("136px");//("140px"); -4
 				fWindow.setWidth("458px");
@@ -455,6 +473,7 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletHidden");
 				NormalWindow nWindow = new NormalWindow((DBObject) JSON.parse("{}"),null,applet,false, project);
 				nWindow.setHeight("136px");//("140px"); -4
 				nWindow.setWidth("458px");
@@ -470,6 +489,7 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletHidden");
 				CounterWindow cWindow = new CounterWindow((DBObject) JSON.parse("{}"),applet,false, project);
 				cWindow.setHeight("136px");//("140px"); -4
 				cWindow.setWidth("450px");
@@ -485,7 +505,8 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("getNodeInfo");
+				applet.setStyleName("v-AppletHidden");
+				applet.executeCommand("getNodeInfo");
 			    System.out.println("getNodeInfo");
 			}
 		});
@@ -498,7 +519,7 @@ public class Precursor extends VerticalLayout implements View {
 		button.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-			    applet.executeCommand("deleteNode");
+				applet.executeCommand("deleteNode");
 			}
 		});
 		button.addStyleName("small");
@@ -603,6 +624,19 @@ public class Precursor extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
 			    applet.executeCommand("deleteDot");
+			}
+		});
+		button.addStyleName("small");
+        hlBotonera.addComponent(button);
+        
+        button = new Button("");
+        button.setIcon(new ThemeResource("img/Refresh.png"));
+        button.setHeight("25px");
+        button.setWidth("49px");
+		button.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletVisible");
 			}
 		});
 		button.addStyleName("small");

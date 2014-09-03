@@ -95,6 +95,7 @@ public class CounterWindow extends Window {
 		        	arrayParams[1] = tfCycle.getValue();
 	            	arrayParams[2] = tfName.getValue();	        	    
 	        	    applet.executeCommand("editNode", arrayParams);
+	        	    applet.setStyleName("v-AppletVisible");
 	        	    close();
 				}
 			});
@@ -109,6 +110,7 @@ public class CounterWindow extends Window {
 	        	    arrayParams[0] = "2";
 	        	    arrayParams[1] = tfName.getValue();		
 	        	    applet.executeCommand("createNode", arrayParams);
+	        	    applet.setStyleName("v-AppletVisible");
 	        	    close();
 				}
 			});
@@ -123,6 +125,7 @@ public class CounterWindow extends Window {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletVisible");
         	    close();
 			}
 		});

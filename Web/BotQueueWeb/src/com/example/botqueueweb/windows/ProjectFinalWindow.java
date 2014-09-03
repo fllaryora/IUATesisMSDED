@@ -95,6 +95,7 @@ public class ProjectFinalWindow extends Window {
             	arrayParams[0] = (int)Math.ceil(Double.parseDouble(tfLength.getValue())/( Double.parseDouble(tfDeltaT.getValue())))+"";
             	arrayParams[1] = tfSeed.getValue();        	
 			    applet.executeCommand("getModelInfo",arrayParams);
+			    applet.setStyleName("v-AppletVisible");
         	    close();
 			}
 		});
@@ -104,6 +105,7 @@ public class ProjectFinalWindow extends Window {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletVisible");
         	    close();
 			}
 		});

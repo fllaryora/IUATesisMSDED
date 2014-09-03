@@ -246,6 +246,7 @@ public class FunctionWindow extends Window {
 	            	}
 	        	    
 	        	    applet.executeCommand("editNode", arrayParams);
+	        	    applet.setStyleName("v-AppletVisible");
 	        	    close();
 				}
 			});
@@ -260,6 +261,7 @@ public class FunctionWindow extends Window {
 	        	    arrayParams[0] = "4";
 	        	    arrayParams[1] = tfName.getValue();		
 	        	    applet.executeCommand("createNode", arrayParams);
+	        	    applet.setStyleName("v-AppletVisible");
 	        	    close();
 				}
 			});
@@ -274,6 +276,7 @@ public class FunctionWindow extends Window {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
+				applet.setStyleName("v-AppletVisible");
         	    close();
 			}
 		});

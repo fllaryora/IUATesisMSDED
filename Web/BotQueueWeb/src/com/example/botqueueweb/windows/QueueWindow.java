@@ -108,6 +108,7 @@ public class QueueWindow extends Window {
 		        	arrayParams[2] = tfVariableCost.getValue();
 	            	arrayParams[3] = tfName.getValue();	        	    
 	        	    applet.executeCommand("editNode", arrayParams);
+	        	    applet.setStyleName("v-AppletVisible");
 	        	    close();
 				}
 			});
@@ -122,6 +123,7 @@ public class QueueWindow extends Window {
 	        	    arrayParams[0] = "3";
 	        	    arrayParams[1] = tfName.getValue();		
 	        	    applet.executeCommand("createNode", arrayParams);
+	        	    applet.setStyleName("v-AppletVisible");
 	        	    close();
 				}
 			});
@@ -137,6 +139,7 @@ public class QueueWindow extends Window {
 			@Override
 			public void buttonClick(ClickEvent event) {
         	    close();
+        	    applet.setStyleName("v-AppletVisible");
 			}
 		});
         
