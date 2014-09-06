@@ -16,11 +16,11 @@ typedef enum{
 }statusNode;
 
 extern void queueNode( const MPI_Comm , const  Queue*, const int );
-extern void advancePhaseQueue(int *, int *, const MPI_Comm , int , const Queue *, const int, PrinterQueue* , const int  );
+extern void advancePhaseQueue(int *, int *, const MPI_Comm , int , const Queue *, const int, PrinterQueue* );
 extern int hasAvailableCombis(const int* , const Queue *);
-extern void requestResponceCombis(const int* , const Queue *, const MPI_Comm , const int *,  const int  );
-extern void getDemandCombis(int* , const Queue *, const MPI_Comm , const int  );
-extern void getFortunatedCombis(int* , const Queue *, const MPI_Comm , int* ,  PrinterQueue* , const int  );
+extern void requestResponceCombis(const int* , const Queue *, const MPI_Comm , const int * );
+extern void getDemandCombis(int* , const Queue *, const MPI_Comm );
+extern void getFortunatedCombis(int* , const Queue *, const MPI_Comm , int* ,  PrinterQueue* );
 extern int getAvailableCombisNumber(const int* , const Queue *);
 extern void generationPhaseQueue(int * , int * , const MPI_Comm ,int*, PrinterQueue*);
 

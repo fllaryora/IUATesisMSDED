@@ -4,12 +4,6 @@
 
 
 void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const int mpiProcesses){
-	char* fileName = NULL;
-	int len = snprintf(NULL, 0, "output/combi.%d.log",initialStatus->idNode);
-	fileName = (char*) malloc( (len + 1) * sizeof(char) );
-	snprintf(fileName, (len + 1), "output/combi.%d.log",initialStatus->idNode);
-	
-	int fileDescriptor = open (fileName, O_WRONLY|O_CREAT|O_TRUNC, 00660);
 	//variables a ser enviadas al printer
 	PrinterActivity cReport;
 
@@ -43,38 +37,28 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 	cReport.maximunDrawn = NAN; //NAN definido en math.h
 	cReport.minimunDrawn = NAN;
 	
-	loger( fileDescriptor, "-- Inicio --\n");
 	do {
 		MPI_Bcast( &msg ,1,MPI_INT, MASTER_ID, commNodes);
 	
 		switch(msg){
 			case ADVANCE_PAHSE:
-				logPhase(fileDescriptor,"Avance Phase input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
-				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, &rngProbabilisticBranch,fileDescriptor);
-				logPhase(fileDescriptor,"End Avance Phase input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
+				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, FALSE, &rngProbabilisticBranch );
 				break;
 			case ADVANCE_PAHSE_PRIMA:
-				logPhase(fileDescriptor,"Avance Phase Prima input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
-				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, &rngProbabilisticBranch,fileDescriptor);
-				logPhase(fileDescriptor,"End Avance Phase Prima input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
+				advancePhaseCombi( &inputWorktask,  &outputWorktask, initialStatus, commNodes, mpiProcesses, TRUE, &rngProbabilisticBranch );
 				break;
 			case GENERATION_PHASE: //hace lo mismo que la de abajo
 			case GENERATION_PHASE_PRIMA:
-				logPhase(fileDescriptor,"Generation Phase/Generation Phase Prima, input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
 				generationPhaseCombi( &inputWorktask, &bodyResource, &outputWorktask, commNodes, workTaskList, initialStatus, &cReport, &rngDrawn);
-				logPhase(fileDescriptor,"End Generation Phase/Generation Phase Prima, input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
 				break;
 			case CONSUME_DT:
-				logPhase(fileDescriptor,"CONSUME_DT, input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
 				deltaTCount++;
 				int goOut = discountDelayAndDeleteFinishedWorktask(workTaskList);
 				bodyResource -= goOut;
 				outputWorktask += goOut;
 				MPI_Barrier( commNodes );
-				logPhase(fileDescriptor,"END CONSUME_DT, input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
 				break;
 			case PING_REPORT:
-				logPhase(fileDescriptor,"PING_REPORT, input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
 				cReport.activityInside = bodyResource;
 				MPI_Send(&cReport, sizeof(PrinterActivity), MPI_BYTE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
 				if(bodyResource > 0){
@@ -82,32 +66,29 @@ void combiNode( const MPI_Comm commNodes,  const  Combi *initialStatus, const in
 					MPI_Send(worktask, cReport.activityInside* 2, MPI_DOUBLE, PRINTER_ID, COMBI_REPORT , MPI_COMM_WORLD);
 					free(worktask);
 				}
-				logPhase(fileDescriptor,"END PING_REPORT, input = %d, body = %d , output = %d\n",inputWorktask,bodyResource,outputWorktask);
 			default:
 				break;
 		}
 	} while (msg != LIVE_LOCK);
-	loger( fileDescriptor, "-- LIVE_LOCK --\n");
-	close(fileDescriptor);
 	return;
 }
 
-void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, RngInstance* rngProbabilisticBranch, const int fileDescriptor){ 
+void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *initialStatus, const MPI_Comm commNodes, const int mpiProcesses,const int isPrima, RngInstance* rngProbabilisticBranch ){ 
     for(;;){
-    	if(!hasQueueResources( initialStatus, commNodes,fileDescriptor)){
-	    	resourcesNoDemand( initialStatus, commNodes,fileDescriptor);
-	    	resourcesSend( initialStatus, commNodes, outputWorktask, rngProbabilisticBranch,fileDescriptor);
-	    	finishCombi( isPrima, commNodes , inputWorktask, mpiProcesses,fileDescriptor);
+    	if(!hasQueueResources( initialStatus, commNodes)){
+	    	resourcesNoDemand( initialStatus, commNodes);
+	    	resourcesSend( initialStatus, commNodes, outputWorktask, rngProbabilisticBranch );
+	    	finishCombi( isPrima, commNodes , inputWorktask, mpiProcesses );
 	    	break;
     	}else{
-	    	resourcesDemand(initialStatus, commNodes,fileDescriptor);
-	    	if(allTransactionBegin( commNodes ,initialStatus,fileDescriptor)){
-	    		setAllCommit(initialStatus, commNodes,fileDescriptor);
+	    	resourcesDemand(initialStatus, commNodes);
+	    	if(allTransactionBegin( commNodes ,initialStatus )){
+	    		setAllCommit(initialStatus, commNodes );
 	    		(*inputWorktask)++;
 	    	} else {
-	    		setAllRollback( initialStatus, commNodes,fileDescriptor);
-	    		resourcesSend( initialStatus, commNodes, outputWorktask,rngProbabilisticBranch, fileDescriptor);
-	    		finishCombi( isPrima,  commNodes , inputWorktask, mpiProcesses,fileDescriptor);
+	    		setAllRollback( initialStatus, commNodes );
+	    		resourcesSend( initialStatus, commNodes, outputWorktask,rngProbabilisticBranch );
+	    		finishCombi( isPrima,  commNodes , inputWorktask, mpiProcesses );
 	    		break;
 	    	}
     	}
@@ -116,39 +97,35 @@ void advancePhaseCombi(int * inputWorktask, int* outputWorktask, const Combi *in
 }
 
 //Espero a que todas las combis me manden resource request
-int hasQueueResources( const Combi *initialStatus, const MPI_Comm commNodes, const int fileDescriptor){
+int hasQueueResources( const Combi *initialStatus, const MPI_Comm commNodes){
 	int allHas = TRUE;
 	int msg;
 	for(int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Send( NULL, 0, MPI_INT,  initialStatus->preceders[i], RESOURCE_REQUEST, commNodes);
-		loger( fileDescriptor, ">>> RESOURCE_REQUEST >>>\n");
 		MPI_Recv( &msg, 1, MPI_INT, initialStatus->preceders[i], RESOURCE_RESPONSE, commNodes, MPI_STATUS_IGNORE);
-		logPhase(fileDescriptor,"<<< Q%d = %d <<< RESOURCE_RESPONSE ( %d )<<< \n",i,initialStatus->preceders[i],msg);
 		allHas &= (msg)?TRUE:FALSE;
 	}
 	return allHas;
 }
 
 //Envio resource no demand a las colas
-void resourcesNoDemand( const Combi *initialStatus, const MPI_Comm commNodes, const int fileDescriptor){
+void resourcesNoDemand( const Combi *initialStatus, const MPI_Comm commNodes){
 	for(int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Send( NULL, 0, MPI_INT,  initialStatus->preceders[i], RESOURCE_NO_DEMAND, commNodes);
-		logPhase(fileDescriptor,"%d >>> RESOURCE_NO_DEMAND >>> Q%d = %d \n",0,i,initialStatus->preceders[i]);
 	}
 	return;
 }
 
 //Envio resource no demand a las colas
-void resourcesDemand( const Combi *initialStatus, const MPI_Comm commNodes, const int fileDescriptor){
+void resourcesDemand( const Combi *initialStatus, const MPI_Comm commNodes){
 	for(int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Send( NULL, 0, MPI_INT,  initialStatus->preceders[i], RESOURCE_DEMAND, commNodes);
-		logPhase(fileDescriptor,"%d >>> RESOURCE_DEMAND >>> Q%d = %d \n",0,i,initialStatus->preceders[i]);
 	}
 	return;
 }
 
 //envio resource send a los followers
-void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* worktaskInOutput, RngInstance* rngProbabilisticBranch , const int fileDescriptor){
+void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* worktaskInOutput, RngInstance* rngProbabilisticBranch ){
 	
 	double* walls = NULL;
 	int* hollows = NULL;
@@ -191,12 +168,10 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 		//tomo los envios pendientes del RESOURCE SEND y los paso a la entrada
 		for (int i = 0 ; i < initialStatus->countFollowers; i++){
 			 MPI_Isend( worktaskInOutput, 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
-			 logPhase(fileDescriptor,">>> RESOURCE_SEND = %d >>> N%d=%d \n", (*worktaskInOutput) , i,  initialStatus->followers[i]);
 		}
 	} else {
 		for (int i = 0 ; i < initialStatus->countFollowers; i++){
 			 MPI_Isend( &hollows[i], 1, MPI_INT,  initialStatus->followers[i], RESOURCE_SEND, commNodes, &requestFollowers[i]);
-			 logPhase(fileDescriptor,">>> RESOURCE_SEND = %d >>> N%d=%d \n", hollows[i] , i,  initialStatus->followers[i]);
 		}
 	}
 	
@@ -205,28 +180,25 @@ void resourcesSend( const Combi *initialStatus, const MPI_Comm commNodes, int* w
 		MPI_Wait(&requestFollowers[i], MPI_STATUS_IGNORE);
 		(*worktaskInOutput) = 0;
 	}
-	
 	free(requestFollowers);
-	
 	if(walls)free(walls);
 	if(hollows)free(hollows);
 }
 
 
-void finishCombi(const int isPrima, const MPI_Comm commNodes ,const int* inputResource, const int mpiProcesses, const int fileDescriptor){
+void finishCombi(const int isPrima, const MPI_Comm commNodes ,const int* inputResource, const int mpiProcesses ){
 	int msg;
 	 if( !isPrima ){
 		MPI_Barrier( commNodes );
 	} else {
 		int * nodesStatus = NULL;
 		msg = (*inputResource)? FALSE: TRUE;
-		loger( fileDescriptor, (*inputResource)?">>> NOT TERMINATED NODE >>>\n":">>> TERMINATED NODE >>>\n");
 		MPI_Gather(&msg, 1, MPI_INT,  nodesStatus, 1 , MPI_INT,  MASTER_ID, commNodes);
 	}
 
 }
 
-int allTransactionBegin(const MPI_Comm commNodes ,const Combi *initialStatus, const int fileDescriptor){
+int allTransactionBegin(const MPI_Comm commNodes ,const Combi *initialStatus ){
 	int msg;
 	int allBegin = TRUE;
 	MPI_Status infoComm;
@@ -235,23 +207,20 @@ int allTransactionBegin(const MPI_Comm commNodes ,const Combi *initialStatus, co
 		MPI_Recv( &msg, 1, MPI_INT, initialStatus->preceders[i], MPI_ANY_TAG, commNodes, &infoComm);
 		currentTag = infoComm.MPI_TAG;
 		allBegin  &= (currentTag == TRANSACTION_BEGIN)?TRUE:FALSE;
-		loger( fileDescriptor, (currentTag == TRANSACTION_BEGIN)?"<<< TRANSACTION_BEGIN <<<\n":"<<< TRANSACTION_CANCELED <<<\n");
 	}
 	return allBegin;
 }
 
-void setAllRollback(const Combi *initialStatus, const MPI_Comm commNodes, const int fileDescriptor){
+void setAllRollback(const Combi *initialStatus, const MPI_Comm commNodes ){
 	for(int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Send( NULL, 0, MPI_INT,  initialStatus->preceders[i], TRANSACTION_ROLLBACK, commNodes);
-		loger( fileDescriptor, ">>> TRANSACTION_ROLLBACK >>>\n");
 	}
 	return ;
 }
 
-void setAllCommit(const Combi *initialStatus, const MPI_Comm commNodes, const int fileDescriptor){
+void setAllCommit(const Combi *initialStatus, const MPI_Comm commNodes ){
 	for(int i = 0 ; i < initialStatus->countPreceders; i++){
 		MPI_Send( NULL, 0, MPI_INT,  initialStatus->preceders[i], TRANSACTION_COMMIT, commNodes);
-		loger( fileDescriptor, ">>> TRANSACTION_COMMIT >>>\n");
 	}
 	return ;
 }

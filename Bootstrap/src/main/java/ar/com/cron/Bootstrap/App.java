@@ -10,6 +10,9 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.util.JSON;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
  
 /**
  *	Bootstrap of Bootqueue
@@ -96,6 +99,12 @@ public class App {
 	 * @return
 	 */
 	static boolean executeProject(MongoHelper myMongo, DBObject toRead ){
+		DecimalFormat decimalFormat;
+		Locale locale  = new Locale("en", "UK");
+		String pattern = "###.########";
+		decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+		decimalFormat.applyPattern(pattern);
+		
 		System.out.println("Se pasa el proyecto a estado en ejecucion...");
 		if(!myMongo.toExecuteState( toRead )) return false;
 		System.out.println("Se escribe el input en el archivo de entrada...");
@@ -105,12 +114,14 @@ public class App {
 			System.out.println("Se arma parametros de entrada para MPI...");
 			int nrp = (Integer)toRead.get(ProjectsFiels.NRO_PROCS_FIELD);
 			Object dT = toRead.get(ProjectsFiels.DELTA_T);
-			String deltaT = ""+(Double)(dT!=null?dT:1.0);
+			String deltaT = decimalFormat.format((Double)(dT!=null?dT:1.0));
 			String nroProces = ""+ (nrp+ProjectsValues.SCHEDULER_PROCS);
 			
 			Process compilationProcess = new ProcessBuilder(
 					ProjectsValues.BOTQUEUE_COMPILE_SCRIPT,
 					ProjectsValues.COMPILATION_MODE_PRODUCTION, deltaT ).start();
+			System.out.println(""+ProjectsValues.BOTQUEUE_COMPILE_SCRIPT+" "+
+					ProjectsValues.COMPILATION_MODE_PRODUCTION+ " "+ deltaT);
 			System.out.println("waiting, esperando a que termine....." );
 			
 			if (compilationProcess == null) {
@@ -126,6 +137,9 @@ public class App {
 					ProjectsValues.BOTQUEUE_PROGRAM,
 					ProjectsValues.NUMBER_OF_PROCESS, nroProces ,
 					ProjectsValues.BOTQUEUE_CODE ).start();
+			System.out.println(""+ ProjectsValues.BOTQUEUE_PROGRAM+" "+
+					ProjectsValues.NUMBER_OF_PROCESS+" "+ nroProces + " "+
+					ProjectsValues.BOTQUEUE_CODE);
 			System.out.println("waiting, esperando a que termine....." );
 			
 			if (mpiProcess == null) {

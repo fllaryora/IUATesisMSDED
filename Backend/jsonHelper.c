@@ -186,6 +186,18 @@ ValidationResults*  validateJson(const char *filenameJson){
 		goto freeIdNodeArray;
 	}
 
+	if( json_object_dotget_number (object, "length") <= 0 ){
+		writeErrorInFile("El tiempo de simulacion debe ser mayor a 0");
+		validationResult->isValid = VALIDATION_FAIL;
+		goto freeIdNodeArray;	
+	}
+
+	if( TIME_ONE_STEP <= 0.0000001 ){
+		writeErrorInFile("El paso de simulacion debe ser mayor a 0.0000001");
+		validationResult->isValid = VALIDATION_FAIL;
+		goto freeIdNodeArray;	
+	}
+
 	//Lista de punteros a proceders y followers segun id de nodo
 	precederArrayFull = (int **) malloc(sizeAllNodes*sizeof(int*));
 	followerArrayFull = (int **) malloc(sizeAllNodes*sizeof(int*));
