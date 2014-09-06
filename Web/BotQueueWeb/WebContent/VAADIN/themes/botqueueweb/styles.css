@@ -6166,3 +6166,11 @@ body .botqueueweb.v-app .v-app-loading {
 .v-Notification-system h1 + p + p i {
 	display: none;
 }
+
+.v-AppletHidden {
+	visibility: hidden;
+}
+
+.v-AppletVisible {
+	visibility: visible;
+}
