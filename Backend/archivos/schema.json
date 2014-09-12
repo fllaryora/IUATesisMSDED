@@ -17,7 +17,7 @@
             "properties":{
                 "queues": {
                     "type":"array",
-                    "required":true,
+                    "required":false,
                     "items": {
                         "type":"object",
                         "required":true,
@@ -25,6 +25,10 @@
                             "idNode": {
                                 "type":"integer",
                                 "required":true
+                            },
+                            "name": {
+                                "type":"string",
+                                "required":false
                             },
                             "resource": {
                                 "type":"integer",
@@ -62,13 +66,17 @@
                 },
                 "counters": {
                     "type":"array",
-					"required":true,
+					"required":false,
                     "items": {
                         "type":"object",
                         "properties":{
                             "idNode": {
                                 "type":"integer",
                                 "required":true
+                            },
+                            "name": {
+                                "type":"string",
+                                "required":false
                             },
                             "quantity": {
                                 "type":"integer",
@@ -103,7 +111,7 @@
                 },
 				"functions": {
                     "type":"array",
-                    "required":true,
+                    "required":false,
                     "items": {
                         "type": "object",
                         "required":true,
@@ -112,6 +120,10 @@
 						        "type":"integer",
 						        "required":true
 						    },
+						    "name": {
+                                "type":"string",
+                                "required":false
+                            },
 						    "input": {
 						        "type":"integer",
 						        "required":true
@@ -154,7 +166,7 @@
                 },
                 "normals": {
                     "type":"array",
-					"required":true,
+					"required":false,
                     "items": {
                         "type":"object",
                         "required":true,
@@ -163,6 +175,10 @@
 								  "type":"integer",
 								  "required":true
 							 },
+							 "name": {
+                                "type":"string",
+                                "required":false
+                            },
 							"preceders": {
 								 "type":"array",
 								 "required":true,
@@ -353,7 +369,7 @@
                 },
                 "combis": {
                     "type":"array",
-					"required":true,
+					"required":false,
 					"items": {
 						"type":"object",
 						"required":true,
@@ -362,6 +378,10 @@
 								  "type":"integer",
 								  "required":true
 							 },
+							 "name": {
+                                "type":"string",
+                                "required":false
+                            },
 							"preceders": {
 								 "type":"array",
 								 "required":true,

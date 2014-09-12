@@ -9,6 +9,14 @@ then
 else
 	echo "BOTQUEUE_HOME existe"
 fi
+
+if [ -z ${BOTQUEUE_CODE+x} ]
+then
+	BOTQUEUE_CODE=/tmp/Engine
+else
+	echo "BOTQUEUE_CODE existe"
+fi
+
 cd $BOTQUEUE_HOME
 
 
@@ -21,17 +29,17 @@ GCCARGS=" "
 RUNFORESTRUN=" "
 
 
-if [ -e "Engine" ]
+if [ -e "$BOTQUEUE_CODE" ]
 then
-	if [ -f "Engine" ]
+	if [ -f "$BOTQUEUE_CODE" ]
 	then
-		echo "rm Engine"
-		rm Engine
+		echo "rm $BOTQUEUE_CODE"
+		rm $BOTQUEUE_CODE
 	else
-		echo "no hay Engine"
+		echo "no hay $BOTQUEUE_CODE"
 	fi
 else
-	echo "no hay Engine"
+	echo "no hay $BOTQUEUE_CODE"
 fi
 
 
@@ -160,7 +168,7 @@ $COMPILER -Wall $GCCARGS -c raffler.c
 echo "$COMPILER -Wall $GCCARGS -c scheduler.c"
 $COMPILER -Wall $GCCARGS -c scheduler.c
 
-echo "$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o queue.o combi.o normal.o function.o counter.o scheduler.o -lm  -lwjelement -lwjreader -o Engine main.c"
-$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o queue.o combi.o normal.o function.o counter.o scheduler.o -lm -lwjelement -lwjreader -o Engine main.c
+echo "$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o queue.o combi.o normal.o function.o counter.o scheduler.o -lm  -lwjelement -lwjreader -o $BOTQUEUE_CODE main.c"
+$COMPILER -Wall $GCCARGS RNGs.o parson.o jsonHelper.o raffler.o printer.o genericNode.o queue.o combi.o normal.o function.o counter.o scheduler.o -lm -lwjelement -lwjreader -o $BOTQUEUE_CODE main.c
 
 rm *.o

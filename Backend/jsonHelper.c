@@ -23,7 +23,7 @@ void writeErrorInFile(const char* label){
 	char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
 	if(botqueueOutputFile == NULL ){
 		botqueueOutputFile = "/tmp/defaultOutputJson.json";
-		printf("Process Printer: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
+		printf("JsonHelper: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
 	}
 	int fileDescriptor = open (botqueueOutputFile, O_WRONLY|O_CREAT|O_TRUNC,00660);
 	write(fileDescriptor,"{\n\"Error\" : \"",13);
@@ -36,7 +36,7 @@ void writeErrorInFileN(const char* label, const int N){
 	char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
 	if(botqueueOutputFile == NULL ){
 		botqueueOutputFile = "/tmp/defaultOutputJson.json";
-		printf("Process Printer: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
+		printf("JsonHelper: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
 	}
 	int fileDescriptor = open (botqueueOutputFile,O_WRONLY|O_CREAT|O_TRUNC,00660);
 	write(fileDescriptor,"{\n\"Error\" : \"",13);
@@ -53,10 +53,10 @@ void writeErrorInFileN(const char* label, const int N){
 /* Valida El archivo de ingreso contra el schema */
 int validateSchema(const char *filenameJson){
 
-	char* botqueueSchema = getenv("BOTQUEUE_INPUT_FILE");
+	char* botqueueSchema = getenv("BOTQUEUE_SCHEMA");
 	if(botqueueSchema == NULL ){
 		botqueueSchema = "/tmp/schema.json";
-		printf("Process Printer: can not find BOTQUEUE_INPUT_FILE, using default path: /tmp/schema.json \n");
+		printf("JsonHelper: can not find BOTQUEUE_SCHEMA, using default path: /tmp/schema.json \n");
 	}
 
 	const char* filenameSchema = botqueueSchema;

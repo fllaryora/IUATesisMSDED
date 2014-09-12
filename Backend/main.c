@@ -45,13 +45,7 @@ int main(int argc, char **argv){
 	long long end = 0LL;
 	int benckmarkCsv = 0;*/
 
-	char* botqueueInputFile = getenv("BOTQUEUE_INPUT_FILE");
-	if(botqueueInputFile == NULL ){
-		botqueueInputFile = "/tmp/defaultInputJson.json";
-		printf("Process Printer: can not find BOTQUEUE_INPUT_FILE, using default path: /tmp/defaultInputJson.json \n");
-	}
-
-	const char *filenameJson = botqueueInputFile;
+	char* botqueueInputFile ;//only for master
 	
 	int idNodo; int idNodoInterno;  int mpiProcesses; 
 	int* processRank = NULL; MPI_Group groupWorld; MPI_Group groupNodes; MPI_Comm commNodes;
@@ -75,9 +69,15 @@ int main(int argc, char **argv){
 	
 	switch( idNodo ){
 		case MASTER_ID:
+			printf("Variables de entorno\nInput: %s\nOutput: %s\nSchema: %s\n",getenv("BOTQUEUE_INPUT_FILE"),getenv("BOTQUEUE_OUTPUT_FILE"),getenv("BOTQUEUE_SCHEMA"));
+			botqueueInputFile = getenv("BOTQUEUE_INPUT_FILE");
+			if(botqueueInputFile == NULL ){
+				botqueueInputFile = "/tmp/defaultInputJson.json";
+				printf("Process Scheduler: can not find BOTQUEUE_INPUT_FILE, using default path: /tmp/defaultInputJson.json \n");
+			}			
 			//benchmark code
 			//master(mpiProcesses, commNodes,filenameJson, benckmarkCsv);
-			master(mpiProcesses, commNodes,filenameJson);
+			master(mpiProcesses, commNodes,botqueueInputFile);
 			break;
 		case RAFFLER_ID:
 			MPI_Bcast_JSON( &jsonResult, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
@@ -180,7 +180,7 @@ void master(const int mpiProcesses, const MPI_Comm commNodes ,const char *filena
 			char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
 			if(botqueueOutputFile == NULL ){
 				botqueueOutputFile = "/tmp/defaultOutputJson.json";
-				printf("Process Printer: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
+				printf("Process Scheduler: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
 			}
 			int fileDescriptor = open (botqueueOutputFile , O_WRONLY|O_CREAT|O_TRUNC,00660);
 			write(fileDescriptor,"{\n\"Error\" : \"",13);

@@ -101,9 +101,15 @@ public class App {
 	static boolean executeProject(MongoHelper myMongo, DBObject toRead ){
 		DecimalFormat decimalFormat;
 		Locale locale  = new Locale("en", "UK");
-		String pattern = "###.########";
+		String pattern = "###.0#######";
 		decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 		decimalFormat.applyPattern(pattern);
+		
+		System.out.println("Variables de entorno cargadas:");
+		System.out.println("Ruta al Script de compilacion :"+ProjectsValues.BOTQUEUE_COMPILE_SCRIPT);
+		System.out.println("Ruta al  Engine :"+ProjectsValues.BOTQUEUE_CODE);
+		System.out.println("Ruta al  Input :"+ProjectsValues.BOTQUEUE_INPUT_FILE);
+		System.out.println("Ruta al  OutPut :"+ProjectsValues.BOTQUEUE_OUTPUT_FILE);
 		
 		System.out.println("Se pasa el proyecto a estado en ejecucion...");
 		if(!myMongo.toExecuteState( toRead )) return false;
