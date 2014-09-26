@@ -2,7 +2,6 @@
 package ar.com.botqueue.applet;
 
 import ar.com.botqueue.applet.graphic.GraphicDTO;
-
 import java.awt.*;
 
 public class Principal extends AbstractVaadinApplet {

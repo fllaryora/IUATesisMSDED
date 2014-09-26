@@ -141,19 +141,20 @@ public class GenericArrow implements Arrow{
 
 	public Node addDotNextTo(Node thisDotInArrow, double zoom) {
 		
-		int xInitial =0, yInitial=0; //inicializo al pedo para evitar warnings
+		int xInitial = 0, yInitial = 0; //inicializo al pedo para evitar warnings
 		int xFinal = thisDotInArrow.getXBindSurfacePoint(zoom, BindSurface.CENTER);
 		int yFinal = thisDotInArrow.getYBindSurfacePoint(zoom, BindSurface.CENTER);
 		int currentOrder = thisDotInArrow.getOrder();
-		int size = this.arrowNodes.size();
+		int nextNode = currentOrder + 1;
+		int maxOrder = this.arrowNodes.size() -1 ;
 		
-		if( currentOrder + 1 == size){//es el ultimo punto
+		if( currentOrder == maxOrder){//es el ultimo punto
 			//debo usar el punto extremo?
 			xInitial = this.headArrow.getXBindSurfacePoint(zoom, this.headSurface) ;
 			yInitial = this.headArrow.getYBindSurfacePoint(zoom, this.headSurface) ;
 		} else{
 			for(Node nodo: arrowNodes){
-				if (nodo.getOrder() == thisDotInArrow.getOrder() + 1){
+				if (nodo.getOrder() == nextNode){
 					xInitial = nodo.getXBindSurfacePoint(zoom, BindSurface.CENTER);
 					yInitial = nodo.getYBindSurfacePoint(zoom, BindSurface.CENTER);
 					break;
@@ -162,11 +163,14 @@ public class GenericArrow implements Arrow{
 		}
 		
 		int x = (xFinal + xInitial)/2;
-		int y = (yFinal + yInitial)/2;;
+		int y = (yFinal + yInitial)/2;
 		Node e = NodeFactory.createNode(NodeTypes.ARROW_DOT, x, y, "", currentOrder+1);
-		for(Node nodo: arrowNodes){
-			if (nodo.getOrder() > thisDotInArrow.getOrder()){
-				nodo.setOrder(nodo.getOrder() +1);
+		if( currentOrder != maxOrder){
+			for(Node nodo: arrowNodes){
+				int order = nodo.getOrder();
+				if ( order > currentOrder){
+					nodo.setOrder(order+1);
+				}
 			}
 		}
 		arrowNodes.add((DotNode)e);
@@ -176,31 +180,43 @@ public class GenericArrow implements Arrow{
 	}
 
 	public Node addDotBeforeFrom(Node thisDotInArrow, double zoom){
-		int xInicial =0, yInicial=0;
+		int xInitial =0, yInitial=0;
 		int xFinal = thisDotInArrow.getXBindSurfacePoint(zoom, BindSurface.CENTER);
 		int yFinal = thisDotInArrow.getYBindSurfacePoint(zoom, BindSurface.CENTER);
 		int currentOrder = thisDotInArrow.getOrder();
+		int nextNode = currentOrder - 1;
 		
 		if( currentOrder == 0){//debo usar el punto extremo?
-			xInicial = this.tailArrow.getXBindSurfacePoint(zoom, this.tailSurface) ;
-			yInicial = this.tailArrow.getYBindSurfacePoint(zoom, this.tailSurface) ;
+			xInitial = this.tailArrow.getXBindSurfacePoint(zoom, this.tailSurface) ;
+			yInitial = this.tailArrow.getYBindSurfacePoint(zoom, this.tailSurface) ;
 		} else{
 			for(Node nodo: arrowNodes){
-				if (nodo.getOrder() == thisDotInArrow.getOrder() - 1){
-					xInicial = nodo.getXBindSurfacePoint(zoom, BindSurface.CENTER);
-					yInicial = nodo.getYBindSurfacePoint(zoom, BindSurface.CENTER);
+				if ( nodo.getOrder() == nextNode ){
+					xInitial = nodo.getXBindSurfacePoint(zoom, BindSurface.CENTER);
+					yInitial = nodo.getYBindSurfacePoint(zoom, BindSurface.CENTER);
 					break;
 				}
 			}
 			
 		}
+		int x = (xFinal + xInitial)/2;
+		int y = (yFinal + yInitial)/2;
 		
-		int x = (xFinal + xInicial)/2;
-		int y = (yFinal + yInicial)/2;;
-		Node e = NodeFactory.createNode(NodeTypes.ARROW_DOT, x, y, "", currentOrder-1);
+		//tengo que mantener el 0 como el order del ultimo nodo
 		for(Node nodo: arrowNodes){
-			if (nodo.getOrder() < thisDotInArrow.getOrder()){
-				nodo.setOrder(nodo.getOrder() -1);
+			int order = nodo.getOrder();
+			nodo.setOrder(order+1);
+			
+		}
+		currentOrder = thisDotInArrow.getOrder();//update
+		
+		Node e = NodeFactory.createNode(NodeTypes.ARROW_DOT, x, y, "", currentOrder-1);
+		if( currentOrder != 0){
+			for(Node nodo: arrowNodes){
+				int order = nodo.getOrder();
+				if (order < currentOrder){
+					nodo.setOrder(order-1);
+				}
 			}
 		}
 		arrowNodes.add((DotNode)e);
@@ -283,19 +299,26 @@ public class GenericArrow implements Arrow{
 	public void setProbabilisticBranch(double probabilisticBranch, boolean enable) {
 		this.probabilisticBranch = probabilisticBranch;
 		this.enableProb = enable;
-		DotNode point = arrowNodes.get(0);
-		if(this.enableProb){
-			point.enableProbabilisticBranch(""+this.probabilisticBranch);
-		} else {
+		for(DotNode point :arrowNodes ){
 			point.disableProbabilisticBranch();
 		}
-		
+		if(this.enableProb){
+			DotNode point = arrowNodes.get(0);
+			point.enableProbabilisticBranch(""+this.probabilisticBranch);
+		} 
 	}
 
 	public boolean isEnableProb() {
 		return enableProb;
 	}
 	
+	public void fixOldBug(){
+		//reorder the order numbers
+		for(int i = 0; i< this.arrowNodes.size() ; i++){
+			DotNode dot = this.arrowNodes.get(i);
+			dot.setOrder(i);
+		}
+	}
 	/////////////*******************obtener json****************************************
 	public String getArrowJson( BotQueueList<Node> nodes) {
 		String arrowJson = "{";

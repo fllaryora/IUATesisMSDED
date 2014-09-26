@@ -132,6 +132,7 @@ Return Two Fields and Exclude _id
 
 
 
+
 Modificacion o insercion si no existe
 
 Call the update() method with the upsert flag to create a new document if no document matches the update’s query criteria. [1]
@@ -162,6 +163,7 @@ Remove All Documents: db.inventory.remove()
 Remove Documents that Matches a Condition: db.inventory.remove( { type : "food" } 
 
 
+
 Remove a Single Document that Matches a Condition: db.inventory.remove( { type : "food" }, 1 )
 
 
@@ -172,10 +174,7 @@ $mongodb\bin\mongoimport --db test --collection docs < example2.json
 
 
 
-
 mongoexport --db botqueuedb --collection projects --query '{"field": 1}' --out collection.json
-
-
 mongoexport --db botqueuedb --collection projects --query '{"_id": 52ddc56e70bc317461ba1424}'
 
 
@@ -189,3 +188,82 @@ http://www.genbetadev.com/bases-de-datos/una-introduccion-a-mongodb
 http://www.4tic.com/blog/2011/06/29/mongodb-la-mysql-del-nosql/
 http://docs.mongodb.org/manual/tutorial/getting-started/
 http://www.mkyong.com/mongodb/mongodb-import-and-export-example/
+
+
+
+-------------------------------
+- ¿Explayar sobe el resultado de las metricas. pero desde el plano de analisis de los casos de exito o ir mal alla de la metrica en si?
+- una opinión personal respecto a lo aprendido, ya sea sobre TGS o lo tecnico
+Nosotros hemos agrupado el modelo precursor con el modelo de simulacion .
+(modelo simulate ‘sim8’) .
+Estos dos modelos se retroalimentan de forma automatica.
+y el resultado es escribir y/o decidir.
+Esto tiene que aplicarse a la realidad (problematica) y tengo que aplicarlo , ---> sino es un juego , intelequia.
+Incorporar el balking y reneging es forward research.
+Innovaciones: paralelismo y unificación.
+Experimentos:  VAlidación y  Optimizacion:buscar medias y varianzas.
+Si yo no puedo describir un problema no puedo tomar una decición.
+
+
+
+En el trabajo realizado se asocio el modelo precursor con el de simulación extend de Halpin, lo cual permite una retroalimentación de forma automatica.
+El sistema permite al modelador ogerente de producción describir una problematica de la realidad mediante diseño, configuración y experimentación.
+Los resultados de los experimentos le permitirán al responsable validar la realidad y tomar deciciones para optimizar el uso de los recursos.
+
+
+
+mongodump -db botqueuedb -c projects --out .
+mongodump -db botqueuedb -c users --out .
+
+
+
+mongorestore -db botqueuedb -c projects_test project2.bson 
+mongorestore -db botqueuedb -c users users.bson 
+
+
+
+mongorestore -db botqueuedb -c users users.bson 
+
+
+projects
+system.indexes
+user
+users
+
+
+
+db.createCollection('projects_test', {autoindex:true})
+db.createCollection('users', {autoindex:true})
+
+
+db.projects.update( {}, { $set: { "user.$id": ObjectId("53489fc1f184a19907174bd6") } } )
+
+
+
+
+db.projects.update({}, {$set:{ "user.$ref":"users", "user.$id": ObjectId("53489fc1f184a19907174bd6") }},  false, true)
+
+------------------
+Arreglar el mongo:
+
+http://www.desarrolloweb.com/articulos/propiedad-z-index.html
+
+http://stackoverflow.com/questions/20983110/bootstrap-modal-sitting-behind-backdrop
+
+http://stackoverflow.com/questions/14144358/bootstrap-modal-getting-blacked-out-because-of-positioned-navbar
+
+
+
+http://stackoverflow.com/questions/6275953/how-to-display-div-over-a-java-applet-in-chrome
+http://stackoverflow.com/questions/5551479/how-to-display-pop-up-content-on-top-of-an-applet
+
+
+
+db.projects_test.update( {}, { $set: {"user.$ref" : "users", "user.$id" : ObjectId("53489fc1f184a19907174bd6") } } , false, true)
+
+chown -R mongodb:mongodb  /var/lib/mongodb/
+chown mongodb:mongodb  /var/lib/mongodb/botqueuedb.*
+chown mongodb:mongodb  /var/lib/mongodb/botqueue.*
+chown mongodb:mongodb  /var/lib/mongodb/test.*
+chown mongodb:mongodb  /var/lib/mongodb/testdb.*
+rm -rf /var/lib/mongodb/mongod.lock

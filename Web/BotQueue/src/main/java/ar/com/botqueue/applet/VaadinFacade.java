@@ -436,6 +436,8 @@ public class VaadinFacade {
 					for(int i = 0; i < arrows.length(); i++){
 						GenericArrow ga = getGA( arrows.getJSONObject(i), nodeMap, modelNodes);
 						this.graphic.appendArrow(ga);
+						ga.fixOldBug();
+						
 					}
 					
 				}

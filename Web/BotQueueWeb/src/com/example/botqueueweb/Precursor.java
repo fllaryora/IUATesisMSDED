@@ -101,7 +101,6 @@ public class Precursor extends VerticalLayout implements View {
     	hlApplet.setWidth("1160px");
     	hlApplet.setHeight("1015px");
     	hlApplet.setMargin(true);
-        
     	applet = new AppletIntegration() {
 
 	        private static final long serialVersionUID = 1L;
@@ -109,7 +108,6 @@ public class Precursor extends VerticalLayout implements View {
 	        @Override
 	        public void attach() {
 	        	super.attach();
-	            
 	            setAppletArchives(Arrays.asList(new String[]{"BotQueue.jar"}));  
 	            setCodebase("/BotQueueWeb/VAADIN/applet/");     
 	            setAppletClass("ar/com/botqueue/applet/Principal.class");  
@@ -388,7 +386,6 @@ public class Precursor extends VerticalLayout implements View {
    				public void buttonClick(ClickEvent event) {
    					applet.setStyleName("v-AppletHidden");
    				    applet.executeCommand("getNodeInfo");
-   				    System.out.println("getNodeInfo");
    				}
    			});
    			button.addStyleName("small");
@@ -507,7 +504,6 @@ public class Precursor extends VerticalLayout implements View {
 			public void buttonClick(ClickEvent event) {
 				applet.setStyleName("v-AppletHidden");
 				applet.executeCommand("getNodeInfo");
-			    System.out.println("getNodeInfo");
 			}
 		});
 		button.addStyleName("small");
@@ -663,7 +659,6 @@ public class Precursor extends VerticalLayout implements View {
 				applet.requestRepaint();
 				applet.requestRepaintAll();
 				applet.attach();
-				//applet.;
 			}
 		});
 		button.addStyleName("small");

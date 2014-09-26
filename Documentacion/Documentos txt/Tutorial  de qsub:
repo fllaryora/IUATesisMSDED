@@ -1,0 +1,108 @@
+Tutorial  de qsub:
+
+Link commun: https://rcc.its.psu.edu/user_guides/system_utilities/pbs/#moreinfo
+El Man: http://gridscheduler.sourceforge.net/htmlman/htmlman1/qsub.html
+
+Links no leidos:
+http://bose.utmb.edu/Compu_Center/Cluster_users/PBS%20HOWTO/PBS_HOW_TO.html
+http://dcwww.camd.dtu.dk/pbs.html
+
+
+Submitiar un job:
+$qsub (opsiones) path_script
+
+
+Ver informacion de la lista de jobs:
+$qstat
+
+Los estados que muestra son:
+
+State 	Meaning
+Q 	The job is queued and is waiting to start.
+R 	The job is currently running.
+E 	The job is currently ending.
+H 	The job has a user or system hold on it and will not be eligible to run until the hold is removed. 
+
+Como borrar un job:
+$qdel Job_ID
+
+Ver cantidad de nodos x procesos de cada uno:  #PBS -l nodes=2:ppn=4
+http://zhanglab.ccmb.med.umich.edu/docs/node34.html
+
+
+Tiempo limite: 
+#PBS -l walltime=00:05:00
+
+Poner la salida estandar y error en el mismo archivo para simplificar:
+#PBS -j oe
+
+
+
+
+#!/bin/bash
+#!/bin/csh
+### Job name
+#PBS -N hello_world_job
+### Declare job non-rerunable
+#PBS -r n
+### std out and err on same file
+#PBS -j oe
+#PBS -l nodes=4:ppn=2
+#PBS -l walltime=00:05:00
+
+
+./test.exe
+
+
+
+
+
+# This job's working directory
+echo Working directory is $PBS_O_WORKDIR
+cd $PBS_O_WORKDIR    
+
+echo Running on host `hostname`
+echo Time is `date`
+echo Directory is `pwd`
+echo This jobs runs on the following processors:
+echo `cat $PBS_NODEFILE`
+# Define number of processors
+NPROCS=`wc -l < $PBS_NODEFILE`
+echo This job has allocated $NPROCS nodes
+
+# Run the parallel MPI executable "a.out"
+mpirun -v -machinefile $PBS_NODEFILE -np $NPROCS a.out
+
+
+
+
+echo Running on host `hostname`
+/usr/mpi/gcc/openmpi-1.4.3/bin/mpirun
+
+
+#!/bin/bash
+#PBS -q batch4h
+#PBS -N hello_world_job
+#PBS -r n
+#PBS -j oe
+#PBS -l walltime=00:05:00
+#PBS -l nodes=1:ppn=2
+
+echo Running on host `hostname`
+/usr/mpi/gcc/openmpi-1.4.3/bin/mpirun -hostfile /home/czerpa/test/hostlist.txt -np 8 ./test/test2.exe
+
+105190952
+125565405
+112488815
+
+
+Metricas/output/benchmark8.csv
+
+qsub -l nodes=4,ppn=2 Metricas/benchmark.sh
+
+cp benchmark/k6/modelo.json input/input.json
+
+/usr/mpi/gcc/openmpi-1.4.3/bin/mpirun -hostfile /home/czerpa/test/hostlist.txt -np 9 ./Engine
+
+cp output/benchmark.csv output/benchmark9.csv
+rm output/benchmark.csv

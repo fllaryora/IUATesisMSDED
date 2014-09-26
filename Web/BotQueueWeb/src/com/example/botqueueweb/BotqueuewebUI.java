@@ -111,11 +111,8 @@ public class BotqueuewebUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
-		
         //helpManager = new HelpManager(this);
-
 		setLocale(Locale.US);
-		
         setContent(root);
         root.addStyleName("root");
         root.setSizeFull();
