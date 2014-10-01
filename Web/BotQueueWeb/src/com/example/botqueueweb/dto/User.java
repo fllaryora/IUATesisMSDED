@@ -1,6 +1,9 @@
 package com.example.botqueueweb.dto;
 
+import java.io.Serializable;
+
 import org.bson.types.ObjectId;
+
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
@@ -9,7 +12,9 @@ import com.google.code.morphia.annotations.Id;
  *
  */
 @Entity("users")
-public class User {
+public class User implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	private @Id ObjectId id;
 	private String username;

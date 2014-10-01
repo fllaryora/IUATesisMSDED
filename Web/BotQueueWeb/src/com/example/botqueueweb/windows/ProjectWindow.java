@@ -131,13 +131,26 @@ public class ProjectWindow extends Window {
                 	property.setValue(project1.getDeltaT());
             	}
                 t.setContainerDataSource(container);
-                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+                //t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos"});
+                t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos", "Tiempo de Simulación", "Paso de Simulación"});
             	t.setColumnExpandRatio("Nombre de Proyecto", 80);
             	t.setColumnExpandRatio("Estado", 15);
             	t.setColumnExpandRatio("Nro de Procesos", 15);
             	t.setColumnExpandRatio("Tiempo de Simulación", 23);
             	t.setColumnExpandRatio("Paso de Simulación", 23);
             	t.setWidth("1090");
+            	
+            	Item item;
+        		for (Object object : t.getItemIds()) {
+        			item = t.getItem(object);
+        			if(item.getItemProperty("Id").getValue().toString().equalsIgnoreCase(project.getId().toString())){
+        				t.select(object);
+        				Object myObjectProperty = item.getItemProperty("Id").getValue();
+        				t.setData(myObjectProperty);
+        				((HashMap<String,Object>) getUI().getData()).put("idProjectSelected", t.getData());
+        			}
+    			}
+            	
         	    close();
 			}
 		});

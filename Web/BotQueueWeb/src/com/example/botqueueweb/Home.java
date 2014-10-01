@@ -59,24 +59,24 @@ public class Home extends VerticalLayout implements View{
         vlPanel.addComponent(image);
 
         //SUBTITULO
-        HorizontalLayout hbSubtitle = new HorizontalLayout();
-        hbSubtitle.setSpacing(true);
+        //HorizontalLayout hbSubtitle = new HorizontalLayout();
+        //hbSubtitle.setSpacing(true);
         
-        Label subtitle = new Label("Proyecto Seleccionado: ");
-        subtitle.addStyleName("ticket");
-        hbSubtitle.addComponent(subtitle);
+        //Label subtitle = new Label("Proyecto Seleccionado: ");
+        //subtitle.addStyleName("ticket");
+        //hbSubtitle.addComponent(subtitle);
         
-        final Label lbSelected = new Label("");
-        lbSelected.addStyleName("ticket");
-        hbSubtitle.addComponent(lbSelected);
+        //final Label lbSelected = new Label("");
+        //lbSelected.addStyleName("ticket");
+        //hbSubtitle.addComponent(lbSelected);
         
         //ObjectId idProject = (ObjectId) event.getNavigator().getUI().getData();
-        ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
-    	Project projectTemp = Facade.getInstance().getProject(idProject);
-    	if (projectTemp!=null)
-    		lbSelected.setValue(projectTemp.getName());
+        final ObjectId idProject = (ObjectId) ((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("idProjectSelected");
+        final Project projectTemp = Facade.getInstance().getProject(idProject);
+    	//if (projectTemp!=null)
+    	//	lbSelected.setValue(projectTemp.getName());
     	
-        vlPanel.addComponent(hbSubtitle);
+        //vlPanel.addComponent(hbSubtitle);
         
         //TABLA DE PROYECTOS
         final Table t = new Table();
@@ -116,6 +116,8 @@ public class Home extends VerticalLayout implements View{
 				Item item = t.getItem(event.getItemId());
 				Object myObjectProperty = item.getItemProperty("Id").getValue();
 				t.setData(myObjectProperty);
+				((HashMap<String,Object>) getUI().getData()).put("idProjectSelected", t.getData());
+
 			}
 		});
     	t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos", "Tiempo de Simulación", "Paso de Simulación"});
@@ -127,6 +129,17 @@ public class Home extends VerticalLayout implements View{
     	t.setWidth("1090");
     	vlPanel.addComponent(t);
     	
+    	Item item;
+    	if (projectTemp!=null)
+    		for (Object object : t.getItemIds()) {
+    			item = t.getItem(object);
+    			if(item.getItemProperty("Id").getValue().toString().equalsIgnoreCase(idProject.toString()))
+    			{
+    				t.select(object);
+    				Object myObjectProperty = item.getItemProperty("Id").getValue();
+    				t.setData(myObjectProperty);
+    			}
+			}
     	//BOTONES
     	HorizontalLayout hlPanel = new HorizontalLayout();
     	Button btnGeneric = new Button("Refrescar");
@@ -177,6 +190,11 @@ public class Home extends VerticalLayout implements View{
                 	property = item.getItemProperty("Paso de Simulación");
                 	property.setValue(project1.getDeltaT());
             	}
+                
+                ObjectId idProjectLastSelected=null;
+                if (t.getData()!=null)
+                	idProjectLastSelected = (ObjectId) t.getData();
+            	
                 t.setContainerDataSource(container);
                 t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos", "Tiempo de Simulación", "Paso de Simulación"});
             	t.setColumnExpandRatio("Nombre de Proyecto", 80);
@@ -185,11 +203,19 @@ public class Home extends VerticalLayout implements View{
             	t.setColumnExpandRatio("Tiempo de Simulación", 23);
             	t.setColumnExpandRatio("Paso de Simulación", 23);
             	t.setWidth("1090");
+            	
+            	Item item;
+            	if (idProjectLastSelected!=null)
+            		for (Object object : t.getItemIds()) {
+            			item = t.getItem(object);
+            			if(item.getItemProperty("Id").getValue().toString().equalsIgnoreCase(idProjectLastSelected.toString()))
+            				t.select(object);
+        			}
             }
         });
     	hlPanel.addComponent(btnGeneric);
     	
-    	btnGeneric = new Button("Seleccionar");
+    	/*btnGeneric = new Button("Seleccionar");
     	btnGeneric.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 
@@ -204,7 +230,7 @@ public class Home extends VerticalLayout implements View{
     	    		lbSelected.setValue(project.getName());
             }
         });
-    	hlPanel.addComponent(btnGeneric);
+    	hlPanel.addComponent(btnGeneric);*/
     	
     	btnGeneric = new Button("Eliminar");
     	btnGeneric.addClickListener(new ClickListener() {
@@ -229,7 +255,8 @@ public class Home extends VerticalLayout implements View{
     	    	((HashMap<String,Object>) event.getNavigator().getUI().getData()).put("idProjectSelected", null);
     	    	
     	    	//RESET SELECTED
-   	    		lbSelected.setValue("");
+   	    		//lbSelected.setValue("");
+    	    	t.setData(null);
     	    	
     	    	//GET PROYECTOS
              	List<Project> projects = Facade.getInstance().getProjectsByUser((User)((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("user"));
