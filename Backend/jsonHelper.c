@@ -303,18 +303,19 @@ ValidationResults*  validateJson(const char *filenameJson){
 	for (int i = 0; i < queueSize ; i++){
 		idNode = getIdNodeByPos( object, "transformation.queues", i);idNode--;
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
-	    /*COLA: ANTESESOR: No pueden ser Colas.*///precederSize == 0 WTF !!		
+	    /*COLA: ANTESESOR: No pueden ser Colas.*/
 		if (disjointSet(precederArray,queueArray,queueSize) == FALSE){
 			const char * nodeName = getNameByTypeAndId( object, "transformation.queues", idNode+1);
 			writeErrorInFileNS("La cola id %d %s no puede preceder de otro nodo Cola.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_QUEUE;
 			goto freeLinksArray;
 		}
+
 	    /*COLA: SUCESOR: Solo pueden ser combis.*/
-		if ( (jointSet(followerArray,combiArray,combiSize) == FALSE) &&
-		  (disjointSet(followerArray,queueArray,queueSize) == FALSE) &&
-		  (disjointSet(followerArray,counterArray,counterSize) == FALSE) &&
-		  (disjointSet(followerArray,normalArray,normalSize) == FALSE) &&
+		if ( (jointSet(followerArray,combiArray,combiSize) == FALSE) ||
+		  (disjointSet(followerArray,queueArray,queueSize) == FALSE) ||
+		  (disjointSet(followerArray,counterArray,counterSize) == FALSE) ||
+		  (disjointSet(followerArray,normalArray,normalSize) == FALSE) ||
 		  (disjointSet(followerArray,functionArray,functionSize) == FALSE) ){
 			const char * nodeName = getNameByTypeAndId( object, "transformation.queues", idNode+1);
 			writeErrorInFileNS("La cola id %d %s solo puede seguir a un nodo combi.",idNode+1, nodeName);
@@ -335,10 +336,10 @@ ValidationResults*  validateJson(const char *filenameJson){
 		idNode = getIdNodeByPos( object, "transformation.combis", i);idNode--;
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
 	    /*COMBI: ANTESESOR: Solo pueden ser nodos Cola.*/
-		if ( (jointSet(precederArray,queueArray,queueSize) == FALSE) &&
-		  (disjointSet(precederArray,combiArray,combiSize) == FALSE) &&
-		  (disjointSet(precederArray,counterArray,counterSize) == FALSE) &&
-		  (disjointSet(precederArray,normalArray,normalSize) == FALSE) &&
+		if ( (jointSet(precederArray,queueArray,queueSize) == FALSE) ||
+		  (disjointSet(precederArray,combiArray,combiSize) == FALSE) ||
+		  (disjointSet(precederArray,counterArray,counterSize) == FALSE) ||
+		  (disjointSet(precederArray,normalArray,normalSize) == FALSE) ||
 		  (disjointSet(precederArray,functionArray,functionSize) == FALSE) ){
 			const char * nodeName = getNameByTypeAndId( object, "transformation.combis", idNode+1);
 			writeErrorInFileNS("La combi id %d %s solo puede preseder de nodos tipo cola.",idNode+1, nodeName);
