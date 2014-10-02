@@ -31,6 +31,7 @@ void writeErrorInFile(const char* label){
 	write(fileDescriptor,"\"\n}",3);
 	close(fileDescriptor);
 }
+
 /**	Escribe el porque fracazo la validacion del json */
 void writeErrorInFileN(const char* label, const int N){
 	char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
@@ -49,6 +50,54 @@ void writeErrorInFileN(const char* label, const int N){
 	free(strNro);
 	close(fileDescriptor);
 }
+
+/**	Escribe el porque fracazo la validacion del json */
+void writeErrorInFileNS(const char* label, const int N, const char* nName){
+	const char* withoutName = "Sin Nombre";
+	char * rName;
+	if (nName == NULL ){
+		rName = (char *)withoutName;
+	} else {
+		rName = (char *)nName;
+	}
+
+	char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
+	if(botqueueOutputFile == NULL ){
+		botqueueOutputFile = "/tmp/defaultOutputJson.json";
+		printf("JsonHelper: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
+	}
+	int fileDescriptor = open (botqueueOutputFile,O_WRONLY|O_CREAT|O_TRUNC,00660);
+	write(fileDescriptor,"{\n\"Error\" : \"",13);
+	char* strNro = NULL;
+
+	int len = snprintf(NULL, 0, label, N, rName);
+	strNro = (char*) malloc( (len + 1) * sizeof(char) );
+	snprintf(strNro, (len + 1),label, N, rName);
+	write(fileDescriptor, strNro, len );
+	write(fileDescriptor,"\"\n}",3);
+	free(strNro);
+	close(fileDescriptor);
+}
+
+/**	Escribe el porque fracazo la validacion del json */
+void writeErrorInFileNNNN(const char* label, const int N, const int M, const int O, const int P){
+	char* botqueueOutputFile = getenv("BOTQUEUE_OUTPUT_FILE");
+	if(botqueueOutputFile == NULL ){
+		botqueueOutputFile = "/tmp/defaultOutputJson.json";
+		printf("JsonHelper: can not find BOTQUEUE_OUTPUT_FILE, using default path: /tmp/defaultOutputJson.json \n");
+	}
+	int fileDescriptor = open (botqueueOutputFile,O_WRONLY|O_CREAT|O_TRUNC,00660);
+	write(fileDescriptor,"{\n\"Error\" : \"",13);
+	char* strNro = NULL;
+	int len = snprintf(NULL, 0, label, N,M,O,P);
+	strNro = (char*) malloc( (len + 1) * sizeof(char) );
+	snprintf(strNro, (len + 1),label, N,M,O,P);
+	write(fileDescriptor, strNro, len );
+	write(fileDescriptor,"\"\n}",3);
+	free(strNro);
+	close(fileDescriptor);
+}
+
 /***********************************************REGION_SCHEMA*********************************************************/
 /* Valida El archivo de ingreso contra el schema */
 int validateSchema(const char *filenameJson){
@@ -65,44 +114,44 @@ int validateSchema(const char *filenameJson){
 	WJElement json; WJElement schema; 	char *format=NULL;
 	
 	if(!(jsonfile = fopen(filenameJson, "r"))) {
-		writeErrorInFile("No se encontro el archivo del modelo");
+		writeErrorInFile("No se encontro el archivo del modelo.");
 		return ERROR_OPEN_JSON;
 	}
 	if(!(schemafile = fopen(filenameSchema, "r"))) {
-		writeErrorInFile("No se encontro el archivo del esquema");
+		writeErrorInFile("No se encontro el archivo del esquema.");
 		return ERROR_OPEN_SCHEMA;
 	}
 
 	if( !(readjson = WJROpenFILEDocument(jsonfile, NULL, 0)) ){
-		writeErrorInFile("WJROpenFILEDocument No pudo leer el modelo");
+		writeErrorInFile("WJROpenFILEDocument No pudo leer el modelo.");
 		return ERROR_READ_JSON;
 	}
 	if( !(json = WJEOpenDocument(readjson, NULL, NULL, NULL))) {
-		writeErrorInFile("WJEOpenDocument No pudo leer el modelo");
+		writeErrorInFile("WJEOpenDocument No pudo leer el modelo.");
 		return ERROR_READ_JSON;
 	}
 	if(!(readschema = WJROpenFILEDocument(schemafile, NULL, 0)) ){
-		writeErrorInFile("WJROpenFILEDocument No pudo leer el esquema");
+		writeErrorInFile("WJROpenFILEDocument No pudo leer el esquema.");
 		WJECloseDocument(json);
 		return ERROR_READ_SCHEMA;
 	}	
 	if(!(schema = WJEOpenDocument(readschema, NULL, NULL, NULL))) {
-		writeErrorInFile("WJEOpenDocument No pudo leer el esquema");
+		writeErrorInFile("WJEOpenDocument No pudo leer el esquema.");
 		WJECloseDocument(json);
 		return ERROR_READ_SCHEMA;
 	}
 	/*WJEDump(json);*/
 	if (readjson->depth){
-		writeErrorInFile("El json no es valido, Posiblemente falta una coma o una llave");
+		writeErrorInFile("El json no es valido, Posiblemente falta una coma o una llave.");
 		return INVALID_JSON_DEPTH;
 	}
 	/*WJEDump(schema);*/
 	if (readschema->depth){
-		writeErrorInFile("El json del esquema no es valido, Posiblemente falta una coma o una llave");
+		writeErrorInFile("El json del esquema no es valido, Posiblemente falta una coma o una llave.");
 		return INVALID_SCHEMA;
 	}
 	if(!WJESchemaValidate(schema, json, schema_error, schema_load, NULL, format)) {
-		writeErrorInFile("El json es valido, pero no se respeta la estructura del esquema");
+		writeErrorInFile("El json es valido, pero no se respeta la estructura del esquema.");
 		WJECloseDocument(json);
 		WJECloseDocument(schema);
 		WJRCloseDocument(readjson);
@@ -179,9 +228,11 @@ ValidationResults*  validateJson(const char *filenameJson){
 	functionSize = getIdNodeArray(object, "transformation.functions", &functionArray);
 	combiSize = getIdNodeArray(object, "transformation.combis", &combiArray);
 
+	sizeAllNodes = queueSize + counterSize + normalSize + functionSize + combiSize;
+
 	/*Valida la que secuencia de id de los nodos sea 1,2,3,4...,N*/
 	if (repeatArrays(queueArray, queueSize, counterArray, counterSize, normalArray, normalSize, functionArray, functionSize, combiArray, combiSize, &allNodes, &sizeAllNodes) == 0){
-		writeErrorInFile("La secuencia de Ids es invalida");
+		writeErrorInFile("La secuencia de Ids es invalida: deben ser números consecutivos desde uno.");
 		validationResult->isValid = VALIDATION_FAIL;
 		goto freeIdNodeArray;
 	}
@@ -202,16 +253,28 @@ ValidationResults*  validateJson(const char *filenameJson){
 	precederArrayFull = (int **) malloc(sizeAllNodes*sizeof(int*));
 	followerArrayFull = (int **) malloc(sizeAllNodes*sizeof(int*));
 
-	getLinkTable(precederArrayFull, "transformation.queues", "preceders", object );
-	getLinkTable(precederArrayFull, "transformation.counters", "preceders", object );
-	getLinkTable(precederArrayFull, "transformation.normals", "preceders", object );
-	getLinkTable(precederArrayFull, "transformation.functions", "preceders", object );
-	getLinkTable(precederArrayFull, "transformation.combis", "preceders", object );
-	getLinkTable(followerArrayFull, "transformation.queues", "followers", object );
-	getLinkTable(followerArrayFull, "transformation.counters", "followers", object );
-	getLinkTable(followerArrayFull, "transformation.normals", "followers", object );
-	getLinkTable(followerArrayFull, "transformation.functions", "followers", object );
-	getLinkTable(followerArrayFull, "transformation.combis", "followers", object );
+	precederSize = getLinkTable(precederArrayFull, "transformation.queues", "preceders", object );
+	precederSize += getLinkTable(precederArrayFull, "transformation.counters", "preceders", object );
+	precederSize += getLinkTable(precederArrayFull, "transformation.normals", "preceders", object );
+	precederSize += getLinkTable(precederArrayFull, "transformation.functions", "preceders", object );
+	precederSize += getLinkTable(precederArrayFull, "transformation.combis", "preceders", object );
+	followerSize = getLinkTable(followerArrayFull, "transformation.queues", "followers", object );
+	followerSize += getLinkTable(followerArrayFull, "transformation.counters", "followers", object );
+	followerSize += getLinkTable(followerArrayFull, "transformation.normals", "followers", object );
+	followerSize += getLinkTable(followerArrayFull, "transformation.functions", "followers", object );
+	followerSize += getLinkTable(followerArrayFull, "transformation.combis", "followers", object );
+
+	if( precederSize != sizeAllNodes ) {
+		writeErrorInFile("los nodos en la lista de predecesores es diferente a la cantidad de nodos en el mapa");
+		validationResult->isValid = VALIDATION_FAIL;
+		goto freeLinksArray;	
+	}
+
+	if( followerSize != sizeAllNodes ) {
+		writeErrorInFile("los nodos en la lista de seguidores es diferente a la cantidad de nodos en el mapa");
+		validationResult->isValid = VALIDATION_FAIL;
+		goto freeLinksArray;	
+	}
 
 	//( indice-1 == idNode)
 	if (validateDoubleReference(sizeAllNodes,precederArrayFull,followerArrayFull) == DOUBLE_REFERENCE_FAIL){
@@ -235,27 +298,30 @@ ValidationResults*  validateJson(const char *filenameJson){
 		goto freeLinksArray;
 	}
 	int idNode;
+
 	int *precederArray = NULL, *followerArray = NULL;
 	for (int i = 0; i < queueSize ; i++){
 		idNode = getIdNodeByPos( object, "transformation.queues", i);idNode--;
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
-
-	    /*COLA: ANTESESOR: No pueden ser Colas.*/		
-		if (disjointSet(precederArray,precederSize,queueArray,queueSize) == FALSE){
-			writeErrorInFileN("COLA idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode+1);
+	    /*COLA: ANTESESOR: No pueden ser Colas.*///precederSize == 0 WTF !!		
+		if (disjointSet(precederArray,queueArray,queueSize) == FALSE){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.queues", idNode+1);
+			writeErrorInFileNS("La cola id %d %s no puede preceder de otro nodo Cola.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_QUEUE;
 			goto freeLinksArray;
 		}
 	    /*COLA: SUCESOR: Solo pueden ser combis.*/
-		if (jointSet(followerArray,followerSize,combiArray,combiSize) == FALSE){
-			writeErrorInFileN("COLA idNode %d: SUCESOR: Solo pueden ser combis.",idNode+1);
+		if (jointSet(followerArray,combiArray,combiSize) == FALSE){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.queues", idNode+1);
+			writeErrorInFileNS("La cola id %d %s solo puede seguir a un nodo combi.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_QUEUE;
 			goto freeLinksArray;
 		}
 
 		/*COLA: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0] < 1 || followerArrayFull[idNode][0] < 1 ){
-			writeErrorInFileN("COLA idNode %d: Existe referencia Preceders Followers",idNode+1);
+			const char * nodeName = getNameByTypeAndId( object, "transformation.queues", idNode+1);
+			writeErrorInFileNS("La cola id %d %s debe tener al menos un antecesor y al menos un sucesor.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_QUEUE;
 			goto freeLinksArray;
 		}
@@ -265,20 +331,23 @@ ValidationResults*  validateJson(const char *filenameJson){
 		idNode = getIdNodeByPos( object, "transformation.combis", i);idNode--;
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
 	    /*COMBI: ANTESESOR: Solo pueden ser nodos Cola.*/
-		if (jointSet(precederArray,precederSize,queueArray,queueSize) == FALSE){
-			writeErrorInFileN("COMBI idNode %d:ANTESESOR: Solo pueden ser nodos Cola.",idNode+1);
+		if (jointSet(precederArray,queueArray,queueSize) == FALSE){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.combis", idNode+1);
+			writeErrorInFileNS("La combi id %d %s solo puede preseder de nodos tipo cola.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_COMBI;
 			goto freeLinksArray;
 		}
     	/*COMBI: SUCESOR: No pueden ser Combis.*/
-		if (disjointSet(followerArray,followerSize,combiArray,combiSize) == FALSE){
-			writeErrorInFileN("COMBI idNode %d: SUCESOR: No pueden ser Combis.",idNode+1);
+		if (disjointSet(followerArray,combiArray,combiSize) == FALSE){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.combis", idNode+1);
+			writeErrorInFileNS("La combi id %d %s no puede seguir a un nodo tipo combi.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_COMBI;
 			goto freeLinksArray;
 		}
 		/*COMBI: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0]  < 1 || followerArrayFull[idNode][0]  < 1 ){
-			writeErrorInFileN("COMBI idNode %d: Existe referencia Preceders Followers",idNode+1);
+			const char * nodeName = getNameByTypeAndId( object, "transformation.combis", idNode+1);
+			writeErrorInFileNS("La combi id %d %s debe tener al menos un antecesor y al menos un sucesor.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_COMBI;
 			goto freeLinksArray;
 		}
@@ -290,7 +359,8 @@ ValidationResults*  validateJson(const char *filenameJson){
 		probabilisticBranchArray = NULL;
 		probabilisticBranchSize = 0;
 		if (error == PROBABILISTIC_BRANCH_FAIL){
-			writeErrorInFileN("COMBI idNode %d: la sumatoria del prob branch deba ser 1",idNode+1);
+			const char * nodeName = getNameByTypeAndId( object, "transformation.combis", idNode+1);
+			writeErrorInFileNS("La sumatoria de la salida probabilistica del nodo combi id %d debe ser igual a 1",idNode+1, nodeName);
 			validationResult->isValid = error;
 			goto freeLinksArray;
 		}
@@ -300,21 +370,24 @@ ValidationResults*  validateJson(const char *filenameJson){
 		idNode = getIdNodeByPos( object,"transformation.normals", i);idNode--;
 		precederArray = precederArrayFull[idNode]; followerArray = followerArrayFull[idNode];
 		/*NORMAL: ANTESESOR: No pueden ser colas*/
-		if (disjointSet(precederArray,precederSize,queueArray,queueSize) == FALSE){
-			writeErrorInFileN("NORMAL idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode+1);
+		if (disjointSet(precederArray,queueArray,queueSize) == FALSE){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.normals", idNode+1);
+			writeErrorInFileNS("La normal id %d %s no puede preseder de un nodo cola.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_NORMAL;
 			goto freeLinksArray;
 		}
     	/*NORMAL: SUCESOR: No pueden ser combis.*/
-		if (disjointSet(followerArray,followerSize,combiArray,combiSize) == FALSE){
-			writeErrorInFileN("NORMAL idNode %d: SUCESOR: No pueden ser Combis.",idNode+1);
+		if (disjointSet(followerArray,combiArray,combiSize) == FALSE){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.normals", idNode+1);
+			writeErrorInFileNS("La normal id %d %s no puede seguir a una combi.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_NORMAL;
 			goto freeLinksArray;
 		}
 		
 		/*NORMAL: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0]  < 1 || followerArrayFull[idNode][0]  < 1 ){
-			writeErrorInFileN("NORMAL idNode %d: Existe referencia Preceders Followers",idNode+1);
+			const char * nodeName = getNameByTypeAndId( object, "transformation.normals", idNode+1);
+			writeErrorInFileNS("La normal id %d %s debe tener al menos un antecesor y al menos un sucesor.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_NORMAL;
 			goto freeLinksArray;
 		}
@@ -327,7 +400,8 @@ ValidationResults*  validateJson(const char *filenameJson){
 		probabilisticBranchArray = NULL;
 		probabilisticBranchSize = 0;
 		if (error == PROBABILISTIC_BRANCH_FAIL){
-			writeErrorInFileN("NORMAL idNode %d: la sumatoria del prob branch deba ser 1",idNode+1);
+			const char * nodeName = getNameByTypeAndId( object, "transformation.normals", idNode+1);
+			writeErrorInFileNS("La sumatoria de la salida probabilistica del nodo normal id %d debe ser igual a 1",idNode+1, nodeName);
 			validationResult->isValid = error;
 			goto freeLinksArray;
 		}
@@ -337,20 +411,23 @@ ValidationResults*  validateJson(const char *filenameJson){
 		idNode = getIdNodeByPos( object,"transformation.functions", i);idNode--;
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
 		/*FUNCION: ANTESESOR: No pueden ser colas*/
-		if (disjointSet(precederArray,precederSize,queueArray,queueSize) == FALSE){
-			writeErrorInFileN("FUNCION idNode %d: ANTESESOR: No pueden ser nodo Cola.",idNode+1);
+		if (disjointSet(precederArray,queueArray,queueSize) == FALSE){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.functions", idNode+1);
+			writeErrorInFileNS("La función id %d %s no puede preceder de una cola.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_FUNCTION;
 			goto freeLinksArray;
 		}
     	/*FUNCION: SUCESOR: No pueden ser combis.*/
-		if (disjointSet(followerArray,followerSize,combiArray,combiSize) == FALSE){
-			writeErrorInFileN("FUNCION idNode %d: SUCESOR: No pueden ser Combis.",idNode+1);
+		if (disjointSet(followerArray,combiArray,combiSize) == FALSE){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.functions", idNode+1);
+			writeErrorInFileNS("La función id %d %s no puede seguir a una combi.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_FUNCTION;
 			goto freeLinksArray;
 		}
 		/*FUNCION: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0]  < 1 || followerArrayFull[idNode][0]  < 1 ){
-			writeErrorInFileN("FUNCION idNode %d: Existe referencia Preceders Followers",idNode+1);
+			const char * nodeName = getNameByTypeAndId( object, "transformation.functions", idNode+1);
+			writeErrorInFileNS("La función id %d %s debe tener al menos un antecesor y al menos un sucesor.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_FUNCTION;
 			goto freeLinksArray;
 		}
@@ -363,7 +440,8 @@ ValidationResults*  validateJson(const char *filenameJson){
 		probabilisticBranchArray = NULL;
 		probabilisticBranchSize = 0;
 		if (error == PROBABILISTIC_BRANCH_FAIL){
-			writeErrorInFileN("FUNCION idNode %d: la sumatoria del prob branch deba ser 1",idNode+1);
+			const char * nodeName = getNameByTypeAndId( object, "transformation.functions", idNode+1);
+			writeErrorInFileNS("La sumatoria de la salida probabilistica del nodo función id %d debe ser igual a 1",idNode+1, nodeName);
 			validationResult->isValid = error;
 			goto freeLinksArray;
 		}
@@ -373,20 +451,23 @@ ValidationResults*  validateJson(const char *filenameJson){
 		idNode = getIdNodeByPos( object, "transformation.counters", i);idNode--;
 		precederArray = precederArrayFull[idNode]; 	followerArray = followerArrayFull[idNode];
     	/*CONTADOR: ANTESESOR: No pueden ser colas ni otro contador.*/
-		if ( disjointSet(precederArray,precederSize,queueArray,queueSize) == FALSE || disjointSet(precederArray,precederSize,counterArray,counterSize) == FALSE ){
-			writeErrorInFileN("CONTADOR idNode %d: ANTESESOR: No pueden ser colas ni otro contador.",idNode+1);
+		if ( disjointSet(precederArray,queueArray,queueSize) == FALSE || disjointSet(precederArray,counterArray,counterSize) == FALSE ){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.counters", idNode+1);
+			writeErrorInFileNS("El contador idNode %d %s no puede preceder de una cola ni de un contador.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_COUNTER;
 			goto freeLinksArray;
 		}
     	/*CONTADOR: SUCESOR: No pueden ser combis, ni contadores.*/
-    	if ( disjointSet(followerArray,followerSize,combiArray,combiSize) == FALSE || disjointSet(followerArray,followerSize,counterArray,counterSize) == FALSE){
-			writeErrorInFileN("CONTADOR idNode %d: SUCESOR: No pueden ser Combis ni otro contador.",idNode+1);
+    	if ( disjointSet(followerArray,combiArray,combiSize) == FALSE || disjointSet(followerArray,counterArray,counterSize) == FALSE){
+    		const char * nodeName = getNameByTypeAndId( object, "transformation.counters", idNode+1);
+			writeErrorInFileNS("El contador id %d %s no puede seguir a otro contador.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_COUNTER;
 			goto freeLinksArray;
 		}
 		/*CONTADOR: Existe referencia Preceders Followers*/
 		if ( precederArrayFull[idNode][0]  < 1 ){
-			writeErrorInFileN("CONTADOR idNode %d: Existe referencia Preceders",idNode+1);
+			const char * nodeName = getNameByTypeAndId( object, "transformation.counters", idNode+1);
+			writeErrorInFileNS("El contador id %d %s debe tener al menos un antecesor.",idNode+1, nodeName);
 			validationResult->isValid = INVALID_COUNTER;
 			goto freeLinksArray;
 		}
@@ -518,7 +599,7 @@ void Merge(int firstElement, int middleElement, int lastElement, int** array){
 /***********************************************REGION_ID_SECUENCY*********************************************************/
 /***********************************************REGION_DOUBLE_REFERENCE*********************************************************/
 /* Obtiene la lista links (arrayJsonIn= followers o proceders)  de cada nodo (nodeName) y lo pone en una pocicion de una tabla segun el id "idNode" */
-void getLinkTable(int** linkTable, const char *nodeName, const char *arrayJsonIn, JSON_Object *object ){
+int getLinkTable(int** linkTable, const char *nodeName, const char *arrayJsonIn, JSON_Object *object ){
 	JSON_Array  *arrayLocal = json_object_dotget_array(object, nodeName);
 	int sizeLocalArray = json_array_get_count(arrayLocal);
 	JSON_Object *objectInArray; JSON_Array *arrayJsonFunction;
@@ -537,6 +618,7 @@ void getLinkTable(int** linkTable, const char *nodeName, const char *arrayJsonIn
 			linkTable[idNode-1][j+1] = json_array_get_number(arrayJsonFunction, j);
 		}
 	}
+	return sizeLocalArray;
 }
 
 int validateDoubleReference(const int sizeAllNodes, int** precederArrayFull,int** followerArrayFull){
@@ -556,7 +638,7 @@ int validateDoubleReference(const int sizeAllNodes, int** precederArrayFull,int*
 				}
 			}
 			if (isDoubleReference == FALSE){
-				writeErrorInFileN("Principio de doble referencia roto en el nodo %d, nodo follow no me apunta", i+1 );
+				writeErrorInFileNNNN("Principio de doble referencia roto: Ambos nodos deben hacer referencia uno del otro.\nEl nodo id %d es precedido por el nodo id %d, pero el nodo id %d no sigue al nodo id %d", i+1, j+1, j+1,i+1 );
 				return DOUBLE_REFERENCE_FAIL;
 			}
 		}
@@ -572,7 +654,7 @@ int validateDoubleReference(const int sizeAllNodes, int** precederArrayFull,int*
 				}
 			}
 			if (isDoubleReference == FALSE){
-				writeErrorInFileN("Principio de doble referencia roto en el nodo %d, nodo preceder no me apunta", i+1 );
+				writeErrorInFileNNNN("Principio de doble referencia roto: Ambos nodos deben hacer referencia uno del otro.\nEl nodo id %d sigue al nodo id %d, pero el nodo id %d no es precedido del nodo id %d", i+1, j+1, j+1,i+1 );
 				return DOUBLE_REFERENCE_FAIL;
 			}
 		}
@@ -581,7 +663,7 @@ int validateDoubleReference(const int sizeAllNodes, int** precederArrayFull,int*
 }
 /***********************************************REGION_DOUBLE_REFERENCE*********************************************************/
 /***********************************************REGION_UNIQUE_REFERENCE*********************************************************/
-/* cada link de unoo a otro es unico(no hace falta validar el follower)*/
+/* cada link de uno a otro es unico(no hace falta validar el follower)*/
 int validateEachLinkIsUnique(const int sizeAllNodes, int** precederArrayFull){
 	int numberOfReferences;
 	//para cada nodo i
@@ -597,7 +679,7 @@ int validateEachLinkIsUnique(const int sizeAllNodes, int** precederArrayFull){
 			}
 		}
 		if(precederArrayFull[i][0] != numberOfReferences){
-			writeErrorInFileN("El nodo con id %d, apunta dos veces a un nodo", i);
+			writeErrorInFileN("El nodo con id %d apunta más de una vez a un nodo", i+1);
 			return VALIDATION_FAIL;
 		}
 	}
@@ -614,7 +696,7 @@ int validateAutoreference(const int sizeAllNodes, int** precederArrayFull){
 		for (int j = 0; j < precederArrayFull[i][0] ; j++){
 			//busco en si misma
 			if(precederArrayFull[i][j+1] == i+1){
-				writeErrorInFileN("El nodo con id %d, apunta a si mismo", i);
+				writeErrorInFileN("El nodo con id %d se apunta a si mismo", i);
 				return AUTOREFERENCE_FAIL;
 			}
 		}
@@ -630,7 +712,7 @@ int validateSeeds(JSON_Object* object){
 	
 	seed = json_object_dotget_number (object, "seed");
 	if(seed < -1){
-		writeErrorInFile("El modelo  tiene semilla menor a -1");
+		writeErrorInFile("El modelo no debe tener una semilla con valor menor a -1");
 		return INVALID_MODEL_SEED;
 	} 
 
@@ -643,7 +725,7 @@ int validateSeeds(JSON_Object* object){
 	    if (strcmp(json_object_dotget_string(combi,"delay.distribution"),"deterministic")!=0){
 			seed = json_object_dotget_number(combi, "delay.seed" );
 			if(seed < -1){
-				writeErrorInFileN("El nodo combi %d esimo, tiene tiene semilla menor a -1", i);
+				writeErrorInFileN("El nodo combi %d-esimo, tiene tiene una semilla con valor menor a -1", i);
 				return INVALID_MODEL_SEED;
 			} 
 		}
@@ -656,7 +738,7 @@ int validateSeeds(JSON_Object* object){
 	    if (strcmp(json_object_dotget_string(normal,"delay.distribution"),"deterministic")!=0){
 			seed = json_object_dotget_number(normal, "delay.seed" );
 			if(seed < -1){
-				writeErrorInFileN("El nodo normal %d esimo, tiene tiene semilla menor a -1", i);
+				writeErrorInFileN("El nodo normal %d-esimo, tiene tiene una semilla con valor menor a -1", i);
 				return INVALID_MODEL_SEED;
 			}
 		}
@@ -669,10 +751,11 @@ int getIdNodeByPos( JSON_Object *jsonObject, const char *arrayName, int pos ){
     JSON_Object *objectInArray  = json_array_get_object(arrayJsonFunction, pos);
 	return json_object_dotget_number(objectInArray, "idNode"  );
 }
-/*El nodo X no tiene referencias */
-int disjointSet(const int * const linkBag, const int linkBagSize, const int *const singleTypeNodeBag, const int nodeBagSize){
 
-    for (int i = 0; i < linkBagSize; i++){
+/*El nodo X no tiene referencias */
+int disjointSet(const int * const linkBag, const int *const singleTypeNodeBag, const int nodeBagSize){
+	const int linkBagSize = linkBag[0];
+    for (int i = 1; i <= linkBagSize; i++){
 		for (int j = 0; j < nodeBagSize; j++){
 			if (linkBag[i] == singleTypeNodeBag[j]){
 				return FALSE;
@@ -681,10 +764,12 @@ int disjointSet(const int * const linkBag, const int linkBagSize, const int *con
 	}
 	return TRUE;
 }
+
 /*El nodo X solo tiene referencias justas*/
-int jointSet(const int * const linkBag, const int linkBagSize, const int *const singleTypeNodeBag, const int nodeBagSize){
+int jointSet(const int * const linkBag, const int *const singleTypeNodeBag, const int nodeBagSize){
+	const int linkBagSize = linkBag[0];
 	int found = FALSE;
-    for (int i = 0; i < linkBagSize; i++){
+    for (int i = 1; i <= linkBagSize; i++){
 		for (int j = 0; j < nodeBagSize; j++){
 			if (linkBag[i] == singleTypeNodeBag[j]){
 				found = TRUE;
@@ -736,4 +821,23 @@ CycleValidator* getTargets( JSON_Object* object){
 	    targets[i].cycle = json_object_dotget_number(objectInArray, "cycle" );
 	}
 	return targets;
+}
+/***********************************************REGION_NAMES*********************************************************/
+const char * getNameByTypeAndId( JSON_Object* object, const char * nodeType, const int idNode){
+	int currentNodeSize, currentId;
+	JSON_Object * currentNode;
+	JSON_Array* currentNodeList;
+	currentNodeList = json_object_dotget_array(object, nodeType);
+	currentNodeSize = json_array_get_count( currentNodeList);
+
+
+	for (int i = 0; i < currentNodeSize; i++){
+    	currentNode = json_array_get_object(currentNodeList, i);
+		currentId = json_object_dotget_number(currentNode, "idNode" );
+		if(currentId ==  idNode){
+			return json_object_dotget_string(currentNode, "name" );
+		} 
+	}
+
+	return NULL;
 }
