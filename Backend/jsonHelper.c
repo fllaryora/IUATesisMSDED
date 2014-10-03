@@ -249,6 +249,18 @@ ValidationResults*  validateJson(const char *filenameJson){
 		goto freeIdNodeArray;	
 	}
 
+	if( sizeAllNodes == 0 ) {
+		writeErrorInFile("La cantidad de nodos en el mapa no puede ser cero.");
+		validationResult->isValid = VALIDATION_FAIL;
+		goto freeIdNodeArray;	
+	}
+
+	if( counterSize == 0 ) {
+		writeErrorInFile("La cantidad de nodos counter en el mapa no puede ser cero.");
+		validationResult->isValid = VALIDATION_FAIL;
+		goto freeIdNodeArray;	
+	}
+
 	//Lista de punteros a proceders y followers segun id de nodo
 	precederArrayFull = (int **) malloc(sizeAllNodes*sizeof(int*));
 	followerArrayFull = (int **) malloc(sizeAllNodes*sizeof(int*));
@@ -264,14 +276,15 @@ ValidationResults*  validateJson(const char *filenameJson){
 	followerSize += getLinkTable(followerArrayFull, "transformation.functions", "followers", object );
 	followerSize += getLinkTable(followerArrayFull, "transformation.combis", "followers", object );
 
+
 	if( precederSize != sizeAllNodes ) {
-		writeErrorInFile("los nodos en la lista de predecesores es diferente a la cantidad de nodos en el mapa");
+		writeErrorInFile("Los nodos en la lista de predecesores es diferente a la cantidad de nodos en el mapa");
 		validationResult->isValid = VALIDATION_FAIL;
 		goto freeLinksArray;	
 	}
 
 	if( followerSize != sizeAllNodes ) {
-		writeErrorInFile("los nodos en la lista de seguidores es diferente a la cantidad de nodos en el mapa");
+		writeErrorInFile("Los nodos en la lista de seguidores es diferente a la cantidad de nodos en el mapa");
 		validationResult->isValid = VALIDATION_FAIL;
 		goto freeLinksArray;	
 	}
@@ -361,15 +374,24 @@ ValidationResults*  validateJson(const char *filenameJson){
 			goto freeLinksArray;
 		}
 		getProbabilisticBranch(object, "transformation.combis", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
-		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
+		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerArray[0]);
 		if (probabilisticBranchArray) 
 			free(probabilisticBranchArray);
-			
+
+
+
 		probabilisticBranchArray = NULL;
 		probabilisticBranchSize = 0;
 		if (error == PROBABILISTIC_BRANCH_FAIL){
 			const char * nodeName = getNameByTypeAndId( object, "transformation.combis", idNode+1);
 			writeErrorInFileNS("La sumatoria de la salida probabilistica del nodo combi id %d debe ser igual a 1",idNode+1, nodeName);
+			validationResult->isValid = error;
+			goto freeLinksArray;
+		}
+
+		if (error == PROBABILISTIC_BRANCH_COUNT_FAIL){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.combis", idNode+1);
+			writeErrorInFileNS("La cantidad la salidas probabilisticas del nodo combi id %d debe ser igual al número de salidas.",idNode+1, nodeName);
 			validationResult->isValid = error;
 			goto freeLinksArray;
 		}
@@ -402,7 +424,7 @@ ValidationResults*  validateJson(const char *filenameJson){
 		}
 
 		getProbabilisticBranch(object, "transformation.normals", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
-		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
+		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerArray[0]);
 		if (probabilisticBranchArray) 
 			free(probabilisticBranchArray);
 			
@@ -411,6 +433,13 @@ ValidationResults*  validateJson(const char *filenameJson){
 		if (error == PROBABILISTIC_BRANCH_FAIL){
 			const char * nodeName = getNameByTypeAndId( object, "transformation.normals", idNode+1);
 			writeErrorInFileNS("La sumatoria de la salida probabilistica del nodo normal id %d debe ser igual a 1",idNode+1, nodeName);
+			validationResult->isValid = error;
+			goto freeLinksArray;
+		}
+
+		if (error == PROBABILISTIC_BRANCH_COUNT_FAIL){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.normals", idNode+1);
+			writeErrorInFileNS("La cantidad la salidas probabilisticas del nodo normal id %d debe ser igual al número de salidas.",idNode+1, nodeName);
 			validationResult->isValid = error;
 			goto freeLinksArray;
 		}
@@ -442,15 +471,24 @@ ValidationResults*  validateJson(const char *filenameJson){
 		}
 
 		getProbabilisticBranch(object, "transformation.functions", i,"probabilisticBranch",&probabilisticBranchArray , &probabilisticBranchSize);
-		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerSize);
+		int error = validateProbabilisticBranch(probabilisticBranchArray, probabilisticBranchSize, followerArray[0]);
 		if (probabilisticBranchArray) 
 			free(probabilisticBranchArray);
-			
+		
+		printf("probabilisticBranchSize = %d\n", probabilisticBranchSize);
+
 		probabilisticBranchArray = NULL;
 		probabilisticBranchSize = 0;
 		if (error == PROBABILISTIC_BRANCH_FAIL){
 			const char * nodeName = getNameByTypeAndId( object, "transformation.functions", idNode+1);
 			writeErrorInFileNS("La sumatoria de la salida probabilistica del nodo función id %d debe ser igual a 1",idNode+1, nodeName);
+			validationResult->isValid = error;
+			goto freeLinksArray;
+		}
+
+		if (error == PROBABILISTIC_BRANCH_COUNT_FAIL){
+			const char * nodeName = getNameByTypeAndId( object, "transformation.functions", idNode+1);
+			writeErrorInFileNS("La cantidad la salidas probabilisticas del nodo funcion id %d debe ser igual al número de salidas.",idNode+1, nodeName);
 			validationResult->isValid = error;
 			goto freeLinksArray;
 		}
@@ -799,21 +837,28 @@ void getProbabilisticBranch(JSON_Object * objectJson,const char *arrayNodeName, 
     *probabilisticBranchSize = json_array_get_count(arrayJsonFunction);
     if((*probabilisticBranchSize))
 		*probabilisticBranchArray = (double*)malloc(sizeof(double) * (*probabilisticBranchSize));
-
+	printf("aaaaaaaaaaa\n");
     for (int i = 0; i < (*probabilisticBranchSize); i++){
+
 	    (*probabilisticBranchArray)[i] = json_array_get_number(arrayJsonFunction, i);
+
+	    printf("i = %d, valor= %lf\n", i,(*probabilisticBranchArray)[i]);
 	}
 }
 /* Valida la probabilidad de cada rama y todas en conjunto*/
 int validateProbabilisticBranch(const double* probabilisticBranch, const int probabilisticCounter, const int  followCounter){
+
+	//si probabilisticCounter == 0  entonces esta disable la validacion
 	if ( probabilisticCounter != 0  && probabilisticCounter != followCounter )
 		return PROBABILISTIC_BRANCH_COUNT_FAIL;
 	double cumulativeProbabilistic = 0.0;
 	for (int j = 0 ; j < probabilisticCounter ; j++)
 		cumulativeProbabilistic += probabilisticBranch[j];
-	if ( probabilisticCounter > 0 )
+	if ( probabilisticCounter != 0 ){
 		if (cumulativeProbabilistic < PROB_MIN || cumulativeProbabilistic > PROB_MAX)
-			 return PROBABILISTIC_BRANCH_FAIL;
+			return PROBABILISTIC_BRANCH_FAIL;
+	}
+
 	return VALIDATION_PASS;
 }
 /***********************************************REGION_PROB_BRANCH*********************************************************/
