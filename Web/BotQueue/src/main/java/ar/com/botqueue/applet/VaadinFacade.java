@@ -240,8 +240,10 @@ public class VaadinFacade {
 					probBranch = this.toBoolean(params[2]);
 					probabilistics = (String)params[4];
 					if(probabilistics != null &&  probabilistics.trim().isEmpty() == false){
+						//System.out.println("probabilistics:  "+probabilistics);
 						numers = probabilistics.split(",");
 						if(numers.length % 2 == 0){
+							//System.out.println("son par...ok");
 							List<Integer> idNodes = getIdNodes(numers);
 							List<Double> probabilities = getProbabilities(numers);
 							this.graphic.editFunction( nextNode, input, output, probBranch, (String)params[3]);
@@ -383,6 +385,7 @@ public class VaadinFacade {
 			try{
 				//string to json....
 				String oldModelJson = (String)params[0];
+				//System.out.println("ALL Model = "+ oldModelJson);
 				JSONObject model = new JSONObject(oldModelJson);
 				if(model.has(NodeFields.TRANSFORMATION))
 					transformation = model.getJSONObject(NodeFields.TRANSFORMATION);

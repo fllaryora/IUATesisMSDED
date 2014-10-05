@@ -21,13 +21,15 @@ import ar.com.botqueue.applet.graphic.node.Normal;
 import ar.com.botqueue.applet.graphic.node.Queue;
 
 public class GraphicDTO {
+	private static final int POGO_PLACE_Y = 27;
+	private static final int POGO_PLACE_X = 27;
 	private BotQueueList<Node> nodes;
 	private BotQueueList<GenericArrow> edges;
 	
 	public GraphicDTO(){
-		this.nodes = new BotQueueList<Node>();//new ArrayList<Node>();
-		edges = new BotQueueList<GenericArrow>();//new ArrayList<GenericArrow>();
-		
+		//de alguna forma se mesclan los indices entre los nodos
+		this.nodes = new BotQueueList<Node>();
+		edges = new BotQueueList<GenericArrow>();
 	}
 	
 	public void cleanAll(){
@@ -37,6 +39,10 @@ public class GraphicDTO {
 	
 	@Deprecated
 	public void testFastExample(){
+		
+		Node servir = NodeFactory.createNode(NodeTypes.QUEUE, POGO_PLACE_X, POGO_PLACE_Y, "Servir");
+	    nodes.add(servir);
+	    /*
 		//cola
 		Node panadero = NodeFactory.createNode(NodeTypes.QUEUE, 70+40, 20+10, "Panadero");
 		nodes.add(panadero);
@@ -60,7 +66,7 @@ public class GraphicDTO {
 	    GenericArrow toCocinar = new GenericArrow(nodes,amazar,cocinar,1.0);
 	    edges.add( toCocinar );
 	    
-	    this.nodes.get(this.nodes.indexOf(amazar)).select();
+	    this.nodes.get(this.nodes.indexOfJson(amazar)).select();
 	    /*
 	    Node cortar = NodeFactory.createNode(NodeTypes.FUNCTION, 70+314, 20+112, "Cortar");
 	    Node servir = NodeFactory.createNode(NodeTypes.COUNTER, 70+458, 20+112, "Servir");
@@ -93,7 +99,7 @@ public class GraphicDTO {
 	 * Crea un nodo en el grafo
 	 * */
 	public boolean createNode(NodeTypes nodeType, String label){
-		Node nextNode = NodeFactory.createNode(nodeType, 600, 600, label);
+		Node nextNode = NodeFactory.createNode(nodeType, this.POGO_PLACE_X, this.POGO_PLACE_Y, label);
 		if(nextNode != null){
 			this.nodes.add(nextNode);
 			return true;
@@ -312,6 +318,9 @@ public class GraphicDTO {
 		/////********************setters y getters del modelo*********************************************
 		/** 
 		 * edita las probabilidades de las flechas que parten de un nodo
+		 * 
+		 * asigna las probabilidades recorriendo la lista de flechas buscando a la flecha a la cual se le corresponde la probabilidad
+		 * (porque apunta al idnodo objetivo)
 		 * @param nextNode
 		 * @param probBranch
 		 * @param idNodes
@@ -321,12 +330,15 @@ public class GraphicDTO {
 			List<Integer> idNodes, List<Double> probabilities) {
 			List<GenericArrow> nodeEdges = getEdges(nextNode);
 			for(GenericArrow edge: nodeEdges){
+				
 				if(probBranch){
-					
-					int currentIdNode = this.nodes.indexOf(edge.getHeadArrow()) +1;
-					for (Integer idNode: idNodes){
-						if(idNode == currentIdNode){
-							edge.setProbabilisticBranch( probabilities.get(idNodes.indexOf(idNode)), true);
+					int currentIdNode = this.nodes.indexOfJson(edge.getHeadArrow()) +1;
+					//System.out.println("id: "+currentIdNode+", nombre "+ edge.getHeadArrow().getLabel());
+					for(int i = 0; i< idNodes.size(); i++){
+						//System.out.println("i "+ i+ ", node id " + idNodes.get(i)+", current prob "+probabilities.get(i));
+						if( idNodes.get(i) == currentIdNode){
+							//System.out.println("coincide...");
+							edge.setProbabilisticBranch( probabilities.get(i), true);
 						}
 					}
 				} else {
@@ -449,7 +461,7 @@ public class GraphicDTO {
 			if(nextNode instanceof Counter)
 				destination.vaadinUpdateVariable("editCounter", json, true);
 			
-			System.out.println( "juanete ---->"+json );
+			//System.out.println( "juanete ---->"+json );
 			return json; 
 		}
 		
