@@ -80,21 +80,33 @@ public class Home extends VerticalLayout implements View{
         
         //TABLA DE PROYECTOS
         final Table t = new Table();
+        final Container container = new IndexedContainer();
         t.setSelectable(true);
         t.setImmediate(true);
         t.setColumnCollapsingAllowed(true);
         t.setColumnReorderingAllowed(true);
         
+        
+        container.addContainerProperty("Id", ObjectId.class, null);
+        container.addContainerProperty("Nombre de Proyecto", String.class, null);
+        container.addContainerProperty("Estado", String.class , null);
+        container.addContainerProperty("Nro de Procesos", Integer.class , null);
+        container.addContainerProperty("Tiempo de Simulación", Double.class , null);
+        container.addContainerProperty("Paso de Simulación", Double.class , null);
+        /*
         t.addContainerProperty("Id", ObjectId.class, null);
         t.addContainerProperty("Nombre de Proyecto", String.class, null);
         t.addContainerProperty("Estado", String.class , null);
         t.addContainerProperty("Nro de Procesos", Integer.class , null);
         t.addContainerProperty("Tiempo de Simulación", Double.class , null);
         t.addContainerProperty("Paso de Simulación", Double.class , null);
-        
+        */
         int i=0;
         String estadoName;
     	for (Project project : projects) {
+    		container.addItem(project.getId());
+        	Item item = container.getItem(project.getId());
+    		/*
     		i++;
     		estadoName = "";
     		if (project.getState().equalsIgnoreCase("C"))
@@ -107,7 +119,33 @@ public class Home extends VerticalLayout implements View{
 		    	estadoName = "Ejecución";
 		    else if (project.getState().equalsIgnoreCase("F"))
 		    	estadoName = "Finalizado";
-    		t.addItem(new Object[]{project.getId(),project.getName(),estadoName,project.getNroProcs(),project.getSimTime(),project.getDeltaT()},i);
+    		t.addItem(new Object[]{project.getId(),project.getName(),estadoName,project.getNroProcs(),project.getSimTime(),project.getDeltaT()},i);*/
+        	
+        	estadoName = "";
+    		if (project.getState().equalsIgnoreCase("C"))
+    			estadoName = "Construccion"; 
+    		else if (project.getState().equalsIgnoreCase("P"))
+    			estadoName = "Pendiente";
+    		else if (project.getState().equalsIgnoreCase("E"))
+		    	estadoName = "Error";
+		    else if (project.getState().equalsIgnoreCase("X"))
+		    	estadoName = "Ejecución";
+		    else if (project.getState().equalsIgnoreCase("F"))
+		    	estadoName = "Finalizado";
+    		
+    		Property property = item.getItemProperty("Id");
+        	property.setValue(project.getId());
+        	property = item.getItemProperty("Nombre de Proyecto");
+        	property.setValue(project.getName());
+    		property = item.getItemProperty("Estado");
+        	property.setValue(estadoName);
+    		property = item.getItemProperty("Nro de Procesos");
+        	property.setValue(project.getNroProcs());
+        	property = item.getItemProperty("Tiempo de Simulación");
+        	property.setValue(project.getSimTime());
+        	property = item.getItemProperty("Paso de Simulación");
+        	property.setValue(project.getDeltaT());
+        	
     	}
     	t.addListener(new ItemClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -120,6 +158,7 @@ public class Home extends VerticalLayout implements View{
 
 			}
 		});
+    	t.setContainerDataSource(container);
     	t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos", "Tiempo de Simulación", "Paso de Simulación"});
     	t.setColumnExpandRatio("Nombre de Proyecto", 80);
     	t.setColumnExpandRatio("Estado", 15);
@@ -148,13 +187,22 @@ public class Home extends VerticalLayout implements View{
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
             public void buttonClick(ClickEvent event2) {
+    	    	
+    	    	
 				//GET PROYECTOS
              	//List<Project> projects = Facade.getInstance().getProjects();
              	List<Project> projects = Facade.getInstance().getProjectsByUser((User)((HashMap<String,Object>)event.getNavigator().getUI().getData()).get("user"));
-             			
+             	Item item;
+             	for (Object object : t.getItemIds()) {
+        			item = t.getItem(object);
+        			System.out.println("odio java");
+        			
+    			}
+             	
             	//ACTUALIZACION DE TABLA (INTERFACE)
                 String estadoName;
-                Container container = new IndexedContainer();
+                //Container container = new IndexedContainer();
+                container.removeAllItems();
                 container.addContainerProperty("Id", ObjectId.class, null);
                 container.addContainerProperty("Nombre de Proyecto", String.class, null);
                 container.addContainerProperty("Estado", String.class , null);
@@ -163,7 +211,7 @@ public class Home extends VerticalLayout implements View{
                 container.addContainerProperty("Paso de Simulación", Double.class , null);
                 for (Project project1 : projects) {
                 	container.addItem(project1.getId());
-                	Item item = container.getItem(project1.getId());
+                	item = container.getItem(project1.getId());
                 	
             		estadoName = "";
             		if (project1.getState().equalsIgnoreCase("C"))
@@ -191,11 +239,12 @@ public class Home extends VerticalLayout implements View{
                 	property.setValue(project1.getDeltaT());
             	}
                 
+                
                 ObjectId idProjectLastSelected=null;
                 if (t.getData()!=null)
                 	idProjectLastSelected = (ObjectId) t.getData();
             	
-                t.setContainerDataSource(container);
+               /* t.setContainerDataSource(container);
                 t.setVisibleColumns(new Object[]{"Nombre de Proyecto", "Estado", "Nro de Procesos", "Tiempo de Simulación", "Paso de Simulación"});
             	t.setColumnExpandRatio("Nombre de Proyecto", 80);
             	t.setColumnExpandRatio("Estado", 15);
@@ -203,15 +252,17 @@ public class Home extends VerticalLayout implements View{
             	t.setColumnExpandRatio("Tiempo de Simulación", 23);
             	t.setColumnExpandRatio("Paso de Simulación", 23);
             	t.setWidth("1090");
-            	
-            	Item item;
+            	*/
+
             	if (idProjectLastSelected!=null)
             		for (Object object : t.getItemIds()) {
             			item = t.getItem(object);
             			if(item.getItemProperty("Id").getValue().toString().equalsIgnoreCase(idProjectLastSelected.toString()))
             				t.select(object);
         			}
+        		t.refreshRowCache();
             }
+			
         });
     	hlPanel.addComponent(btnGeneric);
     	

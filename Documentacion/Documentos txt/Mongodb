@@ -267,3 +267,5 @@ chown mongodb:mongodb  /var/lib/mongodb/botqueue.*
 chown mongodb:mongodb  /var/lib/mongodb/test.*
 chown mongodb:mongodb  /var/lib/mongodb/testdb.*
 rm -rf /var/lib/mongodb/mongod.lock
+
+DBQuery.shellBatchSize = 300

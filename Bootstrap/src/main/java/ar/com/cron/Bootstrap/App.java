@@ -101,7 +101,7 @@ public class App {
 	static boolean executeProject(MongoHelper myMongo, DBObject toRead ){
 		DecimalFormat decimalFormat;
 		Locale locale  = new Locale("en", "UK");
-		String pattern = "###.0#######";
+		String pattern = "##0.0#######";
 		decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 		decimalFormat.applyPattern(pattern);
 		

@@ -54,7 +54,7 @@ public class ProjectBusiness {
 	{
 		List<Project> projects = new ArrayList<Project>();
 		try {
-			for (Project project : MongoConnection.getInstance().getDatastore().find(Project.class).retrievedFields(true, "_id","name","state","nroProcs","simTime","deltaT").filter("user", user)) {
+			for (Project project : MongoConnection.getInstance().getDatastore().find(Project.class).retrievedFields(true, "_id","name","state","nroProcs","simTime","deltaT").filter("user", user).order("-nroProcs")) {
 				projects.add(project);
 			}
 			return projects;
